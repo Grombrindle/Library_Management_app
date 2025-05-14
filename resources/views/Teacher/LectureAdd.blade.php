@@ -1,0 +1,180 @@
+@props(['subjectID' => null])
+<x-layout>
+    <x-addcard link="addlecture" object="Lecture">
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <label for="lecture_name">
+                {{ __('messages.lectureName') }}:
+            </label>
+            <input type="text" name="lecture_name" id="lecture_name" value="" autocomplete="off"
+                style="height:20%; text-align:center; font-size:40%; width:fit-content;" required>
+        </div>
+        {{-- <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
+            <label for="lecture_description">
+                {{ __('messages.lectureDescription') }} ({{ __('messages.optional') }}):
+            </label>
+            <textarea name="lecture_description" id="lecture_description" autocomplete="off"
+                style="height:150px; width:80%; font-size:16px; padding:10px; resize:vertical;max-height:500px;"></textarea>
+        </div>
+        --}}
+        <br>
+        <label for="subject">
+            {{ __('messages.subject') }}: <br>
+        </label>
+
+        <select name="subject" id="subject" required>
+            <option value="" selected>{{ __('messages.selectSubject') }}</option>
+            @foreach (App\Models\Teacher::findOrFail(Auth::user()->teacher_id)->subjects as $subject)
+                @if ($subjectID != null && $subjectID == $subject->id)
+                    <option value="{{ $subject->id }}" selected>{{ $subject->name }}</option>
+                @else
+                    <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                @endif
+            @endforeach
+        </select>
+        <br>
+        <br>
+        <span>{{ __('messages.videoFile') }} ({{ __('messages.uploadAtLeastOne') }}):</span>
+        <br>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
+            <div>
+                <label for="actual-file-input-360">360p</label>
+                <div class="custom-file-input">
+                    <input type="file" id="actual-file-input-360" class="hidden-file-input" name="lecture_file_360"
+                        accept="video/*" required>
+                    <label for="actual-file-input-360" class="file-input-label">
+                        <span class="file-input-text" id="file-input-text-360">
+                            {{ __('messages.chooseFile') }}
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div>
+                <label for="actual-file-input-720">720p</label>
+                <div class="custom-file-input">
+                    <input type="file" id="actual-file-input-720" class="hidden-file-input" name="lecture_file_720"
+                        accept="video/*">
+                    <label for="actual-file-input-720" class="file-input-label">
+                        <span class="file-input-text" id="file-input-text-720">
+                            {{ __('messages.chooseFile') }}
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; flex-direction:row;">
+            <div style="margin-left:auto;margin-right:auto;">
+
+                <label for="actual-file-input-1080">1080p</label>
+                <div class="custom-file-input">
+                    <input type="file" id="actual-file-input-1080" class="hidden-file-input" name="lecture_file_1080"
+                        accept="video/*">
+                    <label for="actual-file-input-1080" class="file-input-label">
+                        <span class="file-input-text" id="file-input-text-1080">
+                            {{ __('messages.chooseFile') }}
+                        </span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div id="file-error" style="color: red; display: none; text-align: center;">
+            {{ __('messages.pleaseUploadAtLeastOneVideoFile', ['360p', '720p', '1080p']) }}
+        </div>
+        <br>
+    </x-addcard>
+
+    <script>
+        // Scroll to error message
+        if (@json($subjectID)) {
+            function smoothScrollToElement(element, duration = 1000) {
+                const elementPosition = element.getBoundingClientRect().top;
+                const startPosition = window.pageYOffset;
+                const distance = elementPosition - 400; // Adjust offset (e.g., -100px from top)
+                let startTime = null;
+
+                function animation(currentTime) {
+                    if (!startTime) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const scrollAmount = easeInOutQuad(
+                        timeElapsed,
+                        startPosition,
+                        distance,
+                        duration
+                    );
+                    window.scrollTo(0, scrollAmount);
+                    if (timeElapsed < duration) requestAnimationFrame(animation);
+                }
+
+                function easeInOutQuad(t, b, c, d) {
+                    t /= d / 2;
+                    if (t < 1) return (c / 2) * t * t + b;
+                    t--;
+                    return (-c / 2) * (t * (t - 2) - 1) + b;
+                }
+
+                requestAnimationFrame(animation);
+            }
+
+            // Usage
+            smoothScrollToElement(document.getElementById('subject'), 1200); // 800ms duration
+        }
+        // Function to handle file input changes
+        function setupFileInput(inputId, textId) {
+            const input = document.getElementById(inputId);
+            const textElement = document.getElementById(textId);
+
+            input.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+
+                if (file) {
+                    // Check file type
+                    const allowedTypes = ['video'];
+                    const isAllowed = allowedTypes.some(type => file.type.startsWith(type));
+
+                    if (!isAllowed) {
+                        alert('Invalid file type. Please upload a video file.');
+                        event.target.value = '';
+                        textElement.textContent = 'Choose a file';
+                        return;
+                    }
+
+                    // Update the display text
+                    textElement.textContent = file.name;
+                } else {
+                    textElement.textContent = 'Choose a file';
+                }
+
+                // Hide error message when a file is selected
+                document.getElementById('file-error').style.display = 'none';
+            });
+        }
+
+        // Form validation function
+        function validateLectureForm() {
+            const file360 = document.getElementById('actual-file-input-360').files.length;
+            const file720 = document.getElementById('actual-file-input-720').files.length;
+            const file1080 = document.getElementById('actual-file-input-1080').files.length;
+
+            if (!file360 && !file720 && !file1080) {
+                document.getElementById('file-error').style.display = 'block';
+
+                // Scroll to error message
+                document.getElementById('file-error').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+
+        // Set up all file inputs when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setupFileInput('actual-file-input-360', 'file-input-text-360');
+            setupFileInput('actual-file-input-720', 'file-input-text-720');
+            setupFileInput('actual-file-input-1080', 'file-input-text-1080');
+        });
+    </script>
+</x-layout>

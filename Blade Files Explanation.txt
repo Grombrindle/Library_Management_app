@@ -1,0 +1,32 @@
+To whoever it may concern
+
+The Website contains 3 folder:
+1-Admins(which shows the web pages when the admin or semi-admin is logged in)
+2-Teachers(shows the web pages when a teacher is logged in)
+3-Components(Contains blade files that are frequently used in the the rest of the website)
+
+The Components folder contains the following:
+-addCard: Shows the card in the web page when you want to add X*
+-banner: Shows the banner when you open one of the Xs page (like admins or teachers)
+-breadcrumb: Shows the breadcrumb*
+-card: Shows a card which contains information about X
+-cardContainer: Contains up to 10 cards, paginated, used in every Xs blade file
+-editCard: Shows the card in the web page when you want to edit X
+-infoCard: Shows the card after you click on an X card
+-layout: the background, links and theme colors. Also controls RtL/LtR when changing the locale
+-NavBar: A FitGirl-esque navigation bar to switch between Xs pages
+
+The Admins folder contains two other folders, Full Admin and Semi Admin
+
+-The Full Admin has full control over the content in the project, they can add/edit/remove everything except adding users. The folder contains all the Xs blade files, along with their edit and add files
+-The Semi Admin can only control the user subscriptions. He can't add, edit or remove anything. The folder only contains the Users, UserEdit, Users and welcome files
+
+The teacher is considered an admin in the migration tables. They can edit, add and remove lectures from their subjects, and their subjects only (you can reassign each teacher's subjects as a full admin). They can't add, edit or remove anything else. The folder contains Lecture,LectureAdd, LectureEdit, Subject, Subjects and welcome blade files.
+
+-The Xs files(like admins, users.....etc) use the card container component, along with 10 cards max for each page. It also uses the layout along with the navbar(you can remove the navbar by setting the "nav" value to false when using the layout component) along with the breadcrumb.
+-The X files(like admin, user.... etc) use the layout, breadcrumb and infoCard components.
+-The XEdit files use the layout and editCard components
+-The XAdd files use the layout and addCard components
+
+*X: either admins, teachers, universities, subjects, lectures or users
+*breadcrumb: Shows where you are in the website, for example (Home -> Admins -> [Admin name])
