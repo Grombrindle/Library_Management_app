@@ -103,7 +103,8 @@
                                     <div class="description-line">{{ $line }}</div>
                                 @endforeach
                             </div> --}}
-                            ● {{__('messages.forSubject')}}: {{ $lecture->subject->name }}
+                            ● {{__('messages.forSubject')}}: {{ $lecture->course->subject->name }} <br>
+                            ● {{__('messages.fromCourse')}}: {{ $lecture->course->name }}
                         </x-card>
                     @endforeach
                 </div>

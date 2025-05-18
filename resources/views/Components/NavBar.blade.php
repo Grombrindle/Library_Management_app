@@ -385,9 +385,9 @@
     <!-- Mobile Menu (hidden by default) -->
     <div class="mobile-menu" id="mobileMenu">
         @if (Auth::user()->privileges == 2)
-            <a href="/universities" class="NavBarText">
-                {{ __('messages.universities') }}
-                <span class="nav-count">{{ App\Models\university::count() }}</span>
+            <a href="/courses" class="NavBarText">
+                {{ __('messages.unviersities') }}
+                <span class="nav-count">{{ App\Models\Course::count() }}</span>
             </a>
             <a href="/subjects" class="NavBarText">
                 {{ __('messages.subjects') }}
@@ -474,9 +474,9 @@
     <!-- Original Desktop Navigation -->
     @if (Auth::user()->privileges == 2)
         <div class="NavBarElement" style="margin-right: 5%;">
-            <a href="/universities" class="NavBarText" id="universitiesLink">
-                {{ __('messages.universities') }}
-                <span class="nav-count">{{ App\Models\university::count() }}</span>
+            <a href="/courses" class="NavBarText" id="coursesLink">
+                {{ __('messages.courses') }}
+                <span class="nav-count">{{ App\Models\Course::count() }}</span>
             </a>
             <a href="/subjects" class="NavBarText" id="subjectsLink">
                 {{ __('messages.subjects') }}

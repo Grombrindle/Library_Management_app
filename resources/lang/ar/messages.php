@@ -1,7 +1,7 @@
 <?php
 return [
     'welcome' => 'مرحباً',
-    'universities' => 'الجامعات',
+    'courses' => 'الدورات',
     'teachers' => 'المدرسون',
     'admins' => 'المدراء',
     'subjects' => 'المواد',
@@ -20,8 +20,9 @@ return [
     'none' => 'لا يوجد',
     'subjectName' => 'اسم المادة',
     'usersSub' => 'المستخدمون المشتركون',
-    'uniName' => 'اسم الجامعة',
+    'courseName' => 'اسم الدورة',
     'teachersNum' => 'عدد المدرسين',
+    'lecturesNum' => 'عدد المحاضرات',
     'lectureName' => 'اسم المحاضرة',
     'teacherName' => 'اسم المدرس',
     'teacherUserName' => 'اسم مستخدم المدرس',
@@ -38,6 +39,8 @@ return [
     'subLectures' => 'المحاضرات المشترك فيها',
     'lecturesFrom' => 'محاضرات من ',
     'teachersFrom' => 'مدرسون من ',
+    'fromTeacher' => 'من المدرس',
+    'fromCourse' => 'من الدورة',
     'appName' => 'مايند سبارك',
     'usernamePlaceholder' => 'اسم المستخدم',
     'passwordPlaceholder' => 'كلمة المرور',

@@ -108,9 +108,9 @@ Route::group(['middleware' => ['auth']], function () {
         else
             return abort(404);
     });
-    Route::get('/universities', function () {
+    Route::get('/courses', function () {
         if (Auth::user()->privileges == 2)
-            return view('Admin/FullAdmin/Universities');
+            return view('Admin/FullAdmin/Courses');
         else
             return abort(404);
     });

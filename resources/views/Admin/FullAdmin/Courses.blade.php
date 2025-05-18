@@ -1,8 +1,8 @@
-@props(['num' => App\Models\university::count()])
+@props(['num' => App\Models\Course::count()])
 
 @php
     session([
-        'breadcrumb_universities' => array_merge(['Home' => url('/welcome')], ['Universities' => Request::url()]),
+        'breadcrumb_courses' => array_merge(['Home' => url('/welcome')], [__('messages.courses') => Request::url()]),
     ]);
 
     // Get the search query and filter values from the request
@@ -14,7 +14,7 @@
 
     $searchTerms = $searchQuery ? array_filter(explode(' ', strtolower(trim($searchQuery)))) : [];
 
-    $modelToPass = App\Models\university::query();
+    $modelToPass = App\Models\Course::query();
 
     // Apply search, filters, and sorting
     $modelToPass = $modelToPass
@@ -51,15 +51,15 @@
                         $q->orHas('subjects', '=', 1);
                     } elseif ($count === '2-3') {
                         $q->orWhereHas('subjects', function ($q) {
-                            $q->groupBy('university_id')->havingRaw('COUNT(subjects.id) BETWEEN 2 AND 3');
+                            $q->groupBy('course_id')->havingRaw('COUNT(subjects.id) BETWEEN 2 AND 3');
                         });
                     } elseif ($count === '4-5') {
                         $q->orWhereHas('subjects', function ($q) {
-                            $q->groupBy('university_id')->havingRaw('COUNT(subjects.id) BETWEEN 4 AND 5');
+                            $q->groupBy('course_id')->havingRaw('COUNT(subjects.id) BETWEEN 4 AND 5');
                         });
                     } elseif ($count === '6+') {
                         $q->orWhereHas('subjects', function ($q) {
-                            $q->groupBy('university_id')->havingRaw('COUNT(subjects.id) >= 6');
+                            $q->groupBy('course_id')->havingRaw('COUNT(subjects.id) >= 6');
                         });
                     }
                 }
@@ -84,25 +84,27 @@
         $chunkedUniversities[$i] = [];
     }
 
-    foreach ($modelToPass as $index => $university) {
+    foreach ($modelToPass as $index => $course) {
         $chunkIndex = $index % $chunkSize;
-        $chunkedUniversities[$chunkIndex][] = $university;
+        $chunkedUniversities[$chunkIndex][] = $course;
     }
 @endphp
 
-<x-layout :objects=true object="{{ __('messages.universities') }}">
-    <x-breadcrumb :links="array_merge([__('messages.home') => url('/welcome')], [__('messages.universities') => Request::url()])" />
+<x-layout :objects=true object="{{ __('messages.courses') }}">
+    <x-breadcrumb :links="array_merge([__('messages.home') => url('/welcome')], [__('messages.courses') => Request::url()])" />
 
-    <x-cardcontainer :model=$modelToPass addLink="adduniversity" :showNameSort=true
-        num="{{ App\Models\university::count() }}">
+    <x-cardcontainer :model=$modelToPass addLink="addcourse" :showNameSort=true
+        num="{{ App\Models\Course::count() }}">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedUniversities as $chunk)
                 <div class="chunk">
-                    @foreach ($chunk as $university)
-                        <x-card link="university/{{ $university->id }}" image="{{ asset($university->image) }}"
-                            object="University">
-                            ● {{ __('messages.uniName') }}: {{ $university->name }}<br>
-                            ● {{ __('messages.teachersNum') }}: {{ $university->teachers->count() }}<br>
+                    @foreach ($chunk as $course)
+                        <x-card link="course/{{ $course->id }}" image="{{ asset($course->image) }}"
+                            object="Course">
+                            ● {{ __('messages.courseName') }}: {{ $course->name }}<br>
+                            ● {{ __('messages.forSubject') }}: {{ $course->subject->name }}<br>
+                            ● {{ __('messages.fromTeacher') }}: {{ $course->teacher->name }}<br>
+                            ● {{ __('messages.lecturesNum') }}: {{ $course->lectures->count() }}<br>
                         </x-card>
                     @endforeach
                 </div>

@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getteachersubjectsnames/{id}', [TeacherController::class, 'fetchSubjectsNames']);
     Route::get('/getteacheruniversities/{id}', [TeacherController::class, 'fetchUnis']);
     Route::get('/getallteachers', [TeacherController::class, 'fetchAll']);
+    Route::get('/getsubteachers', [TeacherController::class, 'fetchSubjectTeachers']);
 
     Route::get('/getuniversity/{id}', [UniversityController::class, 'fetch']);
     Route::get('/getuniversityteachers/{id}', [UniversityController::class, 'fetchTeachers']);
@@ -57,6 +58,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getsubjectteachers/{id}', [SubjectController::class, 'fetchTeachers']);
     Route::get('/getsubjectusers/{id}', [SubjectController::class, 'fetchUsers']);
     Route::get('/getallsubjects', [SubjectController::class, 'fetchAll']);
+    Route::get('/getscisubjects', [SubjectController::class, 'fetchSci']);
+    Route::get('/getlitsubjects', [SubjectController::class, 'fetchLit']);
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
     Route::get('/getlecturefile360/{id}', [LectureController::class, 'fetchFile360']);

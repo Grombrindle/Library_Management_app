@@ -141,16 +141,16 @@ class TeacherController extends Controller
             }
             $links = json_decode($teacher->links, true);
             $teachers[] = [
-                    'id' => $teacher->id,
-                    'name' => $teacher->name,
-                    'number' => $teacher->number,
-                    'image' => $teacher->image,
-                    'facebook' => $links['Facebook'] ?? null,
-                    'instagram' => $links['Instagram'] ?? null,
-                    'telegram' => $links['Telegram'] ?? null,
-                    'youtube' => $links['YouTube'] ?? null,
-                    'universities' => $unis,
-                    'subjects' => $subs,
+                'id' => $teacher->id,
+                'name' => $teacher->name,
+                'number' => $teacher->number,
+                'image' => $teacher->image,
+                'facebook' => $links['Facebook'] ?? null,
+                'instagram' => $links['Instagram'] ?? null,
+                'telegram' => $links['Telegram'] ?? null,
+                'youtube' => $links['YouTube'] ?? null,
+                'universities' => $unis,
+                'subjects' => $subs,
             ];
         }
 
@@ -159,6 +159,55 @@ class TeacherController extends Controller
             'teachers' => $teachers
         ]); //
     }
+
+    public function fetchSubjectTeachers($id)
+    {
+        $subject = \App\Models\Subject::find($id);
+        if (!$subject) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'Subject Not Found'
+            ], 404);
+        }
+
+        $teachers = [];
+        foreach ($subject->teachers as $teacher) {
+            $unis = "";
+            $count = $teacher->universities->count();
+            foreach ($teacher->universities as $index => $uni) {
+                $unis .= $uni->name;
+                if ($index < $count - 1)
+                    $unis .= " - ";
+            }
+            $subs = "";
+            $count = $teacher->subjects->count();
+            foreach ($teacher->subjects as $index => $sub) {
+                $subs .= $sub->name;
+                if ($index < $count - 1)
+                    $subs .= " - ";
+            }
+            $links = json_decode($teacher->links, true);
+            $teachers[] = [
+                'id' => $teacher->id,
+                'name' => $teacher->name,
+                'number' => $teacher->number,
+                'image' => $teacher->image,
+                'facebook' => $links['Facebook'] ?? null,
+                'instagram' => $links['Instagram'] ?? null,
+                'telegram' => $links['Telegram'] ?? null,
+                'youtube' => $links['YouTube'] ?? null,
+                'universities' => $unis,
+                'subjects' => $subs,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'teachers' => $teachers
+        ]);
+
+    }
+
     public function add(Request $request)
     {
         $validator = $request->validate([
@@ -194,7 +243,7 @@ class TeacherController extends Controller
             // Handle new image upload
             $file = $request->file('object_image');
             $directory = 'Images/Admins';
-            $filename = uniqid().'.'.$file->getClientOriginalExtension();
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
             // Ensure directory exists
             if (!file_exists(public_path($directory))) {
@@ -203,7 +252,7 @@ class TeacherController extends Controller
 
             // Store the image in public folder
             $file->move(public_path($directory), $filename);
-            $path = $directory.'/'.$filename;  // Will be "Images/Admins/filename.jpg"
+            $path = $directory . '/' . $filename;  // Will be "Images/Admins/filename.jpg"
         } else {
             // Use default image
             $path = "Images/Admins/teacherDefault.png";
@@ -303,7 +352,7 @@ class TeacherController extends Controller
             // Store new image in public/Images/Teachers
             $file = $request->file('object_image');
             $directory = 'Images/Admins';  // Changed from Admins to Teachers
-            $filename = uniqid().'.'.$file->getClientOriginalExtension();
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
             // Ensure directory exists
             if (!file_exists(public_path($directory))) {
@@ -312,7 +361,7 @@ class TeacherController extends Controller
 
             // Store the new image
             $file->move(public_path($directory), $filename);
-            $path = $directory.'/'.$filename;  // Will be "Images/Teachers/filename.jpg"
+            $path = $directory . '/' . $filename;  // Will be "Images/Teachers/filename.jpg"
 
             // Delete old image if it's not the default
             if ($teacher->image != "Images/Admins/teacherDefault.png" && file_exists(public_path($teacher->image))) {

@@ -27,7 +27,7 @@ class LectureSeeder extends Seeder
                 'file_360' => 'Files/360/default_360.mp4',
                 'file_720' => 'Files/720/default_720.mp4',
                 'file_1080' => 'Files/1080/default_1080.mp4',
-                'subject_id' => $randSub,
+                'course_id' => $randSub,
                 'image' => 'Images/Lectures/default.png',
             ]);
             $subject = Subject::findOrFail($randSub);

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('file_1080')->nullable();
             $table->string('description')->nullable();  //Maybe I'll add more for the other languages
             $table->string('image');
-            $table->foreignIdFor(App\Models\Subject::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(App\Models\Course::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

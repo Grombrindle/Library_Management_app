@@ -1,7 +1,7 @@
 <?php
 return [
     'welcome' => 'Hoş geldiniz',
-    'universities' => 'Üniversiteler',
+    'courses' => 'Kurslar',
     'teachers' => 'Öğretmenler',
     'admins' => 'Yöneticiler',
     'subjects' => 'Konular',
@@ -20,8 +20,9 @@ return [
     'none' => 'yok',
     'subjectName' => 'Konu Adı',
     'usersSub' => 'Abone Kullanıcılar',
-    'uniName' => 'Üniversite Adı',
+    'courseName' => 'Kurs Adı',
     'teachersNum' => 'Öğretmen Sayısı',
+    'lecturesNum' => 'Ders Sayısı',
     'lectureName' => 'Ders Adı',
     'teacherName' => 'Öğretmen Adı',
     'teacherUserName' => 'Öğretmen Kullanıcı Adı',
@@ -36,8 +37,10 @@ return [
     'add' => 'Ekle',
     'forSubject' => 'Konu için',
     'subLectures' => " Abone olunan dersler",
-    'lecturesFrom' => "Konu dersleri ",
+    'lecturesFrom' => "Derslerden ",
     'teachersFrom' => "Öğretmenlerden ",
+    'fromTeacher' => 'Öğretmenden',
+    'fromCourse' => 'Kurstan',
     'usernamePlaceholder' => 'Kullanıcı adı',
     'passwordPlaceholder' => 'Şifre',
     'loginButton' => 'Giriş yap',
@@ -161,4 +164,5 @@ return [
     'oneYear' => '1 Yıl',
     'totalUsersThisMonth' => 'Bu Ayki Toplam Kullanıcı Sayısı',
     'totalUsersOfAllTime' => 'Tüm Zamanlarda Toplam Kullanıcı Sayısı',
+    'appName' => 'Mind Spark',
 ];

@@ -1,7 +1,7 @@
 <?php
 return [
     'welcome' => 'Bienvenido',
-    'universities' => 'Universidades',
+    'courses' => 'Cursos',
     'teachers' => 'Profesores',
     'admins' => 'Administradores',
     'subjects' => 'Asignaturas',
@@ -20,8 +20,9 @@ return [
     'none' => 'ninguno',
     'subjectName' => 'Nombre de la asignatura',
     'usersSub' => 'Usuarios suscritos',
-    'uniName' => 'Nombre de la universidad',
+    'courseName' => 'Nombre del curso',
     'teachersNum' => 'Número de profesores',
+    'lecturesNum' => 'Número de clases',
     'lectureName' => 'Nombre de la clase',
     'teacherName' => 'Nombre del profesor',
     'teacherUserName' => 'Nombre de usuario del profesor',
@@ -38,6 +39,8 @@ return [
     'subLectures' => " Clases suscritas",
     'lecturesFrom' => "Clases de ",
     'teachersFrom' => "Profesores de ",
+    'fromTeacher' => 'Del Profesor',
+    'fromCourse' => 'Del Curso',
     'appName' => 'Mind Spark',
     'usernamePlaceholder' => 'Nombre de usuario',
     'passwordPlaceholder' => 'Contraseña',

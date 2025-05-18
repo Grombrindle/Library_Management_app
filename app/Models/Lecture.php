@@ -44,8 +44,8 @@ class Lecture extends Model
     use HasFactory;
     protected $guarded = [];
 
-    public function subject() {
-        return $this->belongsTo(Subject::class);
+    public function course() {
+        return $this->belongsTo(Course::class);
     }
     function users() {
         return $this->belongsToMany(User::class, 'user_lecture');

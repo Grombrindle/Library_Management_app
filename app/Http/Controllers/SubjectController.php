@@ -103,6 +103,21 @@ class SubjectController extends Controller
         ]);
     }
 
+    public function fetchSci()
+    {
+        return response()->json([
+            'subjects' => Subject::where('literaryOrScientific', 1)->get(),
+        ]);
+    }
+
+    public function fetchLit()
+    {
+        
+        return response()->json([
+            'subjects' => Subject::where('literaryOrScientific', 0)->get(),
+        ]);
+    }
+
 
     public function add(Request $request)
     {

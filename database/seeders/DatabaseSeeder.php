@@ -7,6 +7,7 @@ use App\Models\Teacher;
 use App\Models\Subject;
 use App\Models\Admin;
 use App\Models\Lecture;
+use App\Models\Course;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\Hash;
@@ -20,6 +21,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
+
+        $names = ['Maths', 'Science', 'Arabic', 'Physics', 'Chemistry', 'English', 'French', 'Philosophy', 'History', 'Arabic'];
 
         for ($i = 0; $i < 10; $i++) {
             $randomDigits = mt_rand(900000000, 999999999);
@@ -52,12 +55,6 @@ class DatabaseSeeder extends Seeder
                 'privileges' => 0,
                 'image' => $teacher->image,
             ]);
-            $subject = Subject::factory()->create([
-                'name' => fake()->colorName(),
-                'lecturesCount' => 0,
-                'subscriptions' => 0,
-                'image' => 'Images/Subjects/default.png',
-            ]);
             $randomDigits = mt_rand(900000000, 999999999);
             Admin::factory()->create([
                 'name' => fake()->name(),
@@ -69,6 +66,23 @@ class DatabaseSeeder extends Seeder
                 'image' => 'Images/Admins/adminDefault.png',
                 'number' => $randomDigits,
             ]);
+            $i < 7 ? $isSci = 1 : $isSci = 0;
+            $subject = Subject::factory()->create([
+                'name' => $names[$i],
+                'lecturesCount' => 0,
+                'subscriptions' => 0,
+                'image' => 'Images/Subjects/default.png',
+                'literaryOrScientific' => $isSci,
+            ]);
+
+            $course = Course::factory()->create([
+                'name' => fake()->safeColorName(),
+                'lecturesCount' => 0,
+                'image' => 'Images/Universities/default.png',
+                'teacher_id' => rand(1, Teacher::count()),
+                'subject_id' => rand(1, Subject::count()),
+            ]);
+
             $lecture = Lecture::factory()->create([
                 'name' => fake()->name(),
                 // 'type' => ('PDF'),
@@ -77,18 +91,18 @@ class DatabaseSeeder extends Seeder
                 'file_1080' => 'Files/1080/default_1080.mp4',
                 'description' => fake()->text(),
                 'image' => 'Images/Lectures/default.png',
-                'subject_id' => rand(1, Subject::count()),
+                'course_id' => rand(1, Course::count()),
             ]);
             // $teacher->subjects()->attach($subject->id);
             $subject->subscriptions = Subject::withCount('users')->find($subject->id)->users_count;
             $subject->save();
         }
-        foreach (Lecture::all() as $lecture) {
-            $subject = Subject::findOrFail($lecture->subject_id);
-            $subject->lectures()->attach($lecture->id);
-            $subject->lecturesCount = $subject->lectures()->count();
-            $subject->save();
-        }
+        // foreach (Lecture::all() as $lecture) {
+        //     $subject = Subject::findOrFail($lecture->subject_id);
+        //     $subject->lectures()->attach($lecture->id);
+        //     $subject->lecturesCount = $subject->lectures()->count();
+        //     $subject->save();
+        // }
 
         $randomDigits = mt_rand(900000000, 999999999);
         Admin::factory()->create([
@@ -135,8 +149,8 @@ class DatabaseSeeder extends Seeder
         $this->call(QuizSeeder::class);
         $this->call(SubjectSeeder::class);
         $this->call(TeacherSeeder::class);
+        $this->call(CourseSeeder::class);
         $this->call(LectureSeeder::class);
         $this->call(SubscriptionSeeder::class);
-        $this->call(UniversitySeeder::class);
     }
 }

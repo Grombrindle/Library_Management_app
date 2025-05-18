@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Teacher;
+use App\Models\Subject;
+
 return new class extends Migration
 {
     /**
@@ -11,13 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subjects', function (Blueprint $table) {
+        Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignIdFor(Teacher::class);
+            $table->foreignIdFor(Subject::class);
             $table->integer('lecturesCount');
-            $table->integer('subscriptions');
             $table->string('image');
-            $table->boolean('literaryOrScientific');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subjects');
+        Schema::dropIfExists('courses');
     }
 };

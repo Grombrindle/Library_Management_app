@@ -20,6 +20,7 @@ class SubjectSeeder extends Seeder
                 'lecturesCount'=>0,
                 'subscriptions'=>0,
                 'image' => 'Images/Subjects/default.png',
+                'literaryOrScientific' => rand(0,1),
             ]);
             }
         //
