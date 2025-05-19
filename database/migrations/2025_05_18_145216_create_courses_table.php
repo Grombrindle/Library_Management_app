@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Teacher::class);
             $table->foreignIdFor(Subject::class);
             $table->integer('lecturesCount');
+            $table->integer('subscriptions');
             $table->string('image');
             $table->timestamps();
         });

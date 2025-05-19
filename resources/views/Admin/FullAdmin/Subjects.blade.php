@@ -134,7 +134,6 @@
                         <x-card link="subject/{{ $subject->id }}" image="{{ asset($subject->image) }}" object="Subject">
                             ● {{__('messages.subjectName')}}: {{ $subject->name }}<br>
                             ● {{__('messages.lectures')}}: {{ $subject->lectures->count() }}<br>
-                            ● {{__('messages.usersSub')}}: {{ $subject->users->count() }}<br>
                             ● {{__('messages.teachers')}}:
                             @if ($subject->teachers->count() == 0)
                                 <div style="color:var(--text-color-inverted); margin-right:auto;">&emsp;none</div>

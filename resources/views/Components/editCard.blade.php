@@ -308,8 +308,8 @@
                     {{__('messages.teacherImage')}}
                 @elseif($object == 'Admin')
                     {{__('messages.adminImage')}}
-                @elseif ($object == 'University')
-                    {{__('messages.universityImage')}}
+                @elseif ($object == 'Course')
+                    {{__('messages.courseImage')}}
                     @elseif ($object == 'Lecture')
                     {{__('messages.lectureImage')}}
                 @elseif ($object == 'Subject')
@@ -344,8 +344,8 @@
                 <select id="subject-dropdown" class="dropdown" style="padding:0.5rem 2.5rem">
                     <option value="">@if ($menu == 'Teacher')
                     {{__('messages.selectTeacher')}}
-                @elseif ($menu == 'Subject')
-                    {{__('messages.selectSubject')}}
+                @elseif ($menu == 'Course')
+                    {{__('messages.selectCourse')}}
                 @endif</option>
                     @foreach ($menuModel as $subject)
                         @if (!in_array($subject->id, $selectedSubjects))
@@ -353,7 +353,7 @@
                         @endif
                     @endforeach
                 </select>
-                <input type="button" id="add-subject-btn" class="add-subject-btn" value="@if ($menu == 'Teacher'){{__('messages.addTeacher')}}@elseif ($menu == 'Subject'){{__('messages.addSubject')}}@endif">
+                <input type="button" id="add-subject-btn" class="add-subject-btn" value="@if ($menu == 'Teacher'){{__('messages.addTeacher')}}@elseif ($menu == 'Course'){{__('messages.addCourse')}}@endif">
             </div>
             <input type="hidden" name="selected_objects" id="selected_objects_input">
         @endif
@@ -373,10 +373,10 @@
             <div class="dropdown" id="lectureD">
                 <button class="dropbtn" onclick="toggleDropdown(event)">{{__('messages.selectLecture')}}</button>
                 <div class="dropdown-content" id="lectureDropdown">
-                    @foreach (App\Models\Subject::all() as $subject)
-                        @if (!in_array($subject->id, $model->subjects->pluck('id')->toArray()))
+                    @foreach (App\Models\Course::all() as $subject)
+                        @if (!in_array($subject->id, $model->courses->pluck('id')->toArray()))
                             <div class="subject-item">
-                                <a>{{ $subject->name }} >
+                                <a>{{ $subject->name }} ({{ $subject->subject->name }}) >
                                     <div class="nested-dropdown">
                                         @if ($subject->lectures->isEmpty())
                                             <div style="padding:0.25rem 0.25rem; background-color:darkgray">{{ __('messages.noLecturesForSubject', ['subject' => $subject->name]) }}</div>
@@ -417,8 +417,8 @@
                     {{__('messages.updateAdmin')}}
                 @elseif ($object == 'User')
                     {{__('messages.updateUser')}}
-                @elseif ($object == 'University')
-                    {{__('messages.updateUniversity')}}
+                @elseif ($object == 'Course')
+                    {{__('messages.updateCourse')}}
                     @elseif ($object == 'Lecture')
                     {{__('messages.updateLecture')}}
                 @elseif ($object == 'Subject')

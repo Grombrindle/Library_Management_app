@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Lecture;
 use App\Models\Subject;
+use App\Models\Course;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -121,7 +122,7 @@ class LectureController extends Controller
         }
 
         $name = $request->input('lecture_name');
-        $subject_id = $request->input('subject');
+        $course_id = $request->input('course');
 
         if ($request->hasFile('object_image')) {
             // Store new image in public/Images/Lectures
@@ -175,10 +176,11 @@ class LectureController extends Controller
             'file_360' => $filePath360,
             'file_720' => $filePath720,
             'file_1080' => $filePath1080,
-            'subject_id' => $subject_id,
+            'course_id' => $course_id,
         ]);
-
-        Subject::findOrFail($subject_id)->lectures()->attach($lecture->id);
+        $course = Course::findOrFail($course_id);
+        $course->lectures()->attach($lecture->id);
+        $course->lecturesCount = $course->lectures->count();
 
         $data = ['element' => 'product', 'id' => $lecture->id, 'name' => $lecture->name];
         session(['add_info' => $data]);

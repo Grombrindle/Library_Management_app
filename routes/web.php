@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\CourseController;
 use App\Models\Teacher;
-use App\Models\university;
+use App\Models\Course;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SubjectController;
@@ -124,10 +124,10 @@ Route::group(['middleware' => ['auth']], function () {
         } else
             return abort(404);
     });
-    Route::get('/university/{id}', function ($id) {
+    Route::get('/course/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
-            session(['university' => $id]);
-            return view('Admin/FullAdmin/University');
+            session(['course' => $id]);
+            return view('Admin/FullAdmin/Course');
         } else
             return abort(404);
     });
@@ -264,24 +264,24 @@ Route::group(['middleware' => ['auth']], function () {
             return abort(404);
 
     });
-    Route::get('/adduniversity', function () {
+    Route::get('/addcourse', function () {
         if (Auth::user()->privileges == 2)
-            return view('Admin/FullAdmin/UniversityAdd');
+            return view('Admin/FullAdmin/CourseAdd');
         else
             return abort(404);
     });
-    Route::post('/adduniversity', [UniversityController::class, 'add']);
+    Route::post('/addcourse', [CourseController::class, 'add']);
 
-    Route::get('/university/edit/{id}', function ($id) {
+    Route::get('/course/edit/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
-            session(['university' => $id]);
-            return view('Admin/FullAdmin/UniversityEdit');
+            session(['course' => $id]);
+            return view('Admin/FullAdmin/CourseEdit');
         } else
             return abort(404);
     });
 
-    Route::put('/edituniversity/{id}', [UniversityController::class, 'edit']);
-    Route::delete('/deleteuniversity/{id}', [UniversityController::class, 'delete']);
+    Route::put('/editcourse/{id}', [CourseController::class, 'edit']);
+    Route::delete('/deletecourse/{id}', [CourseController::class, 'delete']);
 
 
     Route::put('/editadmin/{id}', [AdminController::class, 'edit']);
@@ -303,45 +303,45 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/editlecture/{id}', [LectureController::class, 'edit']);
     Route::delete('/deletelecture/{id}', [LectureController::class, 'delete']);
 
-    Route::get('/university/{id}/teachers', function ($id, Request $request) {
-        // Store the university ID in the session
+    // Route::get('/university/{id}/teachers', function ($id, Request $request) {
+    //     // Store the university ID in the session
+    //     if (Auth::user()->privileges == 2) {
+    //         session(['university' => $id]);
+
+    //         // Get the lecture IDs for the university
+    //         $teacherIDs = university::findOrFail($id)->teachers->pluck('id')->toArray();
+
+    //         // Fetch the teachers
+    //         $teachers = Teacher::whereIn('id', $teacherIDs)->get();
+
+    //         // Pagination settings
+    //         $perPage = 10; // Number of items per page
+    //         $currentPage = $request->input('page', 1); // Get the current page from the request
+    //         $offset = ($currentPage - 1) * $perPage;
+
+    //         // Slice the collection to get the items for the current page
+    //         $currentPageItems = $teachers->slice($offset, $perPage)->values();
+
+    //         // Create a LengthAwarePaginator instance
+    //         $paginatedTeachers = new LengthAwarePaginator(
+    //             $currentPageItems, // Items for the current page
+    //             $teachers->count(), // Total number of items
+    //             $perPage, // Items per page
+    //             $currentPage, // Current page
+    //             ['path' => $request->url(), 'query' => $request->query()] // Additional options
+    //         );
+    //         // Pass the paginated lectures to the view
+    //         return view('Admin/FullAdmin/Teachers', ['teachers' => $teachers]);
+    //     } else
+    //         return abort(404);
+    // });
+
+    Route::get('/course/{id}/users', function ($id, Request $request) {
         if (Auth::user()->privileges == 2) {
-            session(['university' => $id]);
+            session(['course' => $id]);
 
-            // Get the lecture IDs for the university
-            $teacherIDs = university::findOrFail($id)->teachers->pluck('id')->toArray();
-
-            // Fetch the teachers
-            $teachers = Teacher::whereIn('id', $teacherIDs)->get();
-
-            // Pagination settings
-            $perPage = 10; // Number of items per page
-            $currentPage = $request->input('page', 1); // Get the current page from the request
-            $offset = ($currentPage - 1) * $perPage;
-
-            // Slice the collection to get the items for the current page
-            $currentPageItems = $teachers->slice($offset, $perPage)->values();
-
-            // Create a LengthAwarePaginator instance
-            $paginatedTeachers = new LengthAwarePaginator(
-                $currentPageItems, // Items for the current page
-                $teachers->count(), // Total number of items
-                $perPage, // Items per page
-                $currentPage, // Current page
-                ['path' => $request->url(), 'query' => $request->query()] // Additional options
-            );
-            // Pass the paginated lectures to the view
-            return view('Admin/FullAdmin/Teachers', ['teachers' => $teachers]);
-        } else
-            return abort(404);
-    });
-
-    Route::get('/subject/{id}/users', function ($id, Request $request) {
-        if (Auth::user()->privileges == 2) {
-            session(['subject' => $id]);
-
-            // Get the user IDs subscribed to the subject
-            $userIDs = Subject::findOrFail($id)->users->pluck('id')->toArray();
+            // Get the user IDs subscribed to the course
+            $userIDs = Course::findOrFail($id)->users->pluck('id')->toArray();
 
             // Fetch the users
             $users = User::whereIn('id', $userIDs)->get();
@@ -369,12 +369,12 @@ Route::group(['middleware' => ['auth']], function () {
             return abort(404);
     });
 
-    Route::get('/subject/{id}/lectures', function ($id, Request $request) {
+    Route::get('/course/{id}/lectures', function ($id, Request $request) {
         // Store the subject ID in the session
-        session(['subject' => $id]);
+        session(['course' => $id]);
 
-        // Get the lecture IDs for the subject
-        $lectureIDs = Subject::findOrFail($id)->lectures->pluck('id')->toArray();
+        // Get the lecture IDs for the course
+        $lectureIDs = Course::findOrFail($id)->lectures->pluck('id')->toArray();
 
         // Fetch the lectures
         $lectures = Lecture::whereIn('id', $lectureIDs)->get();

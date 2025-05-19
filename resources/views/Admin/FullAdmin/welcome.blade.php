@@ -151,9 +151,9 @@
     <div class="buttonContainer">
         <div
             style="display:grid; grid-template-columns: 1fr 1fr; width:50%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
-            <a href="/universities" class="button" id="button" style="text-decoration: none;">
+            <a href="/courses" class="button" id="button" style="text-decoration: none;">
                 <div class="text">
-                    {{ __('messages.universities') }}
+                    {{ __('messages.courses') }}
                 </div>
             </a>
             <a href="/subjects" class="button" id="button" style="text-decoration: none;">

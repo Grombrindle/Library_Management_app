@@ -172,8 +172,8 @@
                     {{__('messages.editAdmin')}}
                 @elseif ($objectType == 'User')
                     {{__('messages.editUser')}}
-                @elseif ($objectType == 'University')
-                    {{__('messages.editUniversity')}}
+                @elseif ($objectType == 'Course')
+                    {{__('messages.editCourse')}}
                     @elseif ($objectType == 'Lecture')
                     {{__('messages.editLecture')}}
                 @elseif ($objectType == 'Subject')
@@ -234,8 +234,8 @@
                     {{__('messages.deleteAdmin')}}
                 @elseif ($objectType == 'User')
                     {{__('messages.deleteUser')}}
-                @elseif ($objectType == 'University')
-                    {{__('messages.deleteUniversity')}}
+                @elseif ($objectType == 'Course')
+                    {{__('messages.deleteCourse')}}
                     @elseif ($objectType == 'Lecture')
                     {{__('messages.deleteLecture')}}
                 @elseif ($objectType == 'Subject')

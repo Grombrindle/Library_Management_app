@@ -50,10 +50,10 @@ class Subject extends Model
         return $this->belongsToMany(Teacher::class, 'teacher_subject');
     }
 
-    function users()
-    {
-        return $this->belongsToMany(User::class, 'subscriptions');
-    }
+    // function users()
+    // {
+    //     return $this->belongsToMany(User::class, 'subscriptions');
+    // }
     function lectures()
     {
         return $this->belongsToMany(Lecture::class, 'subject_lecture');

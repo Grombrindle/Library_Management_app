@@ -78,6 +78,7 @@ class DatabaseSeeder extends Seeder
             $course = Course::factory()->create([
                 'name' => fake()->safeColorName(),
                 'lecturesCount' => 0,
+                'subscriptions' => 0,
                 'image' => 'Images/Universities/default.png',
                 'teacher_id' => rand(1, Teacher::count()),
                 'subject_id' => rand(1, Subject::count()),
@@ -94,8 +95,8 @@ class DatabaseSeeder extends Seeder
                 'course_id' => rand(1, Course::count()),
             ]);
             // $teacher->subjects()->attach($subject->id);
-            $subject->subscriptions = Subject::withCount('users')->find($subject->id)->users_count;
-            $subject->save();
+            $course->subscriptions = $course->users->count();
+            $course->save();
         }
         // foreach (Lecture::all() as $lecture) {
         //     $subject = Subject::findOrFail($lecture->subject_id);

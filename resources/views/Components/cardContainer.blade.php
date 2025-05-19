@@ -2,7 +2,7 @@
     'model',
     'addLink',
     'filterOptions' => [],
-    'showSubjectCountFilter' => false,
+    'showCourseCountFilter' => false,
     'showUsernameSort' => false,
     'showNameSort' => false, // New prop to control name sorting visibility
     'filterByTeachers' => false,
@@ -301,7 +301,7 @@
 
                 <!-- Filter by Subjects (for users and teachers) -->
                 @if (!empty($filterOptions) && !$filterByTeachers)
-                    <label><strong>{{ __('messages.filterBySubject') }}</strong></label>
+                    <label><strong>{{ __('messages.filterByCourse') }}</strong></label>
                     <div style="margin: 0 0; padding: 10px 0;">
                         <button type="button" id="toggle-all"
                                 style="margin-left: 10px; padding: 5px 10px; border: 1px solid var(--filter-text); border-radius: 4px; cursor: pointer; color: var(--filter-text);">
@@ -312,8 +312,8 @@
                         @foreach (array_chunk($filterOptions, 6, true) as $chunk)
                             <div class="filter-column">
                                 @foreach ($chunk as $key => $value)
-                                    <label><input type="checkbox" name="subjects[]" value="{{ $key }}"
-                                            {{ in_array($key, request('subjects', [])) ? 'checked' : '' }}>
+                                    <label><input type="checkbox" name="courses[]" value="{{ $key }}"
+                                            {{ in_array($key, request('courses', [])) ? 'checked' : '' }}>
                                         {{ $value }}</label>
                                 @endforeach
                             </div>
@@ -340,22 +340,22 @@
                 @endif
 
                 <!-- Filter by Number of Subjects (for users and teachers) -->
-                @if ($showSubjectCountFilter && !$filterByTeachers)
-                    <label><strong>{{ __('messages.filterBySubjectCount') }}</strong></label>
+                @if ($showCourseCountFilter && !$filterByTeachers)
+                    <label><strong>{{ __('messages.filterByCourseCount') }}</strong></label>
                     <label><input type="checkbox" name="none" id="filter-none"
                             {{ request('none') ? 'checked' : '' }}> {{ __('messages.none') }}</label>
-                    <label><input type="checkbox" name="subject_count[]" value="1"
-                            {{ in_array('1', request('subject_count', [])) ? 'checked' : '' }}> 1</label>
-                    <label><input type="checkbox" name="subject_count[]" value="2-3"
-                            {{ in_array('2-3', request('subject_count', [])) ? 'checked' : '' }}> 2-3</label>
-                    <label><input type="checkbox" name="subject_count[]" value="4-5"
-                            {{ in_array('4-5', request('subject_count', [])) ? 'checked' : '' }}> 4-5</label>
-                    <label><input type="checkbox" name="subject_count[]" value="6+"
-                            {{ in_array('6+', request('subject_count', [])) ? 'checked' : '' }}> 6+</label>
+                    <label><input type="checkbox" name="course_count[]" value="1"
+                            {{ in_array('1', request('course_count', [])) ? 'checked' : '' }}> 1</label>
+                    <label><input type="checkbox" name="course_count[]" value="2-3"
+                            {{ in_array('2-3', request('course_count', [])) ? 'checked' : '' }}> 2-3</label>
+                    <label><input type="checkbox" name="course_count[]" value="4-5"
+                            {{ in_array('4-5', request('course_count', [])) ? 'checked' : '' }}> 4-5</label>
+                    <label><input type="checkbox" name="course_count[]" value="6+"
+                            {{ in_array('6+', request('course_count', [])) ? 'checked' : '' }}> 6+</label>
                 @endif
 
                 <!-- Filter by Number of Teachers (for subjects) -->
-                @if ($showSubjectCountFilter && $filterByTeachers)
+                @if ($showCourseCountFilter && $filterByTeachers)
                     <label><strong>{{ __('messages.filterByTeacherCount') }}</strong></label>
                     <label><input type="checkbox" name="none" id="filter-none"
                             {{ request('none') ? 'checked' : '' }}> {{ __('messages.none') }}</label>
@@ -483,7 +483,7 @@
         function updateToggleButton() {
             if (toggleAllButton) {
                 const checkboxes = document.querySelectorAll(
-                    'input[name="teachers[]"], input[name="subjects[]"]');
+                    'input[name="teachers[]"], input[name="courses[]"]');
                 const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                 toggleAllButton.textContent = allChecked ? '{{ __("messages.deselectAll") }}' : '{{ __("messages.selectAll") }}';
             }
@@ -493,7 +493,7 @@
         if (toggleAllButton) {
             toggleAllButton.addEventListener('click', function() {
                 const checkboxes = document.querySelectorAll(
-                    'input[name="teachers[]"], input[name="subjects[]"]');
+                    'input[name="teachers[]"], input[name="courses[]"]');
                 const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                 checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
                 updateToggleButton();
@@ -502,7 +502,7 @@
         }
 
         // Update toggle button when checkboxes change
-        const checkboxes = document.querySelectorAll('input[name="teachers[]"], input[name="subjects[]"]');
+        const checkboxes = document.querySelectorAll('input[name="teachers[]"], input[name="courses[]"]');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', updateToggleButton);
         });

@@ -8,7 +8,7 @@
         objectType="Lecture" image="{{ asset($lecture->image) }}" name="{{ $lecture->name }}" :file=true>
         ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
         ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
-        ● {{ __('messages.subject') }}: <a href="/subject/{{ $lecture->subject_id }}" style="color:blue">{{ App\Models\Subject::findOrFail($lecture->subject_id)->name }}</a>
+        ● {{ __('messages.fromCourse') }}: <a href="/course/{{ $lecture->course_id }}" style="color:blue">{{ App\Models\Course::findOrFail($lecture->course_id)->name }}</a>
 
     </x-infocard>
 

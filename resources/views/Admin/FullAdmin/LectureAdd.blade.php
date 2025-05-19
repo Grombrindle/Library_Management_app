@@ -7,22 +7,21 @@
             <input type="text" name="lecture_name" id="lecture_name" value="" autocomplete="off"
                 style="height:20%; text-align:center; font-size:40%; width:fit-content;" required>
         </div>
-        {{-- <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
+        <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
             <label for="lecture_description">
                 {{ __('messages.lectureDescription') }} ({{ __('messages.optional') }}):
             </label>
             <textarea name="lecture_description" id="lecture_description" autocomplete="off"
                 style="height:150px; width:80%; font-size:16px; padding:10px; resize:vertical;max-height:500px;"></textarea>
         </div>
-        --}}
         <br>
         <label for="subject">
-            {{ __('messages.subject') }}: <br>
+            {{ __('messages.course') }}: <br>
         </label>
-        <select name="subject" id="subject" required>
-            <option value="" selected>{{ __('messages.selectSubject') }}</option>
-            @foreach (App\Models\Subject::all() as $subject)
-                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+        <select name="course" id="course" required>
+            <option value="" selected>{{ __('messages.selectCourse') }}</option>
+            @foreach (App\Models\Course::all() as $course)
+                <option value="{{ $course->id }}">{{ $course->name }} ({{ $course->subject->name }})</option>
             @endforeach
         </select>
         <br>

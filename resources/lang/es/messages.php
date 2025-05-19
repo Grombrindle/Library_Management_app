@@ -164,6 +164,12 @@ return [
     'threeMonths' => '3 Meses',
     'sixMonths' => '6 Meses',
     'oneYear' => '1 Año',
-    'totalUsersThisMonth' => 'Total de Usuarios Este Mes',
+    'totalUsersThisMonth' => 'Total de Usuarios este Mes',
     'totalUsersOfAllTime' => 'Total de Usuarios de Todos los Tiempos',
+    'editCourse' => 'Editar Curso',
+    'deleteCourse' => 'Eliminar Curso',
+    'addCourse' => 'Agregar el Curso',
+    'courseImage' => 'Imagen del Curso',
+    'course' => 'Curso',
+    'selectCourse' => 'Seleccionar Curso',
 ];

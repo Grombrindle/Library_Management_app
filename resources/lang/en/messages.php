@@ -165,4 +165,10 @@ return [
     'oneYear' => '1 Year',
     'totalUsersThisMonth' => 'Total Users This Month',
     'totalUsersOfAllTime' => 'Total Users of All Time',
+    'editCourse' => 'Edit Course',
+    'deleteCourse' => 'Delete Course',
+    'addCourse' => 'Add the Course',
+    'courseImage' => 'Course Image',
+    'course' => 'Course',
+    'selectCourse' => 'Select Course',
 ];

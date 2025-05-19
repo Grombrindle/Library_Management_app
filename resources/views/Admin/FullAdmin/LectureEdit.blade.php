@@ -11,7 +11,7 @@
             </div>
             <br>
 
-            {{-- <div style="display:flex; flex-direction:column; align-items:center;">
+            <div style="display:flex; flex-direction:column; align-items:center;">
                 <label for="lecture_description">
                     {{ __('messages.lectureDescription') }}:
                 </label>
@@ -19,7 +19,7 @@
                 <textarea name="lecture_description" id="lecture_description" autocomplete="off"
                     style="height:150px; width:80%; font-size:16px; padding:10px; resize:vertical;" required>{{ $lecture->description }}</textarea>
             </div>
-            <br> --}}
+            <br>
 
             <span>{{ __('messages.videoFile') }}:</span>
             <br>

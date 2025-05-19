@@ -21,7 +21,8 @@ class CourseSeeder extends Seeder
             $course = Course::factory()->create([
                 'name' => fake()->safeColorName(),
                 'lecturesCount' => 0,
-                'image' => 'Images/Universities/default.png',
+                'subscriptions' => 0,
+                'image' => 'Images/Courses/default.png',
                 'teacher_id' => rand(1, Teacher::count()),
                 'subject_id' => rand(1, Subject::count()),
             ]);

@@ -4,11 +4,11 @@
 <x-layout>
 
     @php
-        $assignedObjects = $user->subjects->pluck('id')->toArray();
+        $assignedObjects = $user->courses->pluck('id')->toArray();
     @endphp
 
-    <x-editcard :selectedSubjects="$assignedObjects" link="edituser/{{ session('user') }}" relations="true" :subjects="$user->subjects" object="User"
-        :model="$user" menu="Subject" :menuModel="App\Models\Subject::all()" :lectures=true :isBanned="$user->isBanned">
+    <x-editcard :selectedSubjects="$assignedObjects" link="edituser/{{ session('user') }}" relations="true" :subjects="$user->courses" object="User"
+        :model="$user" menu="Course" :menuModel="App\Models\Course::all()" :lectures=true :isBanned="$user->isBanned">
         <div>
 
 
@@ -68,7 +68,7 @@
 
                 <br>
                 <label for="selected_objects">
-                    {{ __('messages.subjects') }}:<br>
+                    {{ __('messages.courses') }}:<br>
                     ({{ __('messages.clickToRemoveAndReAdd') }})
                 </label>
                 <br>

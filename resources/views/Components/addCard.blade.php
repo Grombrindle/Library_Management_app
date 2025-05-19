@@ -116,8 +116,8 @@
             @elseif ($object == 'Admin')
                 <img src="{{ asset('Images/Admins/adminDefault.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
-            @elseif ($object == 'University')
-                <img src="{{ asset('Images/Universities/default.png') }}" alt="" id="image_preview" class="image"
+            @elseif ($object == 'Course')
+                <img src="{{ asset('Images/Courses/default.png') }}" alt="" id="image_preview" class="image"
                     accept="image/*" onchange="validateImageSize(this)">
             @else
                 <img src="{{ asset('Images/'.$object . 's/default.png') }}" alt="" id="image_preview"
@@ -133,8 +133,8 @@
                     {{__('messages.teacherImage')}}
                 @elseif($object == 'Admin')
                     {{__('messages.adminImage')}}
-                @elseif ($object == 'University')
-                    {{__('messages.universityImage')}}
+                @elseif ($object == 'Course')
+                    {{__('messages.courseImage')}}
                     @elseif ($object == 'Lecture')
                     {{__('messages.lectureImage')}}
                 @elseif ($object == 'Subject')
@@ -162,8 +162,8 @@
                     {{__('messages.addAdmin')}}
                 @elseif ($object == 'User')
                     {{__('messages.addUser')}}
-                @elseif ($object == 'University')
-                    {{__('messages.addUniversity')}}
+                @elseif ($object == 'Course')
+                    {{__('messages.addCourse')}}
                     @elseif ($object == 'Lecture')
                     {{__('messages.addLecture')}}
                 @elseif ($object == 'Subject')

@@ -165,5 +165,11 @@ return [
     'sixMonths' => 'ستة أشهر',
     'oneYear' => 'سنة واحدة',
     'totalUsersThisMonth' => 'إجمالي المستخدمين هذا الشهر',
-    'totalUsersOfAllTime' => 'إجمالي المستخدمين في الوقت الحالي',
+    'totalUsersOfAllTime' => 'إجمالي المستخدمين على مر الزمن',
+    'editCourse' => 'تعديل الدورة',
+    'deleteCourse' => 'حذف الدورة',
+    'addCourse' => 'إضافة الدورة',
+    'courseImage' => 'صورة الدورة',
+    'course' => 'الدورة',
+    'selectCourse' => 'اختر الدورة',
 ];

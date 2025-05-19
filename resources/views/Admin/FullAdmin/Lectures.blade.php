@@ -4,9 +4,9 @@
     // Get the search query and filter values from the request
     $searchQuery = request('search');
     $sort = request('sort', 'newest'); // Default to 'newest'
-    $selectedSubjects = request('subjects', []);
+    $selectedCourses = request('courses', []);
     $filterNone = request('none', false);
-    $subjectCounts = request('subject_count', []);
+    $courseCounts = request('course_count', []);
 
     // Normalize the search query
     $searchTerms = $searchQuery ? array_filter(explode(' ', strtolower(trim($searchQuery)))) : [];
@@ -31,19 +31,19 @@
                 });
             }
         })
-        ->when($selectedSubjects, function ($query) use ($selectedSubjects) {
-            $query->whereHas('subject', function ($q) use ($selectedSubjects) {
-                $q->whereIn('id', $selectedSubjects);
+        ->when($selectedCourses, function ($query) use ($selectedCourses) {
+            $query->whereHas('course', function ($q) use ($selectedCourses) {
+                $q->whereIn('id', $selectedCourses);
             });
         })
         ->when($filterNone, function ($query) {
-            $query->whereDoesntHave('subject');
+            $query->whereDoesntHave('course');
         })
-        ->when($subjectCounts, function ($query) use ($subjectCounts) {
-            $query->where(function ($q) use ($subjectCounts) {
-                foreach ($subjectCounts as $count) {
+        ->when($courseCounts, function ($query) use ($courseCounts) {
+            $query->where(function ($q) use ($courseCounts) {
+                foreach ($courseCounts as $count) {
                     if ($count === '1') {
-                        $q->orHas('subject', '=', 1);
+                        $q->orHas('course', '=', 1);
                     } // Add other count conditions as needed
                 }
             });
@@ -65,7 +65,7 @@
     $modelToPass = $query->paginate(10);
 
     // Prepare filter options
-    $filterOptions = App\Models\Subject::pluck('name', 'id')->toArray();
+    $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
 
     // Split lectures into chunks
     $chunkSize = 2;
@@ -77,20 +77,20 @@
     }
 @endphp
 <x-layout :objects=true
-    object="{{ $user ? Str::upper(App\Models\User::findOrFail(session('user'))->userName) . __('messages.lecturesSubTo') : (!$lec ? __('messages.lectures') : __('messages.lecturesFrom') . Str::upper(App\Models\Subject::findOrFail(session('subject'))->name)) }}">
+    object="{{ $user ? Str::upper(App\Models\User::findOrFail(session('user'))->userName) . __('messages.lecturesSubTo') : (!$lec ? __('messages.lectures') : __('messages.lecturesFrom') . Str::upper(App\Models\Course::findOrFail(session('course'))->name)) }}">
     <x-breadcrumb :links="array_merge(
         [__('messages.home') => url('/welcome')],
         [
             $user
-                ? App\Models\User::findOrFail(session('user'))->userName . ' subscribed lectures'
-                : (!$lec
-                    ? __('messages.lectures')
-                    : __('messages.lecturesFrom') . App\Models\Subject::findOrFail(session('subject'))->name) => Request::url(),
+            ? App\Models\User::findOrFail(session('user'))->userName . ' subscribed lectures'
+            : (!$lec
+                ? __('messages.lectures')
+                : __('messages.lecturesFrom') . App\Models\Course::findOrFail(session('course'))->name) => Request::url(),
         ],
     )" />
 
-    <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions :showSubjectCountFilter=false
-        :showUsernameSort=false :showNameSort=false>
+    <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions
+        :showCourseCountFilter=false :showUsernameSort=false :showNameSort=false>
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedLectures as $chunk)
                 <div class="chunk">
@@ -100,10 +100,12 @@
                             {{-- ● Lecture Description:
                             <div class="description">
                                 @foreach (explode("\n", $lecture->description) as $line)
-                                    <div class="description-line">{{ $line }}</div>
+                                <div class="description-line">{{ $line }}</div>
                                 @endforeach
                             </div> --}}
-                            ● {{__('messages.forSubject')}}: {{ $lecture->course->subject->name }} <br>
+                            <!-- ● {{__('messages.forSubject')}}: {{ $lecture->course->name }} <br> -->
+                            ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
+                            ● {{__('messages.fromTeacher')}}: {{ $lecture->course->teacher->name }} <br>
                             ● {{__('messages.fromCourse')}}: {{ $lecture->course->name }}
                         </x-card>
                     @endforeach
@@ -113,35 +115,36 @@
     </x-cardcontainer>
 
     @if ($modelToPass->total() > 1)
-        <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
-        {{ __('messages.showingItems', [
-                'from' => $modelToPass->firstItem(),
-                'to' => $modelToPass->lastItem(),
-                'total' => $modelToPass->total(),
-                'items' => __('messages.lectures')
-            ]) }}
+        <div class="pagination-info"
+            style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
+            {{ __('messages.showingItems', [
+            'from' => $modelToPass->firstItem(),
+            'to' => $modelToPass->lastItem(),
+            'total' => $modelToPass->total(),
+            'items' => __('messages.lectures')
+        ]) }}
         </div>
     @endif
 
     @if ($modelToPass->total() > 10)
         <div class="pagination">
             {{ $modelToPass->appends([
-                    'search' => $searchQuery,
-                    'sort' => $sort,
-                    'subjects' => $selectedSubjects,
-                    'none' => $filterNone,
-                ])->links() }}
+            'search' => $searchQuery,
+            'sort' => $sort,
+            'courses' => $selectedCourses,
+            'none' => $filterNone,
+        ])->links() }}
         </div>
     @endif
 </x-layout>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const searchBar = document.querySelector('.search-bar');
         const dynamicContent = document.getElementById('dynamic-content');
         const filterForm = document.querySelector('.filter-dropdown');
         const filterCheckboxes = document.querySelectorAll(
-            'input[type="checkbox"][name^="subjects"], input[name="none"], input[name^="subject_count"]');
+            'input[type="checkbox"][name^="courses"], input[name="none"], input[name^="course_count"]');
         const paginationInfoContainer = document.querySelector('.pagination-info');
         const paginationContainer = document.querySelector('.pagination');
 
@@ -149,19 +152,19 @@
         function updateResults() {
             const query = searchBar.value;
             const selectedSort = document.querySelector('input[name="sort"]:checked')?.value || 'newest';
-            const selectedSubjects = Array.from(document.querySelectorAll('input[name="subjects[]"]:checked'))
+            const selectedCourses = Array.from(document.querySelectorAll('input[name="courses[]"]:checked'))
                 .map(el => el.value);
             const filterNone = document.getElementById('filter-none')?.checked || false;
-            const subjectCounts = Array.from(document.querySelectorAll('input[name="subject_count[]"]:checked'))
+            const courseCounts = Array.from(document.querySelectorAll('input[name="course_count[]"]:checked'))
                 .map(el => el.value);
 
             // Build query string
             const params = new URLSearchParams();
             params.set('search', query);
             params.set('sort', selectedSort);
-            selectedSubjects.forEach(subject => params.append('subjects[]', subject));
+            selectedCourses.forEach(course => params.append('courses[]', course));
             if (filterNone) params.set('none', 'true');
-            subjectCounts.forEach(count => params.append('subject_count[]', count));
+            courseCounts.forEach(count => params.append('course_count[]', count));
 
             paginationInfoContainer.innerHTML = '';
             paginationContainer.innerHTML = '';
@@ -215,7 +218,7 @@
 
         // Handle search input with debounce
         let searchTimeout;
-        searchBar.addEventListener('input', function() {
+        searchBar.addEventListener('input', function () {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(updateResults, 0);
         });

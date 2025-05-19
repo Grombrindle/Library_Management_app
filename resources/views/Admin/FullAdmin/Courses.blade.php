@@ -105,6 +105,7 @@
                             ● {{ __('messages.forSubject') }}: {{ $course->subject->name }}<br>
                             ● {{ __('messages.fromTeacher') }}: {{ $course->teacher->name }}<br>
                             ● {{ __('messages.lecturesNum') }}: {{ $course->lectures->count() }}<br>
+                            ● {{ __('messages.usersSubTo') }}: {{ $course->users->count() }}<br>
                         </x-card>
                     @endforeach
                 </div>

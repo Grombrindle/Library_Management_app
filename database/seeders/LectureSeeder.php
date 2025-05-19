@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Lecture;
 use App\Models\Subject;
+use App\Models\Course;
 use Illuminate\Support\Facades\Hash;
 
 class LectureSeeder extends Seeder
@@ -18,7 +19,7 @@ class LectureSeeder extends Seeder
 
         for ($i = 0; $i < 10; $i++) {
             // $lectureTypes = ['MP4', 'PDF'];
-            $randSub = rand(1,Subject::count());
+            $randSub = rand(1,Course::count());
 
             $lecture = Lecture::factory()->create([
                 'name' => fake()->name(),
@@ -30,11 +31,13 @@ class LectureSeeder extends Seeder
                 'course_id' => $randSub,
                 'image' => 'Images/Lectures/default.png',
             ]);
-            $subject = Subject::findOrFail($randSub);
-            Subject::findOrFail($randSub)->lectures()->attach($lecture->id);
+            $course = Course::findOrFail($randSub);
+            // $course->lecturesCount++;
+            // $course->save();
+            $course->lectures()->attach($lecture->id);
 
-            $subject->lecturesCount = Subject::withCount('lectures')->find($subject->id)->lectures_count;
-            $subject->save();
+            $course->lecturesCount = Course::withCount('lectures')->find($course->id)->lectures_count;
+            $course->save();
         }
         //
     }
