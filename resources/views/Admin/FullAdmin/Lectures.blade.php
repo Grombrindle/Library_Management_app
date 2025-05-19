@@ -66,7 +66,7 @@
 
     // Prepare filter options
     $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
-
+    
     // Split lectures into chunks
     $chunkSize = 2;
     $chunkedLectures = array_fill(0, $chunkSize, []);
