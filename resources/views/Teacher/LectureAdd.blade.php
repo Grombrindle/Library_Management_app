@@ -1,4 +1,4 @@
-@props(['subjectID' => null])
+@props(['courseID' => null])
 <x-layout>
     <x-addcard link="addlecture" object="Lecture">
         <div style="display:flex; flex-direction:column; align-items:center;">
@@ -17,27 +17,27 @@
         </div>
         --}}
         <br>
-        <label for="subject">
-            {{ __('messages.subject') }}: <br>
+        <label for="course">
+            {{ __('messages.course') }}: <br>
         </label>
 
-        <select name="subject" id="subject" required>
-            <option value="" selected>{{ __('messages.selectSubject') }}</option>
-            @foreach (App\Models\Teacher::findOrFail(Auth::user()->teacher_id)->subjects as $subject)
-                @if ($subjectID != null && $subjectID == $subject->id)
-                    <option value="{{ $subject->id }}" selected>{{ $subject->name }}</option>
+        <select name="course" id="course" required>
+            <option value="" selected>{{ __('messages.selectCourse') }}</option>
+            @foreach (App\Models\Teacher::findOrFail(Auth::user()->teacher_id)->courses as $course)
+                @if ($courseID != null && $courseID == $course->id)
+                    <option value="{{ $course->id }}" selected>{{ $course->name }}</option>
                 @else
-                    <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                    <option value="{{ $course->id }}">{{ $course->name }}</option>
                 @endif
             @endforeach
         </select>
         <br>
         <br>
-        <span>{{ __('messages.videoFile') }} ({{ __('messages.uploadAtLeastOne') }}):</span>
+        <span>{{ __('messages.videoFile') }}:</span>
         <br>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
             <div>
-                <label for="actual-file-input-360">360p</label>
+                <label for="actual-file-input-360">360p ({{ __('messages.mandatory') }})</label>
                 <div class="custom-file-input">
                     <input type="file" id="actual-file-input-360" class="hidden-file-input" name="lecture_file_360"
                         accept="video/*" required>
@@ -85,7 +85,7 @@
 
     <script>
         // Scroll to error message
-        if (@json($subjectID)) {
+        if (@json($courseID)) {
             function smoothScrollToElement(element, duration = 1000) {
                 const elementPosition = element.getBoundingClientRect().top;
                 const startPosition = window.pageYOffset;
@@ -116,7 +116,7 @@
             }
 
             // Usage
-            smoothScrollToElement(document.getElementById('subject'), 1200); // 800ms duration
+            smoothScrollToElement(document.getElementById('course'), 1200); // 800ms duration
         }
         // Function to handle file input changes
         function setupFileInput(inputId, textId) {

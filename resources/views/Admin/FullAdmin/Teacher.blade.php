@@ -38,25 +38,25 @@
 
         @endif
 
-        @if ($teacher->universities->count() == 0)
-            ● {{__('messages.universities')}}: none
-        @elseif($teacher->universities->count() == 1)
-            ● {{__('messages.university')}}:
+        @if ($teacher->courses->count() == 0)
+            ● {{__('messages.courses')}}: none
+        @elseif($teacher->courses->count() == 1)
+            ● {{__('messages.course')}}:
             <div>
-                @foreach ($teacher->universities as $university)
-                    <a href="/university/{{ $university->id }}" style="color:blue;">
-                        {{ $university->name }}
+                @foreach ($teacher->courses as $course)
+                    <a href="/course/{{ $course->id }}" style="color:blue;">
+                        {{ $course->name }}
                     </a>
                 @endforeach
             </div>
         @else
-            ● {{__('messages.universities')}}:
+            ● {{__('messages.courses')}}:
             <div>
                 <div>
                     [
-                    @foreach ($teacher->universities as $university)
-                        <a href="/university/{{ $university->id }}" style="color:blue;">
-                            {{ $university->name }}
+                    @foreach ($teacher->courses as $course)
+                        <a href="/course/{{ $course->id }}" style="color:blue;">
+                            {{ $course->name }}
                         </a>
                         @if (!$loop->last)
                             -
@@ -67,7 +67,6 @@
             </div>
 
         @endif
-        <br>
         @php
             $links = json_decode($teacher->links, true);
         @endphp

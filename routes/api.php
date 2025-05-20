@@ -85,4 +85,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route::get('/download-encrypted-video/{file}', [FileController::class, 'serveEncryptedFile'])
     //     ->name('download.encrypted.video');
 
+    Route::get('/subject/{subject}/teachers', function ($subjectId) {
+        $subject = App\Models\Subject::findOrFail($subjectId);
+        return $subject->teachers;
+    });
+
 });

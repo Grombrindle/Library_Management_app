@@ -58,6 +58,10 @@ class Subject extends Model
     {
         return $this->belongsToMany(Lecture::class, 'subject_lecture');
     }
+    function courses()
+    {
+        return $this->HasMany(Course::class, 'subject_id');
+    }
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);

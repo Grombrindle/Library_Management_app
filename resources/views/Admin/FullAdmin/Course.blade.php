@@ -7,6 +7,7 @@
         ● {{ __('messages.courseName') }}: {{ $course->name }}<br>
         ● {{ __('messages.forSubject') }}: <a href="/subject/{{ $course->subject->id }}">{{$course->subject->name}}</a>
         <br>
+        ● {{ __('messages.description') }}:{{$course->description}}<br>
         ● {{ __('messages.teacher') }}: <a href="/teacher/{{ $course->teacher->id }}">{{$course->teacher->name}}</a>
         <br>
         ● {{ __('messages.usersSubscribed') }}: @if ($course->users->count() == 0)

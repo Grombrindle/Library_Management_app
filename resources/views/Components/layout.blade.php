@@ -139,6 +139,14 @@
             background-color: rgba(0, 0, 0, 0.1);
             transition: opacity 0.3s ease;
         }
+        
+        select:disabled {
+            background-color: #2a2a2a;
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.7;
+            border-color: #444;
+        }
 
         .error {
             color: red;

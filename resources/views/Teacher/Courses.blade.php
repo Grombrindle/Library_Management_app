@@ -16,7 +16,7 @@
         $query = App\Models\Course::whereIn('id', $courses->pluck('id'));
         $coursesCount = $query->count(); // Get count before pagination
     } else {
-        $query = App\Models\Course::query();
+        $query = App\Models\Course::where('teacher_id', Auth::user()->teacher_id);
         $coursesCount = $query->count(); // Get total count
     }
 

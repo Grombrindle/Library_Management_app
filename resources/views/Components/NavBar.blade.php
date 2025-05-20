@@ -365,7 +365,6 @@
         margin-right: 5%;
         margin-left: 0;
     }
-
 </style>
 
 <nav class="NavBar">
@@ -374,7 +373,8 @@
             <a href="/welcome"
                 style="display: flex; flex-direction: row; text-decoration: none; color: white; font-size: 1.5rem; align-items: center; width:250px">
                 <img src="{{ asset('Images/Web/MindSpark.png') }}" alt="ICON"
-                    style="height: 20%; width:15%; margin-left:5%;"> <span style="margin-left:5%; font-size:130%;">{{__('messages.appName')}}</span>
+                    style="height: 20%; width:15%; margin-left:5%;"> <span
+                    style="margin-left:5%; font-size:130%;">{{__('messages.appName')}}</span>
             </a>
         </div>
     </div>
@@ -415,21 +415,25 @@
                 <span class="nav-count">{{ App\Models\User::count() }}</span>
             </a>
         @elseif (Auth::user()->privileges == 0)
-            @php
-                $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
-                $lecCount = 0;
-                foreach ($teacher->subjects as $subject) {
-                    $lecCount += $subject->lectures->count();
-                }
-            @endphp
-            <a href="/subjects" class="NavBarText">
-                {{ __('messages.yourSubjects') }}
-                <span class="nav-count">{{ $teacher->subjects->count() }}</span>
-            </a>
-            <a href="/lectures" class="NavBarText">
-                {{ __('messages.yourLectures') }}
-                <span class="nav-count">{{ $lecCount }}</span>
-            </a>
+                @php
+                    $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
+                    $lecCount = 0;
+                    foreach ($teacher->courses as $course) {
+                        $lecCount += $course->lectures->count();
+                    }
+                @endphp
+                <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:8%;">
+                    {{__('messages.yourSubjects')}}
+                    <span class="nav-count">{{ $teacher->subjects->count() }}</span>
+                </a>
+                <a href="/courses" class="NavBarText" id="Link" style="width:8%;">
+                    {{__('messages.yourCourses')}}
+                    <span class="nav-count">{{ $teacher->courses->count() }}</span>
+                </a>
+                <a href="/lectures" class="NavBarText" id="Link" style="width:8%;">
+                    {{__('messages.yourLectures')}}
+                    <span class="nav-count">{{ $lecCount }}</span>
+                </a>
         @endif
 
         <!-- Mobile Logout Button -->
@@ -466,9 +470,9 @@
                 </a>
             </div>
         </div>
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <span class="material-symbols-outlined">light_mode</span>
-    </button>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span class="material-symbols-outlined">light_mode</span>
+        </button>
     </div>
 
     <!-- Original Desktop Navigation -->
@@ -498,18 +502,18 @@
                 {{ __('messages.admins') }}
                 <span class="nav-count">{{ App\Models\Admin::count() }}</span>
             </a>
-        @elseif (Auth::user()->privileges == 1)
-            <div class="NavBarElement" style="margin-right: 5%;">
-                <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
-                    {{ __('messages.users') }}
-                    <span class="nav-count">{{ App\Models\User::count() }}</span>
-                </a>
-            @elseif (Auth::user()->privileges == 0)
+    @elseif (Auth::user()->privileges == 1)
+        <div class="NavBarElement" style="margin-right: 5%;">
+            <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
+                {{ __('messages.users') }}
+                <span class="nav-count">{{ App\Models\User::count() }}</span>
+            </a>
+    @elseif (Auth::user()->privileges == 0)
                 @php
                     $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
                     $lecCount = 0;
-                    foreach ($teacher->subjects as $subject) {
-                        $lecCount += $subject->lectures->count();
+                    foreach ($teacher->courses as $course) {
+                        $lecCount += $course->lectures->count();
                     }
                 @endphp
                 <div class="NavBarElement" style="margin-right: 5%;">
@@ -517,55 +521,60 @@
                         {{__('messages.yourSubjects')}}
                         <span class="nav-count">{{ $teacher->subjects->count() }}</span>
                     </a>
+                    <a href="/courses" class="NavBarText" id="Link" style="width:8%;">
+                        {{__('messages.yourCourses')}}
+                        <span class="nav-count">{{ $teacher->courses->count() }}</span>
+                    </a>
                     <a href="/lectures" class="NavBarText" id="Link" style="width:8%;">
                         {{__('messages.yourLectures')}}
                         <span class="nav-count">{{ $lecCount }}</span>
                     </a>
     @endif
-    <form action="/logout" method="POST"
-        style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
-        onsubmit="return confirmLogout()">
-        @csrf
-        <button type="submit" id="adminsLink" class="NavBarLogout" style="">
-            <div style="text-align:center">{{ __('messages.logout') }}</div>
-        </button>
-    </form>
-    <div class="language-dropdown">
-        <button class="dropdown-lang-btn" style="background-color:transparent; border:none">
-            <span class="material-symbols-outlined"> language
-            </span>
-        </button>
-        <div class="dropdown-content">
-            <a href="#" onclick="changeLanguage('en')">
-                <span class="flag-icon flag-icon-us"></span> English
-            </a>
-            <a href="#" onclick="changeLanguage('fr')">
-                <span class="flag-icon flag-icon-fr"></span> Français
-            </a>
-            <a href="#" onclick="changeLanguage('de')">
-                <span class="flag-icon flag-icon-de"></span> Deutsch
-            </a>
-            <a href="#" onclick="changeLanguage('tr')">
-                <span class="flag-icon flag-icon-tr"></span> Türkçe
-            </a>
-            <a href="#" onclick="changeLanguage('es')">
-                <span class="flag-icon flag-icon-es"></span> Español
-            </a>
-            <a href="#" onclick="changeLanguage('ar')">
-                <span class="flag-icon flag-icon-sa"></span> عربي
-            </a>
-        </div>
-    </div>
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <span class="material-symbols-outlined">light_mode</span>
-    </button>
-    </div>
+                <form action="/logout" method="POST"
+                    style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
+                    onsubmit="return confirmLogout()">
+                    @csrf
+                    <button type="submit" id="adminsLink" class="NavBarLogout" style="">
+                        <div style="text-align:center">{{ __('messages.logout') }}</div>
+                    </button>
+                </form>
+                <div class="language-dropdown">
+                    <button class="dropdown-lang-btn" style="background-color:transparent; border:none">
+                        <span class="material-symbols-outlined"> language
+                        </span>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="#" onclick="changeLanguage('en')">
+                            <span class="flag-icon flag-icon-us"></span> English
+                        </a>
+                        <a href="#" onclick="changeLanguage('fr')">
+                            <span class="flag-icon flag-icon-fr"></span> Français
+                        </a>
+                        <a href="#" onclick="changeLanguage('de')">
+                            <span class="flag-icon flag-icon-de"></span> Deutsch
+                        </a>
+                        <a href="#" onclick="changeLanguage('tr')">
+                            <span class="flag-icon flag-icon-tr"></span> Türkçe
+                        </a>
+                        <a href="#" onclick="changeLanguage('es')">
+                            <span class="flag-icon flag-icon-es"></span> Español
+                        </a>
+                        <a href="#" onclick="changeLanguage('ar')">
+                            <span class="flag-icon flag-icon-sa"></span> عربي
+                        </a>
+                    </div>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span class="material-symbols-outlined">light_mode</span>
+                </button>
+            </div>
 
 </nav>
 
 <script>
     function confirmLogout() {
-        return confirm('{{ __("messages.confirmLogout") }}');    }
+        return confirm('{{ __("messages.confirmLogout") }}');
+    }
 
     // Function to highlight the current page link
     function setActiveLink() {
@@ -582,14 +591,14 @@
     }
 
     // Mobile menu toggle functionality
-    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+    document.getElementById('mobileMenuBtn').addEventListener('click', function () {
         const mobileMenu = document.getElementById('mobileMenu');
         mobileMenu.style.display = mobileMenu.style.display === 'flex' ? 'none' : 'flex';
         this.textContent = mobileMenu.style.display === 'flex' ? '{{__('messages.close')}}' : '{{__('messages.menu')}}';
     });
 
     // Close mobile menu when clicking outside
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         const mobileMenu = document.getElementById('mobileMenu');
         const menuBtn = document.getElementById('mobileMenuBtn');
 
@@ -604,8 +613,8 @@
 </script>
 
 <script>
-    document.querySelectorAll('.dropdown-lang-btn').forEach(function(button) {
-        button.addEventListener('click', function() {
+    document.querySelectorAll('.dropdown-lang-btn').forEach(function (button) {
+        button.addEventListener('click', function () {
             var dropdownContent = this.nextElementSibling;
             dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' :
                 'block';
@@ -619,7 +628,7 @@
             console.error('Invalid locale code:', lang);
             return;
         }
-        
+
         document.cookie = `locale=${lang};path=/;max-age=31536000`; // Cookie expires in 1 year
         window.location.reload();
     }
@@ -630,12 +639,12 @@
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', newTheme);
-        
+
         // Set cookie with 1 year expiration
         const date = new Date();
         date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
         document.cookie = `theme=${newTheme};expires=${date.toUTCString()};path=/`;
-        
+
         // Update icon
         const icons = document.querySelectorAll('.theme-toggle .material-symbols-outlined');
         icons.forEach(icon => {
@@ -647,7 +656,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const theme = getCookie('theme') || 'light';
         document.documentElement.setAttribute('data-theme', theme);
-        
+
         // Set initial icon
         const icons = document.querySelectorAll('.theme-toggle .material-symbols-outlined');
         icons.forEach(icon => {

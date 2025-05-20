@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
+use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
@@ -81,7 +82,12 @@ class CourseController extends Controller
 
         // dd(Request::all());
 
-        $course = Course::make(['name' => $request->input('course_name'), 'teacher_id' => $request->input('teacher'), 'subject_id' => $request->input('subject'), 'lecturesCount' => 0]);
+
+        if ($request->input('teacher_id') != null)
+            $course = Course::make(['name' => $request->input('course_name'), 'teacher_id' => $request->input('teacher'), 'subject_id' => $request->input('subject'), 'lecturesCount' => 0, 'subscriptions' => 0]);
+        elseif (Auth::user()->privileges == 0)
+            $course = Course::make(['name' => $request->input('course_name'), 'teacher_id' => Auth::user()->teacher_id, 'subject_id' => $request->input('subject'), 'lecturesCount' => 0, 'subscriptions' => 0]);
+
         $course->image = $path;
         $course->save();
         $data = ['element' => 'course', 'id' => $course->id, 'name' => $course->name];
@@ -129,6 +135,7 @@ class CourseController extends Controller
             $course->image = $path;
         }
         $course->name = $request->input('course_name');
+        $course->description = $request->input('course_description');
         $course->save();
         $data = ['element' => 'course', 'id' => $id, 'name' => $course->name];
         session(['update_info' => $data]);

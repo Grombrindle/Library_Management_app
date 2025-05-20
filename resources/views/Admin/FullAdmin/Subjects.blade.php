@@ -133,10 +133,10 @@
                     @foreach ($chunk as $subject)
                         <x-card link="subject/{{ $subject->id }}" image="{{ asset($subject->image) }}" object="Subject">
                             ● {{__('messages.subjectName')}}: {{ $subject->name }}<br>
-                            ● {{__('messages.lectures')}}: {{ $subject->lectures->count() }}<br>
+                            ● {{__('messages.coursesNum')}}: {{ $subject->courses->count() }}<br>
                             ● {{__('messages.teachers')}}:
                             @if ($subject->teachers->count() == 0)
-                                <div style="color:var(--text-color-inverted); margin-right:auto;">&emsp;none</div>
+                                <div style="color:var(--text-color-inverted);">&emsp;{{__('messages.none')}}</div>
                             @elseif($subject->teachers->count() == 1)
                                 <br>&emsp;
                                 @foreach ($subject->teachers as $teacher)

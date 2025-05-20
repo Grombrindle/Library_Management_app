@@ -22,6 +22,7 @@ class CourseSeeder extends Seeder
                 'name' => fake()->safeColorName(),
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
+                'description' => fake()->text(),
                 'image' => 'Images/Courses/default.png',
                 'teacher_id' => rand(1, Teacher::count()),
                 'subject_id' => rand(1, Subject::count()),

@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->foreignIdFor(Teacher::class);
             $table->foreignIdFor(Subject::class);
             $table->integer('lecturesCount');

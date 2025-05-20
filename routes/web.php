@@ -111,6 +111,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/courses', function () {
         if (Auth::user()->privileges == 2)
             return view('Admin/FullAdmin/Courses');
+        if (Auth::user()->privileges == 0)
+            return view('Teacher/Courses');
         else
             return abort(404);
     });
@@ -128,6 +130,9 @@ Route::group(['middleware' => ['auth']], function () {
         if (Auth::user()->privileges == 2) {
             session(['course' => $id]);
             return view('Admin/FullAdmin/Course');
+        } elseif (Auth::user()->privileges == 0) {
+            session(['course' => $id]);
+            return view('Teacher/Course');
         } else
             return abort(404);
     });
@@ -155,6 +160,7 @@ Route::group(['middleware' => ['auth']], function () {
         } else
             return abort(404);
     });
+
     Route::get('/lecture/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
             session(['lecture' => $id]);
@@ -165,7 +171,6 @@ Route::group(['middleware' => ['auth']], function () {
         } else
             return abort(404);
     });
-
 
     Route::get('/addadmin', function () {
         if (Auth::user()->privileges == 2)
@@ -184,9 +189,15 @@ Route::group(['middleware' => ['auth']], function () {
             return abort(404);
     });
 
-    Route::get('/subject/addlecture/{id}', function ($id) {
+    Route::get('/subject/addcourse/{id}', function ($id) {
         if (Auth::user()->privileges == 0)
-            return view('Teacher/LectureAdd', with(['subjectID' => $id]));
+            return view('Teacher/CourseAdd', with(['subjectID' => $id]));
+        else
+            return abort(404);
+    });
+    Route::get('/course/addlecture/{id}', function ($id) {
+        if (Auth::user()->privileges == 0)
+            return view('Teacher/LectureAdd', with(['courseID' => $id]));
         else
             return abort(404);
     });
@@ -267,6 +278,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/addcourse', function () {
         if (Auth::user()->privileges == 2)
             return view('Admin/FullAdmin/CourseAdd');
+        elseif (Auth::user()->privileges == 0)
+            return view('Teacher/CourseAdd');
         else
             return abort(404);
     });
@@ -276,6 +289,9 @@ Route::group(['middleware' => ['auth']], function () {
         if (Auth::user()->privileges == 2) {
             session(['course' => $id]);
             return view('Admin/FullAdmin/CourseEdit');
+        } elseif (Auth::user()->privileges == 0) {
+            session(['course' => $id]);
+            return view('Teacher/CourseEdit');
         } else
             return abort(404);
     });
@@ -303,38 +319,45 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/editlecture/{id}', [LectureController::class, 'edit']);
     Route::delete('/deletelecture/{id}', [LectureController::class, 'delete']);
 
-    // Route::get('/university/{id}/teachers', function ($id, Request $request) {
-    //     // Store the university ID in the session
-    //     if (Auth::user()->privileges == 2) {
-    //         session(['university' => $id]);
+    Route::get('/subject/{id}/courses', function ($id, Request $request) {
+        // Store the subject ID in the session
+        if (Auth::user()->privileges == 2) {
+            session(['subject' => $id]);
 
-    //         // Get the lecture IDs for the university
-    //         $teacherIDs = university::findOrFail($id)->teachers->pluck('id')->toArray();
+            // Get the lecture IDs for the subject
+            $courseIDs = Subject::findOrFail($id)->courses->pluck('id')->toArray();
 
-    //         // Fetch the teachers
-    //         $teachers = Teacher::whereIn('id', $teacherIDs)->get();
+            // Fetch the courses
+            $courses = Course::whereIn('id', $courseIDs)->get();
 
-    //         // Pagination settings
-    //         $perPage = 10; // Number of items per page
-    //         $currentPage = $request->input('page', 1); // Get the current page from the request
-    //         $offset = ($currentPage - 1) * $perPage;
+            // Pagination settings
+            $perPage = 10; // Number of items per page
+            $currentPage = $request->input('page', 1); // Get the current page from the request
+            $offset = ($currentPage - 1) * $perPage;
 
-    //         // Slice the collection to get the items for the current page
-    //         $currentPageItems = $teachers->slice($offset, $perPage)->values();
+            // Slice the collection to get the items for the current page
+            $currentPageItems = $courses->slice($offset, $perPage)->values();
 
-    //         // Create a LengthAwarePaginator instance
-    //         $paginatedTeachers = new LengthAwarePaginator(
-    //             $currentPageItems, // Items for the current page
-    //             $teachers->count(), // Total number of items
-    //             $perPage, // Items per page
-    //             $currentPage, // Current page
-    //             ['path' => $request->url(), 'query' => $request->query()] // Additional options
-    //         );
-    //         // Pass the paginated lectures to the view
-    //         return view('Admin/FullAdmin/Teachers', ['teachers' => $teachers]);
-    //     } else
-    //         return abort(404);
-    // });
+            // Create a LengthAwarePaginator instance
+            $paginatedCourses = new LengthAwarePaginator(
+                $currentPageItems, // Items for the current page
+                $courses->count(), // Total number of items
+                $perPage, // Items per page
+                $currentPage, // Current page
+                ['path' => $request->url(), 'query' => $request->query()] // Additional options
+            );
+            // Pass the paginated lectures to the view
+            return view('Admin/FullAdmin/Courses', ['courses' => $courses, 'subjectID' => $id]);
+        } elseif (Auth::user()->privileges == 0) {
+            // Get courses that belong to both the subject and the current teacher
+            $courses = Course::where('subject_id', $id)
+                ->where('teacher_id', Auth::user()->teacher_id)
+                ->get();
+
+            return view('Teacher/Courses', ['courses' => $courses, 'subjectID' => $id]);
+        } else
+            return abort(404);
+    });
 
     Route::get('/course/{id}/users', function ($id, Request $request) {
         if (Auth::user()->privileges == 2) {

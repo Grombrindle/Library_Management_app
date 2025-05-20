@@ -103,12 +103,10 @@
 @endphp
 
 <x-layout :objects=true
-    object="{{ !$teachers ? Str::upper(__('messages.teachers')) : Str::upper(__('messages.teachersFrom')) . Str::upper(App\Models\university::findOrFail(session('university'))->name) }}">
+    object="{{ /*!$teachers ?  : Str::upper(__('messages.teachersFrom')) . Str::upper(App\Models\university::findOrFail(session('university'))->name)*/ Str::upper(__('messages.teachers'))}}">
     <x-breadcrumb :links="array_merge(
         [__('messages.home') => url('/welcome')],
-        $teachers != null
-            ? [__('messages.teachersFrom') . App\Models\university::findOrFail(session('university'))->name => Request::url()]
-            : [__('messages.teachers') => Request::url()],
+        [__('messages.teachers') => Request::url()],
     )" />
     <x-cardcontainer :model=$modelToPass addLink="addteacher" :filterOptions=$filterOptions :showSubjectCountFilter=true
         :showUsernameSort=true :showNameSort=true>
@@ -120,7 +118,9 @@
                         <x-card link="teacher/{{ $teacher->id }}" image="{{ asset($teacher->image) }}" object="Teacher">
                             ● {{__('messages.teacherName')}}: {{ $teacher->name }}<br>
                             ● {{__('messages.teacherUserName')}}: {{ $teacher->userName }}<br>
-                            ● {{__('messages.teacherNumber')}}: <span style="direction: ltr; display: inline-block;">&emsp;{{ $teacher->countryCode }} {{ $teacher->number }}</span>
+                            ● {{__('messages.teacherNumber')}}: <span
+                                style="direction: ltr; display: inline-block;">&emsp;{{ $teacher->countryCode }}
+                                {{ $teacher->number }}</span>
                             ● {{__('messages.subjects')}}:
                             @if ($teacher->subjects->count() == 0)
                                 <div style="color:black;">&emsp;{{ __('messages.none') }}</div>
@@ -137,15 +137,15 @@
                                 ]
                             @endif
                             <br>
-                            ● {{__('messages.universities')}}:
-                            @if ($teacher->universities->count() == 0)
+                            ● {{__('messages.courses')}}:
+                            @if ($teacher->courses->count() == 0)
                                 <div style="color:var(--text-color-inverted);">&emsp;{{ __('messages.none') }}</div>
                             @else
                                 <br>
                                 &emsp;
                                 [
-                                @foreach ($teacher->universities as $university)
-                                    {{ $university->name }}
+                                @foreach ($teacher->courses as $course)
+                                    {{ $course->name }}
                                     @if (!$loop->last)
                                         -
                                     @endif
@@ -160,13 +160,14 @@
     </x-cardcontainer>
 
     @if ($modelToPass->total() > 1)
-        <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
-        {{ __('messages.showingItems', [
-                'from' => $modelToPass->firstItem(),
-                'to' => $modelToPass->lastItem(),
-                'total' => $modelToPass->total(),
-                'items' => __('messages.teachers')
-            ]) }}
+        <div class="pagination-info"
+            style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
+            {{ __('messages.showingItems', [
+            'from' => $modelToPass->firstItem(),
+            'to' => $modelToPass->lastItem(),
+            'total' => $modelToPass->total(),
+            'items' => __('messages.teachers')
+        ]) }}
         </div>
     @endif
 
@@ -174,18 +175,18 @@
     @if ($num > 10)
         <div class="pagination">
             {{ $modelToPass->appends([
-                    'search' => $searchQuery,
-                    'sort' => $sort,
-                    'subjects' => $selectedSubjects,
-                    'none' => $filterNone,
-                    'subject_count' => request('subject_count', []), // Include subject_count as an array
-                ])->links() }}
+            'search' => $searchQuery,
+            'sort' => $sort,
+            'subjects' => $selectedSubjects,
+            'none' => $filterNone,
+            'subject_count' => request('subject_count', []), // Include subject_count as an array
+        ])->links() }}
         </div>
     @endif
 </x-layout>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const searchBar = document.querySelector('.search-bar');
         const dynamicContent = document.getElementById('dynamic-content');
         const filterForm = document.querySelector('.filter-dropdown');
@@ -269,7 +270,7 @@
 
         // Handle search input with debounce
         let searchTimeout;
-        searchBar.addEventListener('input', function() {
+        searchBar.addEventListener('input', function () {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(updateResults, 0);
         });

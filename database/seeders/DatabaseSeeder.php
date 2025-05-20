@@ -79,6 +79,7 @@ class DatabaseSeeder extends Seeder
                 'name' => fake()->safeColorName(),
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
+                'description' => fake()->text(),
                 'image' => 'Images/Universities/default.png',
                 'teacher_id' => rand(1, Teacher::count()),
                 'subject_id' => rand(1, Subject::count()),

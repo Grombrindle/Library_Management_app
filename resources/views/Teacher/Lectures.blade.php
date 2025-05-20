@@ -15,7 +15,7 @@
         $query = App\Models\Lecture::whereIn('id', $lectures->pluck('id'));
     } else {
         // Fetch all lectures based on search and filters
-        $query = App\Models\Lecture::whereHas('subject.teachers', function ($query) {
+        $query = App\Models\Lecture::whereHas('course.teacher', function ($query) {
             $query->where('teachers.id', Auth::user()->teacher_id); // Filter by the current teacher
         });
     }
@@ -85,7 +85,7 @@
                                     <div class="description-line">{{ $line }}</div>
                                 @endforeach
                             </div> --}}
-                            ● {{ __('messages.forSubject') }}: {{ $lecture->subject->name }}
+                            ● {{ __('messages.forCourse') }}: {{ $lecture->course->name }}
                         </x-card>
                     @endforeach
                 </div>

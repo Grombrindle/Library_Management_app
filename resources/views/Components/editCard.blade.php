@@ -346,14 +346,17 @@
                     {{__('messages.selectTeacher')}}
                 @elseif ($menu == 'Course')
                     {{__('messages.selectCourse')}}
-                @endif</option>
+                @elseif ($menu == 'Subject')
+                    {{__('messages.selectSubject')}}
+                @endif
+            </option>
                     @foreach ($menuModel as $subject)
                         @if (!in_array($subject->id, $selectedSubjects))
                             <option value="{{ $subject->id }}">{{ $subject->name }}</option>
                         @endif
                     @endforeach
                 </select>
-                <input type="button" id="add-subject-btn" class="add-subject-btn" value="@if ($menu == 'Teacher'){{__('messages.addTeacher')}}@elseif ($menu == 'Course'){{__('messages.addCourse')}}@endif">
+                <input type="button" id="add-subject-btn" class="add-subject-btn" value="@if ($menu == 'Teacher'){{__('messages.addTeacher')}}@elseif ($menu == 'Course'){{__('messages.addCourse')}}@elseif ($menu == 'Subject'){{__('messages.addSubject')}}@endif">
             </div>
             <input type="hidden" name="selected_objects" id="selected_objects_input">
         @endif

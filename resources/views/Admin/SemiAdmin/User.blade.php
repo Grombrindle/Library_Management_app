@@ -6,21 +6,21 @@
         name="{{ $user->userName }}">
         ● {{ __('messages.userName') }}: {{ $user->userName }}<br>
         ● {{ __('messages.userNumber') }}: <br> {{ $user->countryCode }} {{ $user->number }}<br>
-        ● {{ __('messages.subjectsSubscribedTo') }}:
-        @if ($user->subjects->count() == 0)
+        ● {{ __('messages.coursesSubTo') }}:
+        @if ($user->courses->count() == 0)
             <div style="color:black">none</div>
         @else
             <div>
-                @if ($user->subjects->count() != 1)
+                @if ($user->courses->count() != 1)
                     [
                 @endif
-                @foreach ($user->subjects as $subject)
-                    <span>{{ $subject->name }}</span>
+                @foreach ($user->courses as $course)
+                    <span>{{ $course->name }}</span>
                     @if (!$loop->last)
                         -
                     @endif
                 @endforeach
-                @if ($user->subjects->count() != 1)
+                @if ($user->courses->count() != 1)
                     ]
                 @endif
             </div>

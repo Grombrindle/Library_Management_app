@@ -13,6 +13,7 @@
     'privileges' => null,
     'file' => null,
     'addLecture' => null,
+    'addCourse' => null,
 ])
 <style>
     .ObjectContainer {
@@ -205,6 +206,9 @@
     @endif
     @if ($addLecture != null)
         <a href="addlecture/{{ $object->id }}" class="button" style="background-color:#9997BC">{{__('messages.addLecture')}}</a>
+    @endif
+    @if ($addCourse != null)
+        <a href="addcourse/{{ $object->id }}" class="button" style="background-color:#9997BC">{{__('messages.addCourse')}}</a>
     @endif
     {{-- <div style="margin-bottom:5%;">
         @if ($lecturesCount != null)
