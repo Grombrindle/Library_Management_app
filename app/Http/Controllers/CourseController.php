@@ -5,10 +5,36 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Teacher;
 
 class CourseController extends Controller
 {
-    //
+    public function getTeacherCourses($teacherId)
+    {
+        $teacher = Teacher::find($teacherId);
+
+        if (!$teacher) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Teacher not found'
+            ], 404);
+        }
+
+        $courses = $teacher->courses()
+            ->with(['subject' => function ($query) {
+                $query->select('id', 'name', 'literaryOrScientific');
+            }])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'courses' => $courses,
+            'teacher' => [
+                'id' => $teacher->id,
+                'name' => $teacher->name
+            ]
+        ]);
+    }
 
     public function fetch($id)
     {

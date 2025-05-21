@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -53,9 +53,9 @@ class Teacher extends Model
     {
         return $this->belongsToMany(Subject::class, 'teacher_subject');
     }
-    public function courses()
+    public function universities()
     {
-        return $this->HasMany(Course::class, 'teacher_id');
+        return $this->belongsToMany(university::class, 'teacher_university');
     }
     public function quizzes()
     {

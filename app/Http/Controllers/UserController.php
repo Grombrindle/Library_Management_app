@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Subject;
-use App\Models\Course;
 use App\Models\Lecture;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\Hash;
@@ -23,17 +22,17 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $courses = "";
-        $count = $user->courses->count();
-        foreach ($user->courses as $index => $course) {
-            $courses .= $course->name;
+        $subjects = "";
+        $count = $user->subjects->count();
+        foreach ($user->subjects as $index => $subject) {
+            $subjects .= $subject->name;
             if ($index < $count - 1) {
-                $courses .= " - ";
+                $subjects .= " - ";
             }
         }
 
         $userArray = $user->toArray();
-        $userArray['subs'] = $courses;
+        $userArray['subs'] = $subjects;
         $userArray['lecturesNum'] = $user->lectures->count();
 
         $response = [
@@ -53,11 +52,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function fetchCourses()
+    public function fetchSubjects()
     {
         return response()->json([
             'success' => "true",
-            'courses' => Auth::user()->courses
+            'subjects' => Auth::user()->subjects
         ]);
     }
 
@@ -72,16 +71,16 @@ class UserController extends Controller
     public function fetchSubs()
     {
         $user = Auth::user();
-        $courses = "";
-        $count = $user->courses->count();
-        foreach ($user->courses as $index => $course) {
-            $courses .= $course->name;
+        $subjects = "";
+        $count = $user->subjects->count();
+        foreach ($user->subjects as $index => $subject) {
+            $subjects .= $subject->name;
             if ($index < $count - 1)
-                $courses .= " - ";
+                $subjects .= " - ";
         }
         return response()->json([
             'success' => "true",
-            'courses' => $courses,
+            'subjects' => $subjects,
             'lectures' => Auth::user()->lectures->count()
         ]);
     }
@@ -149,14 +148,14 @@ class UserController extends Controller
             ]);
         }
         $user = User::findOrFail($id);
-        $courses = json_decode($request->selected_objects, true);
+        $subjects = json_decode($request->selected_objects, true);
         $lectures = json_decode($request->selected_lectures, true);
         $user->isBanned = $request->isBanned == "on" ? 1 : 0;
 
         if ($request->selected_lectures == null)
             $lectures = $user->lectures->pluck('id')->toArray();
         // dd($lectures);
-        $user->courses()->sync($courses);
+        $user->subjects()->sync($subjects);
         $user->lectures()->sync($lectures);
         // dd($subjects);
 
@@ -164,9 +163,10 @@ class UserController extends Controller
         $user->number = $request->user_number;
 
         $user->save();
-        foreach (Course::all() as $course) {
-            $course->subscriptions = Course::withCount('users')->find($course->id)->users_count;
-            $course->save();
+
+        foreach (Subject::all() as $subject) {
+            $subject->subscriptions = Subject::withCount('users')->find($subject->id)->users_count;
+            $subject->save();
         }
 
         $data = ['element' => 'user', 'id' => $id, 'name' => $user->userName];
@@ -254,7 +254,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'success' => true,
-                'isSubscribed' => Auth::user()->lectures->pluck('id')->contains($id) || Auth::user()->courses->pluck('id')->contains(Lecture::findOrFail($id)->course_id),
+                'isSubscribed' => Auth::user()->lectures->pluck('id')->contains($id) || Auth::user()->subjects->pluck('id')->contains(Lecture::findOrFail($id)->subject_id),
             ]);
         }
     }
@@ -282,10 +282,42 @@ class UserController extends Controller
         ]);
     }
 
+    public function toggleFavoriteLecture(Lecture $lecture)
+    {
+        $user = Auth::user();
+
+        if ($user->favoriteLectures()->where('lecture_id', $lecture->id)->exists()) {
+            $user->favoriteLectures()->detach($lecture);
+            return response()->json([
+                'status' => 'removed',
+                'is_favorited' => false,
+                'favorites_count' => $lecture->favoritedByUsers()->count()
+            ]);
+        }
+
+        $user->favoriteLectures()->attach($lecture);
+        return response()->json([
+            'status' => 'added',
+            'is_favorited' => true,
+            'favorites_count' => $lecture->favoritedByUsers()->count()
+        ]);
+    }
+
     public function checkFavorite(Teacher $teacher)
     {
         $isFavorited = Auth::user()->favoriteTeachers()
             ->where('teacher_id', $teacher->id)
+            ->exists();
+
+        return response()->json([
+            'is_favorited' => $isFavorited
+        ]);
+    }
+
+    public function checkFavoriteLecture(Lecture $Lecture)
+    {
+        $isFavorited = Auth::user()->favoriteLectures()
+            ->where('lecture_id', $Lecture->id)
             ->exists();
 
         return response()->json([
@@ -423,7 +455,7 @@ class UserController extends Controller
 
                     $user->lectures()->detach();
 
-                    $user->courses()->detach();
+                    $user->subjects()->detach();
                 });
             }
             $data = ['name' => "delete subs"];
@@ -441,9 +473,9 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $name = $user->userName;
         $user->delete();
-        foreach (Course::all() as $course) {
-            $course->subscriptions = Course::withCount('users')->find($course->id);
-            $course->save();
+        foreach (Subject::all() as $subject) {
+            $subject->subscriptions = Subject::withCount('users')->find($subject->id);
+            $subject->save();
         }
         $data = ['element' => 'user', 'name' => $name];
         session(['delete_info' => $data]);

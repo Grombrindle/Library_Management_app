@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Lecture;
@@ -47,7 +48,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getteachersubjectsnames/{id}', [TeacherController::class, 'fetchSubjectsNames']);
     Route::get('/getteacheruniversities/{id}', [TeacherController::class, 'fetchUnis']);
     Route::get('/getallteachers', [TeacherController::class, 'fetchAll']);
-    Route::get('/getsubteachers', [TeacherController::class, 'fetchSubjectTeachers']);
+    Route::get('/teachers/{teacher}/courses', [CourseController::class, 'getTeacherCourses']);
 
     Route::get('/getuniversity/{id}', [UniversityController::class, 'fetch']);
     Route::get('/getuniversityteachers/{id}', [UniversityController::class, 'fetchTeachers']);
@@ -58,13 +59,20 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getsubjectteachers/{id}', [SubjectController::class, 'fetchTeachers']);
     Route::get('/getsubjectusers/{id}', [SubjectController::class, 'fetchUsers']);
     Route::get('/getallsubjects', [SubjectController::class, 'fetchAll']);
-    Route::get('/getscisubjects', [SubjectController::class, 'fetchSci']);
-    Route::get('/getlitsubjects', [SubjectController::class, 'fetchLit']);
+    Route::get('/subjects', [SubjectController::class, 'getAll']);
+    Route::get('/subjects/{subject}/teachers', [SubjectController::class, 'getTeachers']);
+
+    Route::get('/courses/{course}/lectures', [LectureController::class, 'getCourseLectures']);
+
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
     Route::get('/getlecturefile360/{id}', [LectureController::class, 'fetchFile360']);
     Route::get('/getlecturefile720/{id}', [LectureController::class, 'fetchFile720']);
     Route::get('/getlecturefile1080/{id}', [LectureController::class, 'fetchFile1080']);
+    Route::post('/lectures/{lecture}/favorite', [LectureController::class, 'toggleFavoriteLecture']);
+    Route::get('/favorite_lecture/{lecture}', [LectureController::class, 'checkFavoriteLecture']);
+    Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);
+    Route::get('/lectures/{lecture}/pdf', [LectureController::class, 'fetchPdf']);
 
     Route::get('/getteacherimage/{id}', [ImageController::class, 'fetchTeacher']);
     Route::get('/getlectureimage/{id}', [ImageController::class, 'fetchLecture']);
@@ -84,10 +92,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Route::get('/download-encrypted-video/{file}', [FileController::class, 'serveEncryptedFile'])
     //     ->name('download.encrypted.video');
-
-    Route::get('/subject/{subject}/teachers', function ($subjectId) {
-        $subject = App\Models\Subject::findOrFail($subjectId);
-        return $subject->teachers;
-    });
 
 });

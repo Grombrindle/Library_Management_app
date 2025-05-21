@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Lecture;
 use App\Models\Subject;
-use App\Models\Course;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use App\Models\Course;
 
 class LectureController extends Controller
 {
@@ -48,6 +48,67 @@ class LectureController extends Controller
         return response()->json([
             'success' => "false",
             'reason' => "Lecture Not Found"
+        ]);
+    }
+
+    public function uploadPdf(Request $request, $lectureId)
+    {
+        $request->validate([
+            'pdf_file' => 'required|file|mimes:pdf|max:10240'
+        ]);
+
+        $lecture = Lecture::findOrFail($lectureId);
+
+
+        $pdfDir = public_path('Files/PDFs');
+        if (!file_exists($pdfDir)) {
+            mkdir($pdfDir, 0777, true);
+        }
+
+
+        if ($lecture->pdf_file && file_exists(public_path($lecture->pdf_file))) {
+            unlink(public_path($lecture->pdf_file));
+        }
+
+
+        $file = $request->file('pdf_file');
+        $filename = 'lecture_' . $lectureId . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $file->move($pdfDir, $filename);
+        $filePath = 'Files/PDFs/' . $filename;
+
+
+        $lecture->pdf_file = $filePath;
+        $lecture->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'PDF uploaded successfully',
+            'pdf_path' => $filePath
+        ]);
+    }
+
+    public function fetchPdf($id)
+    {
+        $lecture = Lecture::find($id);
+
+        if (!$lecture || !$lecture->pdf_file) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'PDF not found'
+            ], 404);
+        }
+
+        $filePath = public_path($lecture->pdf_file);
+
+        if (!file_exists($filePath)) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'File not found on server'
+            ], 404);
+        }
+
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
         ]);
     }
 
@@ -122,7 +183,7 @@ class LectureController extends Controller
         }
 
         $name = $request->input('lecture_name');
-        $course_id = $request->input('course');
+        $subject_id = $request->input('subject');
 
         if ($request->hasFile('object_image')) {
             // Store new image in public/Images/Lectures
@@ -169,18 +230,30 @@ class LectureController extends Controller
             $file1080->move(public_path('Files/1080'), $fileName1080);
             $filePath1080 = 'Files/1080/' . $fileName1080;
         }
+        $filePathPdf = null;
+        if ($request->hasFile('lecture_pdf')) {
+            $pdfDir = public_path('Files/PDFs');
+            if (!file_exists($pdfDir)) {
+                mkdir($pdfDir, 0777, true);
+            }
+
+            $pdf = $request->file('lecture_pdf');
+            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdf->move($pdfDir, $pdfName);
+            $filePathPdf = 'Files/PDFs/' . $pdfName;
+        }
 
         $lecture = Lecture::create([
             'name' => $name,
             'image' => $path,
+            'pdf_file' => $filePathPdf,
             'file_360' => $filePath360,
             'file_720' => $filePath720,
             'file_1080' => $filePath1080,
-            'course_id' => $course_id,
+            'subject_id' => $subject_id,
         ]);
-        $course = Course::findOrFail($course_id);
-        $course->lectures()->attach($lecture->id);
-        $course->lecturesCount = $course->lectures->count();
+
+        Subject::findOrFail($subject_id)->lectures()->attach($lecture->id);
 
         $data = ['element' => 'product', 'id' => $lecture->id, 'name' => $lecture->name];
         session(['add_info' => $data]);
@@ -215,6 +288,22 @@ class LectureController extends Controller
             }
 
             $lecture->image = $path;
+        }
+
+        if ($request->hasFile('lecture_pdf')) {
+            if ($lecture->pdf_file && file_exists(public_path($lecture->pdf_file))) {
+                unlink(public_path($lecture->pdf_file));
+            }
+
+            $pdfDir = public_path('Files/PDFs');
+            if (!file_exists($pdfDir)) {
+                mkdir($pdfDir, 0777, true);
+            }
+
+            $pdf = $request->file('lecture_pdf');
+            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdf->move($pdfDir, $pdfName);
+            $lecture->pdf_file = 'Files/PDFs/' . $pdfName;
         }
 
         // Handle video updates (public)
@@ -276,6 +365,9 @@ class LectureController extends Controller
         if ($lecture->file_1080 && file_exists(public_path($lecture->file_1080))) {
             unlink(public_path($lecture->file_1080));
         }
+        if ($lecture->pdf_file && file_exists(public_path($lecture->pdf_file))) {
+            unlink(public_path($lecture->pdf_file));
+        }
 
         $lecture->delete();
 
@@ -289,5 +381,31 @@ class LectureController extends Controller
         session(['delete_info' => $data]);
         session(['link' => '/lectures']);
         return redirect()->route('delete.confirmation');
+    }
+
+    public function getCourseLectures($courseId)
+    {
+        $course = Course::find($courseId);
+
+        if (!$course) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course not found'
+            ], 404);
+        }
+
+        $lectures = $course->lectures()
+            ->select('id', 'name', 'image', 'created_at')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'lectures' => $lectures,
+            'course' => [
+                'id' => $course->id,
+                'name' => $course->name,
+                'subject_id' => $course->subject_id
+            ]
+        ]);
     }
 }

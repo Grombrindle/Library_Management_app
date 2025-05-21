@@ -93,23 +93,29 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    // function subjects()
-    // {
-    //     return $this->belongsToMany(Subject::class, 'subscriptions');
-    // }
-    function courses()
+
+    function subjects()
     {
-        return $this->belongsToMany(Course::class, 'subscriptions');
+        return $this->belongsToMany(Subject::class, 'subscriptions');
     }
+
     function lectures()
     {
         return $this->belongsToMany(Lecture::class, 'user_lecture');
     }
+
     public function favoriteTeachers()
     {
         return $this->belongsToMany(Teacher::class, 'favourites')
             ->withTimestamps();
     }
+
+    public function favoriteLectures()
+    {
+        return $this->belongsToMany(Lecture::class, 'favourite_lectures')
+            ->withTimestamps();
+    }
+
     public function toggleFavorite(Teacher $teacher): bool
     {
 

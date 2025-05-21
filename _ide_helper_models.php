@@ -52,6 +52,24 @@ namespace App\Models{
 /**
  * 
  *
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Lecture> $lectures
+ * @property-read int|null $lectures_count
+ * @property-read \App\Models\Subject|null $subject
+ * @property-read \App\Models\Teacher|null $teacher
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @method static \Database\Factories\CourseFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course query()
+ */
+	class Course extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property string $name
  * @property string|null $file_360
@@ -80,6 +98,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereSubjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Lecture whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $LecturesfavoritedByUsers
+ * @property-read int|null $lecturesfavorited_by_users_count
  */
 	class Lecture extends \Eloquent {}
 }
@@ -146,6 +166,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subject whereSubscriptions($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subject whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Course> $courses
+ * @property-read int|null $courses_count
  */
 	class Subject extends \Eloquent {}
 }
@@ -258,6 +280,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUserName($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Lecture> $favoriteLectures
+ * @property-read int|null $favorite_lectures_count
  */
 	class User extends \Eloquent {}
 }

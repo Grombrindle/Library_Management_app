@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Subject;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -44,10 +44,19 @@ class Lecture extends Model
     use HasFactory;
     protected $guarded = [];
 
-    public function course() {
-        return $this->belongsTo(Course::class);
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
     }
-    function users() {
+
+    function users()
+    {
         return $this->belongsToMany(User::class, 'user_lecture');
+    }
+
+    public function LecturesfavoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favourite_lectures')
+            ->withTimestamps();
     }
 }
