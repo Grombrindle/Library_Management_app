@@ -140,6 +140,9 @@
             <a href="/subjects" class="button" style="text-decoration: none;">
                 <div class="text">{{ __('messages.yourSubjects') }}</div>
             </a>
+            <a href="/courses" class="button" style="text-decoration: none;">
+                <div class="text">{{ __('messages.yourCourses') }}</div>
+            </a>
             <a href="/lectures" class="button" style="text-decoration: none;">
                 <div class="text">{{ __('messages.yourLectures') }}</div>
             </a>

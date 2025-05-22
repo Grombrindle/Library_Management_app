@@ -20,17 +20,26 @@ class LectureSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             // $lectureTypes = ['MP4', 'PDF'];
             $randSub = rand(1,Course::count());
+            $type = rand(0,1);
 
             $lecture = Lecture::factory()->create([
                 'name' => fake()->name(),
                 'description' => fake()->text(),
                 // 'type' => $lectureTypes[array_rand($lectureTypes)],
-                'file_360' => 'Files/360/default_360.mp4',
-                'file_720' => 'Files/720/default_720.mp4',
-                'file_1080' => 'Files/1080/default_1080.mp4',
+                'type' => $type,
                 'course_id' => $randSub,
                 'image' => 'Images/Lectures/default.png',
             ]);
+            if($type) {
+
+                $lecture->file_360 = 'Files/360/default_360.mp4';
+                $lecture->file_720 ='Files/720/default_720.mp4';
+                $lecture->file_1080 = 'Files/1080/default_1080.mp4';
+            }
+            else {
+                $lecture->file_pdf = 'Files/PDFs/default_pdf.pdf';
+            }
+            $lecture->save();
             $course = Course::findOrFail($randSub);
             // $course->lecturesCount++;
             // $course->save();

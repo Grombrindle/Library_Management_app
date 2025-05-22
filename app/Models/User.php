@@ -94,9 +94,9 @@ class User extends Authenticatable
         ];
     }
 
-    function subjects()
+    function courses()
     {
-        return $this->belongsToMany(Subject::class, 'subscriptions');
+        return $this->belongsToMany(Course::class, 'subscriptions');
     }
 
     function lectures()

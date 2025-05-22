@@ -106,7 +106,14 @@
                             <!-- ● {{__('messages.forSubject')}}: {{ $lecture->course->name }} <br> -->
                             ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
                             ● {{__('messages.fromTeacher')}}: {{ $lecture->course->teacher->name }} <br>
-                            ● {{__('messages.fromCourse')}}: {{ $lecture->course->name }}
+                            ● {{__('messages.fromCourse')}}: {{ $lecture->course->name }} <br>
+                            ● {{__('messages.fileType')}}: @if ($lecture->type)
+                                {{__('messages.video')}} <br>
+                                ● {{__('messages.duration')}}: {{ $lecture->getVideoLength() ?? 'N/A' }}
+                                @else
+                                {{__('messages.pdf')}} <br>
+                                ● {{__('messages.pages')}}: {{ $lecture->getPdfPages() ?? 'N/A' }}
+                            @endif
                         </x-card>
                     @endforeach
                 </div>

@@ -182,4 +182,11 @@ return [
     'coursesFromYou' => 'Anzahl der Kurse von Ihnen',
     'forCourse' => 'Für Kurs',
     'deleteCourseWarning' => 'WARNUNG: Das Löschen dieses Kurses wird auch alle seine Vorlesungen löschen.',
+    'pdf' => 'PDF',
+    'videos' => 'Videos',
+    'pdfFile' => 'PDF-Datei',
+    'fileType' => 'Dateityp',
+    'video' => 'Video',
+    'duration' => 'Dauer',
+    'pages' => 'Seiten',
 ];

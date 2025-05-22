@@ -185,22 +185,25 @@
     @endif
     @if ($file != null)
         <div style="height:fit-content;">
-
-            @if ($object->file_360 != null)
-                <a href="show/{{ $object->id }}/360" target="_blank" class="button" style="background-color:#9997BC">{{__('messages.showLecture')}} 360p</a>
+            @if ($object->file_pdf != null)
+                <a href="show/{{ $object->id }}/pdf" target="_blank" class="button" style="background-color:#9997BC">{{__('messages.showLecture')}} PDF</a>
             @else
-                <button class="button" disabled>{{__('messages.showLecture')}} 360p</button>
-            @endif
-            @if ($object->file_720 != null)
-                <a href="show/{{ $object->id }}/720" target="_blank" class="button" style="background-color:#9997BC">{{__('messages.showLecture')}} 720p</a>
-            @else
-                <button class="button" disabled>{{__('messages.showLecture')}} 720p</button>
-            @endif
-            @if ($object->file_1080 != null)
-                <a href="show/{{ $object->id }}/1080" target="_blank" class="button"
+                @if ($object->file_360 != null)
+                    <a href="show/{{ $object->id }}/360" target="_blank" class="button" style="background-color:#9997BC">{{__('messages.showLecture')}} 360p</a>
+                @else
+                    <button class="button" disabled>{{__('messages.showLecture')}} 360p</button>
+                @endif
+                @if ($object->file_720 != null)
+                    <a href="show/{{ $object->id }}/720" target="_blank" class="button" style="background-color:#9997BC">{{__('messages.showLecture')}} 720p</a>
+                @else
+                    <button class="button" disabled>{{__('messages.showLecture')}} 720p</button>
+                @endif
+                @if ($object->file_1080 != null)
+                    <a href="show/{{ $object->id }}/1080" target="_blank" class="button"
                     style="background-color:#9997BC; margin-left:auto;margin-right:auto;">{{__('messages.showLecture')}} 1080p</a>
             @else
                 <button class="button" style="margin-left:auto;margin-right:auto;" disabled>{{__('messages.showLecture')}} 1080p</button>
+                @endif
             @endif
         </div>
     @endif

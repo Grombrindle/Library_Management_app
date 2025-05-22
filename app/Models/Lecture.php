@@ -44,9 +44,9 @@ class Lecture extends Model
     use HasFactory;
     protected $guarded = [];
 
-    public function subject()
+    public function course()
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(Course::class);
     }
 
     function users()
@@ -58,5 +58,15 @@ class Lecture extends Model
     {
         return $this->belongsToMany(User::class, 'favourite_lectures')
             ->withTimestamps();
+    }
+
+    public function getVideoLength()
+    {
+        return $this->duration;
+    }
+
+    public function getPdfPages()
+    {
+        return $this->pages;
     }
 }

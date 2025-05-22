@@ -31,7 +31,7 @@
     }
 
     .ObjectContainer {
-        width: 40rem;
+        width: 45rem;
         height: auto;
         display: flex;
         flex-direction: column;

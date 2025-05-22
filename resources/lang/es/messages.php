@@ -182,4 +182,11 @@ return [
     'coursesFromYou' => 'Número de cursos de ti',
     'forCourse' => 'Para Curso',
     'deleteCourseWarning' => 'ADVERTENCIA: Eliminar este curso también eliminará todas sus conferencias.',
+    'pdf' => 'PDF',
+    'videos' => 'Videos',
+    'pdfFile' => 'Archivo PDF',
+    'fileType' => 'Tipo de archivo',
+    'duration' => 'Duración',
+    'pages' => 'Páginas',
+    'video' => 'Video',
 ];

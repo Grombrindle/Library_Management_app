@@ -182,4 +182,11 @@ return [
     'coursesFromYou' => 'عدد الدورات منك',
     'forCourse' => 'للدورة',
     'deleteCourseWarning' => 'تحذير: حذف هذه الدورة سيؤدي إلى حذف جميع محاضراتها.',
+    'pdf' => 'PDF',
+    'videos' => 'فيديوهات',
+    'pdfFile' => 'ملف PDF',
+    'fileType' => 'نوع الملف',
+    'duration' => 'المدة',
+    'pages' => 'الصفحات',
+    'video' => 'فيديو',
 ];

@@ -49,10 +49,16 @@ class Teacher extends Model
 
     protected $guarded = [];
 
+    function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
+
     function subjects()
     {
         return $this->belongsToMany(Subject::class, 'teacher_subject');
     }
+
     public function universities()
     {
         return $this->belongsToMany(university::class, 'teacher_university');

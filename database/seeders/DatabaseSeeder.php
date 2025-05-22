@@ -75,26 +75,34 @@ class DatabaseSeeder extends Seeder
                 'literaryOrScientific' => $isSci,
             ]);
 
+            $teacher->subjects()->attach($subject->id);
+
             $course = Course::factory()->create([
                 'name' => fake()->safeColorName(),
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
                 'description' => fake()->text(),
-                'image' => 'Images/Universities/default.png',
-                'teacher_id' => rand(1, Teacher::count()),
-                'subject_id' => rand(1, Subject::count()),
+                'image' => 'Images/Courses/default.png',
+                'teacher_id' => $teacher->id,
+                'subject_id' => $subject->id,
             ]);
-
+            $type = rand(0,1);
             $lecture = Lecture::factory()->create([
                 'name' => fake()->name(),
-                // 'type' => ('PDF'),
-                'file_360' => 'Files/360/default_360.mp4',
-                'file_720' => 'Files/720/default_720.mp4',
-                'file_1080' => 'Files/1080/default_1080.mp4',
+                'type' => $type,
                 'description' => fake()->text(),
                 'image' => 'Images/Lectures/default.png',
                 'course_id' => rand(1, Course::count()),
             ]);
+
+            if ($type) {
+                $lecture->file_360 = 'Files/360/default_360.mp4';
+                $lecture->file_720 = 'Files/720/default_720.mp4';
+                $lecture->file_1080 = 'Files/1080/default_1080.mp4';
+            } else {
+                $lecture->file_pdf = 'Files/PDFs/default_pdf.pdf';
+            }
+            $lecture->save();
             // $teacher->subjects()->attach($subject->id);
             $course->subscriptions = $course->users->count();
             $course->save();

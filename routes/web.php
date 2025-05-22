@@ -469,6 +469,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('lecture/show/{id}/360', [FileController::class, 'show360'])->name('file360.show');
     Route::get('lecture/show/{id}/720', [FileController::class, 'show720'])->name('file720.show');
     Route::get('lecture/show/{id}/1080', [FileController::class, 'show1080'])->name('file1080.show');
+    Route::get('lecture/show/{id}/pdf', [FileController::class, 'showPDF'])->name('filepdf.show');
 
     Route::get('/welcome', function () {
         if (Auth::user()->privileges == 2)

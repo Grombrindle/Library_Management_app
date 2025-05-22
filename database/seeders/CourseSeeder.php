@@ -18,14 +18,22 @@ class CourseSeeder extends Seeder
         //
         
         for ($i = 0; $i < 10; $i++) {
+            $teacher = Teacher::inRandomOrder()->first();
+            $subject = $teacher->subjects()->inRandomOrder()->first();
+            
+            if (!$subject) {
+                // If teacher has no subjects, skip this iteration
+                continue;
+            }
+
             $course = Course::factory()->create([
                 'name' => fake()->safeColorName(),
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
                 'description' => fake()->text(),
                 'image' => 'Images/Courses/default.png',
-                'teacher_id' => rand(1, Teacher::count()),
-                'subject_id' => rand(1, Subject::count()),
+                'teacher_id' => $teacher->id,
+                'subject_id' => $subject->id,
             ]);
         }
     }

@@ -17,8 +17,12 @@ return new class extends Migration
             $table->string('file_360')->nullable();
             $table->string('file_720')->nullable();
             $table->string('file_1080')->nullable();
+            $table->string('file_pdf')->nullable();
             $table->string('description')->nullable();  //Maybe I'll add more for the other languages
             $table->string('image');
+            $table->float('duration')->nullable();
+            $table->integer('pages')->nullable();
+            $table->boolean('type');    //0 is PDF 1 is video
             $table->foreignIdFor(App\Models\Course::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });

@@ -17,7 +17,7 @@ class TeacherController extends Controller
     public function fetch($id)
     {
 
-        $teacher = Teacher::with(['universities', 'subjects'])->find($id);
+        $teacher = Teacher::with(['courses', 'subjects'])->find($id);
 
         // Check if the teacher was found
         if ($teacher) {
@@ -31,12 +31,12 @@ class TeacherController extends Controller
                 if ($index < $count - 1)
                     $subjects .= " - ";
             }
-            $count = $teacher->universities->count();
-            $universities = "";
-            foreach ($teacher->universities as $index => $university) {
-                $universities .= $university->name;
+            $count = $teacher->courses->count();
+            $courses = "";
+            foreach ($teacher->courses as $index => $course) {
+                $courses .= $course->name;
                 if ($index < $count - 1)
-                    $universities .= " - ";
+                    $courses .= " - ";
             }
             // Build the response
             $response = [
@@ -49,7 +49,7 @@ class TeacherController extends Controller
                     'instagram' => $links['Instagram'] ?? null,
                     'telegram' => $links['Telegram'] ?? null,
                     'youtube' => $links['YouTube'] ?? null,
-                    'universities' => $universities,
+                    'courses' => $courses,
                     'subjects' => $subjects,
                 ],
             ];
@@ -98,20 +98,20 @@ class TeacherController extends Controller
             ], 404);
         }
     }
-    public function fetchUnis($id)
+    public function fetchCourses($id)
     {
-        $unis = "";
+        $courses = "";
         $teacher = Teacher::find($id);
         if ($teacher) {
-            $count = $teacher->universities->count();
-            foreach ($teacher->universities as $index => $uni) {
-                $unis .= $uni->name;
+            $count = $teacher->courses->count();
+            foreach ($teacher->courses as $index => $course) {
+                $courses .= $course->name;
                 if ($index < $count - 1)
-                    $unis .= " - ";
+                    $courses .= " - ";
             }
             return response()->json([
                 'success' => "true",
-                'universities' => $unis
+                'courses' => $courses
             ]);
         } else {
             return response()->json([
@@ -125,12 +125,12 @@ class TeacherController extends Controller
         // Build the response
         $response = [];
         foreach (Teacher::all() as $teacher) {
-            $unis = "";
-            $count = $teacher->universities->count();
-            foreach ($teacher->universities as $index => $uni) {
-                $unis .= $uni->name;
+            $courses = "";
+            $count = $teacher->courses->count();
+            foreach ($teacher->courses as $index => $course) {
+                $courses .= $course->name;
                 if ($index < $count - 1)
-                    $unis .= " - ";
+                    $courses .= " - ";
             }
             $subs = "";
             $count = $teacher->subjects->count();
@@ -149,7 +149,7 @@ class TeacherController extends Controller
                 'instagram' => $links['Instagram'] ?? null,
                 'telegram' => $links['Telegram'] ?? null,
                 'youtube' => $links['YouTube'] ?? null,
-                'universities' => $unis,
+                'courses' => $courses,
                 'subjects' => $subs,
             ];
         }
@@ -172,12 +172,12 @@ class TeacherController extends Controller
 
         $teachers = [];
         foreach ($subject->teachers as $teacher) {
-            $unis = "";
-            $count = $teacher->universities->count();
-            foreach ($teacher->universities as $index => $uni) {
-                $unis .= $uni->name;
+            $course = "";
+            $count = $teacher->courses->count();
+            foreach ($teacher->courses as $index => $course) {
+                $courses .= $course->name;
                 if ($index < $count - 1)
-                    $unis .= " - ";
+                    $courses .= " - ";
             }
             $subs = "";
             $count = $teacher->subjects->count();
@@ -196,7 +196,7 @@ class TeacherController extends Controller
                 'instagram' => $links['Instagram'] ?? null,
                 'telegram' => $links['Telegram'] ?? null,
                 'youtube' => $links['YouTube'] ?? null,
-                'universities' => $unis,
+                'courses' => $courses,
                 'subjects' => $subs,
             ];
         }

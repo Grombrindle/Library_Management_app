@@ -68,123 +68,149 @@ class FileController extends Controller
             'Content-Type' => $mimeType,
         ]);
     }
-    public function encryptAndGenerateUrl($videoId, $quality)
-{
-    // if(!Auth::user()->)
-    // Retrieve video path from database
-    $video = Lecture::findOrFail($videoId);
 
-    // Validate quality parameter
-    $qualityMap = [
-        0 => 'file_360',
-        1 => 'file_720',
-        2 => 'file_1080'
-    ];
+    public function showPDF($id)
+    {
+        $lecture = Lecture::find($id);
 
-    if (!isset($qualityMap[$quality]) || empty($video->{$qualityMap[$quality]})) {
-        return response()->json([
-            "success" => false,
-            "reason" => $qualityMap[$quality] ? "Quality not available" : "Invalid quality parameter"
+        if (!$lecture || !$lecture->file_pdf) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'PDF not found'
+            ], 404);
+        }
+
+        $filePath = public_path($lecture->file_pdf);
+
+        if (!file_exists($filePath)) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'File not found on server'
+            ], 404);
+        }
+
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
         ]);
     }
 
-    $filePath = public_path($video->{$qualityMap[$quality]});
+    public function encryptAndGenerateUrl($videoId, $quality)
+    {
+        // if(!Auth::user()->)
+        // Retrieve video path from database
+        $video = Lecture::findOrFail($videoId);
 
-    if (!file_exists($filePath)) {
-        return response()->json([
-            "success" => false,
-            "reason" => "Video file not found"
-        ], 404);
-    }
+        // Validate quality parameter
+        $qualityMap = [
+            0 => 'file_360',
+            1 => 'file_720',
+            2 => 'file_1080'
+        ];
 
-    // Ensure encrypted_videos directory exists
-    $encryptedDir = public_path('app/encrypted_videos');
-    if (!file_exists($encryptedDir)) {
-        if (!mkdir($encryptedDir, 0755, true)) {
+        if (!isset($qualityMap[$quality]) || empty($video->{$qualityMap[$quality]})) {
             return response()->json([
                 "success" => false,
-                "reason" => "Could not create encryption directory"
+                "reason" => $qualityMap[$quality] ? "Quality not available" : "Invalid quality parameter"
+            ]);
+        }
+
+        $filePath = public_path($video->{$qualityMap[$quality]});
+
+        if (!file_exists($filePath)) {
+            return response()->json([
+                "success" => false,
+                "reason" => "Video file not found"
+            ], 404);
+        }
+
+        // Ensure encrypted_videos directory exists
+        $encryptedDir = public_path('app/encrypted_videos');
+        if (!file_exists($encryptedDir)) {
+            if (!mkdir($encryptedDir, 0755, true)) {
+                return response()->json([
+                    "success" => false,
+                    "reason" => "Could not create encryption directory"
+                ], 500);
+            }
+        }
+
+        // Generate unique encrypted filename
+        $encryptedFileName = 'encrypted_videos/' . $videoId . '_' . $quality . '_' . time() . '.enc';
+        $encryptedFilePath = public_path('app/' . $encryptedFileName);
+
+        try {
+            // Get encryption config
+            $key = config('app.key');
+            $cipher = config('app.cipher');
+            $ivLength = openssl_cipher_iv_length($cipher);
+
+            if ($ivLength === false) {
+                throw new Exception('Unsupported cipher algorithm');
+            }
+
+            // Generate IV
+            $iv = random_bytes($ivLength);
+
+            // Process with streams
+            $input = fopen($filePath, 'rb');
+            $output = fopen($encryptedFilePath, 'wb');
+
+            if (!$input || !$output) {
+                throw new Exception('Could not open file streams');
+            }
+
+            // Write IV first
+            if (fwrite($output, $iv) !== $ivLength) {
+                throw new Exception('Failed to write IV');
+            }
+
+            // Encrypt in 8MB chunks
+            while (!feof($input)) {
+                $chunk = fread($input, 8 * 1024 * 1024);
+                if ($chunk === false) {
+                    throw new Exception('Failed to read chunk');
+                }
+
+                $encrypted = openssl_encrypt($chunk, $cipher, $key, OPENSSL_RAW_DATA, $iv);
+                if ($encrypted === false || fwrite($output, $encrypted) === false) {
+                    throw new Exception('Encryption/write failed');
+                }
+            }
+
+            // Close streams
+            fclose($input);
+            fclose($output);
+
+            // Generate signed URL
+            $signedUrl = URL::temporarySignedRoute(
+                'download.encrypted.video',
+                now()->addMinutes(60),
+                ['file' => $encryptedFileName]
+            );
+
+            return response()->json([
+                "success" => true,
+                "url" => $signedUrl
+            ]);
+
+        } catch (Exception $e) {
+            // Cleanup on failure
+            if (isset($output) && is_resource($output)) {
+                fclose($output);
+                @unlink($encryptedFilePath);
+            }
+            if (isset($input) && is_resource($input)) {
+                fclose($input);
+            }
+
+            return response()->json([
+                "success" => false,
+                "reason" => "Encryption failed",
+                // Only show detailed error in development
+                "error" => config('app.debug') ? $e->getMessage() : null
             ], 500);
         }
     }
-
-    // Generate unique encrypted filename
-    $encryptedFileName = 'encrypted_videos/' . $videoId . '_' . $quality . '_' . time() . '.enc';
-    $encryptedFilePath = public_path('app/' . $encryptedFileName);
-
-    try {
-        // Get encryption config
-        $key = config('app.key');
-        $cipher = config('app.cipher');
-        $ivLength = openssl_cipher_iv_length($cipher);
-
-        if ($ivLength === false) {
-            throw new Exception('Unsupported cipher algorithm');
-        }
-
-        // Generate IV
-        $iv = random_bytes($ivLength);
-
-        // Process with streams
-        $input = fopen($filePath, 'rb');
-        $output = fopen($encryptedFilePath, 'wb');
-
-        if (!$input || !$output) {
-            throw new Exception('Could not open file streams');
-        }
-
-        // Write IV first
-        if (fwrite($output, $iv) !== $ivLength) {
-            throw new Exception('Failed to write IV');
-        }
-
-        // Encrypt in 8MB chunks
-        while (!feof($input)) {
-            $chunk = fread($input, 8 * 1024 * 1024);
-            if ($chunk === false) {
-                throw new Exception('Failed to read chunk');
-            }
-
-            $encrypted = openssl_encrypt($chunk, $cipher, $key, OPENSSL_RAW_DATA, $iv);
-            if ($encrypted === false || fwrite($output, $encrypted) === false) {
-                throw new Exception('Encryption/write failed');
-            }
-        }
-
-        // Close streams
-        fclose($input);
-        fclose($output);
-
-        // Generate signed URL
-        $signedUrl = URL::temporarySignedRoute(
-            'download.encrypted.video',
-            now()->addMinutes(60),
-            ['file' => $encryptedFileName]
-        );
-
-        return response()->json([
-            "success" => true,
-            "url" => $signedUrl
-        ]);
-
-    } catch (Exception $e) {
-        // Cleanup on failure
-        if (isset($output) && is_resource($output)) {
-            fclose($output);
-            @unlink($encryptedFilePath);
-        }
-        if (isset($input) && is_resource($input)) {
-            fclose($input);
-        }
-
-        return response()->json([
-            "success" => false,
-            "reason" => "Encryption failed",
-            // Only show detailed error in development
-            "error" => config('app.debug') ? $e->getMessage() : null
-        ], 500);
-    }
-}
 
     // Route to serve the encrypted file
     public function serveEncryptedFile(Request $request)

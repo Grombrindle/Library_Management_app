@@ -109,7 +109,7 @@ class CourseController extends Controller
         // dd(Request::all());
 
 
-        if ($request->input('teacher_id') != null)
+        if ($request->input('teacher') != null)
             $course = Course::make(['name' => $request->input('course_name'), 'teacher_id' => $request->input('teacher'), 'subject_id' => $request->input('subject'), 'lecturesCount' => 0, 'subscriptions' => 0]);
         elseif (Auth::user()->privileges == 0)
             $course = Course::make(['name' => $request->input('course_name'), 'teacher_id' => Auth::user()->teacher_id, 'subject_id' => $request->input('subject'), 'lecturesCount' => 0, 'subscriptions' => 0]);

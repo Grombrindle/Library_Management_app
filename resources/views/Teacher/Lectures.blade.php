@@ -79,13 +79,16 @@
                     @foreach ($chunk as $lecture)
                         <x-card link="lecture/{{ $lecture->id }}" image="{{ asset($lecture->image) }}" object="Lecture">
                             ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
-                            {{-- ● Lecture Description:
-                            <div class="description">
-                                @foreach (explode("\n", $lecture->description) as $line)
-                                    <div class="description-line">{{ $line }}</div>
-                                @endforeach
-                            </div> --}}
-                            ● {{ __('messages.forCourse') }}: {{ $lecture->course->name }}
+                            ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
+                            ● {{__('messages.fromTeacher')}}: {{ $lecture->course->teacher->name }} <br>
+                            ● {{__('messages.fromCourse')}}: {{ $lecture->course->name }} <br>
+                            ● {{__('messages.fileType')}}: @if ($lecture->type)
+                                {{__('messages.video')}} <br>
+                                ● {{__('messages.duration')}}: {{ $lecture->getVideoLength() ?? 'N/A' }}
+                                @else
+                                {{__('messages.pdf')}} <br>
+                                ● {{__('messages.pages')}}: {{ $lecture->getPdfPages() ?? 'N/A' }}
+                            @endif
                         </x-card>
                     @endforeach
                 </div>

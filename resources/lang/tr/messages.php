@@ -181,4 +181,11 @@ return [
     'coursesFromYou' => 'Sizin verdiğiniz kurs sayısı',
     'forCourse' => 'Kurs İçin',
     'deleteCourseWarning' => 'UYARI: Bu kursu silmek, tüm derslerini de silecektir.',
+    'pdf' => 'PDF',
+    'videos' => 'Videolar',
+    'pdfFile' => 'PDF Dosyası',
+    'fileType' => 'Dosya Türü',
+    'duration' => 'Süre',
+    'pages' => 'Sayfalar',
+    'video' => 'Video',
 ];

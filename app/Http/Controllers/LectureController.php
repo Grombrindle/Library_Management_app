@@ -11,6 +11,30 @@ use App\Models\Course;
 
 class LectureController extends Controller
 {
+    private function ensureDirectoriesExist()
+    {
+        // Create base Files directory if it doesn't exist
+        $baseDir = public_path('Files');
+        if (!is_dir($baseDir)) {
+            mkdir($baseDir, 0755, true);
+        }
+
+        // Create video quality directories
+        $videoDirs = ['360', '720', '1080'];
+        foreach ($videoDirs as $dir) {
+            $path = public_path("Files/{$dir}");
+            if (!is_dir($path)) {
+                mkdir($path, 0755, true);
+            }
+        }
+
+        // Create PDF directory
+        $pdfDir = public_path('Files/PDFs');
+        if (!is_dir($pdfDir)) {
+            mkdir($pdfDir, 0755, true);
+        }
+    }
+
     public function fetch($id)
     {
         $lec = Lecture::find($id);
@@ -51,66 +75,41 @@ class LectureController extends Controller
         ]);
     }
 
-    public function uploadPdf(Request $request, $lectureId)
-    {
-        $request->validate([
-            'pdf_file' => 'required|file|mimes:pdf|max:10240'
-        ]);
+    // public function uploadPdf(Request $request, $lectureId)
+    // {
+    //     $request->validate([
+    //         'pdf_file' => 'required|file|mimes:pdf|max:10240'
+    //     ]);
 
-        $lecture = Lecture::findOrFail($lectureId);
-
-
-        $pdfDir = public_path('Files/PDFs');
-        if (!file_exists($pdfDir)) {
-            mkdir($pdfDir, 0777, true);
-        }
+    //     $lecture = Lecture::findOrFail($lectureId);
 
 
-        if ($lecture->pdf_file && file_exists(public_path($lecture->pdf_file))) {
-            unlink(public_path($lecture->pdf_file));
-        }
+    //     $pdfDir = public_path('Files/PDFs');
+    //     if (!file_exists($pdfDir)) {
+    //         mkdir($pdfDir, 0777, true);
+    //     }
 
 
-        $file = $request->file('pdf_file');
-        $filename = 'lecture_' . $lectureId . '_' . time() . '.' . $file->getClientOriginalExtension();
-        $file->move($pdfDir, $filename);
-        $filePath = 'Files/PDFs/' . $filename;
+    //     if ($lecture->pdf_file && file_exists(public_path($lecture->pdf_file))) {
+    //         unlink(public_path($lecture->pdf_file));
+    //     }
 
 
-        $lecture->pdf_file = $filePath;
-        $lecture->save();
+    //     $file = $request->file('pdf_file');
+    //     $filename = 'lecture_' . $lectureId . '_' . time() . '.' . $file->getClientOriginalExtension();
+    //     $file->move($pdfDir, $filename);
+    //     $filePath = 'Files/PDFs/' . $filename;
 
-        return response()->json([
-            'success' => true,
-            'message' => 'PDF uploaded successfully',
-            'pdf_path' => $filePath
-        ]);
-    }
 
-    public function fetchPdf($id)
-    {
-        $lecture = Lecture::find($id);
+    //     $lecture->pdf_file = $filePath;
+    //     $lecture->save();
 
-        if (!$lecture || !$lecture->pdf_file) {
-            return response()->json([
-                'success' => false,
-                'reason' => 'PDF not found'
-            ], 404);
-        }
-
-        $filePath = public_path($lecture->pdf_file);
-
-        if (!file_exists($filePath)) {
-            return response()->json([
-                'success' => false,
-                'reason' => 'File not found on server'
-            ], 404);
-        }
-
-        return response()->file($filePath, [
-            'Content-Type' => 'application/pdf',
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'PDF uploaded successfully',
+    //         'pdf_path' => $filePath
+    //     ]);
+    // }
 
     // Similar changes for fetchFile720 and fetchFile1080
     public function fetchFile720($id)
@@ -163,27 +162,15 @@ class LectureController extends Controller
 
     public function add(Request $request)
     {
-        // $request->validate([
-        //     'lecture_file_360' => 'nullable|file|mimetypes:video/*',
-        //     'lecture_file_720' => 'nullable|file|mimetypes:video/*',
-        //     'lecture_file_1080' => 'nullable|file|mimetypes:video/*',
-        // ]);
-
-        // if (!$request->hasAny(['lecture_file_360', 'lecture_file_720', 'lecture_file_1080'])) {
-        //     return back()->withErrors(['video' => 'Please upload at least one video file']);
-        // }
-
-        // Create video directories if they don't exist in public
-        $videoDirs = ['360', '720', '1080'];
-        foreach ($videoDirs as $dir) {
-            $path = public_path("Files/{$dir}");
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-        }
+        // Ensure all required directories exist
+        $this->ensureDirectoriesExist();
 
         $name = $request->input('lecture_name');
-        $subject_id = $request->input('subject');
+        $description = $request->input('lecture_description');
+        $course_id = $request->input('course');
+        $type = $request->hasFile('lecture_file_pdf') ? 0 : 1; // 0 for PDF, 1 for video
+        $duration = $request->input('duration');
+        $pages = $request->input('pages');
 
         if ($request->hasFile('object_image')) {
             // Store new image in public/Images/Lectures
@@ -203,7 +190,6 @@ class LectureController extends Controller
             // Use default image
             $path = "Images/Lectures/default.png";
         }
-
 
         // Handle video uploads (public)
         $filePath360 = null;
@@ -230,14 +216,15 @@ class LectureController extends Controller
             $file1080->move(public_path('Files/1080'), $fileName1080);
             $filePath1080 = 'Files/1080/' . $fileName1080;
         }
+
         $filePathPdf = null;
-        if ($request->hasFile('lecture_pdf')) {
+        if ($request->hasFile('lecture_file_pdf')) {
             $pdfDir = public_path('Files/PDFs');
             if (!file_exists($pdfDir)) {
                 mkdir($pdfDir, 0777, true);
             }
 
-            $pdf = $request->file('lecture_pdf');
+            $pdf = $request->file('lecture_file_pdf');
             $pdfName = time() . '_' . $pdf->getClientOriginalName();
             $pdf->move($pdfDir, $pdfName);
             $filePathPdf = 'Files/PDFs/' . $pdfName;
@@ -246,16 +233,20 @@ class LectureController extends Controller
         $lecture = Lecture::create([
             'name' => $name,
             'image' => $path,
-            'pdf_file' => $filePathPdf,
+            'description' => $description,
             'file_360' => $filePath360,
             'file_720' => $filePath720,
             'file_1080' => $filePath1080,
-            'subject_id' => $subject_id,
+            'file_pdf' => $filePathPdf,
+            'course_id' => $course_id,
+            'type' => $type,
+            'duration' => $duration,
+            'pages' => $pages
         ]);
 
-        Subject::findOrFail($subject_id)->lectures()->attach($lecture->id);
+        Course::findOrFail($course_id)->lectures()->attach($lecture->id);
 
-        $data = ['element' => 'product', 'id' => $lecture->id, 'name' => $lecture->name];
+        $data = ['element' => 'lecture', 'id' => $lecture->id, 'name' => $lecture->name];
         session(['add_info' => $data]);
         session(['link' => '/lectures']);
         return redirect()->route('add.confirmation');
@@ -290,9 +281,9 @@ class LectureController extends Controller
             $lecture->image = $path;
         }
 
-        if ($request->hasFile('lecture_pdf')) {
-            if ($lecture->pdf_file && file_exists(public_path($lecture->pdf_file))) {
-                unlink(public_path($lecture->pdf_file));
+        if ($request->hasFile('lecture_file_pdf')) {
+            if ($lecture->file_pdf && file_exists(public_path($lecture->file_pdf))) {
+                unlink(public_path($lecture->file_pdf));
             }
 
             $pdfDir = public_path('Files/PDFs');
@@ -300,46 +291,33 @@ class LectureController extends Controller
                 mkdir($pdfDir, 0777, true);
             }
 
-            $pdf = $request->file('lecture_pdf');
+            $pdf = $request->file('lecture_file_pdf');
             $pdfName = time() . '_' . $pdf->getClientOriginalName();
             $pdf->move($pdfDir, $pdfName);
-            $lecture->pdf_file = 'Files/PDFs/' . $pdfName;
+            $lecture->file_pdf = 'Files/PDFs/' . $pdfName;
+            $lecture->type = 0; // PDF type
+            $lecture->pages = $request->input('pages');
+            $lecture->duration = null;
         }
 
-        // Handle video updates (public)
+        // Handle video updates
         if ($request->hasFile('lecture_file_360')) {
             if ($lecture->file_360 && file_exists(public_path($lecture->file_360))) {
                 unlink(public_path($lecture->file_360));
             }
+
             $file360 = $request->file('lecture_file_360');
             $fileName360 = time() . '_360_' . $file360->getClientOriginalName();
             $file360->move(public_path('Files/360'), $fileName360);
             $lecture->file_360 = 'Files/360/' . $fileName360;
-        }
-
-        if ($request->hasFile('lecture_file_720')) {
-            if ($lecture->file_720 && file_exists(public_path($lecture->file_720))) {
-                unlink(public_path($lecture->file_720));
-            }
-            $file720 = $request->file('lecture_file_720');
-            $fileName720 = time() . '_720_' . $file720->getClientOriginalName();
-            $file720->move(public_path('Files/720'), $fileName720);
-            $lecture->file_720 = 'Files/720/' . $fileName720;
-        }
-
-        if ($request->hasFile('lecture_file_1080')) {
-            if ($lecture->file_1080 && file_exists(public_path($lecture->file_1080))) {
-                unlink(public_path($lecture->file_1080));
-            }
-            $file1080 = $request->file('lecture_file_1080');
-            $fileName1080 = time() . '_1080_' . $file1080->getClientOriginalName();
-            $file1080->move(public_path('Files/1080'), $fileName1080);
-            $lecture->file_1080 = 'Files/1080/' . $fileName1080;
+            $lecture->type = 1; // Video type
+            $lecture->duration = $request->input('duration');
+            $lecture->pages = null;
         }
 
         $lecture->save();
 
-        $data = ['element' => 'lecture', 'id' => $id, 'name' => $lecture->name];
+        $data = ['element' => 'lecture', 'id' => $lecture->id, 'name' => $lecture->name];
         session(['update_info' => $data]);
         session(['link' => '/lectures']);
         return redirect()->route('update.confirmation');
@@ -356,17 +334,17 @@ class LectureController extends Controller
         }
 
         // Delete videos from public
-        if ($lecture->file_360 && file_exists(public_path($lecture->file_360))) {
+        if ($lecture->file_360 && file_exists(public_path($lecture->file_360)) && $lecture->video_360!="Files/360/default_360.mp4") {
             unlink(public_path($lecture->file_360));
         }
-        if ($lecture->file_720 && file_exists(public_path($lecture->file_720))) {
+        if ($lecture->file_720 && file_exists(public_path($lecture->file_720)) && $lecture->video_720!="Files/360/default_720.mp4") {
             unlink(public_path($lecture->file_720));
         }
-        if ($lecture->file_1080 && file_exists(public_path($lecture->file_1080))) {
+        if ($lecture->file_1080 && file_exists(public_path($lecture->file_1080)) && $lecture->video_1080!="Files/360/default_1080.mp4") {
             unlink(public_path($lecture->file_1080));
         }
-        if ($lecture->pdf_file && file_exists(public_path($lecture->pdf_file))) {
-            unlink(public_path($lecture->pdf_file));
+        if ($lecture->file_pdf && file_exists(public_path($lecture->file_pdf)) && $lecture->file_pdf!="Files/PDFs/default_pdf.pdf") {
+            unlink(public_path($lecture->file_pdf));
         }
 
         $lecture->delete();
