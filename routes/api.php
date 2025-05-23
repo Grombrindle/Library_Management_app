@@ -54,13 +54,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getuniversityteachers/{id}', [UniversityController::class, 'fetchTeachers']);
     Route::get('/getalluniversities', [UniversityController::class, 'fetchall']);
 
-    Route::get('/getsubject/{id}', [SubjectController::class, 'fetch']);
-    Route::get('/getsubjectlectures/{id}', [SubjectController::class, 'fetchLectures']);
-    Route::get('/getsubjectteachers/{id}', [SubjectController::class, 'fetchTeachers']);
-    Route::get('/getsubjectusers/{id}', [SubjectController::class, 'fetchUsers']);
-    Route::get('/getallsubjects', [SubjectController::class, 'fetchAll']);
-    Route::get('/subjects', [SubjectController::class, 'getAll']);
-    Route::get('/subjects/{subject}/teachers', [SubjectController::class, 'getTeachers']);
+    Route::prefix('subjects')->group(function () {
+        Route::get('/', [SubjectController::class, 'fetchAll']);
+        Route::get('/literary', [SubjectController::class, 'fetchLiterary']);
+        Route::get('/scientific', [SubjectController::class, 'fetchScientific']);
+        Route::get('/{id}', [SubjectController::class, 'fetch']);
+        Route::get('/{id}/lectures', [SubjectController::class, 'fetchLectures']);
+        Route::get('/{id}/teachers', [SubjectController::class, 'fetchTeachers']);
+        Route::post('/', [SubjectController::class, 'add']);
+        Route::put('/{id}', [SubjectController::class, 'edit']);
+        Route::delete('/{id}', [SubjectController::class, 'delete']);
+    });
 
     Route::get('/courses/{course}/lectures', [LectureController::class, 'getCourseLectures']);
 

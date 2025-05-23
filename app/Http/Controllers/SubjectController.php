@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Teacher;
 use App\Models\Subject;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage;
 
 class SubjectController extends Controller
 {
-    //
-
     public function fetch($id)
     {
         $subject = Subject::find($id);
@@ -31,13 +27,8 @@ class SubjectController extends Controller
     public function fetchLectures($id)
     {
         $subject = Subject::find($id);
-
         if ($subject) {
-            // Get the lectures collection
-            $lectures = $subject->lectures;
-
-            // Transform each lecture's structure
-            $transformedLectures = $lectures->map(function ($lecture) {
+            $lectures = $subject->lectures->map(function ($lecture) {
                 return [
                     'id' => $lecture->id,
                     'name' => $lecture->name,
@@ -54,7 +45,7 @@ class SubjectController extends Controller
 
             return response()->json([
                 'success' => true,
-                'lectures' => $transformedLectures,
+                'lectures' => $lectures,
             ]);
         } else {
             return response()->json([
@@ -80,22 +71,6 @@ class SubjectController extends Controller
         }
     }
 
-    public function fetchUsers($id)
-    {
-        $subject = Subject::find($id);
-        if ($subject) {
-            return response()->json([
-                'success' => "true",
-                'users' => $subject->users,
-            ]);
-        } else {
-            return response()->json([
-                'success' => "false",
-                'reason' => "Subject Not Found"
-            ], 404);
-        }
-    }
-
     public function fetchAll()
     {
         return response()->json([
@@ -103,50 +78,45 @@ class SubjectController extends Controller
         ]);
     }
 
-    public function fetchSci()
+    public function fetchScientific()
     {
         return response()->json([
             'subjects' => Subject::where('literaryOrScientific', 1)->get(),
         ]);
     }
 
-    public function fetchLit()
+    public function fetchLiterary()
     {
-        
         return response()->json([
             'subjects' => Subject::where('literaryOrScientific', 0)->get(),
         ]);
     }
 
-
     public function add(Request $request)
     {
         $validator = $request->validate([
-            'subject_name' => [
-                Rule::unique('subjects', 'name'),
-            ],
+            'subject_name' => [Rule::unique('subjects', 'name')],
+            'subject_type' => 'required|in:0,1' // 0 for literary, 1 for scientific
         ]);
+
         if (!$validator) {
             return redirect()->back()->withErrors([
                 'subject_name' => 'Name has already been taken',
             ]);
         }
+
         if (!is_null($request->file('object_image'))) {
-            // Store new image in public/Images/Subjects
             $file = $request->file('object_image');
             $directory = 'Images/Subjects';
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-            // Ensure directory exists
             if (!file_exists(public_path($directory))) {
                 mkdir(public_path($directory), 0755, true);
             }
 
-            // Store the new image
             $file->move(public_path($directory), $filename);
-            $path = $directory . '/' . $filename;  // "Images/Subjects/filename.ext"
+            $path = $directory . '/' . $filename;
         } else {
-            // Use default image
             $path = "Images/Subjects/default.png";
         }
 
@@ -155,11 +125,13 @@ class SubjectController extends Controller
             'lecturesCount' => 0,
             'subscriptions' => 0,
             'image' => $path,
+            'literaryOrScientific' => $request->input('subject_type')
         ]);
-        $data = ['element' => 'product', 'id' => $subject->id, 'name' => $subject->name];
-        session(['add_info' => $data]);
-        session(['link' => '/subjects']);
-        return redirect()->route('add.confirmation');
+
+        return response()->json([
+            'success' => true,
+            'subject' => $subject
+        ]);
     }
     public function edit(Request $request, $id)
     {
