@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+
 return new class extends Migration
 {
     /**
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->float('duration')->nullable();
             $table->integer('pages')->nullable();
             $table->boolean('type');    //0 is PDF 1 is video
+            $table->foreignIdFor(App\Models\Quiz::class)->nullable();
             $table->foreignIdFor(App\Models\Course::class)->constrained()->onDelete('cascade');
             $table->timestamps();
         });

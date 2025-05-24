@@ -11,6 +11,7 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\FileController;
 
 Route::get('/user', function (Request $request) {
@@ -33,11 +34,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/getuser', [UserController::class, 'fetchAuth']);
     Route::get('/getuser/{id}', [UserController::class, 'fetch']);
-    Route::get('/getusersubjects', [UserController::class, 'fetchSubjects']);
+    Route::get('/getusercourses', [UserController::class, 'fetchCourses']);
     Route::get('/getuserlectures', [UserController::class, 'fetchLectures']);
     Route::get('/getusersubscriptions', [UserController::class, 'fetchSubs']);
     Route::get('/getallusers', [UserController::class, 'fetchAll']);
-    Route::get('/subjectissubscribed/{id}', [UserController::class, 'confirmSubSub']);
+    Route::get('/getfavoritelectures', [UserController::class, 'fetchFavoriteLectures']);
+    Route::get('/getfavoriteteachers', [UserController::class, 'fetchFavoriteTeachers']);
+    Route::post('/lecture/{lecture}/favorite', [UserController::class, 'toggleFavoriteLecture']);
+    Route::post('/teacher/{teacher}/favorite', [UserController::class, 'toggleFavoriteTeacher']);
+    Route::get('/courseissubscribed/{id}', [UserController::class, 'confirmCourseSub']);
     Route::get('/lectureissubscribed/{id}', [UserController::class, 'confirmLecSub']);
     Route::put('/counter', [UserController::class, 'editCounter']);
     Route::put('/changepassword', [UserController::class, 'updatePassword']);
@@ -45,50 +50,55 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/getteacher/{id}', [TeacherController::class, 'fetch']);
     Route::get('/getteachersubjects/{id}', [TeacherController::class, 'fetchSubjects']);
+    Route::get('/getteachercourses/{id}', [TeacherController::class, 'fetchCourses']);
     Route::get('/getteachersubjectsnames/{id}', [TeacherController::class, 'fetchSubjectsNames']);
-    Route::get('/getteacheruniversities/{id}', [TeacherController::class, 'fetchUnis']);
+    Route::get('/getteachercoursessnames/{id}', [TeacherController::class, 'fetchCoursesNames']);
+    // Route::get('/getteacheruniversities/{id}', [TeacherController::class, 'fetchUnis']);
     Route::get('/getallteachers', [TeacherController::class, 'fetchAll']);
-    Route::get('/teachers/{teacher}/courses', [CourseController::class, 'getTeacherCourses']);
+    Route::get('/favoriteteacher/{teacher}', [TeacherController::class, 'checkFavoriteTeacher']);
+    // Route::get('/teachers/{teacher}/courses', [CourseController::class, 'getTeacherCourses']);
 
-    Route::get('/getuniversity/{id}', [UniversityController::class, 'fetch']);
-    Route::get('/getuniversityteachers/{id}', [UniversityController::class, 'fetchTeachers']);
-    Route::get('/getalluniversities', [UniversityController::class, 'fetchall']);
+    // Route::get('/getuniversity/{id}', [UniversityController::class, 'fetch']);
+    // Route::get('/getuniversityteachers/{id}', [UniversityController::class, 'fetchTeachers']);
+    // Route::get('/getalluniversities', [UniversityController::class, 'fetchall']);
 
     Route::prefix('subjects')->group(function () {
         Route::get('/', [SubjectController::class, 'fetchAll']);
         Route::get('/literary', [SubjectController::class, 'fetchLiterary']);
         Route::get('/scientific', [SubjectController::class, 'fetchScientific']);
         Route::get('/{id}', [SubjectController::class, 'fetch']);
-        Route::get('/{id}/lectures', [SubjectController::class, 'fetchLectures']);
+        // Route::get('/{id}/lectures', [SubjectController::class, 'fetchLectures']);
         Route::get('/{id}/teachers', [SubjectController::class, 'fetchTeachers']);
-        Route::post('/', [SubjectController::class, 'add']);
-        Route::put('/{id}', [SubjectController::class, 'edit']);
-        Route::delete('/{id}', [SubjectController::class, 'delete']);
+        // Route::post('/', [SubjectController::class, 'add']);             We're not gonna add subjects through the API
+        // Route::put('/{id}', [SubjectController::class, 'edit']);         Same here
+        // Route::delete('/{id}', [SubjectController::class, 'delete']);    and here
     });
 
-    Route::get('/courses/{course}/lectures', [LectureController::class, 'getCourseLectures']);
 
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
+    Route::get('/getcourselectures/{courseId}', [LectureController::class, 'getCourseLectures']);
     Route::get('/getlecturefile360/{id}', [LectureController::class, 'fetchFile360']);
     Route::get('/getlecturefile720/{id}', [LectureController::class, 'fetchFile720']);
     Route::get('/getlecturefile1080/{id}', [LectureController::class, 'fetchFile1080']);
-    Route::post('/lectures/{lecture}/favorite', [LectureController::class, 'toggleFavoriteLecture']);
-    Route::get('/favorite_lecture/{lecture}', [LectureController::class, 'checkFavoriteLecture']);
-    Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);
-    Route::get('/lectures/{lecture}/pdf', [LectureController::class, 'fetchPdf']);
+    Route::get('/getlecturefilepdf/{id}', [LectureController::class, 'fetchPdf']);
+    Route::get('/favoritelecture/{lecture}', [LectureController::class, 'checkFavoriteLecture']);
+    Route::get('/getlecturequiz/{id}', [LectureController::class, 'fetchQuizQuestions']);
+    // Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);     Not through the API
 
     Route::get('/getteacherimage/{id}', [ImageController::class, 'fetchTeacher']);
     Route::get('/getlectureimage/{id}', [ImageController::class, 'fetchLecture']);
     Route::get('/getsubjectimage/{id}', [ImageController::class, 'fetchSubject']);
-    Route::get('/getuniversityimage/{id}', [ImageController::class, 'fetchUniversity']);
+    Route::get('/getcourseimage/{id}', [ImageController::class, 'fetchCourse']);
+
+    Route::post('/finishquiz/{id}', [QuizController::class, 'finish']);
 
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');
     Route::post('/ban', [SessionController::class, 'banUser'])->name('ban.user');
 
-    Route::post('/teachers/{teacher}/toggle-favorite', [TeacherController::class, 'toggleFavorite']);
-    Route::get('/teachers/{teacher}/check-favorite', [TeacherController::class, 'checkFavorite']);
+
+    Route::get('/getlecturequizzes/{id}', [LectureController::class, 'fetchQuizQuestions']);
 
 
 

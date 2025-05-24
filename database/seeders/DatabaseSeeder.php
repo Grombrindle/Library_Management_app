@@ -156,11 +156,12 @@ class DatabaseSeeder extends Seeder
             'image' => $teacher->image,
             'number' => $teacher->number,
         ]);
-        $this->call(QuizSeeder::class);
         $this->call(SubjectSeeder::class);
         $this->call(TeacherSeeder::class);
         $this->call(CourseSeeder::class);
         $this->call(LectureSeeder::class);
         $this->call(SubscriptionSeeder::class);
+        $this->call(QuizSeeder::class);
+        $this->call(QuestionSeeder::class);
     }
 }

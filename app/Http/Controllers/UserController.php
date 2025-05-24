@@ -24,7 +24,9 @@ class UserController extends Controller
         $user = Auth::user();
 
         $courses = "";
-        $count = $user->courses->count();
+        $count = $user->courses ? $user->courses->count : null;
+        
+        if($count != null)
         foreach ($user->courses as $index => $course) {
             $courses .= $course->name;
             if ($index < $count - 1) {
@@ -34,7 +36,7 @@ class UserController extends Controller
 
         $userArray = $user->toArray();
         $userArray['subs'] = $courses;
-        $userArray['lecturesNum'] = $user->lectures->count();
+        $userArray['lecturesNum'] = $user->lectures ? $user->lectures->count() : "";
 
         $response = [
             'success' => true,
@@ -73,7 +75,8 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $courses = "";
-        $count = $user->courses->count();
+        $count = $user->courses ? $user->courses->count() : null;
+        if($count != null)
         foreach ($user->courses as $index => $course) {
             $courses .= $course->name;
             if ($index < $count - 1)
@@ -82,7 +85,7 @@ class UserController extends Controller
         return response()->json([
             'success' => "true",
             'courses' => $courses,
-            'lectures' => Auth::user()->lectures->count()
+            'lectures' => $user->lectures ? $user->lectures->count() : ""
         ]);
     }
 
@@ -91,6 +94,21 @@ class UserController extends Controller
         return response()->json([
             'success' => "true",
             'users' => User::all()
+        ]);
+    }
+
+    public function fetchFavoriteLectures()
+    {
+        return response()->json([
+            'success' => "true",
+            'favorites' => Auth::user()->favoriteLectures
+        ]);
+    }
+    public function fetchFavoriteTeachers()
+    {
+        return response()->json([
+            'success' => "true",
+            'favorites' => Auth::user()->favoriteTeachers
         ]);
     }
 
@@ -245,6 +263,22 @@ class UserController extends Controller
         ]);
     }
 
+    public function confirmCourseSub($id)
+    {
+        if (is_null(Course::find($id))) {
+            return response()->json([
+                'success' => false,
+                'reason' => "Course Not Found"
+            ], 404);
+        } else {
+            return response()->json([
+                'success' => true,
+                'isSubscribed' => Auth::user()->courses ? (Auth::user()->courses->pluck('id')->contains($id)) : false,
+            ]);
+        }
+    }
+
+
     public function confirmLecSub($id)
     {
         if (is_null(Lecture::find($id))) {
@@ -255,14 +289,34 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'success' => true,
-                'isSubscribed' => Auth::user()->lectures->pluck('id')->contains($id) || Auth::user()->courses->pluck('id')->contains(Lecture::findOrFail($id)->course_id),
+                'isSubscribed' => Auth::user()->lectures ? (Auth::user()->lectures->pluck('id')->contains($id)) : false || (Auth::user()->courses ? (Auth::user()->courses->pluck('id')->contains($id)) : false),
             ]);
         }
+    }
+    public function toggleFavoriteLecture(Lecture $lecture)
+    {
+
+        $user = Auth::user();
+        if ($user->favoriteLectures()->where('lecture_id', $lecture->id)->exists()) {
+            $user->favoriteLectures()->detach($lecture);
+            return response()->json([
+                'status' => 'removed',
+                'is_favorited' => false,
+                'favorites_count' => $user->favoriteLectures->count()
+            ]);
+        }
+
+        $user->favoriteLectures()->attach($lecture);
+        return response()->json([
+            'status' => 'added',
+            'is_favorited' => true,
+            'favorites_count' => $user->favoriteLectures->count()
+        ]);
     }
 
 
 
-    public function toggleFavorite(Teacher $teacher)
+    public function toggleFavoriteTeacher(Teacher $teacher)
     {
         $user = Auth::user();
 
@@ -271,7 +325,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'removed',
                 'is_favorited' => false,
-                'favorites_count' => $teacher->favoritedByUsers()->count()
+                'favorites_count' => $user->favoriteTeachers->count()
             ]);
         }
 
@@ -279,50 +333,7 @@ class UserController extends Controller
         return response()->json([
             'status' => 'added',
             'is_favorited' => true,
-            'favorites_count' => $teacher->favoritedByUsers()->count()
-        ]);
-    }
-
-    public function toggleFavoriteLecture(Lecture $lecture)
-    {
-        $user = Auth::user();
-
-        if ($user->favoriteLectures()->where('lecture_id', $lecture->id)->exists()) {
-            $user->favoriteLectures()->detach($lecture);
-            return response()->json([
-                'status' => 'removed',
-                'is_favorited' => false,
-                'favorites_count' => $lecture->favoritedByUsers()->count()
-            ]);
-        }
-
-        $user->favoriteLectures()->attach($lecture);
-        return response()->json([
-            'status' => 'added',
-            'is_favorited' => true,
-            'favorites_count' => $lecture->favoritedByUsers()->count()
-        ]);
-    }
-
-    public function checkFavorite(Teacher $teacher)
-    {
-        $isFavorited = Auth::user()->favoriteTeachers()
-            ->where('teacher_id', $teacher->id)
-            ->exists();
-
-        return response()->json([
-            'is_favorited' => $isFavorited
-        ]);
-    }
-
-    public function checkFavoriteLecture(Lecture $Lecture)
-    {
-        $isFavorited = Auth::user()->favoriteLectures()
-            ->where('lecture_id', $Lecture->id)
-            ->exists();
-
-        return response()->json([
-            'is_favorited' => $isFavorited
+            'favorites_count' => $user->favoriteTeachers->count()
         ]);
     }
 

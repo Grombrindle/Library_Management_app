@@ -69,4 +69,8 @@ class Lecture extends Model
     {
         return $this->pages;
     }
+
+    public function quiz() {
+        return $this->hasOne(Quiz::class);
+    }
 }

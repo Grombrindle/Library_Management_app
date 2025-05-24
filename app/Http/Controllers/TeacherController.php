@@ -10,6 +10,7 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class TeacherController extends Controller
 {
@@ -76,6 +77,22 @@ class TeacherController extends Controller
             ], 404);
         }
     }
+    
+    public function fetchCourses($id)
+    {
+        $teacher = Teacher::find($id);
+        if ($teacher) {
+            return response()->json([
+                'success' => "true",
+                'courses' => $teacher->courses
+            ]);
+        } else {
+            return response()->json([
+                'success' => "false",
+                'reason' => "Teacher Not Found"
+            ], 404);
+        }
+    }
     public function fetchSubjectsNames($id)
     {
         $subjects = "";
@@ -98,7 +115,7 @@ class TeacherController extends Controller
             ], 404);
         }
     }
-    public function fetchCourses($id)
+    public function fetchCoursesNames($id)
     {
         $courses = "";
         $teacher = Teacher::find($id);
@@ -208,6 +225,16 @@ class TeacherController extends Controller
 
     }
 
+    public function checkFavoriteTeacher(Teacher $teacher)
+    {
+        $isFavorited = Auth::user()->favoriteTeachers()
+            ->where('teacher_id', $teacher->id)
+            ->exists();
+
+        return response()->json([
+            'is_favorited' => $isFavorited
+        ]);
+    }
     public function add(Request $request)
     {
         $validator = $request->validate([

@@ -8,6 +8,7 @@ use App\Models\Subject;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Models\Course;
+use Illuminate\Support\Facades\Auth;
 
 class LectureController extends Controller
 {
@@ -57,7 +58,7 @@ class LectureController extends Controller
         if ($lecture) {
             $filePath = public_path($lecture->file_360);
 
-            if (!file_exists($filePath)) {
+            if ($lecture->file_360 == null || !file_exists($filePath)) {
                 return response()->json([
                     'success' => "false",
                     'reason' => "File Not Found"
@@ -118,7 +119,7 @@ class LectureController extends Controller
         if ($lecture) {
             $filePath = public_path($lecture->file_720);
 
-            if (!file_exists($filePath)) {
+            if ($lecture->file_720 == null || !file_exists($filePath)) {
                 return response()->json([
                     'success' => "false",
                     'reason' => "File Not Found"
@@ -142,6 +143,30 @@ class LectureController extends Controller
         if ($lecture) {
             $filePath = public_path($lecture->file_1080);
 
+            if ($lecture->file_1080 == null || !file_exists($filePath)) {
+                return response()->json([
+                    'success' => "false",
+                    'reason' => "File Not Found"
+                ]);
+            }
+
+            $mimeType = mime_content_type($filePath);
+            return response()->file($filePath, [
+                'Content-Type' => $mimeType,
+            ]);
+        }
+        return response()->json([
+            'success' => "false",
+            'reason' => "Lecture Not Found"
+        ]);
+    }
+
+    public function fetchPdf($id)
+    {
+        $lecture = Lecture::find($id);
+        if ($lecture && $lecture->file_pdf) {
+            $filePath = public_path($lecture->file_pdf);
+
             if (!file_exists($filePath)) {
                 return response()->json([
                     'success' => "false",
@@ -159,6 +184,8 @@ class LectureController extends Controller
             'reason' => "Lecture Not Found"
         ]);
     }
+
+
 
     public function add(Request $request)
     {
@@ -334,16 +361,16 @@ class LectureController extends Controller
         }
 
         // Delete videos from public
-        if ($lecture->file_360 && file_exists(public_path($lecture->file_360)) && $lecture->video_360!="Files/360/default_360.mp4") {
+        if ($lecture->file_360 && file_exists(public_path($lecture->file_360)) && $lecture->video_360 != "Files/360/default_360.mp4") {
             unlink(public_path($lecture->file_360));
         }
-        if ($lecture->file_720 && file_exists(public_path($lecture->file_720)) && $lecture->video_720!="Files/360/default_720.mp4") {
+        if ($lecture->file_720 && file_exists(public_path($lecture->file_720)) && $lecture->video_720 != "Files/360/default_720.mp4") {
             unlink(public_path($lecture->file_720));
         }
-        if ($lecture->file_1080 && file_exists(public_path($lecture->file_1080)) && $lecture->video_1080!="Files/360/default_1080.mp4") {
+        if ($lecture->file_1080 && file_exists(public_path($lecture->file_1080)) && $lecture->video_1080 != "Files/360/default_1080.mp4") {
             unlink(public_path($lecture->file_1080));
         }
-        if ($lecture->file_pdf && file_exists(public_path($lecture->file_pdf)) && $lecture->file_pdf!="Files/PDFs/default_pdf.pdf") {
+        if ($lecture->file_pdf && file_exists(public_path($lecture->file_pdf)) && $lecture->file_pdf != "Files/PDFs/default_pdf.pdf") {
             unlink(public_path($lecture->file_pdf));
         }
 
@@ -372,9 +399,8 @@ class LectureController extends Controller
             ], 404);
         }
 
-        $lectures = $course->lectures()
-            ->select('id', 'name', 'image', 'created_at')
-            ->get();
+        $lectures = $course->lectures;  //got a weird "amiguous column" error, so i changed this, plus
+        //the front bastards can take whatever information they want
 
         return response()->json([
             'success' => true,
@@ -384,6 +410,36 @@ class LectureController extends Controller
                 'name' => $course->name,
                 'subject_id' => $course->subject_id
             ]
+        ]);
+    }
+    public function checkFavoriteLecture(Lecture $lecture)
+    {
+        $isFavorited = Auth::user()->favoriteLectures()
+            ->where('lecture_id', $lecture->id)
+            ->exists();
+
+        return response()->json([
+            'is_favorited' => $isFavorited
+        ]);
+    }
+    public function fetchQuizQuestions($id)
+    {
+        $lecture = Lecture::find($id);
+        if ($lecture) {
+            if ($lecture->quiz) {
+                return response()->json([
+                    'success' => true,
+                    'quiz' => $lecture->quiz->questions
+                ]);
+            }
+            return response()->json([
+                'success' => false,
+                'reason' => "No Quiz For This Lesson"
+            ]);
+        }
+        return response()->json([
+            'success' => false,
+            'reason' => "Lecture not Found"
         ]);
     }
 }

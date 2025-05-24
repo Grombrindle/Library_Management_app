@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Teacher;
 use App\Models\university;
+use App\Models\Course;
 use App\Models\Lecture;
 use App\Models\Subject;
 
@@ -75,13 +76,13 @@ class ImageController extends Controller
         }
     }
 
-    public function fetchUniversity($id)
+    public function fetchCourse($id)
     {
-        $uni = university::find($id);
-        if ($uni) {
-            $path = $uni->image;
+        $course = Course::find($id);
+        if ($course) {
+            $path = $course->image;
             $filePath = public_path($path);
-            if (file_exists($filePath)) {
+            if (file_exists(filename: $filePath)) {
                 $mimeType = mime_content_type($filePath);
                 return response()->file($filePath, ['Content-Type' => $mimeType]);
             }
@@ -92,7 +93,7 @@ class ImageController extends Controller
         } else {
             return response()->json([
                 'success' => 'false',
-                'reason' => 'University Not Found'
+                'reason' => 'Course Not Found'
             ], 404);
         }
     }

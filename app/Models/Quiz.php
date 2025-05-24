@@ -38,13 +38,11 @@ class Quiz extends Model
 
     protected $guarded = [];
 
-    public function teacher()
+    public function lecture()
     {
-        return $this->belongsTo(Teacher::class);
+        return $this->belongsTo(Lecture::class,'lecture_id');
     }
-
-    public function subject()
-    {
-        return $this->belongsTo(Subject::class);
+    public function questions() {
+        return $this->hasMany(Question::class, 'quiz_id');
     }
 }
