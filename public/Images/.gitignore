@@ -1,0 +1,9 @@
+*
+!.gitignore
+
+# Allow everything inside these folders
+!/Web/
+!/Courses/
+!/Subjects/
+!/Lectures/
+!/Admins/
