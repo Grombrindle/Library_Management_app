@@ -38,9 +38,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getuserlectures', [UserController::class, 'fetchLectures']);
     Route::get('/getusersubscriptions', [UserController::class, 'fetchSubs']);
     Route::get('/getallusers', [UserController::class, 'fetchAll']);
-    Route::get('/getfavoritelectures', [UserController::class, 'fetchFavoriteLectures']);
+    Route::get('/getfavoritecourses', [UserController::class, 'fetchFavoriteCourses']);
     Route::get('/getfavoriteteachers', [UserController::class, 'fetchFavoriteTeachers']);
-    Route::post('/lecture/{lecture}/favorite', [UserController::class, 'toggleFavoriteLecture']);
+    Route::post('/course/{course}/favorite', [UserController::class, 'toggleFavoriteCourse']);
     Route::post('/teacher/{teacher}/favorite', [UserController::class, 'toggleFavoriteTeacher']);
     Route::get('/courseissubscribed/{id}', [UserController::class, 'confirmCourseSub']);
     Route::get('/lectureissubscribed/{id}', [UserController::class, 'confirmLecSub']);
@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // Route::delete('/{id}', [SubjectController::class, 'delete']);    and here
     });
 
+    Route::get('/favoritecourse/{id}', [CourseController::class, 'checkFavoriteCourse']);
 
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
@@ -82,7 +83,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getlecturefile720/{id}', [LectureController::class, 'fetchFile720']);
     Route::get('/getlecturefile1080/{id}', [LectureController::class, 'fetchFile1080']);
     Route::get('/getlecturefilepdf/{id}', [LectureController::class, 'fetchPdf']);
-    Route::get('/favoritelecture/{lecture}', [LectureController::class, 'checkFavoriteLecture']);
     Route::get('/getlecturequiz/{id}', [LectureController::class, 'fetchQuizQuestions']);
     // Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);     Not through the API
 
@@ -91,6 +91,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getsubjectimage/{id}', [ImageController::class, 'fetchSubject']);
     Route::get('/getcourseimage/{id}', [ImageController::class, 'fetchCourse']);
 
+    Route::get('/getscore/{id}', [QuizController::class, 'fetchScore']);
+    Route::get('/getcoursescores/{id}', [QuizController::class, 'checkScores']);
     Route::post('/finishquiz/{id}', [QuizController::class, 'finish']);
 
     // Route::get('/getuser', [SessionController::class, 'test']);
@@ -98,7 +100,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/ban', [SessionController::class, 'banUser'])->name('ban.user');
 
 
-    Route::get('/getlecturequizzes/{id}', [LectureController::class, 'fetchQuizQuestions']);
 
 
 

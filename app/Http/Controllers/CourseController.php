@@ -75,6 +75,17 @@ class CourseController extends Controller
             'teachers' => $course->teacher->count() ? $course->teacher : null,
         ]);
     }
+    
+    public function checkFavoriteCourse($id)
+    {
+        $isFavorited = Auth::user()->favoriteCourses()
+            ->where('course_id', $id)
+            ->exists();
+
+        return response()->json([
+            'is_favorited' => $isFavorited
+        ]);
+    }
 
     public function add(Request $request)
     {

@@ -8,18 +8,18 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('favourite_lectures', function (Blueprint $table) {
+        Schema::create('favourite_courses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('lecture_id')->constrained()->onDelete('cascade');
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->timestamps();
 
-            $table->unique(['user_id', 'lecture_id']);
+            $table->unique(['user_id', 'course_id']);
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('favourite_lectures');
+        Schema::dropIfExists('favourite_course');
     }
 };

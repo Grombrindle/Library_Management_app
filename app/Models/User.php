@@ -110,9 +110,9 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
-    public function favoriteLectures()
+    public function favoriteCourses()
     {
-        return $this->belongsToMany(Lecture::class, 'favourite_lectures')
+        return $this->belongsToMany(Course::class, 'favourite_courses')
             ->withTimestamps();
     }
 

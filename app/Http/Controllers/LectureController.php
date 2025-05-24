@@ -399,8 +399,19 @@ class LectureController extends Controller
             ], 404);
         }
 
-        $lectures = $course->lectures;  //got a weird "amiguous column" error, so i changed this, plus
-        //the front bastards can take whatever information they want
+        $lectures = $course->lectures;
+        
+        // Add score to each lecture
+        $lectures->each(function ($lecture) {
+            if ($lecture->quiz) {
+                $score = \App\Models\score::where('user_id', Auth::id())
+                    ->where('quiz_id', $lecture->quiz->id)
+                    ->first();
+                $lecture->score = $score ? $score->correctAnswers : null;
+            } else {
+                $lecture->score = null;
+            }
+        });
 
         return response()->json([
             'success' => true,
@@ -410,16 +421,6 @@ class LectureController extends Controller
                 'name' => $course->name,
                 'subject_id' => $course->subject_id
             ]
-        ]);
-    }
-    public function checkFavoriteLecture(Lecture $lecture)
-    {
-        $isFavorited = Auth::user()->favoriteLectures()
-            ->where('lecture_id', $lecture->id)
-            ->exists();
-
-        return response()->json([
-            'is_favorited' => $isFavorited
         ]);
     }
     public function fetchQuizQuestions($id)

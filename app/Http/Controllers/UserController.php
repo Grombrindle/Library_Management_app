@@ -24,7 +24,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         $courses = "";
-        $count = $user->courses ? $user->courses->count : null;
+        $count = $user->courses ? $user->courses->count() : null;
         
         if($count != null)
         foreach ($user->courses as $index => $course) {
@@ -97,11 +97,11 @@ class UserController extends Controller
         ]);
     }
 
-    public function fetchFavoriteLectures()
+    public function fetchFavoriteCourses()
     {
         return response()->json([
             'success' => "true",
-            'favorites' => Auth::user()->favoriteLectures
+            'favorites' => Auth::user()->favoriteCourses
         ]);
     }
     public function fetchFavoriteTeachers()
@@ -293,24 +293,24 @@ class UserController extends Controller
             ]);
         }
     }
-    public function toggleFavoriteLecture(Lecture $lecture)
+    public function toggleFavoriteCourse(Course $course)
     {
 
         $user = Auth::user();
-        if ($user->favoriteLectures()->where('lecture_id', $lecture->id)->exists()) {
-            $user->favoriteLectures()->detach($lecture);
+        if ($user->favoriteCourses()->where('course_id', $course->id)->exists()) {
+            $user->favoriteCourses()->detach($course);
             return response()->json([
                 'status' => 'removed',
                 'is_favorited' => false,
-                'favorites_count' => $user->favoriteLectures->count()
+                'favorites_count' => $user->favoriteCourses->count()
             ]);
         }
 
-        $user->favoriteLectures()->attach($lecture);
+        $user->favoriteCourses()->attach($course);
         return response()->json([
             'status' => 'added',
             'is_favorited' => true,
-            'favorites_count' => $user->favoriteLectures->count()
+            'favorites_count' => $user->favoriteCourses->count()
         ]);
     }
 
