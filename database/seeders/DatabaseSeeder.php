@@ -156,6 +156,15 @@ class DatabaseSeeder extends Seeder
             'image' => $teacher->image,
             'number' => $teacher->number,
         ]);
+        
+        User::factory()->create([
+            'userName' => 'username',
+            'countryCode' => '+963',
+            'number' => 999999993,
+            'password' => Hash::make('password'),
+            'isBanned' => 0,
+        ]);
+
         $this->call(SubjectSeeder::class);
         $this->call(TeacherSeeder::class);
         $this->call(CourseSeeder::class);

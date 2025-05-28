@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Teacher;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
@@ -54,8 +55,18 @@ class CourseController extends Controller
 
     public function fetchall()
     {
+        $courses = Course::count() ? Course::all() : null;
+        
+        if ($courses) {
+            foreach($courses as $course) {
+                $course->rating = DB::table('course_rating')
+                    ->where('course_id', $course->id)
+                    ->avg('rating') ?? null;
+            }
+        }
+
         return response()->json([
-            'courses' => Course::count() ? Course::all() : null,
+            'courses' => $courses,
         ]);
     }
 
@@ -85,6 +96,33 @@ class CourseController extends Controller
         return response()->json([
             'is_favorited' => $isFavorited
         ]);
+    }
+
+    public function rate(Request $request, $id) {
+        $course = Course::find($id);
+
+        if($course) {
+            $rate = DB::table('course_rating')->updateOrInsert(
+                [
+                    'user_id' => Auth::user()->id,
+                    'course_id' => $id
+                ],
+                [
+                    'rating' => $request->input('rating'),
+                    'updated_at' => now()
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rating saved successfully'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Course not found'
+        ], 404);
     }
 
     public function add(Request $request)

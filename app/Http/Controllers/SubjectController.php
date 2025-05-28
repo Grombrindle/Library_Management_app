@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SubjectController extends Controller
 {
@@ -57,11 +59,24 @@ class SubjectController extends Controller
 
     public function fetchTeachers($id)
     {
-        $subject = Subject::find($id);
+        $subject = Subject::find(id: $id);
+
+        $teachers = $subject->teachers;
+
+        $teachers->each(function ($teacher) {
+            $teacher->isFavorite = Auth::user()->favoriteTeachers()
+                ->where('teacher_id', $teacher->id)
+                ->exists();
+            // Calculate average rating across all courses
+            $teacher->rating = DB::table('course_rating')
+                ->whereIn('course_id', $teacher->courses->pluck('id'))
+                ->avg('rating') ?? null;
+        });
+
         if ($subject) {
             return response()->json([
                 'success' => "true",
-                'teachers' => $subject->teachers,
+                'teachers' => $teachers,
             ]);
         } else {
             return response()->json([

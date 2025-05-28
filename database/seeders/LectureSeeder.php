@@ -43,7 +43,7 @@ class LectureSeeder extends Seeder
             $course = Course::findOrFail($randSub);
             // $course->lecturesCount++;
             // $course->save();
-            $course->lectures()->attach($lecture->id);
+            // $course->lectures()->attach($lecture->id);
 
             $course->lecturesCount = Course::withCount('lectures')->find($course->id)->lectures_count;
             $course->save();

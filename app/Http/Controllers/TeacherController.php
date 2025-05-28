@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TeacherController extends Controller
 {
     //
     public function fetch($id)
     {
-
         $teacher = Teacher::with(['courses', 'subjects'])->find($id);
 
         // Check if the teacher was found
@@ -39,6 +39,12 @@ class TeacherController extends Controller
                 if ($index < $count - 1)
                     $courses .= " - ";
             }
+
+            // Calculate average rating across all courses
+            $averageRating = DB::table('course_rating')
+                ->whereIn('course_id', $teacher->courses->pluck('id'))
+                ->avg('rating') ?? null;
+
             // Build the response
             $response = [
                 'teacher' => [
@@ -52,6 +58,7 @@ class TeacherController extends Controller
                     'youtube' => $links['YouTube'] ?? null,
                     'courses' => $courses,
                     'subjects' => $subjects,
+                    'rating' => $averageRating
                 ],
             ];
 
@@ -77,14 +84,30 @@ class TeacherController extends Controller
             ], 404);
         }
     }
-    
+
     public function fetchCourses($id)
     {
         $teacher = Teacher::find($id);
         if ($teacher) {
+            $courses = $teacher->courses;
+
+            // Add isFavorite field to each course
+            $courses->each(function ($course) {
+                $course->isFavorite = Auth::user()->favoriteCourses()
+                    ->where('course_id', $course->id)
+                    ->exists();
+            });
+
+            if ($courses) {
+                foreach ($courses as $course) {
+                    $course->rating = DB::table('course_rating')
+                        ->where('course_id', $course->id)
+                        ->avg('rating') ?? null;
+                }
+            }
             return response()->json([
                 'success' => "true",
-                'courses' => $teacher->courses
+                'courses' => $courses
             ]);
         } else {
             return response()->json([
@@ -156,6 +179,11 @@ class TeacherController extends Controller
                 if ($index < $count - 1)
                     $subs .= " - ";
             }
+            // Calculate average rating across all courses
+            $averageRating = DB::table('course_rating')
+                ->whereIn('course_id', $teacher->courses->pluck('id'))
+                ->avg('rating') ?? null;
+
             $links = json_decode($teacher->links, true);
             $teachers[] = [
                 'id' => $teacher->id,
@@ -168,6 +196,7 @@ class TeacherController extends Controller
                 'youtube' => $links['YouTube'] ?? null,
                 'courses' => $courses,
                 'subjects' => $subs,
+                'rating' => $averageRating
             ];
         }
 
@@ -428,4 +457,5 @@ class TeacherController extends Controller
         session(['link' => '/teachers']);
         return redirect()->route('delete.confirmation');
     }
+
 }

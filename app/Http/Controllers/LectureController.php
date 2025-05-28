@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LectureController extends Controller
 {
@@ -39,6 +40,8 @@ class LectureController extends Controller
     public function fetch($id)
     {
         $lec = Lecture::find($id);
+        $lec->rating = DB::table('lecture_rating')->where('user_id', Auth::user()->id)->where('lecture_id', $lec->id)->avg('rating');
+        
         if ($lec) {
             return response()->json([
                 'success' => "true",
@@ -185,7 +188,33 @@ class LectureController extends Controller
         ]);
     }
 
+    public function rate(Request $request, $id)
+    {
+        $lecture = Lecture::find($id);
 
+        if ($lecture) {
+            $rate = DB::table('lecture_rating')->updateOrInsert(
+                [
+                    'user_id' => Auth::user()->id,
+                    'lecture_id' => $id
+                ],
+                [
+                    'rating' => $request->input('rating'),
+                    'updated_at' => now()
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rating saved successfully'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Course not found'
+        ], 404);
+    }
 
     public function add(Request $request)
     {
@@ -400,7 +429,7 @@ class LectureController extends Controller
         }
 
         $lectures = $course->lectures;
-        
+
         // Add score and additional data to each lecture
         $lectures->each(function ($lecture) {
             if ($lecture->quiz) {
@@ -419,6 +448,8 @@ class LectureController extends Controller
             $lecture->url720 = $lecture->file_720 ? url($lecture->file_720) : null;
             $lecture->url1080 = $lecture->file_1080 ? url($lecture->file_1080) : null;
             $lecture->urlpdf = $lecture->file_pdf ? url($lecture->file_pdf) : null;
+
+            $lecture->rating = DB::table('lecture_rating')->where('user_id', Auth::user()->id)->where('lecture_id', $lecture->id)->avg('rating');
         });
 
         return response()->json([

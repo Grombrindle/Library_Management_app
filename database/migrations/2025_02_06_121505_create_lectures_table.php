@@ -24,6 +24,7 @@ return new class extends Migration
             $table->float('duration')->nullable();
             $table->integer('pages')->nullable();
             $table->boolean('type');    //0 is PDF 1 is video
+            $table->integer('views')->default(0);
             $table->foreignIdFor(App\Models\Quiz::class)->nullable();
             $table->foreignIdFor(App\Models\Course::class)->constrained()->onDelete('cascade');
             $table->timestamps();

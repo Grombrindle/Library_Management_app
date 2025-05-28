@@ -74,7 +74,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // Route::delete('/{id}', [SubjectController::class, 'delete']);    and here
     });
 
+    Route::get('/getallcourses', [CourseController::class, 'fetchAll']);
     Route::get('/favoritecourse/{id}', [CourseController::class, 'checkFavoriteCourse']);
+    Route::post('/ratecourse/{id}', [CourseController::class, 'rate']);
 
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
@@ -84,6 +86,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getlecturefile1080/{id}', [LectureController::class, 'fetchFile1080']);
     Route::get('/getlecturefilepdf/{id}', [LectureController::class, 'fetchPdf']);
     Route::get('/getlecturequiz/{id}', [LectureController::class, 'fetchQuizQuestions']);
+    Route::post('/ratelecture/{id}', [LectureController::class, 'rate']);
     // Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);     Not through the API
 
     Route::get('/getteacherimage/{id}', [ImageController::class, 'fetchTeacher']);
