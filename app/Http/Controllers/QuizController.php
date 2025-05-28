@@ -8,6 +8,7 @@ use App\Models\score;
 use Carbon\Carbon;
 use App\Models\Course;
 use App\Models\Lecture;
+use App\Models\Quiz;
 
 class QuizController extends Controller
 {
@@ -21,7 +22,8 @@ class QuizController extends Controller
         
         return response()->json([
             'success' => true,
-            'score' => $score ? $score->correctAnswers : null
+            'score' => $score ? $score->correctAnswers : null,
+            'questions' => Lecture::findOrFail($id)->quiz->questions->count(),
         ]);
     }
 
@@ -38,7 +40,8 @@ class QuizController extends Controller
                 $scores[] = [
                     'lecture_id' => $lecture->id,
                     'lecture_name' => $lecture->name,
-                    'score' => $score ? $score->correctAnswers : null
+                    'score' => $score ? $score->correctAnswers : null,
+                    'questions' => $lecture->quiz->questions->count()
                 ];
             }
         }

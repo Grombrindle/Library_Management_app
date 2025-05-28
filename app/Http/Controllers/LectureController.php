@@ -271,7 +271,7 @@ class LectureController extends Controller
             'pages' => $pages
         ]);
 
-        Course::findOrFail($course_id)->lectures()->attach($lecture->id);
+        // Course::findOrFail($course_id)->lectures()->attach($lecture->id);
 
         $data = ['element' => 'lecture', 'id' => $lecture->id, 'name' => $lecture->name];
         session(['add_info' => $data]);
@@ -401,16 +401,24 @@ class LectureController extends Controller
 
         $lectures = $course->lectures;
         
-        // Add score to each lecture
+        // Add score and additional data to each lecture
         $lectures->each(function ($lecture) {
             if ($lecture->quiz) {
                 $score = \App\Models\score::where('user_id', Auth::id())
                     ->where('quiz_id', $lecture->quiz->id)
                     ->first();
                 $lecture->score = $score ? $score->correctAnswers : null;
+                $lecture->number_of_questions = $lecture->quiz->questions->count();
             } else {
                 $lecture->score = null;
+                $lecture->number_of_questions = 0;
             }
+
+            // Add video URLs
+            $lecture->url360 = $lecture->file_360 ? url($lecture->file_360) : null;
+            $lecture->url720 = $lecture->file_720 ? url($lecture->file_720) : null;
+            $lecture->url1080 = $lecture->file_1080 ? url($lecture->file_1080) : null;
+            $lecture->urlpdf = $lecture->file_pdf ? url($lecture->file_pdf) : null;
         });
 
         return response()->json([
