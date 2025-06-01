@@ -203,7 +203,7 @@ class CourseController extends Controller
             $path = $directory . '/' . $filename;
 
             // Delete old image if it's not the default
-            if ($course->image != "Images/courseversities/default.png" && file_exists(public_path($course->image))) {
+            if ($course->image != "Images/Courses/default.png" && file_exists(public_path($course->image))) {
                 unlink(public_path($course->image));
             }
 
