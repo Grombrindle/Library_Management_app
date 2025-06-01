@@ -127,12 +127,13 @@
 
     <x-cardcontainer :model=$modelToPass addLink="addsubject" :filterOptions=$filterOptions :showSubjectCountFilter=true
         filterByTeachers=true :showNameSort=true :showUsernameSort=false>
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedSubjects as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $subject)
                         <x-card link="subject/{{ $subject->id }}" image="{{ asset($subject->image) }}" object="Subject">
                             ● {{__('messages.subjectName')}}: {{ $subject->name }}<br>
+                            ● {{ __('messages.subjectType') }}: {{  $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific')}} <br>
                             ● {{__('messages.coursesNum')}}: {{ $subject->courses->count() }}<br>
                             ● {{__('messages.teachers')}}:
                             @if ($subject->teachers->count() == 0)

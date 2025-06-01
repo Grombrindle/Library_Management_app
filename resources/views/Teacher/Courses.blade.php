@@ -81,7 +81,7 @@
     <x-breadcrumb :links="array_merge([__('messages.home') => url('/welcome')], [__('messages.courses') => Request::url()])" />
 
     <x-cardcontainer :model=$modelToPass addLink="addcourse" :showNameSort=true num="{{ App\Models\Course::count() }}">
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedCourses as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $course)

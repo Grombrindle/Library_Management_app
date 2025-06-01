@@ -109,17 +109,6 @@ class SubjectController extends Controller
 
     public function add(Request $request)
     {
-        $validator = $request->validate([
-            'subject_name' => [Rule::unique('subjects', 'name')],
-            'subject_type' => 'required|in:0,1' // 0 for literary, 1 for scientific
-        ]);
-
-        if (!$validator) {
-            return redirect()->back()->withErrors([
-                'subject_name' => 'Name has already been taken',
-            ]);
-        }
-
         if (!is_null($request->file('object_image'))) {
             $file = $request->file('object_image');
             $directory = 'Images/Subjects';
@@ -140,7 +129,7 @@ class SubjectController extends Controller
             'lecturesCount' => 0,
             'subscriptions' => 0,
             'image' => $path,
-            'literaryOrScientific' => $request->input('subject_type')
+            'literaryOrScientific' => $request->input('subject_type') == 'on' ? 1 : 0
         ]);
 
         return response()->json([

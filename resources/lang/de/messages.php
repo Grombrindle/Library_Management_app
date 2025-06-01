@@ -189,4 +189,7 @@ return [
     'video' => 'Video',
     'duration' => 'Dauer',
     'pages' => 'Seiten',
+    'subjectType' => 'Fachtyp',
+    'scientific' => 'Naturwissenschaftlich',
+    'literary' => 'Geisteswissenschaftlich',
 ];

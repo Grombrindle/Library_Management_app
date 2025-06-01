@@ -189,4 +189,7 @@ return [
     'duration' => 'المدة',
     'pages' => 'الصفحات',
     'video' => 'فيديو',
+    'subjectType' => 'نوع المادة',
+    'scientific' => 'علمي',
+    'literary' => 'أدبي',
 ];

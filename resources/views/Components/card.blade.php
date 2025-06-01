@@ -2,11 +2,11 @@
 <style>
     .Object {
         background: var(--card-bg);
-        margin-top: 2%;
-        font-size: 20px;
-        border: var(--card-border) 4px solid;
+        margin-top: clamp(1%, 2vw, 2%);
+        font-size: clamp(14px, 1.5vw + 8px, 20px);
+        border: var(--card-border) clamp(2px, 0.5vw, 4px) solid;
         color: var(--text-color);
-        border-radius: 3px;
+        border-radius: clamp(2px, 0.5vw, 3px);
         display: flex;
         flex-direction: row;
         transition: all 0.3s ease;
@@ -16,62 +16,11 @@
         position: relative;
         overflow: hidden;
         width: 100%;
-        /* Full width by default */
-        max-width: 800px;
-        /* Maximum width */
+        max-width: clamp(150px, 80vw, 800px);
         margin-left: auto;
         margin-right: auto;
-        overflow:hidden;
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .Object {
-            font-size: 24px;
-            /* Smaller font size */
-            flex-direction: column;
-            /* Stack vertically */
-            padding: 15px;
-            /* Add some padding */
-        }
-
-        .textContainer {
-            width: 100% !important;
-            /* Full width text */
-            padding: 15px !important;
-            /* Adjust padding */
-            text-align: center;
-            /* Center text */
-        }
-
-        .image-container {
-            width: 100% !important;
-            /* Full width image */
-            padding-top: 50% !important;
-            /* Adjust aspect ratio */
-            margin-bottom: 15px;
-            /* Add space below image */
-            object-fit: scale-down;
-        }
-
-        .Object:hover {
-            transform: scale(1.02);
-            /* Simpler hover effect on mobile */
-            animation: none;
-            /* Disable complex animation */
-        }
-    }
-
-    @media (max-width: 480px) {
-        .Object {
-            font-size: 20px;
-            /* Even smaller font */
-            border-width: 3px;
-            /* Thinner border */
-        }
-    }
-
-    /* Rest of your existing styles... */
     .Object:hover {
         box-shadow: 0 0.25rem 0.25rem 0.1rem #121212;
         background-color: var(--card-bg);
@@ -99,8 +48,8 @@
         flex-direction: column;
         line-height: 150%;
         z-index: 2;
-        width: 80%;
-        padding: 4%;
+        width: clamp(60%, 70vw, 80%);
+        padding: clamp(2%, 3vw, 4%);
     }
 
     .circle {
@@ -111,55 +60,24 @@
         border-radius: 50%;
         pointer-events: none;
         transform: translate(-50%, -50%);
-        opacity: 0;
+        opacity: 0.1;
         z-index: 1;
+        transition: opacity 0.3s ease;
+    }
+
+    .Object:hover .circle {
+        opacity: 0.15;
     }
 
     .image-container {
-        margin: 1%;
-        width: 20%;
+        margin: clamp(0.5%, 1vw, 1%);
+        width: clamp(15%, 18vw, 20%);
         position: relative;
-        padding-top: 20%;
-        /* Maintain aspect ratio */
+        padding-top: clamp(15%, 18vw, 20%);
         overflow: hidden;
         flex-shrink: 0;
         z-index: 2;
         transition: all 0.3s ease;
-        /* Smooth transitions */
-    }
-
-    /* Responsive image adjustments */
-    @media (max-width: 992px) {
-        .image-container {
-            width: 25%;
-            padding-top: 25%;
-            /* Slightly larger on medium screens */
-        }
-    }
-
-    @media (max-width: 768px) {
-        .image-container {
-            width: 40%;
-            padding-top: 40%;
-            /* Larger for tablets */
-            margin-bottom: 10px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .image-container {
-            width: 60%;
-            padding-top: 60%;
-            /* Even larger for mobile */
-        }
-    }
-
-    @media (max-width: 480px) {
-        .image-container {
-            width: 80%;
-            padding-top: 80%;
-            /* Nearly full width for small phones */
-        }
     }
 
     .subject-image {
@@ -176,11 +94,9 @@
         0% {
             transform: translateY(5px);
         }
-
         50% {
             transform: translateY(-5px);
         }
-
         100% {
             transform: translateY(5px);
         }
@@ -192,13 +108,10 @@
             opacity: 1;
             transform: translateY(0) scale(1);
         }
-
         70% {
             opacity: 1;
             transform: translateY(-40px) scale(1.05);
-            /* Peak of rise */
         }
-
         100% {
             opacity: 0;
             transform: translateY(-80px) scale(0.95);
@@ -208,6 +121,36 @@
     .Object.disappear {
         animation: fadeAndRise 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         pointer-events: none;
+    }
+
+    .Object h2 {
+        margin: 0 0 1rem 0;
+        font-size: 1.25rem;
+        color: var(--text-color);
+    }
+
+    .Object p {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+        color: var(--text-color);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .Object {
+            flex-direction: column;
+        }
+
+        .textContainer {
+            width: 100% !important;
+            text-align: center;
+        }
+
+        .image-container {
+            width: clamp(60%, 70vw, 80%) !important;
+            padding-top: clamp(30%, 35vw, 40%) !important;
+            margin: 0 auto clamp(5px, 1vw, 10px) auto;
+        }
     }
 </style>
 
@@ -228,7 +171,6 @@
         const buttons = document.querySelectorAll('.Object');
 
         buttons.forEach(button => {
-
             const circle = button.querySelector('.circle');
 
             button.addEventListener('mousemove', (event) => {
@@ -278,8 +220,5 @@
     function refreshAnimations() {
         bindDisappearAnimations(); // Re-attach to new/filtered cards
     }
-
-    function refreshAnimations() {
-        bindDisappearAnimations(); // Re-attach to new/filtered cards
-    }
 </script>
+

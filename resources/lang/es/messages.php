@@ -189,4 +189,7 @@ return [
     'duration' => 'Duración',
     'pages' => 'Páginas',
     'video' => 'Video',
+    'subjectType' => 'Tipo de Asignatura',
+    'scientific' => 'Científico',
+    'literary' => 'Literario',
 ];

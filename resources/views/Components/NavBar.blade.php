@@ -35,7 +35,7 @@
         padding: 0 1rem;
         text-align: center;
         text-decoration: none;
-        color: white;
+        color: var(--nav-text);
         background-color: transparent;
         transition: 0.3s ease;
         display: flex;
@@ -115,14 +115,24 @@
         display: none;
         position: absolute;
         top: 65px;
-        right: 10px;
         background-color: #101010;
         z-index: 1000;
         flex-direction: column;
         padding: 10px 0;
         min-width: 200px;
+        width:100%;
         border-radius: 0 0 5px 5px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    html[lang="ar"] .mobile-menu {
+        left: 0;
+        right: auto;
+    }
+
+    html:not([lang="ar"]) .mobile-menu {
+        right: 0;
+        left: auto;
     }
 
     .mobile-menu a,
@@ -148,7 +158,12 @@
         display: inline-flex;
         top: 0;
         right: 0;
-        margin-left: 5px;
+        margin-left: 7px;
+        margin-right: 7px;
+        right: auto;
+        font-size: 1.55rem;
+        width:2.5rem;
+        height:2.5rem;
     }
 
     .mobile-logout {
@@ -233,6 +248,7 @@
     .language-dropdown {
         position: relative;
         display: inline-block;
+        border-radius: 40px;
         /* margin-left: auto;
         margin-right: auto; */
     }
@@ -259,30 +275,34 @@
     .dropdown-content {
         display: none;
         position: absolute;
-        background-color: #f9f9f9;
+        background-color: #101010;
         min-width: 160px;
         box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
         z-index: 1;
         border-radius: 4px;
+        right: 0;
+        top: 100%;
+        padding: 0;
     }
 
     /* Links inside the dropdown */
     .dropdown-content a {
-        color: black;
+        color: white;
         text-decoration: none;
         display: flex;
         align-items: center;
-
-        padding: 7px 0;
-        text-decoration: none;
+        padding: 10px 16px;
         font-size: 1.5rem;
         width: 100%;
+        transition: 0.3s ease;
+        white-space: nowrap;
+        box-sizing: border-box;
     }
 
     /* On hover, change link color */
     .dropdown-content a:hover {
-        background-color: #ddd;
-        color: #007bff;
+        background-color: #9997BC;
+        color: black;
     }
 
     /* Show the dropdown content when hovering over the button */
@@ -309,9 +329,7 @@
         text-align: right;
     }
 
-    [dir="rtl"] .nav-count {
-        left: 5px;
-        right: auto;
+    @media (max-width: 400px) .mobile-menu.nav-count {
     }
 
     [dir="rtl"] .language-dropdown {
@@ -320,8 +338,8 @@
     }
 
     [dir="rtl"] .dropdown-content {
-        right: 0;
-        left: auto;
+        left: 0;
+        right: auto;
     }
 
     [dir="rtl"] .dropdown-content a {
@@ -347,11 +365,10 @@
         text-align: right;
     }
 
-    .theme-toggle {
+    .theme-toggle,
+    .language-toggle {
         position: relative;
         display: inline-block;
-        /* margin-left: auto;
-        margin-right: auto; */
         background: transparent;
         border: none;
         cursor: pointer;
@@ -361,9 +378,65 @@
         border-radius: 4px;
     }
 
-    [dir="rtl"] .theme-toggle {
+    .button-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    [dir="rtl"] .button-container {
         margin-right: 5%;
         margin-left: 0;
+    }
+
+    [dir="ltr"] .button-container {
+        margin-left: 5%;
+        margin-right: 0;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #101010;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 4px;
+        right: 0;
+        top: 100%;
+    }
+
+    [dir="rtl"] .dropdown-content {
+        left: 0;
+        right: auto;
+    }
+
+    .dropdown-content a {
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 10px 16px;
+        font-size: 1.5rem;
+        width: 100%;
+        transition: 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #9997BC;
+        color: black;
+        width: 100%;
+    }
+
+    [dir="rtl"] .dropdown-content a {
+        text-align: right;
+    }
+
+    [dir="rtl"] .flag-icon {
+        margin-right: 0;
+        margin-left: 8px;
     }
 </style>
 
@@ -386,7 +459,7 @@
     <div class="mobile-menu" id="mobileMenu">
         @if (Auth::user()->privileges == 2)
             <a href="/courses" class="NavBarText">
-                {{ __('messages.unviersities') }}
+                {{ __('messages.courses') }}
                 <span class="nav-count">{{ App\Models\Course::count() }}</span>
             </a>
             <a href="/subjects" class="NavBarText">
@@ -422,15 +495,15 @@
                         $lecCount += $course->lectures->count();
                     }
                 @endphp
-                <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:8%;">
+                <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:100%;">
                     {{__('messages.yourSubjects')}}
                     <span class="nav-count">{{ $teacher->subjects->count() }}</span>
                 </a>
-                <a href="/courses" class="NavBarText" id="Link" style="width:8%;">
+                <a href="/courses" class="NavBarText" id="Link" style="width:100%;">
                     {{__('messages.yourCourses')}}
                     <span class="nav-count">{{ $teacher->courses->count() }}</span>
                 </a>
-                <a href="/lectures" class="NavBarText" id="Link" style="width:8%;">
+                <a href="/lectures" class="NavBarText" id="Link" style="width:100%;">
                     {{__('messages.yourLectures')}}
                     <span class="nav-count">{{ $lecCount }}</span>
                 </a>
@@ -444,35 +517,36 @@
             </button>
         </form>
 
-        <div class="language-dropdown">
-            <button class="dropdown-lang-btn" style="background-color:transparent; border:none">
-                <span class="material-symbols-outlined"> language
-                </span>
-            </button>
-            <div class="dropdown-content">
-                <a href="#" onclick="changeLanguage('en')">
-                    <span class="flag-icon flag-icon-us"></span> English
-                </a>
-                <a href="#" onclick="changeLanguage('fr')">
-                    <span class="flag-icon flag-icon-fr"></span> Français
-                </a>
-                <a href="#" onclick="changeLanguage('de')">
-                    <span class="flag-icon flag-icon-de"></span> Deutsch
-                </a>
-                <a href="#" onclick="changeLanguage('tr')">
-                    <span class="flag-icon flag-icon-tr"></span> Türkçe
-                </a>
-                <a href="#" onclick="changeLanguage('es')">
-                    <span class="flag-icon flag-icon-es"></span> Español
-                </a>
-                <a href="#" onclick="changeLanguage('ar')">
-                    <span class="flag-icon flag-icon-sa"></span> عربي
-                </a>
+        <div class="button-container">
+            <div class="language-dropdown">
+                <button class="language-toggle" onclick="toggleLanguageDropdown(event, 'mobileLanguageDropdown')">
+                    <span class="material-symbols-outlined">language</span>
+                </button>
+                <div class="dropdown-content" id="mobileLanguageDropdown">
+                    <a href="#" onclick="changeLanguage('en')">
+                        <span class="flag-icon flag-icon-us"></span> English
+                    </a>
+                    <a href="#" onclick="changeLanguage('fr')">
+                        <span class="flag-icon flag-icon-fr"></span> Français
+                    </a>
+                    <a href="#" onclick="changeLanguage('de')">
+                        <span class="flag-icon flag-icon-de"></span> Deutsch
+                    </a>
+                    <a href="#" onclick="changeLanguage('tr')">
+                        <span class="flag-icon flag-icon-tr"></span> Türkçe
+                    </a>
+                    <a href="#" onclick="changeLanguage('es')">
+                        <span class="flag-icon flag-icon-es"></span> Español
+                    </a>
+                    <a href="#" onclick="changeLanguage('ar')">
+                        <span class="flag-icon flag-icon-sa"></span> عربي
+                    </a>
+                </div>
             </div>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span class="material-symbols-outlined">light_mode</span>
+            </button>
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()">
-            <span class="material-symbols-outlined">light_mode</span>
-        </button>
     </div>
 
     <!-- Original Desktop Navigation -->
@@ -539,11 +613,10 @@
                     </button>
                 </form>
                 <div class="language-dropdown">
-                    <button class="dropdown-lang-btn" style="background-color:transparent; border:none">
-                        <span class="material-symbols-outlined"> language
-                        </span>
+                    <button class="language-toggle" onclick="toggleLanguageDropdown(event, 'desktopLanguageDropdown')">
+                        <span class="material-symbols-outlined">language</span>
                     </button>
-                    <div class="dropdown-content">
+                    <div class="dropdown-content" id="desktopLanguageDropdown">
                         <a href="#" onclick="changeLanguage('en')">
                             <span class="flag-icon flag-icon-us"></span> English
                         </a>
@@ -613,12 +686,29 @@
 </script>
 
 <script>
-    document.querySelectorAll('.dropdown-lang-btn').forEach(function (button) {
-        button.addEventListener('click', function () {
-            var dropdownContent = this.nextElementSibling;
-            dropdownContent.style.display = (dropdownContent.style.display === 'block') ? 'none' :
-                'block';
+    function toggleLanguageDropdown(event, dropdownId) {
+        event.stopPropagation();
+        const dropdown = document.getElementById(dropdownId);
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+        const mobileDropdown = document.getElementById('mobileLanguageDropdown');
+        const desktopDropdown = document.getElementById('desktopLanguageDropdown');
+        const languageToggles = document.querySelectorAll('.language-toggle');
+        
+        let clickedOnToggle = false;
+        languageToggles.forEach(toggle => {
+            if (toggle.contains(event.target)) {
+                clickedOnToggle = true;
+            }
         });
+
+        if (!clickedOnToggle) {
+            if (mobileDropdown) mobileDropdown.style.display = 'none';
+            if (desktopDropdown) desktopDropdown.style.display = 'none';
+        }
     });
 
     function changeLanguage(lang) {

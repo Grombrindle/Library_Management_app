@@ -17,22 +17,23 @@
 ])
 <style>
     .ObjectContainer {
-        padding: 1%;
+        padding: 2rem;
         width: 40rem;
-        height: 150%;
+        max-width: 95vw;
+        height: auto;
         display: flex;
         color: var(--text-color);
         flex-direction: column;
         border: black 5px solid;
-        /* justify-content: center; */
         align-items: center;
         justify-content: center;
         border-radius: 15px;
-        margin-bottom: 3%;
+        margin: 0 auto 2rem;
         background-color: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         box-shadow: 0 0 10px 0.5px var(--text-color);
+        transition: all 0.3s ease;
     }
 
     .Object {
@@ -48,30 +49,6 @@
         transition: 0.3s ease;
     }
 
-    @media(max-width:1600px) {
-        .textContainer {
-            font-size: 25px;
-        }
-    }
-
-    @media(max-width:800px) {
-        .textContainer {
-            font-size: 20px;
-        }
-    }
-
-    @media(max-width:600px) {
-        .textContainer {
-            font-size: 15px;
-        }
-    }
-
-    @media(max-width:400px) {
-        .textContainer {
-            font-size: 10px;
-        }
-    }
-
     .Object:hover {
         background-color: #9997BC;
         border: #555184 4px solid;
@@ -80,74 +57,141 @@
     }
 
     .textContainer {
-        line-height: 50px;
+        line-height: 1.5;
         z-index: 2;
         text-align: center;
+        font-size: 1.5rem;
+        padding: 0 1rem;
+        word-break: break-word;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 1.5rem;
     }
 
     .buttonContainer {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 25px;
-        width: fit-content;
+        gap: 20px;
+        width: 100%;
+        margin-top: 1rem;
     }
 
-    .button {
+    .button, .deleteButton {
         background-color: #555184;
         border: 0.15rem white solid;
         text-decoration: none;
-        font-size: 20px;
+        font-size: 1.1rem;
         color: var(--text-color);
         text-align: center;
-        font-family: 'Pridi';
-        margin-bottom: 2rem;
-        padding: 0.5rem 0.5rem;
-        border-radius: 7.5%;
-        transition: 0.5s ease;
+        font-family: 'Pridi', sans-serif;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+        transition: 0.3s ease;
         height: fit-content;
         width: fit-content;
-
+        cursor: pointer;
+        outline: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        -webkit-tap-highlight-color: transparent;
     }
-
-    .button:hover {
-
+    .button:focus, .deleteButton:focus {
+        border-color: #9997BC;
+        box-shadow: 0 0 0 2px #9997BC33;
+    }
+    .button:hover:not(:disabled), .deleteButton:hover:not(:disabled) {
         background-color: #9997BC;
         border: 0.15rem solid #555184;
         color: #555184;
     }
-
-    .button:disabled {
-        background-color: white;
+    .button:disabled, .deleteButton:disabled {
+        background-color: #eee;
         border-color: darkgray;
         color: darkgray;
         cursor: not-allowed;
-        margin-bottom: 2rem;
-        height: fit-content;
-        width: fit-content;
     }
-
     .deleteButton {
-        background-color: red;
+        background-color: #e74c3c;
         border: 0.15rem white solid;
-        text-decoration: none;
-        font-size: 20px;
-        color: var(--text-color);
-        text-align: center;
-        height: fit-content;
-        width: fit-content;
-        font-family: 'Pridi';
-        margin-bottom: 2rem;
-        padding: 0.5rem 0.5rem;
-        border-radius: 7.5%;
-        transition: 0.5s ease;
-        cursor: pointer;
+        color: #fff;
     }
-
-    .deleteButton:hover {
-        border-color: red;
-        background-color: black;
-        color: red;
+    .deleteButton:hover:not(:disabled) {
+        border-color: #e74c3c;
+        background-color: #222;
+        color: #e74c3c;
+    }
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .ObjectContainer {
+            width: 32rem;
+        }
+        .textContainer {
+            font-size: 1.25rem;
+        }
+    }
+    @media (max-width: 992px) {
+        .ObjectContainer {
+            width: 26rem;
+        }
+        .textContainer {
+            font-size: 1.1rem;
+        }
+    }
+    @media (max-width: 768px) {
+        .ObjectContainer {
+            width: 98vw;
+            padding: 2% 1%;
+        }
+        .textContainer {
+            font-size: 1rem;
+        }
+        .button, .deleteButton {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+        }
+    }
+    @media (max-width: 576px) {
+        .ObjectContainer {
+            width: 100vw;
+            border-width: 3px;
+            padding: 2% 0.5%;
+        }
+        .textContainer {
+            font-size: 0.95rem;
+        }
+        .button, .deleteButton {
+            font-size: 0.95rem;
+            padding: 0.5rem 0.75rem;
+        }
+    }
+    @media (max-width: 400px) {
+        .ObjectContainer {
+            width: 100vw;
+            border-width: 2px;
+            padding: 1% 0.25%;
+        }
+        .textContainer {
+            font-size: 1.5rem;
+        }
+        .button, .deleteButton {
+            font-size: 1.8rem;
+            padding: 0.4rem 0.5rem;
+        }
+    }
+    /* Touch device optimizations */
+    @media (hover: none) {
+        .button:hover, .deleteButton:hover {
+            background-color: #9997BC;
+            color: #fff;
+            box-shadow: none;
+            transform: none;
+        }
+        .button:active, .deleteButton:active {
+            background-color: #555184;
+            color: #fff;
+            transform: scale(0.98);
+        }
     }
 </style>
 

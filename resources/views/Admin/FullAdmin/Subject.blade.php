@@ -8,6 +8,7 @@
         image="{{ asset($subject->image) }}" name="{{ $subject->name }}"
         warning="{{ __('messages.deleteSubjectWarning') }}">
         ● {{ __('messages.subjectName') }}: {{ $subject->name }}<br>
+        ● {{ __('messages.subjectType') }}: {{  $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific')}} <br>
         ● {{ __('messages.coursesNum') }}:
         @if ($subject->courses->count())
             <a href="/subject/{{ $subject->id }}/courses"> {{ $subject->courses->count() }}</a>

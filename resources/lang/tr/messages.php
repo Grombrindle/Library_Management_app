@@ -188,4 +188,7 @@ return [
     'duration' => 'Süre',
     'pages' => 'Sayfalar',
     'video' => 'Video',
+    'subjectType' => 'Ders Tipi',
+    'scientific' => 'Fen',
+    'literary' => 'Edebiyat',
 ];

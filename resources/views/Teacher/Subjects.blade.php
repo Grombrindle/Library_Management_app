@@ -48,7 +48,7 @@
 
     <x-cardcontainer :model=$modelToPass :addLink=null :showSubjectCountFilter=false filterByTeachers=false
         :showNameSort=true>
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedSubjects as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $subject)

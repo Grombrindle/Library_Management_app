@@ -22,6 +22,8 @@
         height: auto;
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
+        box-sizing: border-box;
     }
 
     .container {
@@ -44,6 +46,11 @@
         align-items: center;
         justify-content: center;
         transition: 0.5s ease;
+        font-size: 1.1rem;
+        cursor: pointer;
+        outline: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        -webkit-tap-highlight-color: transparent;
     }
 
     [dir="rtl"] .addButton {
@@ -59,18 +66,27 @@
         border-color: #29C829;
         color: #29C829;
         box-shadow: 0 0 0.5rem 0 #29C829;
-
     }
 
     .search-bar {
-        width: 50%;
+        width: 100%;
         height: 20px;
         border: 2px solid #ccc;
         border-radius: 10px;
         font-size: 1.5rem;
-        padding-left: 2.5rem;
+        padding: 10px 40px;  /* Adjusted padding to accommodate buttons */
         align-self: flex-start;
         margin-right: auto;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 400px) {
+        .search-bar {
+            width: 110%;
+            font-size: 1.2rem;
+            margin-left: -10%;
+            margin-right: 0;
+        }
     }
 
     .chunk {
@@ -83,9 +99,57 @@
         margin-right: 0.5%;
     }
 
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .ObjectContainer { width: 100vw; }
+        .container { width: 70%; }
+        .chunk { width: 70%; }
+        .addButton { font-size: 1rem; }
+    }
+    @media (max-width: 992px) {
+        .ObjectContainer { flex-direction: column; width: 100vw; }
+        .container { width: 100%; }
+        .chunk { width: 100%; }
+        .addButton { font-size: 0.95rem; min-width: 100px; }
+    }
+    @media (max-width: 768px) {
+        .ObjectContainer { flex-direction: column; width: 100vw; }
+        .container { width: 100%; flex-direction: column; }
+        .chunk { width: 100%; }
+        .addButton { font-size: 0.9rem; min-width: 90px; }
+    }
+    @media (max-width: 576px) {
+        .ObjectContainer { width: 100vw; }
+        .container { width: 100%; }
+        .chunk { width: 100%; }
+        .addButton { font-size: 0.85rem; min-width: 80px; }
+    }
+    @media (max-width: 400px) {
+        .ObjectContainer { width: 100vw; }
+        .container { width: 100%; }
+        .chunk { width: 100%; }
+        .addButton { font-size: 0.8rem; min-width: 70px; }
+    }
+    /* Touch device optimizations */
+    @media (hover: none) {
+        .addButton:hover {
+            background-color: #29C829;
+            color: #fff;
+            box-shadow: none;
+            transform: none;
+        }
+        .addButton:active {
+            background-color: #29C829;
+            color: #fff;
+            transform: scale(0.98);
+        }
+    }
+
     #search-form {
         position: relative;
         width: 100%;
+        display: flex;
+        align-items: center;
     }
 
     #search-form button {
@@ -94,18 +158,51 @@
         cursor: pointer;
         position: absolute;
         transform: translateY(-50%);
+        top: 50%;
+        padding: 5px;
+        z-index: 2;
     }
 
-    [dir="ltr"] #search-form button {
-        left: 1%;
+    [dir="ltr"] #search-form button[type="submit"] {
+        left: 5px;
     }
 
-    [dir="rtl"] #search-form button {
-        left: 75%;
+    [dir="rtl"] #search-form button[type="submit"] {
+        right: 5px;
+    }
+
+    #filter-button {
+        position: absolute;
+        background: #f5f5f5;
+        border: 1.5px solid #ccc;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+    [dir="ltr"] #filter-button {
+        right: 5px;
+    }
+
+    [dir="rtl"] #filter-button {
+        left: 5px;
+    }
+
+    #filter-button .material-symbols-outlined {
+        font-size: 20px;
+        color: #555184;
+        pointer-events: none;
     }
 
     #search-form .material-symbols-outlined {
-        font-size: 16px;
+        font-size: 20px;
         color: #666;
     }
 
@@ -158,14 +255,6 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         cursor: pointer;
-    }
-
-    #filter-button {
-        padding: 0;
-        right: 0;
-        width: 1%;
-        margin-left: auto;
-        margin-right: auto;
     }
 
     /* Add to your existing styles */
@@ -225,10 +314,10 @@
         font-size: 20px;
         color: black;
         text-align: center;
-        height: fit-content;
-        width: fit-content;
+        height: 13rem;
+        width: 18rem;
         font-family: 'Pridi';
-        padding: 0.5rem 0.5rem;
+        padding: 0.25rem 0.25rem;
         border-radius: 1rem;
         transition: 0.5s ease;
         cursor: pointer;
@@ -246,6 +335,20 @@
         border-color: red;
         background-color: black;
         color: red;
+    }
+
+    /* Adjust the search button to not overlap with the filter button */
+    .search-button {
+        margin-left: 0;
+    }
+
+    /* Ensure the search button is on the left and the filter button is on the right */
+    #search-form button[type="submit"] {
+        left: 0;
+    }
+
+    #filter-button {
+        right: 0;
     }
 </style>
 <div style="width:80%; display:flex;flex-direction:row;">

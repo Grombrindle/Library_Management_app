@@ -28,50 +28,32 @@
 
     <style>
         html {
-            font-size: 11px;
+            font-size: clamp(7px, 1vw + 4px, 11px);
+            overflow-x: hidden;
         }
-
-        /* Responsive font scaling */
-        @media (max-width: 1200px) {
-            html {
-                font-size: 10px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            html {
-                font-size: 9px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            html {
-                font-size: 8px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            html {
-                font-size: 7px;
-            }
-        }
-
+        
+        /* Remove all breakpoints above 1200px, and interpolate between 400px and 1200px */
+        /* Remove @media (max-width: 992px), (max-width: 768px), (max-width: 480px) for html */
+        
+        /* For body, ensure min-height: 100vh and proportional padding/margin if needed */
         body {
             margin: 0;
             overflow-x: hidden;
-            height: fit-content;
+            /* min-height: 100vh; */
             background: linear-gradient(45deg, var(--bg-gradient-start) 0%, var(--bg-gradient-start) 30%, var(--bg-gradient-end) 60%, var(--bg-gradient-end) 70%, var(--bg-gradient-end) 100%);
             font-family: Arial, Helvetica, sans-serif;
             background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             font-family: 'Pridi';
-            background-size: 175% 175%;
-            background-repeat: no-repeat;
             animation: gradientShift 5s infinite;
+            position: relative;
         }
+        
 
         /* Style for all select elements */
         select {
@@ -246,11 +228,9 @@
             0% {
                 background-position: 0% 50%;
             }
-
             50% {
                 background-position: 100% 50%;
             }
-
             100% {
                 background-position: 0% 50%;
             }
@@ -412,7 +392,7 @@
             --text-color: #fff;
             --text-color-inverted: #000;
             --nav-bg: #000;
-            --nav-text: #222;
+            --nav-text: #4A387D;
             --nav-hover: #3a5a7a;
             --select-bg: #3a5a7a;
             --select-text: #fff;

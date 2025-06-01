@@ -131,7 +131,7 @@
     )" />
     <x-cardcontainer :model=$modelToPass :addLink=null :filterOptions=$filterOptions :showSubjectCountFilter=true
         :showUsernameSort=true :showNameSort=false num="{{ $num }}" :deleteSubs=true :showBannedFilter="true">
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             
             @foreach ($chunkedUsers as $chunk)
                 <div class="chunk">

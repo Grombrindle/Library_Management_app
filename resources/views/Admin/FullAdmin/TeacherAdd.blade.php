@@ -74,7 +74,7 @@
                         <div class="error">{{ $message }}</div>
                     @enderror
                 </div>
-                {{-- <div class="input-container">
+                <div class="input-container">
                     <!-- SVG Icon -->
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -91,13 +91,13 @@
                                 fill="#0F0F0F"></path>
                         </g>
                     </svg>
-                    <input type="url" value="{{ $links['Instagram'] }}"
+                    <input type="url"
                         style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="instagram_link"
                         placeholder="Enter the Instagram link">
                     @error('instagram_link')
                     <div class="error">{{ $message }}</div>
                     @enderror
-                </div> --}}
+                </div>
                 <div class="input-container">
                     <!-- SVG Icon -->
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="icon">

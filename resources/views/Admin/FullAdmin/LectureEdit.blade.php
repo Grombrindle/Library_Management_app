@@ -130,3 +130,47 @@
     setupFileInput('actual-file-input-720', 'file-input-text-720');
     setupFileInput('actual-file-input-1080', 'file-input-text-1080');
 </script>
+<style>
+.custom-file-input {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.file-input-label {
+    display: block;
+    width: 100%;
+    padding: 8px;
+    background: #9997BC;
+    border: 2px solid #555184;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.file-input-label:hover {
+    background: white;
+    color: #555184;
+    border-color: #555184;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.file-input-text {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .custom-file-input {
+        max-width: 100%;
+    }
+}
+</style>

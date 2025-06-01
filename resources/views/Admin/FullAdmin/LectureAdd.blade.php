@@ -36,12 +36,12 @@
 
         <br>
 
-        <div class="video-inputs" style="display: none;">
+        <div class="video-inputs" style="display: none; width: 100%; box-sizing: border-box;">
             <span>{{ __('messages.videoFile') }} ({{ __('messages.uploadAtLeastOne') }}):</span>
             <br>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; width: 100%; box-sizing: border-box;">
                 <div>
-                    <label for="actual-file-input-360">360p ({{ __('messages.mandatory') }})</label>
+                    <label for="actual-file-input-360">360p<br>({{ __('messages.mandatory') }})</label>
                     <div class="custom-file-input">
                         <input type="file" id="actual-file-input-360" class="hidden-file-input" name="lecture_file_360"
                             accept="video/*">
@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div>
-                    <label for="actual-file-input-720">720p ({{ __('messages.optional') }})</label>
+                    <label for="actual-file-input-720">720p<br>({{ __('messages.optional') }})</label>
                     <div class="custom-file-input">
                         <input type="file" id="actual-file-input-720" class="hidden-file-input" name="lecture_file_720"
                             accept="video/*">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-            <div style="display: flex; flex-direction:row;">
+            <div style="display: flex; flex-direction:row; width: 100%; box-sizing: border-box; margin-top: 20px;">
                 <div style="margin-left:auto;margin-right:auto;">
                     <label for="actual-file-input-1080">1080p ({{ __('messages.optional') }})</label>
                     <div class="custom-file-input">
@@ -145,6 +145,49 @@
 
         .toggle-btn.active + .toggle-slider {
             transform: translateX(calc(100% + 2px));
+        }
+
+        .custom-file-input {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .file-input-label {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background: #9997BC;
+            border: 2px solid #555184;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .file-input-label:hover {
+            background: white;
+            color: #555184;
+            border-color: #555184;
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        .file-input-text {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .custom-file-input {
+                max-width: 100%;
+            }
         }
     </style>
 

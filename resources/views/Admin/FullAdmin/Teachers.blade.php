@@ -111,7 +111,7 @@
     <x-cardcontainer :model=$modelToPass addLink="addteacher" :filterOptions=$filterOptions :showSubjectCountFilter=true
         :showUsernameSort=true :showNameSort=true>
         <!-- Add a unique ID to the container for dynamic updates -->
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedTeachers as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $teacher)

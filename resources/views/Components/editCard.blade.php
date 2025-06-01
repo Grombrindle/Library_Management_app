@@ -289,6 +289,100 @@
     .slider.round:before {
         border-radius: 50%;
     }
+
+    .edit-card {
+        background: var(--card-bg);
+        margin-top: clamp(1%, 2vw, 2%);
+        font-size: clamp(14px, 1.5vw + 8px, 20px);
+        border: var(--card-border) clamp(2px, 0.5vw, 4px) solid;
+        color: var(--text-color);
+        border-radius: clamp(2px, 0.5vw, 3px);
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        transform: translateY(-2px);
+        align-items: center;
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        max-width: clamp(150px, 80vw, 800px);
+        margin-left: auto;
+        margin-right: auto;
+        padding: clamp(2%, 3vw, 4%);
+    }
+
+    .edit-card-title {
+        font-size: clamp(16px, 2vw + 10px, 24px);
+        font-weight: bold;
+        margin-bottom: clamp(1%, 2vw, 2%);
+        text-align: center;
+        width: 100%;
+    }
+
+    .edit-card-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1%, 2vw, 2%);
+    }
+
+    .edit-card-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1%, 2vw, 2%);
+    }
+
+    .edit-card-input {
+        width: 100%;
+        padding: clamp(0.5%, 1vw, 1%);
+        font-size: clamp(14px, 1.5vw + 8px, 20px);
+        border: var(--card-border) clamp(1px, 0.3vw, 2px) solid;
+        border-radius: clamp(2px, 0.5vw, 3px);
+        background: var(--input-bg);
+        color: var(--text-color);
+    }
+
+    .edit-card-button {
+        padding: clamp(0.5%, 1vw, 1%) clamp(1%, 2vw, 2%);
+        font-size: clamp(14px, 1.5vw + 8px, 20px);
+        border: var(--card-border) clamp(1px, 0.3vw, 2px) solid;
+        border-radius: clamp(2px, 0.5vw, 3px);
+        background: var(--button-bg);
+        color: var(--button-text);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .edit-card-button:hover {
+        background: var(--button-hover-bg);
+        color: var(--button-hover-text);
+    }
+
+    .edit-card-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Remove all media queries and replace with clamp-based scaling */
+    @media (max-width: 768px) {
+        .edit-card {
+            padding: clamp(1%, 2vw, 3%);
+        }
+
+        .edit-card-title {
+            font-size: clamp(14px, 1.8vw + 8px, 20px);
+        }
+
+        .edit-card-input {
+            padding: clamp(0.3%, 0.8vw, 0.8%);
+        }
+
+        .edit-card-button {
+            padding: clamp(0.3%, 0.8vw, 0.8%) clamp(0.8%, 1.5vw, 1.5%);
+        }
+    }
 </style>
 
 <div class="ObjectContainer">
@@ -330,7 +424,11 @@
             <div id="subject-buttons-container" class="buttonContainer">
                 @foreach ($subjects as $subject)
                     <button type="button" class="subject-button selected"
-                        data-subject-id="{{ $subject->id }}">{{ $subject->name }}</button>
+                        data-subject-id="{{ $subject->id }}">{{ $subject->name }}
+                        @if ($menu == 'Course')
+                                ({{$subject->subject->name}})
+                            @endif
+                    </button>
                 @endforeach
             </div>
             <br>
@@ -352,7 +450,10 @@
             </option>
                     @foreach ($menuModel as $subject)
                         @if (!in_array($subject->id, $selectedSubjects))
-                            <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                            <option value="{{ $subject->id }}">{{ $subject->name }} @if ($menu == 'Course')
+                                ({{$subject->subject->name}})
+                            @endif
+                        </option>
                         @endif
                     @endforeach
                 </select>
@@ -370,7 +471,7 @@
             <div id="subscribed-lectures-container" class="buttonContainer">
                 @foreach ($model->lectures->pluck('id')->toArray() as $lecture)
                     <button type="button" class="lecture-button selected" data-lecture-id="{{ $lecture }}"
-                        onclick="toggleLectureSelection(this)">{{ App\Models\Lecture::findOrFail($lecture)->name }}</button>
+                        onclick="toggleLectureSelection(this)">{{ App\Models\Lecture::findOrFail($lecture)->name }} <br> ({{ App\Models\Lecture::findOrFail($lecture)->course->subject->name }}, {{ App\Models\Lecture::findOrFail($lecture)->course->name }})</button>
                 @endforeach
             </div>
             <div class="dropdown" id="lectureD">
@@ -389,12 +490,12 @@
                                                     <div data-lecture-id="{{ $lecture->id }}"
                                                         style="padding:0.25rem 0.25rem; cursor:pointer"
                                                         onclick="selectLecture(this)">
-                                                        {{ $lecture->name }}
+                                                        {{ $lecture->name }} <br> ({{ $lecture->course->subject->name }}, {{ $lecture->course->name }})
                                                     </div>
                                                 @else
                                                     <div
                                                         style="padding:0.25rem 0.25rem; cursor:pointer; color:#333333; cursor:default; background-color:darkgray">
-                                                        {{ $lecture->name }}
+                                                        {{ $lecture->name }} <br> ({{ $lecture->course->subject->name }}, {{ $lecture->course->name }})
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -469,7 +570,7 @@
         let initialValues = {};
         let submitButton = document.querySelector(".submit-button");
         // Check banned status
-        let initialBannedStatus = @json($isBanned) ? (@json($isBanned) ? true : false) : null; // Changed to isBanned to match Laravel convention
+        let initialBannedStatus = @json($isBanned) ? true : false; // Changed to isBanned to match Laravel convention
         const bannedCheckbox = document.getElementById('isBanned'); // Changed to match HTML id
         if (bannedCheckbox) {
             if (bannedCheckbox.checked !== initialBannedStatus) {
@@ -497,6 +598,8 @@
             }
             let initialSubjectsSet = new Set(@json($selectedSubjects).map(String));
             let selectedSubjectsSet = new Set([...selectedSubjects].map(String));
+                console.log(initialSubjectsSet);
+                console.log(selectedSubjectsSet);
             if (!setsAreEqual(initialSubjectsSet, selectedSubjectsSet)) hasChanged = true;
             @if ($lectures != false)
                 let initialLecturesSet = new Set(@json($selectedLectures).map(String));
