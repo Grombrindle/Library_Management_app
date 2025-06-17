@@ -96,6 +96,7 @@ class TeacherController extends Controller
                 $course->isFavorite = Auth::user()->favoriteCourses()
                     ->where('course_id', $course->id)
                     ->exists();
+                $course->sources = json_decode($course->sources, true);
             });
 
             if ($courses) {

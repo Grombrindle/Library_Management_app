@@ -25,7 +25,11 @@ class CourseController extends Controller
             ->with(['subject' => function ($query) {
                 $query->select('id', 'name', 'literaryOrScientific');
             }])
-            ->get();
+            ->get()
+            ->map(function($course) {
+                $course->sources = json_decode($course->sources, true);
+                return $course;
+            });
 
         return response()->json([
             'success' => true,
@@ -41,6 +45,7 @@ class CourseController extends Controller
     {
         $course = Course::find($id);
         if ($course) {
+            $course->sources = json_decode($course->sources, true);
             return response()->json([
                 'success' => "true",
                 'course' => $course,
@@ -62,6 +67,7 @@ class CourseController extends Controller
                 $course->rating = DB::table('course_rating')
                     ->where('course_id', $course->id)
                     ->avg('rating') ?? null;
+                $course->sources = json_decode($course->sources, true);
             }
         }
 
@@ -74,7 +80,11 @@ class CourseController extends Controller
     {
         $courses = Course::withAvg('ratings', 'rating')
             ->orderByDesc('ratings_avg_rating')
-            ->get();
+            ->get()
+            ->map(function($course) {
+                $course->sources = json_decode($course->sources, true);
+                return $course;
+            });
 
         return response()->json([
             'courses' => $courses,
@@ -85,7 +95,11 @@ class CourseController extends Controller
     {
         $courses = Course::withCount('users')
             ->orderByDesc('users_count')
-            ->get();
+            ->get()
+            ->map(function($course) {
+                $course->sources = json_decode($course->sources, true);
+                return $course;
+            });
 
         return response()->json([
             'courses' => $courses,
@@ -105,7 +119,11 @@ class CourseController extends Controller
                 ) * 
                 (1 + (COALESCE(ratings_avg_rating, 0) / 5))
             '))
-            ->get();
+            ->get()
+            ->map(function($course) {
+                $course->sources = json_decode($course->sources, true);
+                return $course;
+            });
 
         return response()->json([
             'courses' => $courses,
@@ -118,14 +136,17 @@ class CourseController extends Controller
 
         if (!$course) {
             return response()->json([
-                'success' => false, // Changed to boolean
+                'success' => false,
                 'reason' => "Course Not Found"
             ], 404);
         }
 
+        $course->sources = json_decode($course->sources, true);
+
         return response()->json([
             'success' => true,
             'teachers' => $course->teacher->count() ? $course->teacher : null,
+            'course' => $course
         ]);
     }
     
@@ -169,41 +190,39 @@ class CourseController extends Controller
 
     public function add(Request $request)
     {
-        // $validator = Validator::make($request->all(), [
-        //     'university_name' => 'unique:universities,name'
-        // ], [
-        //     'university_name.unique' => "Already Used"
-        // ]);
-        // if ($validator->fails()) {
-        //     return redirect()->back()->withErrors(['university_name' => "Name Has Already Been Taken"])->withInput(["university_name"]);
-        // }
-
         if (!is_null($request->file('object_image'))) {
-            // Store new image in public/Images/Universities
             $file = $request->file('object_image');
             $directory = 'Images/Courses';
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-            // Ensure directory exists (create if needed)
             if (!file_exists(public_path($directory))) {
                 mkdir(public_path($directory), 0755, true);
             }
 
-            // Store the new image
             $file->move(public_path($directory), $filename);
-            $path = $directory . '/' . $filename;  // "Images/Universities/filename.ext"
+            $path = $directory . '/' . $filename;
         } else {
-            // Use default image
             $path = "Images/Courses/default.png";
         }
 
-        // dd(Request::all());
-
-
         if ($request->input('teacher') != null)
-            $course = Course::make(['name' => $request->input('course_name'), 'teacher_id' => $request->input('teacher'), 'subject_id' => $request->input('subject'), 'lecturesCount' => 0, 'subscriptions' => 0]);
+            $course = Course::make([
+                'name' => $request->input('course_name'), 
+                'teacher_id' => $request->input('teacher'), 
+                'subject_id' => $request->input('subject'), 
+                'lecturesCount' => 0, 
+                'subscriptions' => 0,
+                'sources' => json_encode($request->input('sources', []))
+            ]);
         elseif (Auth::user()->privileges == 0)
-            $course = Course::make(['name' => $request->input('course_name'), 'teacher_id' => Auth::user()->teacher_id, 'subject_id' => $request->input('subject'), 'lecturesCount' => 0, 'subscriptions' => 0]);
+            $course = Course::make([
+                'name' => $request->input('course_name'), 
+                'teacher_id' => Auth::user()->teacher_id, 
+                'subject_id' => $request->input('subject'), 
+                'lecturesCount' => 0, 
+                'subscriptions' => 0,
+                'sources' => json_encode($request->input('sources', []))
+            ]);
 
         $course->image = $path;
         $course->save();
@@ -215,36 +234,20 @@ class CourseController extends Controller
 
     public function edit(Request $request, $id)
     {
-        // dd($request->all());
-        // $uniAttributes = $request->validate([
-        //     'university_name' => [
-        //         Rule::unique('universities', 'name')->ignore($id),
-        //     ],
-        // ]);
-        // if (!$uniAttributes) {
-        //     return redirect()->back()->withErrors([
-        //         'university_name' => 'Name has alread been taken.'
-        //     ]);
-        // }
         $course = Course::findOrFail($id);
-        // $teachers = json_decode($request->selected_objects, true);
-        // $course->teachers()->sync($teachers);
+
         if (!is_null($request->file('object_image'))) {
-            // Store new image in public/Images/Universities
             $file = $request->file('object_image');
             $directory = 'Images/Courses';
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
-            // Ensure directory exists
             if (!file_exists(public_path($directory))) {
                 mkdir(public_path($directory), 0755, true);
             }
 
-            // Store the new image
             $file->move(public_path($directory), $filename);
             $path = $directory . '/' . $filename;
 
-            // Delete old image if it's not the default
             if ($course->image != "Images/Courses/default.png" && file_exists(public_path($course->image))) {
                 unlink(public_path($course->image));
             }
@@ -253,6 +256,7 @@ class CourseController extends Controller
         }
         $course->name = $request->input('course_name');
         $course->description = $request->input('course_description');
+        $course->sources = json_encode($request->input('sources', []));
         $course->save();
         $data = ['element' => 'course', 'id' => $id, 'name' => $course->name];
         session(['update_info' => $data]);

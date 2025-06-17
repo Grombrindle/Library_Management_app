@@ -13,6 +13,21 @@ class Course extends Model
 
     protected $guarded = [];
 
+    protected $fillable = [
+        'name',
+        'description',
+        'image',
+        'teacher_id',
+        'subject_id',
+        'lecturesCount',
+        'subscriptions',
+        'sources'
+    ];
+
+    protected $casts = [
+        'sources' => 'array'
+    ];
+
     public function teacher() {
         return $this->belongsTo(Teacher::class);
     }

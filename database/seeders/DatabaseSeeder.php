@@ -84,6 +84,12 @@ class DatabaseSeeder extends Seeder
                 'subscriptions' => 0,
                 'description' => fake()->text(),
                 'image' => 'Images/Courses/default.png',
+
+                'sources' => json_encode([
+                    ['name' => 'Course Introduction', 'link' => fake()->url()],
+                    ['name' => 'Basic Concepts', 'link' => fake()->url()],
+                    ['name' => 'Advanced Topics', 'link' => fake()->url()]
+                ]),
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
             ]);
@@ -91,7 +97,7 @@ class DatabaseSeeder extends Seeder
             // Add 2-4 random ratings for the course
             $numRatings = rand(2, 4);
             $users = User::inRandomOrder()->take($numRatings)->get();
-            
+
             foreach ($users as $user) {
                 $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
                 DB::table('course_rating')->insert([
@@ -103,7 +109,7 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
 
-            $type = rand(0,1);
+            $type = rand(0, 1);
             $lecture = Lecture::factory()->create([
                 'name' => fake()->name(),
                 'type' => $type,
@@ -115,7 +121,7 @@ class DatabaseSeeder extends Seeder
             // Add 2-4 random ratings for the course
             $numRatings = rand(2, 4);
             $users = User::inRandomOrder()->take($numRatings)->get();
-            
+
             foreach ($users as $user) {
                 $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
                 DB::table('lecture_rating')->insert([
@@ -187,7 +193,7 @@ class DatabaseSeeder extends Seeder
             'image' => $teacher->image,
             'number' => $teacher->number,
         ]);
-        
+
         User::factory()->create([
             'userName' => 'username',
             'countryCode' => '+963',
@@ -203,5 +209,6 @@ class DatabaseSeeder extends Seeder
         $this->call(SubscriptionSeeder::class);
         $this->call(QuizSeeder::class);
         $this->call(QuestionSeeder::class);
+        $this->call(ResourceSeeder::class);
     }
 }

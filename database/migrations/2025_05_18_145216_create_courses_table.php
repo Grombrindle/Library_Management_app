@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('lecturesCount');
             $table->integer('subscriptions');
             $table->string('image');
+            $table->json('sources')->nullable();
             $table->timestamps();
         });
     }

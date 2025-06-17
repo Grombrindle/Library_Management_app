@@ -8,7 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\TeacherController;
-use App\Http\Controllers\UniversityController;
+use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\QuizController;
@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         // Route::delete('/{id}', [SubjectController::class, 'delete']);    and here
     });
 
+    Route::get('/getcourse/{id}', [CourseController::class, 'fetch']);
     Route::get('/getallcourses', [CourseController::class, 'fetchAll']);
     Route::get('/getallcoursesrated', [CourseController::class, 'fetchAllRated']);
     Route::get('/getallcoursessubscribed', [CourseController::class, 'fetchAllSubscribed']);
@@ -97,10 +98,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getlectureimage/{id}', [ImageController::class, 'fetchLecture']);
     Route::get('/getsubjectimage/{id}', [ImageController::class, 'fetchSubject']);
     Route::get('/getcourseimage/{id}', [ImageController::class, 'fetchCourse']);
+    Route::get('/getresourceimage/{id}', [ImageController::class, 'fetchResource']);
 
     Route::get('/getscore/{id}', [QuizController::class, 'fetchScore']);
     Route::get('/getcoursescores/{id}', [QuizController::class, 'checkScores']);
     Route::post('/finishquiz/{id}', [QuizController::class, 'finish']);
+
+    Route::get('/getresource/{id}', [ResourceController::class, 'fetch']);
+    Route::get('/getsubjectresources/{id}', [ResourceController::class, 'fetchFromSubject']);
+    Route::get('/getallresources', [ResourceController::class, 'fetchAll']);
 
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');

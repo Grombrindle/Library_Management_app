@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Teacher;
-use App\Models\university;
 use App\Models\Course;
 use App\Models\Lecture;
 use App\Models\Subject;
+use App\Models\Resource;
 
 class ImageController extends Controller
 {
@@ -94,6 +94,28 @@ class ImageController extends Controller
             return response()->json([
                 'success' => 'false',
                 'reason' => 'Course Not Found'
+            ], 404);
+        }
+    }
+    
+    public function fetchResource($id)
+    {
+        $resource = Resource::find($id);
+        if ($resource) {
+            $path = $resource->image;
+            $filePath = public_path($path);
+            if (file_exists(filename: $filePath)) {
+                $mimeType = mime_content_type($filePath);
+                return response()->file($filePath, ['Content-Type' => $mimeType]);
+            }
+            return response()->json([
+                'success' => 'false',
+                'reason' => 'Image Not Found'
+            ], 404);
+        } else {
+            return response()->json([
+                'success' => 'false',
+                'reason' => 'Resource Not Found'
             ], 404);
         }
     }
