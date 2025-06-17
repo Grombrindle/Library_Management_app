@@ -70,6 +70,48 @@ class CourseController extends Controller
         ]);
     }
 
+    public function fetchAllRated()
+    {
+        $courses = Course::withAvg('ratings', 'rating')
+            ->orderByDesc('ratings_avg_rating')
+            ->get();
+
+        return response()->json([
+            'courses' => $courses,
+        ]);
+    }
+
+    public function fetchAllSubscribed()
+    {
+        $courses = Course::withCount('users')
+            ->orderByDesc('users_count')
+            ->get();
+
+        return response()->json([
+            'courses' => $courses,
+        ]);
+    }
+
+    public function fetchAllRecommended()
+    {
+        $courses = Course::withCount(['users', 'ratings', 'lectures'])
+            ->withAvg('ratings', 'rating')
+            ->orderByDesc(DB::raw('
+                (
+                    (COALESCE(ratings_avg_rating, 0) * 0.5) + 
+                    (ratings_count * 0.2) + 
+                    (users_count * 0.2) + 
+                    (lectures_count * 0.1)
+                ) * 
+                (1 + (COALESCE(ratings_avg_rating, 0) / 5))
+            '))
+            ->get();
+
+        return response()->json([
+            'courses' => $courses,
+        ]);
+    }
+
     public function fetchTeacher($id)
     {
         $course = Course::find($id);

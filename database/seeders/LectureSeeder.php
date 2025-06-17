@@ -7,7 +7,9 @@ use Illuminate\Database\Seeder;
 use App\Models\Lecture;
 use App\Models\Subject;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class LectureSeeder extends Seeder
 {
@@ -40,6 +42,20 @@ class LectureSeeder extends Seeder
                 $lecture->file_pdf = 'Files/PDFs/default_pdf.pdf';
             }
             $lecture->save();
+            
+            $numRatings = rand(2, 4);
+            $users = User::inRandomOrder()->take($numRatings)->get();
+            
+            foreach ($users as $user) {
+                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                DB::table('lecture_rating')->insert([
+                    'user_id' => $user->id,
+                    'lecture_id' => $lecture->id,
+                    'rating' => $rating,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
             $course = Course::findOrFail($randSub);
             // $course->lecturesCount++;
             // $course->save();

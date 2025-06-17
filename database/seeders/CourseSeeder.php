@@ -7,6 +7,8 @@ use Illuminate\Database\Seeder;
 use App\Models\Course;
 use App\Models\Teacher;
 use App\Models\Subject;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class CourseSeeder extends Seeder
 {
@@ -35,6 +37,22 @@ class CourseSeeder extends Seeder
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
             ]);
+            
+            // Add 2-4 random ratings for the course
+            $numRatings = rand(2, 4);
+            $users = User::inRandomOrder()->take($numRatings)->get();
+            
+            foreach ($users as $user) {
+                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                DB::table('course_rating')->insert([
+                    'user_id' => $user->id,
+                    'course_id' => $course->id,
+                    'rating' => $rating,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+
         }
     }
 }

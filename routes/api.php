@@ -75,12 +75,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::get('/getallcourses', [CourseController::class, 'fetchAll']);
+    Route::get('/getallcoursesrated', [CourseController::class, 'fetchAllRated']);
+    Route::get('/getallcoursessubscribed', [CourseController::class, 'fetchAllSubscribed']);
+    Route::get('/getallcoursesrecommended', [CourseController::class, 'fetchAllRecommended']);
     Route::get('/favoritecourse/{id}', [CourseController::class, 'checkFavoriteCourse']);
     Route::post('/ratecourse/{id}', [CourseController::class, 'rate']);
 
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
     Route::get('/getcourselectures/{courseId}', [LectureController::class, 'getCourseLectures']);
+    Route::get('/getcourselectures/{courseId}/rated', [LectureController::class, 'getCourseLecturesRated']);
     Route::get('/getlecturefile360/{id}', [LectureController::class, 'fetchFile360']);
     Route::get('/getlecturefile720/{id}', [LectureController::class, 'fetchFile720']);
     Route::get('/getlecturefile1080/{id}', [LectureController::class, 'fetchFile1080']);

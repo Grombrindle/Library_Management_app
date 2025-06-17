@@ -43,14 +43,16 @@
             background: linear-gradient(45deg, var(--bg-gradient-start) 0%, var(--bg-gradient-start) 30%, var(--bg-gradient-end) 60%, var(--bg-gradient-end) 70%, var(--bg-gradient-end) 100%);
             font-family: Arial, Helvetica, sans-serif;
             background-attachment: fixed;
-            background-size: cover;
+            /* background-size: cover; */
+            background-size: 200% 200%;
+            background-repeat: no-repeat;
             background-position: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             font-family: 'Pridi';
-            animation: gradientShift 5s infinite;
+            animation: gradientShift 5s infinite ease-in-out;
             position: relative;
         }
         

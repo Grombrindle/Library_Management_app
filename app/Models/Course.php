@@ -26,4 +26,20 @@ class Course extends Model
     public function lectures() {
         return $this->hasMany(Lecture::class, 'course_id');
     }
+
+    public function ratings() {
+        return $this->hasMany(CourseRating::class);
+    }
+
+    public function getRatingAttribute() {
+        return $this->ratings()->avg('rating');
+    }
+
+    public function getSubscriptionCountAttribute() {
+        return $this->users()->count();
+    }
+
+    protected $appends = ['rating', 'subscription_count'];
+
+    // protected $with = ['ratings'];
 }

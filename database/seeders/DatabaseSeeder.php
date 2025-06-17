@@ -8,6 +8,7 @@ use App\Models\Subject;
 use App\Models\Admin;
 use App\Models\Lecture;
 use App\Models\Course;
+use Illuminate\Support\Facades\DB;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Facades\Hash;
@@ -86,6 +87,22 @@ class DatabaseSeeder extends Seeder
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
             ]);
+
+            // Add 2-4 random ratings for the course
+            $numRatings = rand(2, 4);
+            $users = User::inRandomOrder()->take($numRatings)->get();
+            
+            foreach ($users as $user) {
+                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                DB::table('course_rating')->insert([
+                    'user_id' => $user->id,
+                    'course_id' => $course->id,
+                    'rating' => $rating,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+
             $type = rand(0,1);
             $lecture = Lecture::factory()->create([
                 'name' => fake()->name(),
@@ -95,6 +112,20 @@ class DatabaseSeeder extends Seeder
                 'course_id' => rand(1, Course::count()),
             ]);
 
+            // Add 2-4 random ratings for the course
+            $numRatings = rand(2, 4);
+            $users = User::inRandomOrder()->take($numRatings)->get();
+            
+            foreach ($users as $user) {
+                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                DB::table('lecture_rating')->insert([
+                    'user_id' => $user->id,
+                    'lecture_id' => $lecture->id,
+                    'rating' => $rating,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
             if ($type) {
                 $lecture->file_360 = 'Files/360/default_360.mp4';
                 $lecture->file_720 = 'Files/720/default_720.mp4';

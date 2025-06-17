@@ -73,4 +73,14 @@ class Lecture extends Model
     public function quiz() {
         return $this->hasOne(Quiz::class);
     }
+
+    public function ratings() {
+        return $this->hasMany(LectureRating::class);
+    }
+
+    public function getRatingAttribute() {
+        return $this->ratings()->avg('rating');
+    }
+
+    protected $appends = ['rating'];
 }

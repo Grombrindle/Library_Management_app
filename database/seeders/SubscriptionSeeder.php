@@ -15,10 +15,11 @@ class SubscriptionSeeder extends Seeder
      */
     public function run(): void
     {
-        for($i=0;$i<10;$i++) {
+        for($i=0;$i<30;$i++) {
             Subscription::factory()->create([
                 'user_id'=> rand(1, User::count()),
                 $courseID = 'course_id'=> rand(1, Course::count()),
+                'created_at' => now()->startOfMonth()->addSeconds(rand(0, now()->endOfMonth()->diffInSeconds(now()->startOfMonth()))),
             ]);
 
         }
