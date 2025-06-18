@@ -28,6 +28,8 @@ class CourseSeeder extends Seeder
                 continue;
             }
 
+            $randomTime = fake()->date();
+
             $course = Course::factory()->create([
                 'name' => fake()->safeColorName(),
                 'lecturesCount' => 0,
@@ -41,6 +43,8 @@ class CourseSeeder extends Seeder
                 ]),
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
+                'created_at' => $randomTime,
+                'updated_at' => $randomTime,
             ]);
             
             // Add 2-4 random ratings for the course

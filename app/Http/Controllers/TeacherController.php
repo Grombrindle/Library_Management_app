@@ -117,6 +117,37 @@ class TeacherController extends Controller
             ], 404);
         }
     }
+
+    public function fetchCoursesRecent($id)
+    {
+        $courses = Teacher::findOrFail($id)->courses()->withAvg('ratings', 'rating')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function ($course) {
+                $course->sources = json_decode($course->sources, true);
+                return $course;
+            });
+
+        return response()->json([
+            'courses' => $courses,
+        ]);
+    }
+
+    public function fetchCoursesRated($id)
+    {
+        $courses = Teacher::findOrFail($id)->courses()->withAvg('ratings', 'rating')
+            ->orderByDesc('ratings_avg_rating')
+            ->get()
+            ->map(function ($course) {
+                $course->sources = json_decode($course->sources, true);
+                return $course;
+            });
+
+        return response()->json([
+            'courses' => $courses,
+        ]);
+    }
+
     public function fetchSubjectsNames($id)
     {
         $subjects = "";

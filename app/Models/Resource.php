@@ -18,6 +18,10 @@ class Resource extends Model
         return $this->hasMany(ResourceRating::class);
     }
 
+    public function subject() {
+        return $this->belongsTo(Subject::class);
+    }
+
     public function getRatingAttribute() {
         return $this->ratings()->avg('rating');
     }

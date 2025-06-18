@@ -76,6 +76,21 @@ class CourseController extends Controller
         ]);
     }
 
+    public function fetchAllRecent()
+    {
+        $courses = Course::withAvg('ratings', 'rating')
+            ->orderByDesc('created_at')
+            ->get()
+            ->map(function($course) {
+                $course->sources = json_decode($course->sources, true);
+                return $course;
+            });
+
+        return response()->json([
+            'courses' => $courses,
+        ]);
+    }
+
     public function fetchAllRated()
     {
         $courses = Course::withAvg('ratings', 'rating')

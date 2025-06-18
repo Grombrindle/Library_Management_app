@@ -78,7 +78,9 @@ class DatabaseSeeder extends Seeder
 
             $teacher->subjects()->attach($subject->id);
 
-            $course = Course::factory()->create([
+            $randomTime = fake()->date();
+
+            $course = Course::factory()->create(attributes: [
                 'name' => fake()->safeColorName(),
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
@@ -92,6 +94,8 @@ class DatabaseSeeder extends Seeder
                 ]),
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
+                'created_at' => $randomTime,
+                'updated_at' => $randomTime,
             ]);
 
             // Add 2-4 random ratings for the course
