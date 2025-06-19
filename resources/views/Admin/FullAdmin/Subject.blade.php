@@ -7,6 +7,7 @@
         lecturesCount="{{ $subject->lecturesCount }}" :object=$subject objectType="Subject"
         image="{{ asset($subject->image) }}" name="{{ $subject->name }}"
         warning="{{ __('messages.deleteSubjectWarning') }}">
+        <br>
         ● {{ __('messages.subjectName') }}: {{ $subject->name }}<br>
         ● {{ __('messages.subjectType') }}: {{  $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific')}} <br>
         ● {{ __('messages.coursesNum') }}:

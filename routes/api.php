@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallcoursesrecent', [CourseController::class, 'fetchAllRecent']);
     Route::get('/getallcoursesrated', [CourseController::class, 'fetchAllRated']);
     Route::get('/getallcoursessubscribed', [CourseController::class, 'fetchAllSubscribed']);
+    Route::get('/getallcoursesusersubscribed', [CourseController::class, 'fetchAllUserSubscribed']);
     Route::get('/getallcoursesrecommended', [CourseController::class, 'fetchAllRecommended']);
     Route::get('/favoritecourse/{id}', [CourseController::class, 'checkFavoriteCourse']);
     Route::post('/ratecourse/{id}', [CourseController::class, 'rate']);

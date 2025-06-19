@@ -187,6 +187,39 @@ class DatabaseSeeder extends Seeder
             'links' => '{"Facebook": "https://facebook", "Instagram": "https://instagram", "Telegram": "https://telegram", "YouTube":"https://youtube"}',
             'password' => Hash::make('password'),
         ]);
+        // Assign a subject to this teacher
+        $subject = Subject::factory()->create([
+            'name' => 'Special Subject',
+            'lecturesCount' => 0,
+            'subscriptions' => 0,
+            'image' => 'Images/Subjects/default.png',
+            'literaryOrScientific' => 1,
+        ]);
+        $teacher->subjects()->attach($subject->id);
+        // Create a course for this teacher and subject
+        $course = Course::factory()->create([
+            'name' => 'Special Course',
+            'teacher_id' => $teacher->id,
+            'subject_id' => $subject->id,
+            'lecturesCount' => 0,
+            'subscriptions' => 0,
+            'description' => 'A special course for the seeded teacher.',
+            'image' => 'Images/Courses/default.png',
+            'sources' => json_encode([
+                ['name' => 'Course Introduction', 'link' => 'https://example.com/intro'],
+            ]),
+        ]);
+        // Create a lecture for this course
+        $lecture = Lecture::factory()->create([
+            'name' => 'Special Lecture',
+            'course_id' => $course->id,
+            'type' => 1,
+            'description' => 'A special lecture for the seeded course.',
+            'image' => 'Images/Lectures/default.png',
+            'file_360' => 'Files/360/default_360.mp4',
+            'file_720' => 'Files/720/default_720.mp4',
+            'file_1080' => 'Files/1080/default_1080.mp4',
+        ]);
         Admin::factory()->create([
             'name' => $teacher->name,
             'userName' => $teacher->userName,

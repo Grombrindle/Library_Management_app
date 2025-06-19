@@ -6,6 +6,7 @@
         editSubscriptionsLink="subject/{{ $subject->id }}/users" lecturesCount="{{ $subject->lecturesCount }}"
         :object=$subject objectType="Subject" image="{{ asset($subject->image) }}" name="{{ $subject->name }}"
         warning="{{ __('messages.deleteSubjectWarning') }}" :addCourse=true>
+        <br>
         ● {{ __('messages.subjectName') }}: {{ $subject->name }}<br>
 
         @if (App\Models\Subject::withCount('teachers')->find(session('subject'))->teachers_count == 1)

@@ -35,7 +35,7 @@ class CourseSeeder extends Seeder
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
                 'description' => fake()->text(),
-                'image' => 'https://example.com/course1.jpg',
+                'image' => 'Images/Courses/default.png',
                 'sources' => json_encode([
                     ['name' => 'Course Introduction', 'link' => fake()->url()],
                     ['name' => 'Basic Concepts', 'link' => fake()->url()],

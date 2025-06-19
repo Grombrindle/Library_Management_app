@@ -53,6 +53,7 @@
     }
 
     .circle {
+        filter: blur(50px);
         position: absolute;
         width: 450px;
         height: 450px;

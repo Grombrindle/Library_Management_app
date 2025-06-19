@@ -32,7 +32,7 @@
         background-color: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        box-shadow: 0 0 10px 0.5px var(--text-color);
+        box-shadow: 0 5px 4px 0.5px var(--text-color);
         transition: all 0.3s ease;
     }
 

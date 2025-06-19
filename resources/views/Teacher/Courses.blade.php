@@ -1,4 +1,4 @@
-@props(['num' => App\Models\Course::count(), 'courses' => null,'subjectID' => null])
+@props(['num' => App\Models\Course::count(), 'courses' => null, 'subjectID' => null])
 
 @php
     // Get the search query and filter values from the request
@@ -66,7 +66,7 @@
 
     // Prepare filter options
     $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
-    
+
     // Split course into chunks
     $chunkSize = 2;
     $chunkedCourses = array_fill(0, $chunkSize, []);
@@ -77,24 +77,62 @@
     }
 @endphp
 
-<x-layout :objects=true object="{{ $courses ? __('messages.coursesFor').' '.App\Models\Subject::findOrFail($subjectID)->name : __('messages.courses')}}">
+<x-layout :objects=true
+    object="{{ $courses ? __('messages.coursesFor') . ' ' . App\Models\Subject::findOrFail($subjectID)->name : __('messages.courses')}}">
     <x-breadcrumb :links="array_merge([__('messages.home') => url('/welcome')], [__('messages.courses') => Request::url()])" />
 
     <x-cardcontainer :model=$modelToPass addLink="addcourse" :showNameSort=true num="{{ App\Models\Course::count() }}">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedCourses as $chunk)
-                <div class="chunk">
-                    @foreach ($chunk as $course)
-                        <x-card link="course/{{ $course->id }}" image="{{ asset($course->image) }}" object="Course">
-                            ● {{ __('messages.courseName') }}: {{ $course->name }}<br>
-                            ● {{ __('messages.forSubject') }}: {{ $course->subject->name }}<br>
-                            ● {{ __('messages.description') }}: {{ $course->description }}<br>
-                            ● {{ __('messages.fromTeacher') }}: {{ $course->teacher->name }}<br>
-                            ● {{ __('messages.lecturesNum') }}: {{ $course->lectures->count() }}<br>
-                            ● {{ __('messages.usersSubTo') }}: {{ $course->users->count() }}<br>
-                        </x-card>
-                    @endforeach
-                </div>
+                    <div class="chunk">
+                        @foreach ($chunk as $course)
+                                    <x-card link="course/{{ $course->id }}" image="{{ asset($course->image) }}" object="Course">
+                                        ● {{ __('messages.courseName') }}: {{ $course->name }}<br>
+                                        ● {{ __('messages.forSubject') }}: {{ $course->subject->name }}<br>
+                                        ● {{ __('messages.description') }}: {{ $course->description }}<br>
+                                        ● {{ __('messages.fromTeacher') }}: {{ $course->teacher->name }}<br>
+                                        ● {{ __('messages.lecturesNum') }}: {{ $course->lectures->count() }}<br>
+                                        ● {{ __('messages.usersSubTo') }}: {{ $course->users->count() }}<br>
+                                        <br>
+                                        <br>
+                                        <div style="display:inline-block; vertical-align:middle;">
+                                            @php
+                                                $rating = $course->rating ?? 0;
+                                            @endphp
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                @if ($rating >= $i)
+                                                    {{-- Full star --}}
+                                                    <svg width="20" height="20" fill="gold" viewBox="0 0 20 20" style="display:inline;">
+                                                        <polygon
+                                                            points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
+                                                    </svg>
+                                                @elseif ($rating >= $i - 0.5)
+                                                    {{-- Half star --}}
+                                                    <svg width="20" height="20" viewBox="0 0 20 20" style="display:inline;">
+                                                        <defs>
+                                                            <linearGradient id="half-grad-{{ $course->id }}-{{ $i }}">
+                                                                <stop offset="50%" stop-color="gold" />
+                                                                <stop offset="50%" stop-color="lightgray" />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <polygon
+                                                            points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36"
+                                                            fill="url(#half-grad-{{ $course->id }}-{{ $i }})" />
+                                                    </svg>
+                                                @else
+                                                    {{-- Empty star --}}
+                                                    <svg width="20" height="20" fill="lightgray" viewBox="0 0 20 20" style="display:inline;">
+                                                        <polygon
+                                                            points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
+                                                    </svg>
+                                                @endif
+                                            @endfor
+                                            <span>({{ number_format($rating, 1) }})</span>
+                                            <span>({{ $course->ratings->count() }} reviews)</span>
+                                        </div>
+                                    </x-card>
+                        @endforeach
+                    </div>
             @endforeach
         </div>
     </x-cardcontainer>

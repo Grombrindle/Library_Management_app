@@ -145,6 +145,22 @@ class CourseController extends Controller
         ]);
     }
 
+    public function fetchAllUserSubscribed()
+    {
+        $courses = Auth::user()->courses()
+            ->withCount('users')
+            ->withAvg('ratings', 'rating')
+            ->get()
+            ->map(function($course) {
+                $course->sources = json_decode($course->sources, true);
+                return $course;
+            });
+
+        return response()->json([
+            'courses' => $courses,
+        ]);
+    }
+
     public function fetchTeacher($id)
     {
         $course = Course::find($id);

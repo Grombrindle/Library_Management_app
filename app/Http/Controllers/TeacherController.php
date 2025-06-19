@@ -298,6 +298,7 @@ class TeacherController extends Controller
     }
     public function add(Request $request)
     {
+        // dd($request->all());
         $validator = $request->validate([
             'teacher_name' => [
                 Rule::unique('admins', 'name')
@@ -311,10 +312,10 @@ class TeacherController extends Controller
                 Rule::unique('users', 'number')
             ],
 
-            'facebook_link' => 'nullable|url',
-            'instagram_link' => 'nullable|url',
-            'telegram_link' => 'nullable|url',
-            'youtube_link' => 'nullable|url',
+            // 'facebook_link' => 'nullable|url',
+            // 'instagram_link' => 'nullable|url',
+            // 'telegram_link' => 'nullable|url',
+            // 'youtube_link' => 'nullable|url',
         ]);
         if (!$validator) {
             return redirect()->back()->withErrors([
@@ -401,14 +402,8 @@ class TeacherController extends Controller
                 Rule::unique('admins', 'number')->ignore(Admin::where('teacher_id', Teacher::findOrFail($id)->id)->first()->id),
                 Rule::unique('users', 'number')
             ],
-
-            'facebook_link' => 'nullable|url',
-            'instagram_link' => 'nullable|url',
-            'telegram_link' => 'nullable|url',
-            'youtube_link' => 'nullable|url',
         ]);
         if (!$validator) {
-            dd('asf');
             return redirect()->back()->withErrors([
                 'teacher_name' => 'Name has already been taken',
                 'teacher_user_name' => 'User name has already been taken',

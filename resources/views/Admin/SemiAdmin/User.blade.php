@@ -4,6 +4,7 @@
     <x-breadcrumb :links="['Home' => url('/welcome'), 'Users' => url('/users'), $user->userName => Request::url()]" :align=true />
     <x-infocard :editLink="'user/edit/' . $user->id" :deleteLink=null :object=$user objectType="User"
         name="{{ $user->userName }}">
+        <br>
         ● {{ __('messages.userName') }}: {{ $user->userName }}<br>
         ● {{ __('messages.userNumber') }}: <br> {{ $user->countryCode }} {{ $user->number }}<br>
         ● {{ __('messages.coursesSubTo') }}:
