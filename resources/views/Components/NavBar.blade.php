@@ -612,7 +612,7 @@
                         <span class="nav-count">{{ $lecCount }}</span>
                     </a>
     @endif
-                <form action="/logout" method="POST"
+                <form action="{{ route('admin.logout') }}" method="POST"
                     style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
                     onsubmit="return confirmLogout()">
                     @csrf

@@ -89,6 +89,7 @@ class User extends Authenticatable
         'remember_token',
         'created_at',
         'updated_at'
+        
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -110,7 +111,8 @@ class User extends Authenticatable
 
     function courses()
     {
-        return $this->belongsToMany(Course::class, 'subscriptions');
+        return $this->belongsToMany(Course::class, 'subscriptions')
+            ->withPivot('is_finished', 'completed_at');
     }
 
     function lectures()

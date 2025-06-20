@@ -197,15 +197,20 @@ class SessionController extends Controller
 
     public function loginWeb(Request $request)
     {
-        $credentials = ['userName' => $request->userName, 'password' => $request->password];
-        if (Auth::attempt($credentials)) {
-            $admin = Admin::where('userName', $credentials['userName'])->first();
-            if (Hash::check($credentials['password'], $admin->password)) {
-                Auth::login($admin);
-                return redirect('/welcome');
-            }
-        }
-        return redirect()->back()->withErrors(['password' => 'Invalid Credentials'])->withInput(['userName']);
+        $request->validate([
+            'userName' => 'required|string',
+            'password' => 'required|string',
+        ]);
 
+        $credentials = $request->only('userName', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->route('web.profile');
+        }
+
+        return back()->withErrors([
+            'userName' => __('auth.failed'),
+        ]);
     }
 }

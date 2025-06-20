@@ -18,6 +18,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::Class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Course::Class)->constrained()->onDelete('cascade');
+            $table->boolean('is_finished')->default(false);
+$table->timestamp('completed_at')->nullable();
             $table->timestamps();
         });
     }

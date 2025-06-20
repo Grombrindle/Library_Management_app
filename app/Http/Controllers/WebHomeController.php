@@ -15,11 +15,14 @@ class WebHomeController extends Controller
     public function index()
     {
         $stats = [
-            'students' => User::where('privileges', 1)->count(),
+            'students' => User::where('privileges', 3)->count(),
             'courses' => Course::count(),
             'teachers' => Teacher::count(),
         ];
+        
+        $courses = Course::with('teacher', 'subject')->latest()->take(3)->get();
+        $teachers = Teacher::withCount('courses')->latest()->take(3)->get();
 
-        return view('Website.webHome', ['stats' => $stats]);
+        return view('Website.webHome', compact('stats', 'courses', 'teachers'));
     }
 }

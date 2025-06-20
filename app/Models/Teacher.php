@@ -94,4 +94,8 @@ class Teacher extends Model
     {
         return $this->hasMany(Favourite::class);
     }
+    public function getFirstSubjectNameAttribute()
+    {
+        return $this->subjects->first()->name ?? 'General';
+    }
 }
