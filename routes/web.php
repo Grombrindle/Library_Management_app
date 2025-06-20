@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\WebCoursesController;
+use App\Http\Controllers\WebProfileController;
+use App\Http\Controllers\WebTeachersController;
 use App\Models\Teacher;
 use App\Models\Course;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +14,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LectureController;
+use App\Http\Controllers\WebHomeController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Lecture;
@@ -21,6 +25,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
+use App\Http\Controllers\TeacherRequestController;
 
 Route::middleware('auth.api')->get('/user', function (Request $request) {
     return $request->user();
@@ -31,6 +36,21 @@ Route::get(
 )->name('login');
 // Route::post('/reg', [SessionController::class, 'adminlogin']);
 Route::post('/weblogin', [SessionController::class, 'loginWeb']);
+
+
+//WEBSITE SECTION
+
+Route::get('/webHome', [WebHomeController::class, 'index'])->name('web.home');
+Route::get('/webHome2', function () {
+    return view('Website.v2WebHome');
+});
+Route::get('/webCourses', [WebCoursesController::class, 'index'])->name('web.courses');
+Route::get('/webProfs', [WebTeachersController::class, 'index'])->name('web.teachers');
+Route::get('/webProfile', [WebProfileController::class, 'show'])->name('web.profile');
+Route::get('/welcome', [WebHomeController::class, 'index'])->name('welcome');
+
+//END WEBSITE SECTION
+
 
 
 
@@ -510,4 +530,34 @@ Route::group(['middleware' => ['auth']], function () {
         return redirect()->route('logout.confirmation');
     });
     Route::post('/registerout', [AdminController::class, 'logout']);
+
+    // Teacher Request System Routes
+    Route::get('/teacher-requests', [TeacherRequestController::class, 'index'])
+        ->name('teacher-requests.index')
+        ->middleware('admin.privileges:0'); // Only FullAdmin (privileges=0) can access
+        
+    Route::get('/teacher-requests/{id}', [TeacherRequestController::class, 'show'])
+        ->name('teacher-requests.show')
+        ->middleware('admin.privileges:0'); // Only FullAdmin (privileges=0) can access
+        
+    Route::post('/teacher-requests/{id}/approve', [TeacherRequestController::class, 'approve'])
+        ->name('teacher-requests.approve')
+        ->middleware('admin.privileges:0'); // Only FullAdmin (privileges=0) can approve
+        
+    Route::post('/teacher-requests/{id}/decline', [TeacherRequestController::class, 'decline'])
+        ->name('teacher-requests.decline')
+        ->middleware('admin.privileges:0'); // Only FullAdmin (privileges=0) can decline
+    
+    // Teacher Request Creation Routes
+    Route::post('/teacher-requests/add/{targetType}', [TeacherRequestController::class, 'storeAddRequest'])
+        ->name('teacher-requests.add')
+        ->middleware('teacher.auth'); // Only teachers can create add requests
+        
+    Route::post('/teacher-requests/edit/{targetType}/{targetId}', [TeacherRequestController::class, 'storeEditRequest'])
+        ->name('teacher-requests.edit')
+        ->middleware('teacher.auth'); // Only teachers can create edit requests
+        
+    Route::post('/teacher-requests/delete/{targetType}/{targetId}', [TeacherRequestController::class, 'storeDeleteRequest'])
+        ->name('teacher-requests.delete')
+        ->middleware('teacher.auth'); // Only teachers can create delete requests
 });

@@ -11,17 +11,17 @@ class Course extends Model
     /** @use HasFactory<\Database\Factories\CourseFactory> */
     use HasFactory;
 
-    protected $guarded = [];
-
     protected $fillable = [
         'name',
         'description',
-        'image',
         'teacher_id',
         'subject_id',
         'lecturesCount',
         'subscriptions',
-        'sources'
+        'image',
+        'sources',
+        'created_at',
+        'updated_at'
     ];
 
     protected $casts = [

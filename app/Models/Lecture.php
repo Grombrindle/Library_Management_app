@@ -42,7 +42,18 @@ class Lecture extends Model
 {
     /** @use HasFactory<\Database\Factories\LectureFactory> */
     use HasFactory;
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'file_360',
+        'file_720',
+        'file_1080',
+        'description',
+        'image',
+        'subject_id',
+        'created_at',
+        'updated_at',
+        'pdf_file'
+    ];
 
     public function course()
     {

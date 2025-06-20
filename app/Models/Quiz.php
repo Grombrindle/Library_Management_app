@@ -36,7 +36,15 @@ class Quiz extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'subject_id',
+        'teacher_id',
+        'question_text',
+        'answers',
+        'correct_answer_index',
+        'created_at',
+        'updated_at'
+    ];
 
     public function lecture()
     {

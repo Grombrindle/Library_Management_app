@@ -47,11 +47,26 @@ class Teacher extends Model
     /** @use HasFactory<\Database\Factories\TeacherFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'userName',
+        'countryCode',
+        'number',
+        'password',
+        'image',
+        'links',
+        'created_at',
+        'updated_at'
+    ];
 
     function courses()
     {
         return $this->hasMany(Course::class);
+    }
+    
+    public function requests()
+    {
+        return $this->hasMany(TeacherRequest::class);
     }
 
     function subjects()
@@ -61,8 +76,9 @@ class Teacher extends Model
 
     public function universities()
     {
-        return $this->belongsToMany(university::class, 'teacher_university');
+        return $this->belongsToMany(University::class, 'teacher_university');
     }
+
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);
@@ -72,5 +88,10 @@ class Teacher extends Model
     {
         return $this->belongsToMany(User::class, 'favourites')
             ->withTimestamps();
+    }
+
+    public function favourites()
+    {
+        return $this->hasMany(Favourite::class);
     }
 }
