@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Quiz;
 use Illuminate\Http\Request;
 use App\Models\Lecture;
 use App\Models\Subject;
@@ -298,6 +299,10 @@ class LectureController extends Controller
             'type' => $type,
             'duration' => $duration,
             'pages' => $pages
+        ]);
+
+        $quiz = Quiz::create([
+            'lecture_id' => $lecture->id
         ]);
 
         // Course::findOrFail($course_id)->lectures()->attach($lecture->id);

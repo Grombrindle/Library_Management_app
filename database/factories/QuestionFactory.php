@@ -17,12 +17,14 @@ class QuestionFactory extends Factory
      */
     public function definition(): array
     {
-        $answers = [
-            'Option '. $this->faker->randomLetter(),
-            'Option '. $this->faker->randomLetter(),
-            'Option '. $this->faker->randomLetter(),
-            'Option '. $this->faker->randomLetter()
-        ];
+        $num = rand(2,4);
+        
+        $answers = [];
+
+        for($i = 0; $i < $num; $i++) {
+            $num == 2 ? ($i == 0 ? $answers[] = "True" : $answers[] = "False") : $answers[] = $this->faker->sentence(3, true);
+        }
+        
 
         return [
             'questionText' => $this->faker->sentence() . '?',

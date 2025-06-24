@@ -23,9 +23,9 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $names = ['Maths', 'Science', 'Arabic', 'Physics', 'Chemistry', 'English', 'French', 'Philosophy', 'History', 'Arabic'];
+        $names = ['Maths', 'Science', 'Arabic', 'Physics', 'Chemistry', 'English', 'French', 'Religion', 'Philosophy', 'History', 'Arabic', 'French', 'English', 'Geography', 'Religion'];
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 15; $i++) {
             $randomDigits = mt_rand(900000000, 999999999);
 
             User::factory()->create([
@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
                 'image' => 'Images/Admins/adminDefault.png',
                 'number' => $randomDigits,
             ]);
-            $i < 7 ? $isSci = 1 : $isSci = 0;
+            $i <= 8 ? $isSci = 1 : $isSci = 0;
             $subject = Subject::factory()->create([
                 'name' => $names[$i],
                 'lecturesCount' => 0,
@@ -188,13 +188,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
         // Assign a subject to this teacher
-        $subject = Subject::factory()->create([
-            'name' => 'Special Subject',
-            'lecturesCount' => 0,
-            'subscriptions' => 0,
-            'image' => 'Images/Subjects/default.png',
-            'literaryOrScientific' => 1,
-        ]);
+        $subject = Subject::findOrFail($i);
         $teacher->subjects()->attach($subject->id);
         // Create a course for this teacher and subject
         $course = Course::factory()->create([

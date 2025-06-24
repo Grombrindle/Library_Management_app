@@ -14,15 +14,15 @@ class SubjectSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 0; $i < 1; $i++) {
-            $subject = Subject::factory()->create([
-                'name' => fake()->colorName(),
-                'lecturesCount'=>0,
-                'subscriptions'=>0,
-                'image' => 'Images/Subjects/default.png',
-                'literaryOrScientific' => rand(0,1),
-            ]);
-            }
+        // for ($i = 0; $i < 1; $i++) {
+        //     $subject = Subject::factory()->create([
+        //         'name' => fake()->colorName(),
+        //         'lecturesCount'=>0,
+        //         'subscriptions'=>0,
+        //         'image' => 'Images/Subjects/default.png',
+        //         'literaryOrScientific' => rand(0,1),
+        //     ]);
+        //     }
         //
     }
 }

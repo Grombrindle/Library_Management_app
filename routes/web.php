@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LectureController;
+use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Lecture;
@@ -318,6 +319,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::put('/editlecture/{id}', [LectureController::class, 'edit']);
     Route::delete('/deletelecture/{id}', [LectureController::class, 'delete']);
+
+
+    Route::put('/updatequiz/{id}', [QuizController::class, 'edit']);
 
     Route::get('/subject/{id}/courses', function ($id, Request $request) {
         // Store the subject ID in the session
