@@ -108,6 +108,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'course_id' => $course->id,
                     'rating' => $rating,
+                    'review' => rand(0,1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -132,6 +133,16 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'lecture_id' => $lecture->id,
                     'rating' => $rating,
+                    'review' => rand(0,1) ? null : fake()->realText(100),
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                DB::table('teacher_ratings')->insert([
+                    'user_id' => $user->id,
+                    'teacher_id' => $teacher->id,
+                    'rating' => $rating,
+                    'review' => rand(0,1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);

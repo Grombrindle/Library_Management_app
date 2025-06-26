@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('userName')->unique();
+            $table->text('description')->nullable();
             $table->string('countryCode');
             $table->string('number')->unique();
             $table->string('password');
             $table->string('image');
+            $table->string('major')->default('Major in teaching lol');
             $table->json('links')->nullable();
             // $table->string('Subject');   //I'll figure what i need to do with this
             $table->timestamps();

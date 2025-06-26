@@ -49,6 +49,24 @@ class Teacher extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'links' => 'array'
+    ];
+    public function toArray()
+    {
+        $array = parent::toArray();
+
+        // If links is present and is an array, merge it into the top-level array
+        if (isset($array['links']) && is_array($array['links'])) {
+            $array = array_merge($array, $array['links']);
+            unset($array['links']);
+        }
+
+        return $array;
+    }
+    protected $hidden = ['password', 'userName'];
+
+
     function courses()
     {
         return $this->hasMany(Course::class);
@@ -73,4 +91,91 @@ class Teacher extends Model
         return $this->belongsToMany(User::class, 'favourites')
             ->withTimestamps();
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(TeacherRating::class);
+    }
+
+    public function getRatingAttribute()
+    {
+        return $this->ratings()->avg('rating');
+    }
+
+    function getCoursesAttribute()
+    {
+        return $this->courses()->get()->pluck('name');
+    }
+    function getCoursesNumAttribute()
+    {
+        return $this->courses()->count();
+    }
+
+    public function getFeaturedRatingsAttribute()
+    {
+        $withReview = $this->ratings()
+            ->with('user')
+            ->whereNotNull('review')
+            ->orderByDesc('rating')
+            ->orderByRaw('LENGTH(review) DESC')
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+
+        if ($withReview->count() >= 3) {
+            return $withReview->map(function($review) {
+                $review->user_name = $review->user ? $review->user->userName : null;
+                return $review;
+            });
+        }
+
+        $needed = 3 - $withReview->count();
+        $withoutReview = $this->ratings()
+            ->with('user')
+            ->whereNull('review')
+            ->orderByDesc('rating')
+            ->orderByDesc('created_at')
+            ->take($needed)
+            ->get();
+
+        $all = $withReview->concat($withoutReview);
+        return $all->map(function($review) {
+            $review->user_name = $review->user ? $review->user->userName : null;
+            return $review;
+        });
+    }
+
+    public function getRatingBreakdownAttribute()
+    {
+        // Get the count of each rating (1-5) for this course
+        $breakdown = $this->ratings()
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating')
+            ->toArray();
+
+        // Ensure all ratings 1-5 are present, even if 0
+        $fullBreakdown = [];
+        foreach (range(1, 5) as $rating) {
+            $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
+        }
+
+        return $fullBreakdown;
+    }
+    public function getUserSubsAttribute()
+    {
+        // Get all course IDs for this teacher
+        $courseIds = $this->courses()->pluck('id');
+
+        // Get unique user IDs from the subscriptions table for these courses
+        $uniqueUserCount = \DB::table('subscriptions')
+            ->whereIn('course_id', $courseIds)
+            ->distinct('user_id')
+            ->count('user_id');
+
+        return $uniqueUserCount;
+    }
+
+    protected $appends = ['rating', 'courses', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs'];
+
 }

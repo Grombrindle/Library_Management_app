@@ -4,20 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ResourceRating extends Model
+class TeacherRating extends Model
 {
-    protected $table = 'resources_ratings';
-
+    protected $table = 'teacher_ratings';
     protected $fillable = [
         'user_id',
-        'resource_id',
-        'rating',
-        'review'
+        'teacher_id',
+        'rating'
     ];
 
-    public function resource()
+    public function teacher()
     {
-        return $this->belongsTo(Resource::class);
+        return $this->belongsTo(Teacher::class);
     }
 
     public function user()

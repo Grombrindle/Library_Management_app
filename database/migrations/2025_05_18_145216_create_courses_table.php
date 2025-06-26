@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->string('requirements')->nullable()->default('A Brain');
             $table->foreignIdFor(Teacher::class);
             $table->foreignIdFor(Subject::class);
             $table->integer('lecturesCount');

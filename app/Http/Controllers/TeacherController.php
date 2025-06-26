@@ -18,51 +18,57 @@ class TeacherController extends Controller
     //
     public function fetch($id)
     {
-        $teacher = Teacher::with(['courses', 'subjects'])->find($id);
+        $teacher = Teacher::find($id);
 
         // Check if the teacher was found
         if ($teacher) {
-            // Decode the links JSON column (if it's stored as a string)
-            $links = is_string($teacher->links) ? json_decode($teacher->links, true) : $teacher->links;
+            // // Decode the links JSON column (if it's stored as a string)
+            // $links = is_string($teacher->links) ? json_decode($teacher->links, true) : $teacher->links;
 
-            $count = $teacher->subjects->count();
-            $subjects = "";
-            foreach ($teacher->subjects as $index => $subject) {
-                $subjects .= $subject->name;
-                if ($index < $count - 1)
-                    $subjects .= " - ";
-            }
-            $count = $teacher->courses->count();
-            $courses = "";
-            foreach ($teacher->courses as $index => $course) {
-                $courses .= $course->name;
-                if ($index < $count - 1)
-                    $courses .= " - ";
-            }
+            // $count = $teacher->subjects->count();
+            // $subjects = "";
+            // foreach ($teacher->subjects as $index => $subject) {
+            //     $subjects .= $subject->name;
+            //     if ($index < $count - 1)
+            //         $subjects .= " - ";
+            // }
+            // $count = $teacher->courses->count();
+            // $courses = "";
+            // foreach ($teacher->courses as $index => $course) {
+            //     $courses .= $course->name;
+            //     if ($index < $count - 1)
+            //         $courses .= " - ";
+            // }
 
-            // Calculate average rating across all courses
-            $averageRating = DB::table('course_rating')
-                ->whereIn('course_id', $teacher->courses->pluck('id'))
-                ->avg('rating') ?? null;
+            // $major = $teacher->major;
 
-            // Build the response
-            $response = [
-                'teacher' => [
-                    'id' => $teacher->id,
-                    'name' => $teacher->name,
-                    'number' => $teacher->number,
-                    'image' => $teacher->image,
-                    'facebook' => $links['Facebook'] ?? null,
-                    'instagram' => $links['Instagram'] ?? null,
-                    'telegram' => $links['Telegram'] ?? null,
-                    'youtube' => $links['YouTube'] ?? null,
-                    'courses' => $courses,
-                    'subjects' => $subjects,
-                    'rating' => $averageRating
-                ],
-            ];
+            // // Calculate average rating across all courses
+            // $averageRating = DB::table('course_rating')
+            //     ->whereIn('course_id', $teacher->courses->pluck('id'))
+            //     ->avg('rating') ?? null;
 
-            return response()->json($response);
+            // // Build the response
+            // $response = [
+            //     'teacher' => [
+            //         'id' => $teacher->id,
+            //         'name' => $teacher->name,
+            //         'number' => $teacher->number,
+            //         'image' => $teacher->image,
+            //         'facebook' => $links['Facebook'] ?? null,
+            //         'instagram' => $links['Instagram'] ?? null,
+            //         'telegram' => $links['Telegram'] ?? null,
+            //         'youtube' => $links['YouTube'] ?? null,
+            //         'courses' => $courses,
+            //         'subjects' => $subjects,
+            //         'major' => $major,
+            //         'rating' => $averageRating
+            //     ],
+            // ];
+
+            return response()->json([
+                'success' => true,
+                'teachers' => $teacher
+            ]);
         } else {
             return response()->json([
                 'teacher' => 'Not Found',
@@ -89,8 +95,8 @@ class TeacherController extends Controller
     {
         $teacher = Teacher::find($id);
         if ($teacher) {
-            $courses = $teacher->courses;
-
+            $courses = $teacher->courses()->get();
+            
             // Add isFavorite field to each course
             $courses->each(function ($course) {
                 $course->isFavorite = Auth::user()->favoriteCourses()
@@ -196,45 +202,49 @@ class TeacherController extends Controller
     {
         // Build the response
         $response = [];
-        foreach (Teacher::all() as $teacher) {
-            $courses = "";
-            $count = $teacher->courses->count();
-            foreach ($teacher->courses as $index => $course) {
-                $courses .= $course->name;
-                if ($index < $count - 1)
-                    $courses .= " - ";
-            }
-            $subs = "";
-            $count = $teacher->subjects->count();
-            foreach ($teacher->subjects as $index => $sub) {
-                $subs .= $sub->name;
-                if ($index < $count - 1)
-                    $subs .= " - ";
-            }
-            // Calculate average rating across all courses
-            $averageRating = DB::table('course_rating')
-                ->whereIn('course_id', $teacher->courses->pluck('id'))
-                ->avg('rating') ?? null;
+        // foreach (Teacher::all() as $teacher) {
+        //     $courses = "";
+        //     $count = $teacher->courses->count();
+        //     foreach ($teacher->courses as $index => $course) {
+        //         $courses .= $course->name;
+        //         if ($index < $count - 1)
+        //             $courses .= " - ";
+        //     }
+        //     $subs = "";
+        //     $count = $teacher->subjects->count();
+        //     foreach ($teacher->subjects as $index => $sub) {
+        //         $subs .= $sub->name;
+        //         if ($index < $count - 1)
+        //             $subs .= " - ";
+        //     }
 
-            $links = json_decode($teacher->links, true);
-            $teachers[] = [
-                'id' => $teacher->id,
-                'name' => $teacher->name,
-                'number' => $teacher->number,
-                'image' => $teacher->image,
-                'facebook' => $links['Facebook'] ?? null,
-                'instagram' => $links['Instagram'] ?? null,
-                'telegram' => $links['Telegram'] ?? null,
-                'youtube' => $links['YouTube'] ?? null,
-                'courses' => $courses,
-                'subjects' => $subs,
-                'rating' => $averageRating
-            ];
-        }
+        //     $major = $teacher->major;
+
+        //     // Calculate average rating across all courses
+        //     $averageRating = DB::table('course_rating')
+        //         ->whereIn('course_id', $teacher->courses->pluck('id'))
+        //         ->avg('rating') ?? null;
+
+        //     $links = json_decode($teacher->links, true);
+        //     $teachers[] = [
+        //         'id' => $teacher->id,
+        //         'name' => $teacher->name,
+        //         'number' => $teacher->number,
+        //         'image' => $teacher->image,
+        //         'facebook' => $links['Facebook'] ?? null,
+        //         'instagram' => $links['Instagram'] ?? null,
+        //         'telegram' => $links['Telegram'] ?? null,
+        //         'youtube' => $links['YouTube'] ?? null,
+        //         'courses' => $courses,
+        //         'subjects' => $subs,
+        //         'major' => $major,
+        //         'rating' => $averageRating
+        //     ];
+        // }
 
         return response()->json([
             'success' => true,
-            'teachers' => $teachers
+            'teachers' => Teacher::all()
         ]); //
     }
 
@@ -248,40 +258,40 @@ class TeacherController extends Controller
             ], 404);
         }
 
-        $teachers = [];
-        foreach ($subject->teachers as $teacher) {
-            $course = "";
-            $count = $teacher->courses->count();
-            foreach ($teacher->courses as $index => $course) {
-                $courses .= $course->name;
-                if ($index < $count - 1)
-                    $courses .= " - ";
-            }
-            $subs = "";
-            $count = $teacher->subjects->count();
-            foreach ($teacher->subjects as $index => $sub) {
-                $subs .= $sub->name;
-                if ($index < $count - 1)
-                    $subs .= " - ";
-            }
-            $links = json_decode($teacher->links, true);
-            $teachers[] = [
-                'id' => $teacher->id,
-                'name' => $teacher->name,
-                'number' => $teacher->number,
-                'image' => $teacher->image,
-                'facebook' => $links['Facebook'] ?? null,
-                'instagram' => $links['Instagram'] ?? null,
-                'telegram' => $links['Telegram'] ?? null,
-                'youtube' => $links['YouTube'] ?? null,
-                'courses' => $courses,
-                'subjects' => $subs,
-            ];
-        }
+        // $teachers = [];
+        // foreach ($subject->teachers as $teacher) {
+        //     $course = "";
+        //     $count = $teacher->courses->count();
+        //     foreach ($teacher->courses as $index => $course) {
+        //         $courses .= $course->name;
+        //         if ($index < $count - 1)
+        //             $courses .= " - ";
+        //     }
+        //     $subs = "";
+        //     $count = $teacher->subjects->count();
+        //     foreach ($teacher->subjects as $index => $sub) {
+        //         $subs .= $sub->name;
+        //         if ($index < $count - 1)
+        //             $subs .= " - ";
+        //     }
+        //     $links = json_decode($teacher->links, true);
+        //     $teachers[] = [
+        //         'id' => $teacher->id,
+        //         'name' => $teacher->name,
+        //         'number' => $teacher->number,
+        //         'image' => $teacher->image,
+        //         'facebook' => $links['Facebook'] ?? null,
+        //         'instagram' => $links['Instagram'] ?? null,
+        //         'telegram' => $links['Telegram'] ?? null,
+        //         'youtube' => $links['YouTube'] ?? null,
+        //         'courses' => $courses,
+        //         'subjects' => $subs,
+        //     ];
+        // }
 
         return response()->json([
             'success' => true,
-            'teachers' => $teachers
+            'teachers' => $subject->teachers()
         ]);
 
     }
@@ -295,6 +305,33 @@ class TeacherController extends Controller
         return response()->json([
             'is_favorited' => $isFavorited
         ]);
+    }
+    
+    public function rate(Request $request, $id) {
+        $teacher = Teacher::find($id);
+
+        if($teacher) {
+            $rate = DB::table('teacher_ratings')->updateOrInsert(
+                [
+                    'user_id' => Auth::user()->id,
+                    'teacher_id' => $id
+                ],
+                [
+                    'rating' => $request->input('rating'),
+                    'updated_at' => now()
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rating saved successfully'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Course not found'
+        ], 404);
     }
     public function add(Request $request)
     {
