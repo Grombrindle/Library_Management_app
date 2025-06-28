@@ -6,10 +6,14 @@
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pridi:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pridi:wght@200;300;400;500;600;700&display=swap"
+    rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
     <link rel="icon" href="{{ asset('Images/Web/favicon.ico') }}" sizes="any">
     <link rel="icon" href="{{ asset('Images/Web/favicon.svg') }}" type="image/svg+xml">
     <link rel="icon" href="{{ asset('Images/Web/favicon-32x32.png') }}" type="image/png" sizes="32x32">

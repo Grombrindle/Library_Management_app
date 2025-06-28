@@ -20,7 +20,7 @@ class SubjectSeeder extends Seeder
             ['name' => 'Chemistry', 'literaryOrScientific' => true, 'image' => 'https://via.placeholder.com/150/4a86e8/ffffff?text=Chemistry'],
             ['name' => 'Biology', 'literaryOrScientific' => true, 'image' => 'https://via.placeholder.com/150/4a86e8/ffffff?text=Biology'],
             ['name' => 'Computer Science', 'literaryOrScientific' => true, 'image' => 'https://via.placeholder.com/150/4a86e8/ffffff?text=CS'],
-            
+
             // Literary
             ['name' => 'History', 'literaryOrScientific' => false, 'image' => 'https://via.placeholder.com/150/e86a4a/ffffff?text=History'],
             ['name' => 'Literature', 'literaryOrScientific' => false, 'image' => 'https://via.placeholder.com/150/e86a4a/ffffff?text=Literature'],

@@ -9,17 +9,19 @@ use Carbon\Carbon;
 use App\Models\Course;
 use App\Models\Lecture;
 use App\Models\Quiz;
+use App\Models\question;
 
 class QuizController extends Controller
 {
-    
+
     //
 
-    public function fetchScore($id) {
+    public function fetchScore($id)
+    {
         $score = score::where('user_id', Auth::user()->id)
-                     ->where('quiz_id', Lecture::findOrFail($id)->quiz_id)
-                     ->first();
-        
+            ->where('quiz_id', Lecture::findOrFail($id)->quiz_id)
+            ->first();
+
         return response()->json([
             'success' => true,
             'score' => $score ? $score->correctAnswers : null,
@@ -27,16 +29,17 @@ class QuizController extends Controller
         ]);
     }
 
-    public function checkScores($id) {
+    public function checkScores($id)
+    {
         $course = Course::findOrFail($id);
         $lectures = $course->lectures;
         $scores = [];
         foreach ($lectures as $lecture) {
             if ($lecture->quiz) {
                 $score = score::where('user_id', Auth::user()->id)
-                            ->where('quiz_id', $lecture->quiz_id)
-                            ->first();
-                            
+                    ->where('quiz_id', $lecture->quiz_id)
+                    ->first();
+
                 $scores[] = [
                     'lecture_id' => $lecture->id,
                     'lecture_name' => $lecture->name,
@@ -45,7 +48,7 @@ class QuizController extends Controller
                 ];
             }
         }
-        
+
         return response()->json([
             'success' => true,
             'scores' => $scores
@@ -67,5 +70,39 @@ class QuizController extends Controller
             'success' => true,
             'status' => $score->wasRecentlyCreated ? 'created' : 'updated'
         ]);
+    }
+    public function edit(Request $request, $id)
+    {
+        $quiz = Quiz::findOrFail($id);
+        $data = json_decode($request->input('quiz_data'), true);
+        // Remove old questions
+        $quiz->questions()->delete();
+        // Add new questions
+        foreach ($data as $question) {
+            // Remove empty options
+            $originalOptions = $question['options'];
+            $options = array_values(array_filter($originalOptions, function($opt) {
+                return isset($opt) && trim($opt) !== '';
+            }));
+            // Map the original correctAnswerIndex to the new filtered array
+            $originalIndex = $question['correctAnswerIndex'];
+            $nonEmptyIndexes = array_keys(array_filter($originalOptions, function($opt) {
+                return isset($opt) && trim($opt) !== '';
+            }));
+            $newCorrectIndex = array_search($originalIndex, $nonEmptyIndexes);
+            if ($newCorrectIndex === false) $newCorrectIndex = 0;
+            question::create([
+                'questionText' => $question['questionText'],
+                'options' => json_encode($options),
+                'correctAnswerIndex' => $newCorrectIndex,
+                'quiz_id' => $quiz->id,
+            ]);
+        }
+
+        $data = ['element' => 'lecture', 'id' => $quiz->lecture->id, 'name' => $quiz->lecture->name];
+        session(['update_info' => $data]);
+        session(['link' => '/lectures']);
+
+        return redirect()->route('update.confirmation');
     }
 }

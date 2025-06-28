@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('resource_id')->constrained()->onDelete('cascade');
             $table->double('rating');
+            $table->string('review')->nullable();
             $table->timestamps();
 
             $table->unique(['user_id', 'resource_id']);

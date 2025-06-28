@@ -93,5 +93,51 @@ class Lecture extends Model
         return $this->ratings()->avg('rating');
     }
 
-    protected $appends = ['rating'];
+    public function getFeaturedRatingsAttribute()
+    {
+        
+        $withReview = $this->ratings()
+            ->whereNotNull('review')
+            ->orderByDesc('rating')
+            ->orderByRaw('LENGTH(review) DESC')
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+
+        // If we have 3, return them
+        if ($withReview->count() >= 3) {
+            return $withReview;
+        }
+
+        // Otherwise, get more ratings (regardless of review text) to fill up to 3
+        $needed = 3 - $withReview->count();
+        $withoutReview = $this->ratings()
+            ->whereNull('review')
+            ->orderByDesc('rating')
+            ->orderByDesc('created_at')
+            ->take($needed)
+            ->get();
+
+        // Merge and return
+        return $withReview->concat($withoutReview);
+    }
+    
+    public function getRatingBreakdownAttribute()
+    {
+        // Get the count of each rating (1-5) for this course
+        $breakdown = $this->ratings()
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating')
+            ->toArray();
+
+        // Ensure all ratings 1-5 are present, even if 0
+        $fullBreakdown = [];
+        foreach (range(1, 5) as $rating) {
+            $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
+        }
+
+        return $fullBreakdown;
+    }
+    protected $appends = ['rating', 'FeaturedRatings', 'rating_breakdown'];
 }

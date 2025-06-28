@@ -15,6 +15,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\WebHomeController;
+use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Lecture;
@@ -29,7 +30,7 @@ use App\Http\Controllers\TeacherRequestController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
-Route::group(['middleware' => 'web'], function() {
+Route::group(['middleware' => 'web'], function () {
     Route::get('language/{locale}', function ($locale) {
         $validLocales = ['en', 'ar', 'fr', 'de', 'es', 'tr'];
         if (!in_array($locale, $validLocales)) {
@@ -49,10 +50,10 @@ Route::group(['middleware' => 'web'], function() {
         Route::post('register', [RegisteredUserController::class, 'store'])->name('register.store');
         Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
         Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
-       
+
     });
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-     ->name('logout');
+        ->name('logout');
 
     // Route::middleware('auth')->group(function () {
     //     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -61,7 +62,7 @@ Route::group(['middleware' => 'web'], function() {
     Route::middleware('auth.api')->get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::get('/', function() {
+    Route::get('/', function () {
         return redirect()->route('web.home');
     });
     Route::get(
@@ -373,6 +374,9 @@ Route::group(['middleware' => 'web'], function() {
         Route::put('/editlecture/{id}', [LectureController::class, 'edit']);
         Route::delete('/deletelecture/{id}', [LectureController::class, 'delete']);
 
+
+        Route::put('/updatequiz/{id}', [QuizController::class, 'edit']);
+
         Route::get('/subject/{id}/courses', function ($id, Request $request) {
             // Store the subject ID in the session
             if (Auth::user()->privileges == 2) {
@@ -572,28 +576,28 @@ Route::group(['middleware' => 'web'], function() {
         Route::get('/teacher-requests', [TeacherRequestController::class, 'index'])
             ->name('teacher-requests.index')
             ->middleware('admin.privileges:0'); // Only FullAdmin (privileges=0) can access
-            
+
         Route::get('/teacher-requests/{id}', [TeacherRequestController::class, 'show'])
             ->name('teacher-requests.show')
             ->middleware('admin.privileges:0'); // Only FullAdmin (privileges=0) can access
-            
+
         Route::post('/teacher-requests/{id}/approve', [TeacherRequestController::class, 'approve'])
             ->name('teacher-requests.approve')
             ->middleware('admin.privileges:0'); // Only FullAdmin (privileges=0) can approve
-            
+
         Route::post('/teacher-requests/{id}/decline', [TeacherRequestController::class, 'decline'])
             ->name('teacher-requests.decline')
             ->middleware('admin.privileges:0'); // Only FullAdmin (privileges=0) can decline
-            
+
         // Teacher Request Creation Routes
         Route::post('/teacher-requests/add/{targetType}', [TeacherRequestController::class, 'storeAddRequest'])
             ->name('teacher-requests.add')
             ->middleware('teacher.auth'); // Only teachers can create add requests
-            
+
         Route::post('/teacher-requests/edit/{targetType}/{targetId}', [TeacherRequestController::class, 'storeEditRequest'])
             ->name('teacher-requests.edit')
             ->middleware('teacher.auth'); // Only teachers can create edit requests
-            
+
         Route::post('/teacher-requests/delete/{targetType}/{targetId}', [TeacherRequestController::class, 'storeDeleteRequest'])
             ->name('teacher-requests.delete')
             ->middleware('teacher.auth'); // Only teachers can create delete requests

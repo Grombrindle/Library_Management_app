@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route::get('/getteacheruniversities/{id}', [TeacherController::class, 'fetchUnis']);
     Route::get('/getallteachers', [TeacherController::class, 'fetchAll']);
     Route::get('/favoriteteacher/{teacher}', [TeacherController::class, 'checkFavoriteTeacher']);
+    Route::post('/rateteacher/{id}', [TeacherController::class, 'rate']);
     // Route::get('/teachers/{teacher}/courses', [CourseController::class, 'getTeacherCourses']);
 
     // Route::get('/getuniversity/{id}', [UniversityController::class, 'fetch']);
