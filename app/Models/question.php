@@ -10,9 +10,18 @@ class question extends Model
     /** @use HasFactory<\Database\Factories\QuestionFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'questionText',
+        'options',
+        'correctAnswerIndex',
+        'quiz_id',
+        'created_at',
+        'updated_at'
+    ];
 
     protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
         'options' => 'array'
     ];
     public function quiz() {

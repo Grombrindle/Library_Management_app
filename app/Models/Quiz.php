@@ -34,14 +34,16 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Quiz extends Model
 {
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     use HasFactory;
 
     protected $fillable = [
-        'subject_id',
-        'teacher_id',
-        'question_text',
-        'answers',
-        'correct_answer_index',
+        'lecture_id',
         'created_at',
         'updated_at'
     ];

@@ -56,12 +56,5 @@ class Admin extends Authenticatable
         'created_at',
         'updated_at'
     ];
-    
-    /**
-     * Get the teacher requests processed by this admin
-     */
-    public function processedRequests()
-    {
-        return $this->hasMany(TeacherRequest::class, 'admin_id');
-    }
+
 }

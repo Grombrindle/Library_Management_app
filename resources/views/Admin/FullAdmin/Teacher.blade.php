@@ -8,6 +8,7 @@
         ● {{__('messages.teacherName')}}: {{ $teacher->name }}<br>
         ● {{__('messages.teacherUserName')}}: {{ $teacher->userName }}<br>
         ● {{__('messages.teacherNumber')}}: {{ $teacher->countryCode }} {{ $teacher->number }}<br>
+        ● {{__('messages.teacherDescription')}}: {{ $teacher->description }}<br>
         @if ($teacher->subjects->count() == 0)
             ● {{__('messages.subjects')}}: none
             <br>
@@ -39,12 +40,12 @@
 
         @endif
 
-        @if ($teacher->courses->count() == 0)
+        @if ($teacher->courses()->count() == 0)
             ● {{__('messages.courses')}}: none <br>
-        @elseif($teacher->courses->count() == 1)
+        @elseif($teacher->courses()->count() == 1)
             ● {{__('messages.course')}}:
             <div>
-                @foreach ($teacher->courses as $course)
+                @foreach ($teacher->courses() as $course)
                     <a href="/course/{{ $course->id }}" style="color:blue;">
                         {{ $course->name }}
                     </a>
@@ -55,7 +56,7 @@
             <div>
                 <div>
                     [
-                    @foreach ($teacher->courses as $course)
+                    @foreach ($teacher->courses() as $course)
                         <a href="/course/{{ $course->id }}" style="color:blue;">
                             {{ $course->name }}
                         </a>

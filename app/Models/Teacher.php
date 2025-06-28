@@ -50,16 +50,20 @@ class Teacher extends Model
     protected $fillable = [
         'name',
         'userName',
+        'description',
         'countryCode',
         'number',
         'password',
         'image',
+        'major',
         'links',
         'created_at',
         'updated_at'
     ];
 
     protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
         'links' => 'array'
     ];
     public function toArray()
@@ -82,11 +86,6 @@ class Teacher extends Model
         return $this->hasMany(Course::class);
     }
 
-    public function requests()
-    {
-        return $this->hasMany(TeacherRequest::class);
-    }
-
     function subjects()
     {
         return $this->belongsToMany(Subject::class, 'teacher_subject');
@@ -94,9 +93,8 @@ class Teacher extends Model
 
     public function universities()
     {
-        return $this->belongsToMany(University::class, 'teacher_university');
+        return $this->belongsToMany(university::class, 'teacher_university');
     }
-
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);
@@ -108,15 +106,6 @@ class Teacher extends Model
             ->withTimestamps();
     }
 
-    public function favourites()
-    {
-        return $this->hasMany(Favourite::class);
-    }
-    public function getFirstSubjectNameAttribute()
-    {
-        return $this->subjects->first()->name ?? 'General';
-    }
-
     public function ratings()
     {
         return $this->hasMany(TeacherRating::class);
@@ -126,6 +115,11 @@ class Teacher extends Model
     {
         return $this->ratings()->avg('rating');
     }
+    public function getRatingsCountAttribute()
+    {
+        return $this->ratings()->count();
+    }
+
 
     function getCoursesAttribute()
     {
@@ -148,7 +142,7 @@ class Teacher extends Model
             ->get();
 
         if ($withReview->count() >= 3) {
-            return $withReview->map(function ($review) {
+            return $withReview->map(function($review) {
                 $review->user_name = $review->user ? $review->user->userName : null;
                 return $review;
             });
@@ -164,7 +158,7 @@ class Teacher extends Model
             ->get();
 
         $all = $withReview->concat($withoutReview);
-        return $all->map(function ($review) {
+        return $all->map(function($review) {
             $review->user_name = $review->user ? $review->user->userName : null;
             return $review;
         });

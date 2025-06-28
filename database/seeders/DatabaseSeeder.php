@@ -21,22 +21,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // $this->call([
-        //     UserSeeder::class,
-        //     UniversitySeeder::class,
-        //     SubjectSeeder::class,
-        //     TeacherSeeder::class,
-        //     CourseSeeder::class,
-        //     LectureSeeder::class,
-        //     QuizSeeder::class,
-        //     QuestionSeeder::class,
-        //     SubscriptionSeeder::class,
-        //     ResourceSeeder::class,
-        //     AdminSeeder::class,
-        //     TeacherRequestSeeder::class,
-        //     FavouriteSeeder::class,
-        //     CourseRatingSeeder::class,
-        // ]);
         // User::factory(10)->create();
 
         $names = ['Maths', 'Science', 'Arabic', 'Physics', 'Chemistry', 'English', 'French', 'Religion', 'Philosophy', 'History', 'Arabic', 'French', 'English', 'Geography', 'Religion'];
@@ -57,6 +41,7 @@ class DatabaseSeeder extends Seeder
                 'userName' => fake()->name(),
                 'countryCode' => '+963',
                 'number' => $randomDigits,
+                'description' => fake()->text(),
                 'image' => 'Images/Admins/teacherDefault.png',
                 'links' => '{"Facebook": "https://facebook", "Instagram": "https://instagram", "Telegram": "https://telegram", "YouTube":"https://youtube"}',
                 'password' => Hash::make('password'),
@@ -124,7 +109,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'course_id' => $course->id,
                     'rating' => $rating,
-                    'review' => rand(0, 1) ? null : fake()->realText(100),
+                    'review' => rand(0,1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -149,7 +134,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'lecture_id' => $lecture->id,
                     'rating' => $rating,
-                    'review' => rand(0, 1) ? null : fake()->realText(100),
+                    'review' => rand(0,1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -158,7 +143,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'teacher_id' => $teacher->id,
                     'rating' => $rating,
-                    'review' => rand(0, 1) ? null : fake()->realText(100),
+                    'review' => rand(0,1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -209,6 +194,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'teacher',
             'userName' => 'teacher',
             'countryCode' => '+963',
+            'description' => fake()->text(),
             'number' => $randomDigits,
             'image' => 'Images/Admins/teacherDefault.png',
             'links' => '{"Facebook": "https://facebook", "Instagram": "https://instagram", "Telegram": "https://telegram", "YouTube":"https://youtube"}',

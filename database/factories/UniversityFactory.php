@@ -17,8 +17,7 @@ class UniversityFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->company . ' University',
-            'image' => 'Images/Universities/Default.png'
+            //
         ];
     }
 }

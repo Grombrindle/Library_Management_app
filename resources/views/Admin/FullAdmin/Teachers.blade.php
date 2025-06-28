@@ -121,6 +121,7 @@
                             ● {{__('messages.teacherNumber')}}: <span
                                 style="direction: ltr; display: inline-block;">&emsp;{{ $teacher->countryCode }}
                                 {{ $teacher->number }}</span>
+                            ● {{__('messages.teacherDescription')}}: {{ $teacher->description }}<br>
                             ● {{__('messages.subjects')}}:
                             @if ($teacher->subjects->count() == 0)
                                 <div style="color:black;">&emsp;{{ __('messages.none') }}</div>
@@ -144,7 +145,7 @@
                                 <br>
                                 &emsp;
                                 [
-                                @foreach ($teacher->courses as $course)
+                                @foreach ($teacher->courses() as $course)
                                     {{ $course->name }}
                                     @if (!$loop->last)
                                         -

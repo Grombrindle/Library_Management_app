@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class LectureRating extends Model
 {
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     protected $table = 'lecture_rating';
     
     protected $fillable = [

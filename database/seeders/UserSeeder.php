@@ -21,7 +21,6 @@ class UserSeeder extends Seeder
                 'number' => $randomDigits,
                 'password' => Hash::make('password'),
                 'isBanned' => 0,
-                'avatar' => 'https://picsum.photos/seed/' . fake()->unique()->word . '/800/600',
             ]);
         }
 

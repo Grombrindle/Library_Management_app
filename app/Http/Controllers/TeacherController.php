@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Teacher;
 use App\Models\User;
 use App\Models\Admin;
-use App\Http\Controllers\TeacherRequestController;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -336,10 +335,6 @@ class TeacherController extends Controller
     }
     public function add(Request $request)
     {
-        // If the user is not a FullAdmin (privileges=0), create a request instead of adding directly
-        if (Auth::user()->privileges != 0) {
-            return app(TeacherRequestController::class)->storeAddRequest($request, 'teacher');
-        }
         // dd($request->all());
         $validator = $request->validate([
             'teacher_name' => [
@@ -397,6 +392,7 @@ class TeacherController extends Controller
         $teacher = Teacher::create([
             'userName' => $userName,
             'name' => $name,
+            'description' => $request->input('teacher_description'),
             'number' => $number,
             'countryCode' => '+963',
             'password' => Hash::make($password),
@@ -431,10 +427,6 @@ class TeacherController extends Controller
 
     public function edit(Request $request, $id)
     {
-        // If the user is not a FullAdmin (privileges=0), create a request instead of editing directly
-        if (Auth::user()->privileges != 0) {
-            return app(TeacherRequestController::class)->storeEditRequest($request, 'teacher', $id);
-        }
 
         $validator = $request->validate([
             'teacher_name' => [
@@ -515,10 +507,6 @@ class TeacherController extends Controller
     }
     public function delete($id)
     {
-        // If the user is not a FullAdmin (privileges=0), create a request instead of deleting directly
-        if (Auth::user()->privileges != 0) {
-            return app(TeacherRequestController::class)->storeDeleteRequest('teacher', $id);
-        }
         $teacher = Teacher::findOrFail($id);
         $name = $teacher->name;
 

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
+use Smalot\PdfParser\Parser;
 use Illuminate\Support\Facades\DB;
 
 class LectureController extends Controller
@@ -219,8 +220,13 @@ class LectureController extends Controller
 
     public function add(Request $request)
     {
+        
+        // dd("s");
         // Ensure all required directories exist
         $this->ensureDirectoriesExist();
+        
+
+      
 
         $name = $request->input('lecture_name');
         $description = $request->input('lecture_description');
@@ -280,11 +286,16 @@ class LectureController extends Controller
             if (!file_exists($pdfDir)) {
                 mkdir($pdfDir, 0777, true);
             }
-
             $pdf = $request->file('lecture_file_pdf');
             $pdfName = time() . '_' . $pdf->getClientOriginalName();
             $pdf->move($pdfDir, $pdfName);
             $filePathPdf = 'Files/PDFs/' . $pdfName;
+            $parser = new Parser();
+            $pdf = $parser->parseFile(storage_path($filePathPdf));
+            $pages = $pdf->getPages();
+            $pageCount = count($pages);
+            $pages = $pageCount;
+            dd($pages,$pageCount,$filePathPdf);
         }
 
         $lecture = Lecture::create([
@@ -296,9 +307,10 @@ class LectureController extends Controller
             'file_1080' => $filePath1080,
             'file_pdf' => $filePathPdf,
             'course_id' => $course_id,
+            'pages' => $pages,
             'type' => $type,
             'duration' => $duration,
-            'pages' => $pages
+            
         ]);
 
         $quiz = Quiz::create([

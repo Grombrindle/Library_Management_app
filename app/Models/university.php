@@ -28,6 +28,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class university extends Model
 {
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     /** @use HasFactory<\Database\Factories\UniversityFactory> */
     use HasFactory;
 

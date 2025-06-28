@@ -40,6 +40,12 @@ use App\Models\Subject;
  */
 class Lecture extends Model
 {
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     /** @use HasFactory<\Database\Factories\LectureFactory> */
     use HasFactory;
     protected $fillable = [
@@ -47,12 +53,17 @@ class Lecture extends Model
         'file_360',
         'file_720',
         'file_1080',
+        'file_pdf',
         'description',
         'image',
-        'subject_id',
+        'duration',
+        'pages',
+        'type',
+        'views',
+        'quiz_id',
+        'course_id',
         'created_at',
-        'updated_at',
-        'pdf_file'
+        'updated_at'
     ];
 
     public function course()
@@ -121,6 +132,12 @@ class Lecture extends Model
         // Merge and return
         return $withReview->concat($withoutReview);
     }
+    public function getRatingsCountAttribute()
+    {
+        return $this->ratings()->count();
+    }
+
+    
     
     public function getRatingBreakdownAttribute()
     {
