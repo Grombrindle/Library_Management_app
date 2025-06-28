@@ -119,14 +119,12 @@
                     <div class="grid md:grid-cols-2 gap-6">
                         @foreach($continueLearning as $course)
                         <div class="flex items-center gap-5 p-4 rounded-xl border border-gray-100">
-                            <img src="{{ $course->image ? asset('storage/'.$course->image) : 'https://via.placeholder.com/100' }}" 
+                            <img src="{{ $course->image ? asset($course->image) : 'https://via.placeholder.com/100' }}" 
                                  alt="{{ $course->name }}" class="w-20 h-20 rounded-lg object-cover">
                             <div class="flex-grow">
                                 <h3 class="font-bold">{{ $course->name }}</h3>
                                 <p class="text-sm text-gray-500 mb-2">{{ $course->teacher->name }}</p>
-                                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                    <div class="bg-[#b0b0cf] h-2.5 rounded-full" style="width: {{ $course->progress }}%"></div>
-                                </div>
+                                <!-- Progress bar removed as per request -->
                             </div>
                         </div>
                         @endforeach

@@ -23,6 +23,7 @@ class WebHomeController extends Controller
         $courses = Course::with('teacher', 'subject')->latest()->take(3)->get();
         $teachers = Teacher::withCount('courses')->latest()->take(3)->get();
 
-        return view('Website.webHome', compact('stats', 'courses', 'teachers'));
+        return view('Website.webHome', compact('stats', 'teachers', 'courses'));
     }
+
 }

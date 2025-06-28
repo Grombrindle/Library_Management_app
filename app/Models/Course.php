@@ -20,6 +20,11 @@ class Course extends Model
         'subscriptions',
         'image',
         'sources',
+        'rating',
+        'subscription_count',
+        'ratings_count',           // NEW
+        'video_lectures_count',    // NEW
+        'pdf_lessons_count',
         'created_at',
         'updated_at'
     ];
@@ -28,29 +33,35 @@ class Course extends Model
         'sources' => 'array'
     ];
 
-    public function teacher() {
+    public function teacher()
+    {
         return $this->belongsTo(Teacher::class);
     }
     function users()
     {
         return $this->belongsToMany(User::class, 'subscriptions');
     }
-    public function subject() {
+    public function subject()
+    {
         return $this->belongsTo(Subject::class);
     }
-    public function lectures() {
+    public function lectures()
+    {
         return $this->hasMany(Lecture::class, 'course_id');
     }
 
-    public function ratings() {
+    public function ratings()
+    {
         return $this->hasMany(CourseRating::class);
     }
 
-    public function getRatingAttribute() {
+    public function getRatingAttribute()
+    {
         return $this->ratings()->avg('rating');
     }
 
-    public function getSubscriptionCountAttribute() {
+    public function getSubscriptionCountAttribute()
+    {
         return $this->users()->count();
     }
 

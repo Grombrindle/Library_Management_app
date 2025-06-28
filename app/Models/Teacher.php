@@ -63,7 +63,7 @@ class Teacher extends Model
     {
         return $this->hasMany(Course::class);
     }
-    
+
     public function requests()
     {
         return $this->hasMany(TeacherRequest::class);

@@ -79,10 +79,10 @@
         <!-- CTA Section -->
         <section class="py-20 bg-gradient-to-br from-[#b0b0cf] to-[#8a8aac] text-white">
             <div class="container mx-auto px-6 text-center">
-                <h2 class="text-4xl font-bold mb-6">Ready to Start Learning?</h2>
-                <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">Join thousands of students who are already learning and growing with us.</p>
-                <a href="{{ route('register') }}" class="bg-white text-[#b0b0cf] px-8 py-3 rounded-lg font-semibold hover:bg-[#f8f8fa] transition-colors inline-block shadow-lg">
-                    Get Started Now
+                <h2 class="text-4xl font-bold mb-6">Download our app</h2>
+                <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">Get the full experience on your mobile device. Download MindSpark from the Google Play Store now!</p>
+                <a href="https://play.google.com/store" target="_blank" rel="noopener" class="bg-white text-[#b0b0cf] px-8 py-3 rounded-lg font-semibold hover:bg-[#f8f8fa] transition-colors inline-block shadow-lg">
+                    Download on Google Play
                 </a>
             </div>
         </section>
