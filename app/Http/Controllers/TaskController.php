@@ -18,7 +18,9 @@ class TaskController extends Controller
 
     public function add(Request $request) {
         $task = Task::create([
-            'text' => $request->input('text'),
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'estimatedHours' => $request->input('estimatedHours'),
             'user_id' => Auth::id(),
         ]);
         return response()->json([
@@ -30,7 +32,8 @@ class TaskController extends Controller
     public function edit(Request $request, $id) {
         $task = Task::findOrFail($id);
         $task->update([
-            'text' => $request->input('text'),
+            'description' => $request->input('description'),
+            'estimatedHours' => $request->input('estimatedHours')
         ]);
         return response()->json([
             'success' => true,
