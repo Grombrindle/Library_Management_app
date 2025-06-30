@@ -8,10 +8,27 @@ use App\Models\ResourceRating;
 
 class Resource extends Model
 {
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     /** @use HasFactory<\Database\Factories\ResourceFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'description',
+        'literaryOrScientific',
+        'subject_id',
+        'publish date',
+        'image',
+        'file',
+        'author',
+        'created_at',
+        'updated_at'
+    ];
 
 
     public function ratings()
@@ -47,7 +64,7 @@ class Resource extends Model
         return $fullBreakdown;
     }
 
-    
+
     public function getFeaturedRatingsAttribute()
     {
         $withReview = $this->ratings()

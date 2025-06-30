@@ -28,8 +28,8 @@
                 {{ __('messages.teacherNumber') }}:
             </label>
             <div style="position: relative; width: fit-content; height: fit-content; line-height: 0; direction: ltr;">
-                <input type="text" name="teacher_number" id="teacher_number" placeholder="9XXXXXXXX" autocomplete="off"
-                    inputmode="numeric"
+                <input type="text" name="teacher_number" id="teacher_number" placeholder="9XXXXXXXX"
+                    autocomplete="off" inputmode="numeric"
                     style="height: 20%; text-align: left; font-size: 40%; text-indent:30%; width: 100%; box-sizing: border-box; @error('teacher_number') border:2px solid red @enderror; vertical-align: top; margin: 0; padding: 0; direction: ltr;"
                     oninput="if (this.value.length > 9) this.value = this.value.slice(0, 9); this.value = this.value.replace(/(?!^)\+/g,'').replace(/[^0-9+]/g, '')"
                     pattern="[0-9]{9}" required>
@@ -43,6 +43,20 @@
         @error('teacher_number')
             <div class="error">{{ $message }}</div>
         @enderror
+        <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
+            <label for="teacher_description">
+                {{ __('messages.teacherDescription') }} :
+            </label>
+            <div style="position: relative; width: 80%;">
+                <textarea name="teacher_description" id="teacher_description" autocomplete="off" value="{{ old('teacher_description') }}"
+                    style="height:150px; width:100%; font-size:16px; padding:10px; padding-bottom:30px; resize:vertical;max-height:500px;"
+                    maxlength="200" oninput="updateCharCount(this, 200)"></textarea>
+                <div id="charCount" style="position: absolute; bottom: 5px; right: 10px; font-size: 12px; color: #666; padding: 2px 6px; border-radius: 3px;">
+                    0/200
+                </div>
+            </div>
+        </div>
+        <br>
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
             <label for="teacher_password">
                 {{ __('messages.teacherPassword') }}:
@@ -68,8 +82,9 @@
                         </g>
                     </svg>
 
-                    <input type="url" value="" style="height:20%; text-align:center; font-size:40%; width:fit-content;"
-                        name="facebook_link" placeholder="{{ __('messages.enterFacebookLink') }}">
+                    <input type="url" value=""
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="facebook_link"
+                        placeholder="{{ __('messages.enterFacebookLink') }}">
                     @error('facebook_link')
                         <div class="error">{{ $message }}</div>
                     @enderror
@@ -109,8 +124,9 @@
                         </g>
                     </svg>
 
-                    <input type="url" value="" style="height:20%; text-align:center; font-size:40%; width:fit-content;"
-                        name="telegram_link" placeholder="{{ __('messages.enterTelegramLink') }}">
+                    <input type="url" value=""
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="telegram_link"
+                        placeholder="{{ __('messages.enterTelegramLink') }}">
                     @error('telegram_link')
                         <div class="error">{{ $message }}</div>
                     @enderror
@@ -128,8 +144,9 @@
                                 fill="#0F0F0F"></path>
                         </g>
                     </svg>
-                    <input type="url" value="" style="height:20%; text-align:center; font-size:40%; width:fit-content;"
-                        name="youtube_link" placeholder="{{ __('messages.enterYoutubeLink') }}">
+                    <input type="url" value=""
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="youtube_link"
+                        placeholder="{{ __('messages.enterYoutubeLink') }}">
                     @error('youtube_link')
                         <div class="error">{{ $message }}</div>
                     @enderror
@@ -142,3 +159,33 @@
 
     </x-addcard>
 </x-layout>
+
+
+<script>
+
+    function updateCharCount(textarea, maxLength) {
+        const currentLength = textarea.value.length;
+        const charCountElement = document.getElementById('charCount');
+        const remaining = maxLength - currentLength;
+
+        charCountElement.textContent = currentLength + '/' + maxLength;
+
+        // Change color based on remaining characters
+        if (remaining <= 10) {
+            charCountElement.style.color = '#ff4444'; // Red when very close to limit
+        } else if (remaining <= 30) {
+            charCountElement.style.color = '#ff8800'; // Orange when getting close
+        } else if (remaining <= 50) {
+            charCountElement.style.color = '#ffaa00'; // Yellow when approaching limit
+        } else {
+            charCountElement.style.color = '#666'; // Default gray
+        }
+    }
+
+    // Initialize counter on page load
+    document.addEventListener('DOMContentLoaded', function() {
+                const textarea = document.getElementById('teacher_description');
+                updateCharCount(textarea, 200);
+    })
+</script>
+

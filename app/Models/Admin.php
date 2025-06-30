@@ -44,6 +44,17 @@ class Admin extends Authenticatable
     /** @use HasFactory<\Database\Factories\AdminFactory> */
     use HasFactory, HasApiTokens;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'userName',
+        'password',
+        'privileges',
+        'countryCode',
+        'number',
+        'image',
+        'teacher_id',
+        'created_at',
+        'updated_at'
+    ];
 
 }

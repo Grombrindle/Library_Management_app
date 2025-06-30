@@ -192,4 +192,5 @@ return [
     'subjectType' => 'Subject Type',
     'scientific' => 'Scientific',
     'literary' => 'Literary',
+    'teacherDescription' => 'Teacher Description',
 ];

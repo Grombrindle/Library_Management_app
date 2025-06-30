@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('image')->default('/Images/Resources/default.png');
             $table->string('file')->default('/Files/Resources/default.pdf');
             $table->string('author')->default('John Doe');
+            $table->integer('pages');
             $table->timestamps();
         });
     }

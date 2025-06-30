@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Subject;
+use Illuminate\Support\Facades\Auth;
 
 /**
  *
@@ -40,9 +41,31 @@ use App\Models\Subject;
  */
 class Lecture extends Model
 {
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     /** @use HasFactory<\Database\Factories\LectureFactory> */
     use HasFactory;
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'file_360',
+        'file_720',
+        'file_1080',
+        'file_pdf',
+        'description',
+        'image',
+        'duration',
+        'pages',
+        'type',
+        'views',
+        'quiz_id',
+        'course_id',
+        'created_at',
+        'updated_at'
+    ];
 
     public function course()
     {
@@ -65,6 +88,100 @@ class Lecture extends Model
         return $this->duration;
     }
 
+    /**
+     * Get formatted video duration in MM:SS format
+     * @return string
+     */
+    public function getFormattedDurationAttribute()
+    {
+        return self::formatDuration($this->duration);
+    }
+
+    /**
+     * Get formatted video duration in HH:MM:SS format for longer videos
+     * @return string
+     */
+    public function getFormattedDurationLongAttribute()
+    {
+        return self::formatDurationLong($this->duration);
+    }
+
+    /**
+     * Get human readable duration (e.g., "15 min 30 sec")
+     * @return string
+     */
+    public function getHumanDurationAttribute()
+    {
+        return self::formatDurationHuman($this->duration);
+    }
+
+    /**
+     * Convert seconds to MM:SS format
+     * @param int|float $seconds
+     * @return string
+     */
+    public static function formatDuration($seconds)
+    {
+        if ($seconds <= 0) {
+            return '00:00';
+        }
+
+        $minutes = floor($seconds / 60);
+        $remainingSeconds = floor($seconds % 60);
+
+        return sprintf('%02d:%02d', $minutes, $remainingSeconds);
+    }
+
+    /**
+     * Convert seconds to HH:MM:SS format for longer videos
+     * @param int|float $seconds
+     * @return string
+     */
+    public static function formatDurationLong($seconds)
+    {
+        if ($seconds <= 0) {
+            return '00:00:00';
+        }
+
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $remainingSeconds = floor($seconds % 60);
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $remainingSeconds);
+    }
+
+    /**
+     * Convert seconds to human readable format (e.g., "15 min 30 sec")
+     * @param int|float $seconds
+     * @return string
+     */
+    public static function formatDurationHuman($seconds)
+    {
+        if ($seconds <= 0) {
+            return '0 seconds';
+        }
+
+        $hours = floor($seconds / 3600);
+        $minutes = floor(($seconds % 3600) / 60);
+        $remainingSeconds = floor($seconds % 60);
+
+        $parts = [];
+
+        if ($hours > 0) {
+            $parts[] = $hours . ' hour' . ($hours > 1 ? 's' : '');
+        }
+
+        if ($minutes > 0) {
+            $parts[] = $minutes . ' min' . ($minutes > 1 ? 's' : '');
+        }
+
+        if ($remainingSeconds > 0 || empty($parts)) {
+            $parts[] = $remainingSeconds . ' sec' . ($remainingSeconds > 1 ? 's' : '');
+        }
+
+        return implode(' ', $parts);
+    }
+
     public function getPdfPages()
     {
         return $this->pages;
@@ -79,38 +196,48 @@ class Lecture extends Model
     }
 
     public function getRatingAttribute() {
-        return $this->ratings()->avg('rating');
+        $avgRating = $this->ratings()->avg('rating');
+        return $avgRating ? round($avgRating, 2) : null;
     }
 
     public function getFeaturedRatingsAttribute()
     {
-        
+        // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
         $withReview = $this->ratings()
             ->whereNotNull('review')
+            ->withCount(['helpful', 'unhelpful'])
+            ->orderByDesc('helpful_count')
+            ->orderBy('unhelpful_count')
             ->orderByDesc('rating')
             ->orderByRaw('LENGTH(review) DESC')
             ->orderByDesc('created_at')
             ->take(3)
             ->get();
 
-        // If we have 3, return them
         if ($withReview->count() >= 3) {
             return $withReview;
         }
 
-        // Otherwise, get more ratings (regardless of review text) to fill up to 3
         $needed = 3 - $withReview->count();
         $withoutReview = $this->ratings()
             ->whereNull('review')
+            ->withCount(['helpful', 'unhelpful'])
+            ->orderByDesc('helpful_count')
+            ->orderBy('unhelpful_count')
             ->orderByDesc('rating')
             ->orderByDesc('created_at')
             ->take($needed)
             ->get();
 
-        // Merge and return
         return $withReview->concat($withoutReview);
     }
-    
+    public function getRatingsCountAttribute()
+    {
+        return $this->ratings()->count();
+    }
+
+
+
     public function getRatingBreakdownAttribute()
     {
         // Get the count of each rating (1-5) for this course
@@ -128,5 +255,24 @@ class Lecture extends Model
 
         return $fullBreakdown;
     }
-    protected $appends = ['rating', 'FeaturedRatings', 'rating_breakdown'];
+
+    public function getUserRatingAttribute()
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $rating = Auth::user()->lectureRatings()->where('lecture_id', $this->id)->first();
+        return $rating ? $rating->rating : null;
+    }
+
+    protected $appends = [
+        'rating',
+        'FeaturedRatings',
+        'rating_breakdown',
+        'formatted_duration',
+        'formatted_duration_long',
+        'human_duration',
+        'user_rating'
+    ];
 }

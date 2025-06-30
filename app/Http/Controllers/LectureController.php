@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
+use Smalot\PdfParser\Parser;
 use Illuminate\Support\Facades\DB;
+use getID3;
 
 class LectureController extends Controller
 {
@@ -42,7 +44,7 @@ class LectureController extends Controller
     {
         $lec = Lecture::find($id);
         $lec->rating = DB::table('lecture_rating')->where('user_id', Auth::user()->id)->where('lecture_id', $lec->id)->avg('rating');
-        
+
         if ($lec) {
             return response()->json([
                 'success' => "true",
@@ -219,8 +221,13 @@ class LectureController extends Controller
 
     public function add(Request $request)
     {
+
+        // dd("s");
         // Ensure all required directories exist
         $this->ensureDirectoriesExist();
+
+
+
 
         $name = $request->input('lecture_name');
         $description = $request->input('lecture_description');
@@ -258,6 +265,9 @@ class LectureController extends Controller
             $fileName360 = time() . '_360_' . $file360->getClientOriginalName();
             $file360->move(public_path('Files/360'), $fileName360);
             $filePath360 = 'Files/360/' . $fileName360;
+            $getID3 = new getID3();
+            $fileInfo = $getID3->analyze($filePath360);
+            $duration = $fileInfo['playtime_seconds']; // Duration in seconds
         }
 
         if ($request->hasFile('lecture_file_720')) {
@@ -280,11 +290,15 @@ class LectureController extends Controller
             if (!file_exists($pdfDir)) {
                 mkdir($pdfDir, 0777, true);
             }
-
             $pdf = $request->file('lecture_file_pdf');
             $pdfName = time() . '_' . $pdf->getClientOriginalName();
             $pdf->move($pdfDir, $pdfName);
-            $filePathPdf = 'Files/PDFs/' . $pdfName;
+            $filePathPdf = 'Files\PDFs\\' . $pdfName;
+            $parser = new Parser();
+            $pdf = $parser->parseFile(public_path($filePathPdf));
+            $pages = $pdf->getPages();
+            $pageCount = count($pages);
+            $pages = $pageCount;
         }
 
         $lecture = Lecture::create([
@@ -296,9 +310,10 @@ class LectureController extends Controller
             'file_1080' => $filePath1080,
             'file_pdf' => $filePathPdf,
             'course_id' => $course_id,
+            'pages' => $pages,
             'type' => $type,
             'duration' => $duration,
-            'pages' => $pages
+
         ]);
 
         $quiz = Quiz::create([
@@ -514,7 +529,7 @@ class LectureController extends Controller
             ]
         ]);
     }
-    
+
 
     public function getCourseLecturesRecent($courseId)
     {

@@ -121,6 +121,7 @@
                             ● {{__('messages.teacherNumber')}}: <span
                                 style="direction: ltr; display: inline-block;">&emsp;{{ $teacher->countryCode }}
                                 {{ $teacher->number }}</span>
+                            ● {{__('messages.teacherDescription')}}: {{ $teacher->description }}<br>
                             ● {{__('messages.subjects')}}:
                             @if ($teacher->subjects->count() == 0)
                                 <div style="color:black;">&emsp;{{ __('messages.none') }}</div>
@@ -144,7 +145,7 @@
                                 <br>
                                 &emsp;
                                 [
-                                @foreach ($teacher->courses as $course)
+                                @foreach ($teacher->courses() as $course)
                                     {{ $course->name }}
                                     @if (!$loop->last)
                                         -
@@ -152,6 +153,36 @@
                                 @endforeach
                                 ]
                             @endif
+                            <br>
+                            <br>
+                            <div style="display:inline-block; vertical-align:middle;">
+                                @php
+                                    $rating = $teacher->rating ?? 0;
+                                @endphp
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($rating >= $i)
+                                        {{-- Full star --}}
+                                        <svg width="20" height="20" fill="gold" viewBox="0 0 20 20" style="display:inline;"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36"/></svg>
+                                    @elseif ($rating >= $i - 0.5)
+                                        {{-- Half star --}}
+                                        <svg width="20" height="20" viewBox="0 0 20 20" style="display:inline;">
+                                            <defs>
+                                                <linearGradient id="half-grad-{{ $teacher->id }}-{{ $i }}">
+                                                    <stop offset="50%" stop-color="gold"/>
+                                                    <stop offset="50%" stop-color="lightgray"/>
+                                                </linearGradient>
+                                            </defs>
+                                            <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" fill="url(#half-grad-{{ $teacher->id }}-{{ $i }})"/>
+                                        </svg>
+                                    @else
+                                        {{-- Empty star --}}
+                                        <svg width="20" height="20" fill="lightgray" viewBox="0 0 20 20" style="display:inline;"><polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36"/></svg>
+                                    @endif
+                                @endfor
+                                <span>({{ number_format($rating, 1) }})</span>
+                                <span>({{ $teacher->ratings->count() }} reviews)</span>
+
+                            </div>
                         </x-card>
                     @endforeach
                 </div>

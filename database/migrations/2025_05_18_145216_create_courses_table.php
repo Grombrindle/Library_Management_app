@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('lecturesCount');
             $table->integer('subscriptions');
             $table->string('image');
+            $table->decimal('price', 10, 2)->default(0);
             $table->json('sources')->nullable();
             $table->timestamps();
         });

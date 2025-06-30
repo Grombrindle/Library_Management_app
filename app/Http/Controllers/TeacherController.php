@@ -96,7 +96,7 @@ class TeacherController extends Controller
         $teacher = Teacher::find($id);
         if ($teacher) {
             $courses = $teacher->courses()->get();
-            
+
             // Add isFavorite field to each course
             $courses->each(function ($course) {
                 $course->isFavorite = Auth::user()->favoriteCourses()
@@ -306,7 +306,7 @@ class TeacherController extends Controller
             'is_favorited' => $isFavorited
         ]);
     }
-    
+
     public function rate(Request $request, $id) {
         $teacher = Teacher::find($id);
 
@@ -392,6 +392,7 @@ class TeacherController extends Controller
         $teacher = Teacher::create([
             'userName' => $userName,
             'name' => $name,
+            'description' => $request->input('teacher_description'),
             'number' => $number,
             'countryCode' => '+963',
             'password' => Hash::make($password),
@@ -490,6 +491,7 @@ class TeacherController extends Controller
 
             $teacher->image = $path;
         }
+        $teacher->description = $request->input('teacher_description');
         $teacher->save();
 
         $teacher = Admin::where('teacher_id', $teacher->id)->first();

@@ -192,4 +192,5 @@ return [
     'subjectType' => 'نوع المادة',
     'scientific' => 'علمي',
     'literary' => 'أدبي',
+    'teacherDescription' => 'وصف المدرس',
 ];

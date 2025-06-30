@@ -23,6 +23,7 @@ class TeacherSeeder extends Seeder
                 'name' => fake()->name(),
                 'countryCode' => '+963',
                 'number' => $randomDigits,
+                'description' => fake()->text(),
                 'password' => Hash::make('password'),
                 'image' => 'Images/Admins/teacherDefault.png',
                 'links' => '{"Facebook": "https://facebook", "Instagram": "https://instagram", "Telegram": "https://telegram", "YouTube": "https://youtube"}',

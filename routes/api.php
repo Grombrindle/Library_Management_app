@@ -13,6 +13,9 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\HelpfulController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\WatchlistController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -46,6 +49,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/lectureissubscribed/{id}', [UserController::class, 'confirmLecSub']);
     Route::put('/counter', [UserController::class, 'editCounter']);
     Route::put('/changepassword', [UserController::class, 'updatePassword']);
+    Route::put('/changenumber', [UserController::class, 'updateNumber']);
     Route::put('/changeusername', [UserController::class, 'updateUsername']);
 
     Route::get('/getteacher/{id}', [TeacherController::class, 'fetch']);
@@ -118,6 +122,20 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallresourcesrecommended', [ResourceController::class, 'fetchAllRecommended']);
     Route::post('/rateresource/{id}', [ResourceController::class, 'rate']);
 
+    Route::get('/gettasks', [TaskController::class, 'fetchAll']);
+    Route::post('/addtask', [TaskController::class, 'add']);
+    Route::put('/checktask/{id}', [TaskController::class, 'toggleChecked']);
+    Route::put('/trashtask/{id}', [TaskController::class, 'toggleDelete']);
+    Route::put('/edittask/{id}', [TaskController::class, 'edit']);
+    Route::delete('/deletetask/{id}', [TaskController::class, 'delete']);
+
+    Route::get('/getwatchlistlectures', [WatchlistController::class, 'fetchLectures']);
+    Route::get('/getwatchlistcourses', [WatchlistController::class, 'fetchCourses']);
+    Route::post('/togglewatchlistlecture/{id}', [WatchlistController::class, 'toggleLecture']);
+    Route::post('/togglewatchlistcourse/{id}', [WatchlistController::class, 'toggleCourse']);
+
+    Route::post('/togglehelpful', [HelpfulController::class, 'toggleHelpful']);
+    Route::post('/toggleunhelpful', [HelpfulController::class, 'toggleUnhelpful']);
 
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');

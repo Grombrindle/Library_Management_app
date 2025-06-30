@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $subject_id
@@ -34,9 +34,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Quiz extends Model
 {
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'lecture_id',
+        'created_at',
+        'updated_at'
+    ];
 
     public function lecture()
     {
