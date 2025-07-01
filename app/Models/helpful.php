@@ -15,6 +15,7 @@ class helpful extends Model
         'lecture_rating_id',
         'teacher_rating_id',
         'course_rating_id',
+        'resource_rating_id',
         'isHelpful'
     ];
 

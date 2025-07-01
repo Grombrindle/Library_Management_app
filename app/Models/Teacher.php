@@ -218,6 +218,6 @@ class Teacher extends Model
         return $rating ? $rating->rating : null;
     }
 
-    protected $appends = ['rating', 'courses', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating'];
+    protected $appends = ['rating', 'courses', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
 
 }

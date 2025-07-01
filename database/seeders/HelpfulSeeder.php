@@ -19,14 +19,16 @@ class HelpfulSeeder extends Seeder
         $courseRatings = DB::table('course_rating')->pluck('id');
         $lectureRatings = DB::table('lecture_rating')->pluck('id');
         $teacherRatings = DB::table('teacher_ratings')->pluck('id');
+        $resourceRatings = DB::table('resources_ratings')->pluck('id');
 
         foreach ($users as $user) {
             $helpfuls = [];
             $usedCourse = [];
             $usedLecture = [];
             $usedTeacher = [];
+            $usedResource = [];
             for ($i = 0; $i < 10; $i++) {
-                $type = rand(0, 2); // 0: course, 1: lecture, 2: teacher
+                $type = rand(0, 3); // 0: course, 1: lecture, 2: teacher, 3: resource
                 $isHelpful = (bool)rand(0, 1);
                 if ($type === 0 && count($courseRatings) > 0) {
                     $ratingId = $courseRatings->random();
@@ -53,6 +55,15 @@ class HelpfulSeeder extends Seeder
                     helpful::create([
                         'user_id' => $user->id,
                         'teacher_rating_id' => $ratingId,
+                        'isHelpful' => $isHelpful,
+                    ]);
+                } elseif ($type === 3 && count($resourceRatings) > 0) {
+                    $ratingId = $resourceRatings->random();
+                    if (in_array($ratingId, $usedResource)) { $i--; continue; }
+                    $usedResource[] = $ratingId;
+                    helpful::create([
+                        'user_id' => $user->id,
+                        'resource_rating_id' => $ratingId,
                         'isHelpful' => $isHelpful,
                     ]);
                 } else {

@@ -33,22 +33,36 @@ class WatchlistSeeder extends Seeder
                     $type = rand(0, 1); // 0 = lecture, 1 = course
                     if ($type === 0 && $lectures->count() > 0) {
                         $lecture = $lectures->random();
-                        DB::table('watchlists')->insert([
-                            'user_id' => $user->id,
-                            'lecture_id' => $lecture->id,
-                            'course_id' => null,
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
+                        // Check for existing entry
+                        $exists = DB::table('watchlists')
+                            ->where('user_id', $user->id)
+                            ->where('lecture_id', $lecture->id)
+                            ->exists();
+                        if (!$exists) {
+                            DB::table('watchlists')->insert([
+                                'user_id' => $user->id,
+                                'lecture_id' => $lecture->id,
+                                'course_id' => null,
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]);
+                        }
                     } elseif ($type === 1 && $courses->count() > 0) {
                         $course = $courses->random();
-                        DB::table('watchlists')->insert([
-                            'user_id' => $user->id,
-                            'lecture_id' => null,
-                            'course_id' => $course->id,
-                            'created_at' => now(),
-                            'updated_at' => now()
-                        ]);
+                        // Check for existing entry
+                        $exists = DB::table('watchlists')
+                            ->where('user_id', $user->id)
+                            ->where('course_id', $course->id)
+                            ->exists();
+                        if (!$exists) {
+                            DB::table('watchlists')->insert([
+                                'user_id' => $user->id,
+                                'lecture_id' => null,
+                                'course_id' => $course->id,
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]);
+                        }
                     }
                 }
             }

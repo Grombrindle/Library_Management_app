@@ -268,6 +268,7 @@ class Lecture extends Model
 
     protected $appends = [
         'rating',
+        'ratingsCount',
         'FeaturedRatings',
         'rating_breakdown',
         'formatted_duration',

@@ -153,6 +153,24 @@ class Course extends Model
         return $rating ? $rating->rating : null;
     }
 
+    public function getRatingBreakdownAttribute()
+    {
+        // Get the count of each rating (1-5) for this course
+        $breakdown = $this->ratings()
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating')
+            ->toArray();
+
+        // Ensure all ratings 1-5 are present, even if 0
+        $fullBreakdown = [];
+        foreach (range(1, 5) as $rating) {
+            $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
+        }
+
+        return $fullBreakdown;
+    }
+
     protected $appends = [
         'rating',
         'subscription_count',
@@ -164,7 +182,8 @@ class Course extends Model
         'duration_formatted_long',
         'duration_human',
         'user_rating',
-        'FeaturedRatings'
+        'FeaturedRatings',
+        'rating_breakdown'
     ];
 
 

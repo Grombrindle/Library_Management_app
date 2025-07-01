@@ -41,9 +41,14 @@ class TeacherRating extends Model
         return $this->helpful()->count();
     }
 
-    public function getUnelpfulCountAttribute() {
-        return $this->helpful()->count();
+    public function getUnhelpfulCountAttribute() {
+        return $this->unhelpful()->count();
     }
 
-    protected $appends = ['HelpfulCount', 'UnelpfulCount'];
+    public function getRatingAttribute($value)
+    {
+        return round($value, 2);
+    }
+
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'rating'];
 }

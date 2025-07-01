@@ -42,9 +42,17 @@ class LectureRating extends Model
         return $this->helpful()->count();
     }
 
-    public function getUnelpfulCountAttribute() {
-        return $this->helpful()->count();
+    public function getUnhelpfulCountAttribute() {
+        return $this->unhelpful()->count();
+    }
+    public function getRatingAttribute($value)
+    {
+        return round($value, 2);
     }
 
-    protected $appends = ['HelpfulCount', 'UnelpfulCount'];
+    public function getRatingsCountAttribute() {
+        return $this->ratings()->count();
+    }
+
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'rating', 'ratingsCount'];
 }

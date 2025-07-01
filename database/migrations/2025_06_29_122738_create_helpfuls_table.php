@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('lecture_rating_id')->nullable()->constrained('lecture_rating')->onDelete('cascade');
             $table->foreignId('course_rating_id')->nullable()->constrained('course_rating')->onDelete('cascade');
             $table->foreignId('teacher_rating_id')->nullable()->constrained('teacher_ratings')->onDelete('cascade');
+            $table->foreignId('resource_rating_id')->nullable()->constrained('resources_ratings')->onDelete('cascade');
             $table->boolean('isHelpful');
             $table->timestamps();
 
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->unique(['user_id', 'lecture_rating_id'], 'helpfuls_user_lecture_unique');
             $table->unique(['user_id', 'course_rating_id'], 'helpfuls_user_course_unique');
             $table->unique(['user_id', 'teacher_rating_id'], 'helpfuls_user_teacher_unique');
+            $table->unique(['user_id', 'resource_rating_id'], 'helpfuls_user_resource_unique');
         });
     }
 

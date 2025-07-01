@@ -190,6 +190,11 @@ class User extends Authenticatable
         return $this->hasMany(TeacherRating::class);
     }
 
+    public function resourceRatings()
+    {
+        return $this->hasMany(ResourceRating::class);
+    }
+
     public function watchlist()
     {
         return $this->belongsToMany(Lecture::class, 'watchlists', 'user_id', 'lecture_id')

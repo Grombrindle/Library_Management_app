@@ -41,9 +41,20 @@ class CourseRating extends Model
         return $this->helpful()->count();
     }
 
-    public function getUnelpfulCountAttribute() {
-        return $this->helpful()->count();
+    public function getUnhelpfulCountAttribute() {
+        return $this->unhelpful()->count();
     }
 
-    protected $appends = ['HelpfulCount', 'UnelpfulCount'];
+    public function getRatingsCountAttribute() {
+        return $this->ratings()->count();
+    }
+
+    // Ensure rating is always returned with at most two decimal places
+    public function getRatingAttribute($value)
+    {
+        return round($value, 2);
+    }
+
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'rating', 'ratingsCount'];
+
 }
