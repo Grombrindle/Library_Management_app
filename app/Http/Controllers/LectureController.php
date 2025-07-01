@@ -58,6 +58,13 @@ class LectureController extends Controller
         }
     }
 
+    public function fetchRatings($id) {
+        $ratings = DB::table('lecture_rating')->where('lecture_id', $id)->get();
+        return response()->json([
+            'ratings' => $ratings
+        ]);
+    }
+
     public function fetchFile360($id)
     {
         $lecture = Lecture::find($id);

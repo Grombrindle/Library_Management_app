@@ -48,6 +48,11 @@ class Resource extends Model
         return $avgRating ? round($avgRating, 2) : null;
     }
 
+    public function getSubjectNameAttribute()
+    {
+        return $this->subject->name;
+    }
+
 
     public function getRatingsCountAttribute()
     {
@@ -116,5 +121,5 @@ class Resource extends Model
         });
     }
 
-    protected $appends = ['rating', 'rating_breakdown', 'FeaturedRatings', 'ratings_count', 'user_rating'];
+    protected $appends = ['rating', 'rating_breakdown', 'FeaturedRatings', 'ratings_count', 'user_rating', 'subjectName'];
 }

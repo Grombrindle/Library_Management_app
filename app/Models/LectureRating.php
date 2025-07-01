@@ -17,7 +17,8 @@ class LectureRating extends Model
     protected $fillable = [
         'user_id',
         'lecture_id',
-        'rating'
+        'rating',
+        'review'
     ];
 
     public function lecture()
@@ -45,14 +46,15 @@ class LectureRating extends Model
     public function getUnhelpfulCountAttribute() {
         return $this->unhelpful()->count();
     }
+
     public function getRatingAttribute($value)
     {
         return round($value, 2);
     }
 
     public function getRatingsCountAttribute() {
-        return $this->ratings()->count();
+        // return $this->ratings()->count();
     }
 
-    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'rating', 'ratingsCount'];
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount'];
 }

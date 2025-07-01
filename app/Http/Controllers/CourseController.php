@@ -61,7 +61,7 @@ class CourseController extends Controller
     public function fetchall()
     {
         $courses = Course::count() ? Course::all() : null;
-        
+
         if ($courses) {
             foreach($courses as $course) {
                 $course->rating = DB::table('course_rating')
@@ -127,11 +127,11 @@ class CourseController extends Controller
             ->withAvg('ratings', 'rating')
             ->orderByDesc(DB::raw('
                 (
-                    (COALESCE(ratings_avg_rating, 0) * 0.5) + 
-                    (ratings_count * 0.2) + 
-                    (users_count * 0.2) + 
+                    (COALESCE(ratings_avg_rating, 0) * 0.5) +
+                    (ratings_count * 0.2) +
+                    (users_count * 0.2) +
                     (lectures_count * 0.1)
-                ) * 
+                ) *
                 (1 + (COALESCE(ratings_avg_rating, 0) / 5))
             '))
             ->get()
@@ -180,7 +180,7 @@ class CourseController extends Controller
             'course' => $course
         ]);
     }
-    
+
     public function checkFavoriteCourse($id)
     {
         $isFavorited = Auth::user()->favoriteCourses()
@@ -189,6 +189,13 @@ class CourseController extends Controller
 
         return response()->json([
             'is_favorited' => $isFavorited
+        ]);
+    }
+
+    public function fetchRatings($id) {
+        $ratings = DB::table('course_rating')->where('course_id', $id)->get();
+        return response()->json([
+            'ratings' => $ratings
         ]);
     }
 
@@ -238,19 +245,19 @@ class CourseController extends Controller
 
         if ($request->input('teacher') != null)
             $course = Course::make([
-                'name' => $request->input('course_name'), 
-                'teacher_id' => $request->input('teacher'), 
-                'subject_id' => $request->input('subject'), 
-                'lecturesCount' => 0, 
+                'name' => $request->input('course_name'),
+                'teacher_id' => $request->input('teacher'),
+                'subject_id' => $request->input('subject'),
+                'lecturesCount' => 0,
                 'subscriptions' => 0,
                 'sources' => json_encode($request->input('sources', []))
             ]);
         elseif (Auth::user()->privileges == 0)
             $course = Course::make([
-                'name' => $request->input('course_name'), 
-                'teacher_id' => Auth::user()->teacher_id, 
-                'subject_id' => $request->input('subject'), 
-                'lecturesCount' => 0, 
+                'name' => $request->input('course_name'),
+                'teacher_id' => Auth::user()->teacher_id,
+                'subject_id' => $request->input('subject'),
+                'lecturesCount' => 0,
                 'subscriptions' => 0,
                 'sources' => json_encode($request->input('sources', []))
             ]);

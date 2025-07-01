@@ -23,7 +23,7 @@ class ResourceSeeder extends Seeder
             $users = User::inRandomOrder()->take($numRatings)->get();
 
             foreach ($users as $user) {
-                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5); // This will give us whole numbers or half numbers
                 DB::table('resources_ratings')->insert([
                     'user_id' => $user->id,
                     'resource_id' => $resource->id,

@@ -137,6 +137,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/togglehelpful', [HelpfulController::class, 'toggleHelpful']);
     Route::post('/toggleunhelpful', [HelpfulController::class, 'toggleUnhelpful']);
 
+    Route::get('/getcourseratings/{id}', [CourseController::class, 'fetchRatings']);
+    Route::get('/getlectureratings/{id}', [LectureController::class, 'fetchRatings']);
+    Route::get('/getresourceratings/{id}', [ResourceController::class, 'fetchRatings']);
+    Route::get('/getteacherratings/{id}', [TeacherController::class, 'fetchRatings']);
+
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');
     Route::post('/ban', [SessionController::class, 'banUser'])->name('ban.user');

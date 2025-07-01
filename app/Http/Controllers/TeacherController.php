@@ -307,6 +307,13 @@ class TeacherController extends Controller
         ]);
     }
 
+    public function fetchRatings($id) {
+        $ratings = DB::table('teacher_ratings')->where('teacher_id', $id)->get();
+        return response()->json([
+            'ratings' => $ratings
+        ]);
+    }
+
     public function rate(Request $request, $id) {
         $teacher = Teacher::find($id);
 

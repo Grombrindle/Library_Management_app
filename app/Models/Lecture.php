@@ -187,15 +187,18 @@ class Lecture extends Model
         return $this->pages;
     }
 
-    public function quiz() {
+    public function quiz()
+    {
         return $this->hasOne(Quiz::class);
     }
 
-    public function ratings() {
-        return $this->hasMany(LectureRating::class);
+    public function ratings()
+    {
+        return $this->hasMany(LectureRating::class, 'lecture_id');
     }
 
-    public function getRatingAttribute() {
+    public function getRatingAttribute()
+    {
         $avgRating = $this->ratings()->avg('rating');
         return $avgRating ? round($avgRating, 2) : null;
     }
