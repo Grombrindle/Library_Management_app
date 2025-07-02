@@ -96,7 +96,7 @@ class TeacherController extends Controller
         $teacher = Teacher::find($id);
         if ($teacher) {
             $courses = $teacher->courses()->get();
-            
+
             // Add isFavorite field to each course
             $courses->each(function ($course) {
                 $course->isFavorite = Auth::user()->favoriteCourses()
@@ -306,7 +306,14 @@ class TeacherController extends Controller
             'is_favorited' => $isFavorited
         ]);
     }
-    
+
+    public function fetchRatings($id) {
+        $ratings = DB::table('teacher_ratings')->where('teacher_id', $id)->get();
+        return response()->json([
+            'ratings' => $ratings
+        ]);
+    }
+
     public function rate(Request $request, $id) {
         $teacher = Teacher::find($id);
 
@@ -491,6 +498,7 @@ class TeacherController extends Controller
 
             $teacher->image = $path;
         }
+        $teacher->description = $request->input('teacher_description');
         $teacher->save();
 
         $teacher = Admin::where('teacher_id', $teacher->id)->first();

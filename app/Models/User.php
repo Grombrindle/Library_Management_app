@@ -87,6 +87,13 @@ class User extends Authenticatable
         'created_at',
         'updated_at'
     ];
+
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -143,5 +150,54 @@ class User extends Authenticatable
     public function isFavorited(Teacher $teacher): bool
     {
         return $this->favoriteTeachers()->where('teacher_id', $teacher->id)->exists();
+    }
+
+    public function tasks() {
+        return $this->hasMany(Task::class);
+    }
+
+    public function ratings() {
+        $courseRatings = $this->courseRatings()->with('course')->get()->map(function($rating) {
+            $rating->type = 'course';
+            return $rating;
+        });
+
+        $lectureRatings = $this->lectureRatings()->with('lecture')->get()->map(function($rating) {
+            $rating->type = 'lecture';
+            return $rating;
+        });
+
+        $teacherRatings = $this->teacherRatings()->with('teacher')->get()->map(function($rating) {
+            $rating->type = 'teacher';
+            return $rating;
+        });
+
+        return $courseRatings->concat($lectureRatings)->concat($teacherRatings);
+    }
+
+    public function courseRatings()
+    {
+        return $this->hasMany(CourseRating::class);
+    }
+
+    public function lectureRatings()
+    {
+        return $this->hasMany(LectureRating::class);
+    }
+
+    public function teacherRatings()
+    {
+        return $this->hasMany(TeacherRating::class);
+    }
+
+    public function resourceRatings()
+    {
+        return $this->hasMany(ResourceRating::class);
+    }
+
+    public function watchlist()
+    {
+        return $this->belongsToMany(Lecture::class, 'watchlists', 'user_id', 'lecture_id')
+                    ->withTimestamps();
     }
 }

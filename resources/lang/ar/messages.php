@@ -193,6 +193,7 @@ return [
     'scientific' => 'علمي',
     'literary' => 'أدبي',
     'teacherDescription' => 'وصف المدرس',
+    'teacherDescription' => 'وصف المدرس',
     'resources' => 'الموارد',
     'resource' => 'مورد',
     'addResource' => 'إضافة مورد',

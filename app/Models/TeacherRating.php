@@ -28,4 +28,27 @@ class TeacherRating extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function helpful() {
+        return $this->hasMany(Helpful::class)->where('isHelpful', 1);
+    }
+
+    public function unhelpful() {
+        return $this->hasMany(Helpful::class)->where('isHelpful', 0);
+    }
+
+    public function getHelpfulCountAttribute() {
+        return $this->helpful()->count();
+    }
+
+    public function getUnhelpfulCountAttribute() {
+        return $this->unhelpful()->count();
+    }
+
+    public function getRatingAttribute($value)
+    {
+        return round($value, 2);
+    }
+
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'rating'];
 }

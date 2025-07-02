@@ -104,7 +104,7 @@ class DatabaseSeeder extends Seeder
             $users = User::inRandomOrder()->take($numRatings)->get();
 
             foreach ($users as $user) {
-                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5); // This will give us whole numbers or half numbers
                 DB::table('course_rating')->insert([
                     'user_id' => $user->id,
                     'course_id' => $course->id,
@@ -122,6 +122,8 @@ class DatabaseSeeder extends Seeder
                 'description' => fake()->text(),
                 'image' => 'Images/Lectures/default.png',
                 'course_id' => rand(1, Course::count()),
+                'duration' => $type ? rand(45, 3600) : null,
+                'pages' => $type ? null : rand(1, 155),
             ]);
 
             // Add 2-4 random ratings for the course
@@ -129,16 +131,16 @@ class DatabaseSeeder extends Seeder
             $users = User::inRandomOrder()->take($numRatings)->get();
 
             foreach ($users as $user) {
-                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5); // This will give us whole numbers or half numbers
                 DB::table('lecture_rating')->insert([
                     'user_id' => $user->id,
                     'lecture_id' => $lecture->id,
                     'rating' => $rating,
-                    'review' => rand(0,1) ? null : fake()->realText(100),
+                    'review' => rand(0,max: 1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
-                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5); // This will give us whole numbers or half numbers
                 DB::table('teacher_ratings')->insert([
                     'user_id' => $user->id,
                     'teacher_id' => $teacher->id,
@@ -226,6 +228,8 @@ class DatabaseSeeder extends Seeder
             'file_360' => 'Files/360/default_360.mp4',
             'file_720' => 'Files/720/default_720.mp4',
             'file_1080' => 'Files/1080/default_1080.mp4',
+            'duration' => $type ? rand(45, 3600) : null,
+            'pages' => $type ? null : rand(1, 155),
         ]);
         Admin::factory()->create([
             'name' => $teacher->name,
@@ -254,5 +258,8 @@ class DatabaseSeeder extends Seeder
         $this->call(QuizSeeder::class);
         $this->call(QuestionSeeder::class);
         $this->call(ResourceSeeder::class);
+        $this->call(TaskSeeder::class);
+        $this->call(WatchlistSeeder::class);
+        $this->call(HelpfulSeeder::class);
     }
 }

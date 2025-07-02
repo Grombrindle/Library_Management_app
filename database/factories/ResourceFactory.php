@@ -17,8 +17,8 @@ class ResourceFactory extends Factory
      */
     public function definition(): array
     {
-        
-        
+
+
         // $table->string('name');
         // $table->text('description')->nullable();
         // $table->integer('literaryOrScientific');
@@ -39,6 +39,7 @@ class ResourceFactory extends Factory
             'literaryOrScientific' => $literaryOrScientific,
             'subject_id' => $sub,
             'publish date' => $pub,
+            'pages' => rand(20, 560),
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 /**
  *
@@ -70,14 +71,27 @@ class Teacher extends Model
     {
         $array = parent::toArray();
 
-        // If links is present and is an array, merge it into the top-level array
-        if (isset($array['links']) && is_array($array['links'])) {
-            $array = array_merge($array, $array['links']);
-            unset($array['links']);
+        // Handle links array merging
+        if (isset($array['links'])) {
+            // If links is already an array (from casting), use it directly
+            if (is_array($array['links'])) {
+                $array = array_merge($array, $array['links']);
+                unset($array['links']);
+            }
+            // If links is a JSON string, decode it first
+            elseif (is_string($array['links'])) {
+                $decodedLinks = json_decode($array['links'], true);
+                if (is_array($decodedLinks)) {
+                    $array = array_merge($array, $decodedLinks);
+                    unset($array['links']);
+                }
+            }
         }
 
         return $array;
     }
+
+
     protected $hidden = ['password', 'userName'];
 
 
@@ -113,7 +127,8 @@ class Teacher extends Model
 
     public function getRatingAttribute()
     {
-        return $this->ratings()->avg('rating');
+        $avgRating = $this->ratings()->avg('rating');
+        return $avgRating ? round($avgRating, 2) : null;
     }
     public function getRatingsCountAttribute()
     {
@@ -132,9 +147,12 @@ class Teacher extends Model
 
     public function getFeaturedRatingsAttribute()
     {
+        // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
         $withReview = $this->ratings()
-            ->with('user')
             ->whereNotNull('review')
+            ->withCount(['helpful', 'unhelpful'])
+            ->orderByDesc('helpful_count')
+            ->orderBy('unhelpful_count')
             ->orderByDesc('rating')
             ->orderByRaw('LENGTH(review) DESC')
             ->orderByDesc('created_at')
@@ -142,26 +160,21 @@ class Teacher extends Model
             ->get();
 
         if ($withReview->count() >= 3) {
-            return $withReview->map(function($review) {
-                $review->user_name = $review->user ? $review->user->userName : null;
-                return $review;
-            });
+            return $withReview;
         }
 
         $needed = 3 - $withReview->count();
         $withoutReview = $this->ratings()
-            ->with('user')
             ->whereNull('review')
+            ->withCount(['helpful', 'unhelpful'])
+            ->orderByDesc('helpful_count')
+            ->orderBy('unhelpful_count')
             ->orderByDesc('rating')
             ->orderByDesc('created_at')
             ->take($needed)
             ->get();
 
-        $all = $withReview->concat($withoutReview);
-        return $all->map(function($review) {
-            $review->user_name = $review->user ? $review->user->userName : null;
-            return $review;
-        });
+        return $withReview->concat($withoutReview);
     }
 
     public function getRatingBreakdownAttribute()
@@ -195,6 +208,16 @@ class Teacher extends Model
         return $uniqueUserCount;
     }
 
-    protected $appends = ['rating', 'courses', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs'];
+    public function getUserRatingAttribute()
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $rating = Auth::user()->teacherRatings()->where('teacher_id', $this->id)->first();
+        return $rating ? $rating->rating : null;
+    }
+
+    protected $appends = ['rating', 'courses', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
 
 }

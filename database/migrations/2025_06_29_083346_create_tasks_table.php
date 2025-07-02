@@ -4,8 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
-use App\Models\Subject;
-use App\Models\Course;
 
 return new class extends Migration
 {
@@ -14,10 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscriptions', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade');
+            $table->string('title');
+            $table->string('description');
+            $table->boolean('isChecked')->default(0);
+            $table->boolean('isTrashed')->default(0);
+            $table->foreignIdFor(User::class);
+            $table->decimal('estimatedHours', 10, 1);
+            $table->timestamp('trashed_at')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subscriptions');
+        Schema::dropIfExists('tasks');
     }
 };

@@ -31,6 +31,8 @@ class LectureSeeder extends Seeder
                 'type' => $type,
                 'course_id' => $randSub,
                 'image' => 'Images/Lectures/default.png',
+                'duration' => $type ? rand(45, 3600) : null,
+                'pages' => $type ? null : rand(1, 155),
             ]);
             if($type) {
 
@@ -42,12 +44,12 @@ class LectureSeeder extends Seeder
                 $lecture->file_pdf = 'Files/PDFs/default_pdf.pdf';
             }
             $lecture->save();
-            
+
             $numRatings = rand(2, 4);
             $users = User::inRandomOrder()->take($numRatings)->get();
-            
+
             foreach ($users as $user) {
-                $rating = min([rand(1, 5) + (rand(0, 1) * 0.5), 5]); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5); // This will give us whole numbers or half numbers
                 DB::table('lecture_rating')->insert([
                     'user_id' => $user->id,
                     'lecture_id' => $lecture->id,

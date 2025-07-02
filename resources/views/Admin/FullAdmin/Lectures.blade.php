@@ -66,7 +66,7 @@
 
     // Prepare filter options
     $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
-    
+
     // Split lectures into chunks
     $chunkSize = 2;
     $chunkedLectures = array_fill(0, $chunkSize, []);
@@ -109,7 +109,7 @@
                             ● {{__('messages.fromCourse')}}: {{ $lecture->course->name }} <br>
                             ● {{__('messages.fileType')}}: @if ($lecture->type)
                                 {{__('messages.video')}} <br>
-                                ● {{__('messages.duration')}}: {{ $lecture->getVideoLength() ?? 'N/A' }}
+                                ● {{__('messages.duration')}}: {{ $lecture->getFormattedDurationLongAttribute() ?? 'N/A' }}
                                 @else
                                 {{__('messages.pdf')}} <br>
                                 ● {{__('messages.pages')}}: {{ $lecture->getPdfPages() ?? 'N/A' }}

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Teacher;
+use Illuminate\Support\Facades\Auth;
 
 class Course extends Model
 {
@@ -56,7 +57,8 @@ class Course extends Model
 
     public function getRatingAttribute()
     {
-        return $this->ratings()->avg('rating');
+        $avgRating = $this->ratings()->avg('rating');
+        return $avgRating ? round($avgRating, 2) : null;
     }
 
     public function getSubscriptionCountAttribute()
@@ -68,6 +70,38 @@ class Course extends Model
     public function getRatingsCountAttribute()
     {
         return $this->ratings()->count();
+    }
+
+    public function getFeaturedRatingsAttribute()
+    {
+        // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
+        $withReview = $this->ratings()
+            ->whereNotNull('review')
+            ->withCount(['helpful', 'unhelpful'])
+            ->orderByDesc('helpful_count')
+            ->orderBy('unhelpful_count')
+            ->orderByDesc('rating')
+            ->orderByRaw('LENGTH(review) DESC')
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+
+        if ($withReview->count() >= 3) {
+            return $withReview;
+        }
+
+        $needed = 3 - $withReview->count();
+        $withoutReview = $this->ratings()
+            ->whereNull('review')
+            ->withCount(['helpful', 'unhelpful'])
+            ->orderByDesc('helpful_count')
+            ->orderBy('unhelpful_count')
+            ->orderByDesc('rating')
+            ->orderByDesc('created_at')
+            ->take($needed)
+            ->get();
+
+        return $withReview->concat($withoutReview);
     }
 
     public function getVideoLecturesCountAttribute()
@@ -88,14 +122,102 @@ class Course extends Model
             ->count();
     }
 
-    protected $appends = [
-        'rating',
-        'subscription_count',
-        'ratings_count',
-        'video_lectures_count',
-        'pdf_lessons_count',
-    ];
+    public function getDurationAttribute() {
+        $lectures = $this->lectures()->where('type', 1)->get();
+        $sum = 0;
+        foreach($lectures as $lecture) {
+            $sum += $lecture->duration;
+        }
+        return $sum;
+    }
 
+    public function getDurationFormattedAttribute() {
+        return \App\Models\Lecture::formatDuration($this->duration);
+    }
+
+    public function getDurationFormattedLongAttribute() {
+        return \App\Models\Lecture::formatDurationLong($this->duration);
+    }
+
+    public function getDurationHumanAttribute() {
+        return \App\Models\Lecture::formatDurationHuman($this->duration);
+    }
+
+    public function getUserRatingAttribute()
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $rating = Auth::user()->courseRatings()->where('course_id', $this->id)->first();
+        return $rating ? $rating->rating : null;
+    }
+
+
+    //dis new
+    public function getRatingsCountAttribute()
+    {
+        // Get the count of each rating (1-5) for this course
+        $breakdown = $this->ratings()
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating')
+            ->toArray();
+
+        // Ensure all ratings 1-5 are present, even if 0
+        $fullBreakdown = [];
+        foreach (range(1, 5) as $rating) {
+            $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
+        }
+
+        return $fullBreakdown;
+    }
+
+    public function getFirstRatingsAttribute() {
+        return $this->ratings()->orderByDesc('rating')->take(3)->get();
+    }
+
+    // public function getFeaturedRatingsAttribute()
+    // {
+    //     // First, get reviews with non-null review text, ordered by IMDB-like algorithm
+    //     $withReview = $this->ratings()
+    //         ->with('user')
+    //         ->whereNotNull('review')
+    //         ->orderByDesc('rating')
+    //         ->orderByRaw('LENGTH(review) DESC')
+    //         ->orderByDesc('created_at')
+    //         ->take(3)
+    //         ->get();
+
+    //     // If we have 3, return them (with user name)
+    //     if ($withReview->count() >= 3) {
+    //         return $withReview->map(function($review) {
+    //             $review->user_name = $review->user ? $review->user->userName : null;
+    //             return $review;
+    //         });
+    //     }
+
+    //     // Otherwise, get more ratings (regardless of review text) to fill up to 3
+    //     $needed = 3 - $withReview->count();
+    //     $withoutReview = $this->ratings()
+    //         ->whereNull('review')
+    //         ->orderByDesc('rating')
+    //         ->orderByDesc('created_at')
+    //         ->take($needed)
+    //         ->get();
+
+    //     $all = $withReview->concat($withoutReview);
+    //     return $all->map(function($review) {
+    //         $review->user_name = $review->user ? $review->user->userName : null;
+    //         return $review;
+    //     });
+    // }
+
+    public function getLectureNumAttribute() {
+        return $this->lectures()->get()->count();
+    }
+
+    protected $appends = ['rating', 'subscription_count', 'rating_breakdown', 'FeaturedRatings', 'lectureNum'];
 
     // protected $with = ['ratings'];
 }

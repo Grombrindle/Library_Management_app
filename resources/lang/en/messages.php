@@ -212,4 +212,5 @@ return [
     'listenCurrentAudio' => 'Listen Current Audio',
     'edit'=> 'Edit',
     'deleteResource' => 'Delete Resource',
+    'teacherDescription' => 'Teacher Description',
 ];

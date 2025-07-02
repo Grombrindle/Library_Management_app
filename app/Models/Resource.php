@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ResourceRating;
+use Illuminate\Support\Facades\Auth;
 
 class Resource extends Model
 {
@@ -43,7 +44,19 @@ class Resource extends Model
 
     public function getRatingAttribute()
     {
-        return $this->ratings()->avg('rating');
+        $avgRating = $this->ratings()->avg('rating');
+        return $avgRating ? round($avgRating, 2) : null;
+    }
+
+    public function getSubjectNameAttribute()
+    {
+        return $this->subject->name;
+    }
+
+
+    public function getRatingsCountAttribute()
+    {
+        return $this->ratings()->count();
     }
 
     public function getRatingBreakdownAttribute()
@@ -64,7 +77,16 @@ class Resource extends Model
         return $fullBreakdown;
     }
 
-    
+    public function getUserRatingAttribute()
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $rating = Auth::user()->resourceRatings()->where('resource_id', $this->id)->first();
+        return $rating ? $rating->rating : null;
+    }
+
     public function getFeaturedRatingsAttribute()
     {
         $withReview = $this->ratings()
@@ -99,5 +121,5 @@ class Resource extends Model
         });
     }
 
-    protected $appends = ['rating', 'rating_breakdown', 'FeaturedRatings'];
+    protected $appends = ['rating', 'rating_breakdown', 'FeaturedRatings', 'ratings_count', 'user_rating', 'subjectName'];
 }

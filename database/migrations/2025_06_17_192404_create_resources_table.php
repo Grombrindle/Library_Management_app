@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('pdf_file');
             $table->string('audio_file')->nullable();
             $table->string('author')->default('John Doe');
+            $table->integer('pages');
             $table->timestamps();
         });
     }

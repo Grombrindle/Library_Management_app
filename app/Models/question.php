@@ -24,6 +24,7 @@ class question extends Model
         'updated_at' => 'date:Y-m-d',
         'options' => 'array'
     ];
+
     public function quiz() {
         return $this->belongsTo(Quiz::class, 'quiz_id');
     }
