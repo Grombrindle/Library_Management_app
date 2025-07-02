@@ -435,6 +435,29 @@ class UserController extends Controller
             ]);
         }
     }
+
+    public function updatePassword(Request $request)
+    {
+        if (Hash::check($request->input('oldPassword'), Auth::user()->password)) {
+            if ($request->input('newPassword') != null) {
+                Auth::user()->password = Hash::make($request->input('newPassword'));
+                Auth::user()->save();
+                return response()->json([
+                    'success' => 'true',
+                ]);
+            } else
+                return response()->json([
+                    'success' => "false",
+                    'reason' => 'New Password Is Empty'
+                ]);
+        } else {
+            return response()->json([
+                'success' => "false",
+                'reason' => "Password Doesn't Match"
+            ]);
+        }
+    }
+
     public function updateNumber(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -461,28 +484,6 @@ class UserController extends Controller
         return response()->json([
             'success' => "true"
         ]);
-    }
-
-    public function updatePassword(Request $request)
-    {
-        if (Hash::check($request->input('oldPassword'), Auth::user()->password)) {
-            if ($request->input('newPassword') != null) {
-                Auth::user()->password = Hash::make($request->input('newPassword'));
-                Auth::user()->save();
-                return response()->json([
-                    'success' => 'true',
-                ]);
-            } else
-                return response()->json([
-                    'success' => "false",
-                    'reason' => 'New Password Is Empty'
-                ]);
-        } else {
-            return response()->json([
-                'success' => "false",
-                'reason' => "Password Doesn't Match"
-            ]);
-        }
     }
 
     public function deleteSubs()

@@ -1,126 +1,109 @@
-@props(['lectures' => null, 'lec' => false, 'user' => false, 'num' => App\Models\Lecture::count()])
+@props(['resources' => null, 'num' => App\Models\Resource::count()])
 
 @php
     // Get the search query and filter values from the request
     $searchQuery = request('search');
     $sort = request('sort', 'newest'); // Default to 'newest'
-    $selectedCourses = request('courses', []);
-    $filterNone = request('none', false);
-    $courseCounts = request('course_count', []);
+    $selectedSubjects = request('subjects', []);
+    $filterType = request('type', []); // For literary/scientific filter
 
     // Normalize the search query
     $searchTerms = $searchQuery ? array_filter(explode(' ', strtolower(trim($searchQuery)))) : [];
 
-    // Initialize base query
-    if ($lectures !== null) {
-        $query = App\Models\Lecture::whereIn('id', $lectures->pluck('id'));
-        $lecturesCount = $query->count(); // Get count before pagination
+    if ($resources !== null) {
+        $query = App\Models\Resource::whereIn('id', $resources->pluck('id'));
     } else {
-        $query = App\Models\Lecture::query();
-        $lecturesCount = $query->count(); // Get total count
+        $query = App\Models\Resource::query();
     }
 
-    // Apply filters
-    $query
+    // Apply filters and search
+    $modelToPass = $query
         ->when($searchQuery, function ($query) use ($searchTerms) {
             foreach ($searchTerms as $term) {
                 $query->where(function ($q) use ($term) {
-                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])->orWhereRaw('LOWER(description) LIKE ?', [
-                        "%{$term}%",
-                    ]);
+                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])->orWhereRaw('LOWER(author) LIKE ?', ["%{$term}%"]);
                 });
             }
+            return $query;
         })
-        ->when($selectedCourses, function ($query) use ($selectedCourses) {
-            $query->whereHas('course', function ($q) use ($selectedCourses) {
-                $q->whereIn('id', $selectedCourses);
-            });
+        ->when($selectedSubjects, function ($query) use ($selectedSubjects) {
+            $query->whereIn('subject_id', $selectedSubjects);
         })
-        ->when($filterNone, function ($query) {
-            $query->whereDoesntHave('course');
+        ->when($filterType, function ($query) use ($filterType) {
+            $query->whereIn('literaryOrScientific', $filterType);
         })
-        ->when($courseCounts, function ($query) use ($courseCounts) {
-            $query->where(function ($q) use ($courseCounts) {
-                foreach ($courseCounts as $count) {
-                    if ($count === '1') {
-                        $q->orHas('course', '=', 1);
-                    } // Add other count conditions as needed
-                }
-            });
-        });
-
-    // Apply sorting
-    if ($sort === 'name-a-z') {
-        $query->orderByRaw('LOWER(name) ASC');
-    } elseif ($sort === 'name-z-a') {
-        $query->orderByRaw('LOWER(name) DESC');
-    } elseif ($sort === 'newest') {
-        $query->orderBy('created_at', 'desc');
-    } elseif ($sort === 'oldest') {
-        $query->orderBy('created_at', 'asc');
-    }
-
-    // Get filtered count before pagination
-    $filteredCount = $query->count();
-    $modelToPass = $query->paginate(10);
+        ->when($sort, function ($query) use ($sort) {
+            if ($sort === 'name-a-z') {
+                $query->orderByRaw('LOWER(name) ASC');
+            } elseif ($sort === 'name-z-a') {
+                $query->orderByRaw('LOWER(name) DESC');
+            } elseif ($sort === 'author-a-z') {
+                $query->orderByRaw('LOWER(author) ASC');
+            } elseif ($sort === 'author-z-a') {
+                $query->orderByRaw('LOWER(author) DESC');
+            } elseif ($sort === 'newest') {
+                $query->orderBy('created_at', 'desc');
+            } elseif ($sort === 'oldest') {
+                $query->orderBy('created_at', 'asc');
+            } elseif ($sort === 'publish-newest') {
+                $query->orderByDesc('publish date');
+            } elseif ($sort === 'publish-oldest') {
+                $query->orderBy('publish date', 'asc');
+            } elseif ($sort === 'rating-highest') {
+                $query->orderByDesc('rating');
+            } elseif ($sort === 'rating-lowest') {
+                $query->orderBy('rating', 'asc');
+            }
+        })
+        ->paginate(10);
 
     // Prepare filter options
-    $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
+    $filterOptions = App\Models\Subject::pluck('name', 'id')->toArray();
+    $typeOptions = [
+        1 => __('messages.literary'),
+        2 => __('messages.scientific'),
+    ];
 
-    // Split lectures into chunks
+    // Split resources into chunks for a 2-column grid layout
     $chunkSize = 2;
-    $chunkedLectures = array_fill(0, $chunkSize, []);
+    $chunkedLectures = [];
+    for ($i = 0; $i < $chunkSize; $i++) {
+        $chunkedLectures[$i] = [];
+    }
 
-    foreach ($modelToPass as $index => $lecture) {
+    foreach ($modelToPass as $index => $resource) {
         $chunkIndex = $index % $chunkSize;
-        $chunkedLectures[$chunkIndex][] = $lecture;
+        $chunkedLectures[$chunkIndex][] = $resource;
     }
 @endphp
-<x-layout :objects=true
-    object="{{ $user ? Str::upper(App\Models\User::findOrFail(session('user'))->userName) . __('messages.lecturesSubTo') : (!$lec ? __('messages.lectures') : __('messages.lecturesFrom') . Str::upper(App\Models\Course::findOrFail(session('course'))->name)) }}">
+
+
+<x-layout :objects=true object="{{ __('messages.resources') }}">
     <x-breadcrumb :links="array_merge(
         [__('messages.home') => url('/welcome')],
         [
-            $user
-                ? App\Models\User::findOrFail(session('user'))->userName . ' subscribed lectures'
-                : (!$lec
-                    ? __('messages.lectures')
-                    : __('messages.lecturesFrom') .
-                        App\Models\Course::findOrFail(session('course'))->name) => Request::url(),
+            __('messages.resources') => Request::url(),
         ],
     )" />
 
-    <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions :showCourseCountFilter=false
-        :showUsernameSort=false :showNameSort=false>
+    <x-cardcontainer :model=$modelToPass addLink="addresource" :filterOptions=$filterOptions
+        :showUsernameSort=false :showNameSort=true>
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedLectures as $chunk)
                 <div class="chunk">
-                    @foreach ($chunk as $lecture)
-                        <x-card link="lecture/{{ $lecture->id }}" image="{{ asset($lecture->image) }}" object="Lecture">
-                            ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
-                            {{-- ● Lecture Description:
-                            <div class="description">
-                                @foreach (explode("\n", $lecture->description) as $line)
-                                <div class="description-line">{{ $line }}</div>
-                                @endforeach
-                            </div> --}}
-                            <!-- ● {{ __('messages.forSubject') }}: {{ $lecture->course->name }} <br> -->
-                            ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
-                            ● {{ __('messages.fromTeacher') }}: {{ $lecture->course->teacher->name }} <br>
-                            ● {{ __('messages.fromCourse') }}: {{ $lecture->course->name }} <br>
-                            ● {{ __('messages.fileType') }}: @if ($lecture->type)
-                                {{ __('messages.video') }} <br>
-                                ● {{ __('messages.duration') }}:
-                                {{ $lecture->getFormattedDurationLongAttribute() ?? 'N/A' }}
-                            @else
-                                {{ __('messages.pdf') }} <br>
-                                ● {{ __('messages.pages') }}: {{ $lecture->getPdfPages() ?? 'N/A' }}
-                            @endif
-                            <br>
+                    @foreach ($chunk as $resource)
+                        <x-card link="resource/{{ $resource->id }}" image="{{ asset($resource->image) }}"
+                            object="Resource">
+                            ● {{ __('messages.resourceName') }}: {{ $resource->name }}<br>
+                            ● {{ __('messages.resourceAuthor') }}: {{ $resource->author }}<br>
+                            ● {{ __('messages.resourceDescription') }}: {{ $resource->description }}<br>
+                            ● {{ __('messages.resourceSubject') }}:
+                            {{ $resource->subject->name }} ({{ $resource->literaryOrScientific == 1 ? __('messages.literary') : __('messages.scientific') }})<br>
+                            ● {{ __('messages.resourcePublishDate') }}: {{ $resource['publish date'] }}<br>
                             <br>
                             <div style="display:inline-block; vertical-align:middle;">
                                 @php
-                                    $rating = $lecture->rating ?? 0;
+                                    $rating = $resource->rating ?? 0;
                                 @endphp
                                 @for ($i = 1; $i <= 5; $i++)
                                     @if ($rating >= $i)
@@ -135,14 +118,14 @@
                                         <svg width="20" height="20" viewBox="0 0 20 20" style="display:inline;">
                                             <defs>
                                                 <linearGradient
-                                                    id="half-grad-{{ $lecture->id }}-{{ $i }}">
+                                                    id="half-grad-{{ $resource->id }}-{{ $i }}">
                                                     <stop offset="50%" stop-color="gold" />
                                                     <stop offset="50%" stop-color="lightgray" />
                                                 </linearGradient>
                                             </defs>
                                             <polygon
                                                 points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36"
-                                                fill="url(#half-grad-{{ $lecture->id }}-{{ $i }})" />
+                                                fill="url(#half-grad-{{ $resource->id }}-{{ $i }})" />
                                         </svg>
                                     @else
                                         {{-- Empty star --}}
@@ -154,7 +137,7 @@
                                     @endif
                                 @endfor
                                 <span>({{ number_format($rating, 1) }})</span>
-                                <span>({{ $lecture->ratings->count() }} reviews)</span>
+                                <span>({{ $resource->ratings->count() }} reviews)</span>
 
                             </div>
                         </x-card>
@@ -181,8 +164,8 @@
             {{ $modelToPass->appends([
                     'search' => $searchQuery,
                     'sort' => $sort,
-                    'courses' => $selectedCourses,
-                    'none' => $filterNone,
+                    'subjects' => $selectedSubjects,
+                    'type' => $filterType,
                 ])->links() }}
         </div>
     @endif
@@ -194,27 +177,23 @@
         const dynamicContent = document.getElementById('dynamic-content');
         const filterForm = document.querySelector('.filter-dropdown');
         const filterCheckboxes = document.querySelectorAll(
-            'input[type="checkbox"][name^="courses"], input[name="none"], input[name^="course_count"]');
+            'input[type="checkbox"][name^="subjects"], input[name^="type"]');
         const paginationInfoContainer = document.querySelector('.pagination-info');
         const paginationContainer = document.querySelector('.pagination');
 
-        // Function to fetch and update results
         function updateResults() {
             const query = searchBar.value;
             const selectedSort = document.querySelector('input[name="sort"]:checked')?.value || 'newest';
-            const selectedCourses = Array.from(document.querySelectorAll('input[name="courses[]"]:checked'))
+            const selectedSubjects = Array.from(document.querySelectorAll('input[name="subjects[]"]:checked'))
                 .map(el => el.value);
-            const filterNone = document.getElementById('filter-none')?.checked || false;
-            const courseCounts = Array.from(document.querySelectorAll('input[name="course_count[]"]:checked'))
-                .map(el => el.value);
+            const selectedTypes = Array.from(document.querySelectorAll('input[name="type[]"]:checked')).map(
+                el => el.value);
 
-            // Build query string
             const params = new URLSearchParams();
             params.set('search', query);
             params.set('sort', selectedSort);
-            selectedCourses.forEach(course => params.append('courses[]', course));
-            if (filterNone) params.set('none', 'true');
-            courseCounts.forEach(count => params.append('course_count[]', count));
+            selectedSubjects.forEach(subject => params.append('subjects[]', subject));
+            selectedTypes.forEach(type => params.append('type[]', type));
 
             paginationInfoContainer.innerHTML = '';
             paginationContainer.innerHTML = '';
@@ -229,19 +208,19 @@
 
                     // Update pagination info (show if at least 1 result)
                     const responsePaginationInfo = doc.querySelector('.pagination-info');
-                    if (responsePaginationInfo) {
+                    if (paginationInfoContainer && responsePaginationInfo) {
                         paginationInfoContainer.innerHTML = responsePaginationInfo.innerHTML;
-                    } else {
+                    } else if (paginationInfoContainer) {
                         // Check if we should show pagination info by extracting count from response
-                        const countMatch = doc.body.textContent.match(/of (\d+) lectures/);
+                        const countMatch = doc.body.textContent.match(/of (\d+) resources/);
                         const totalCount = countMatch ? parseInt(countMatch[1]) : 0;
 
-                        if (totalCount > 1) {
+                        if (totalCount > 0) {
                             // Reconstruct pagination info
                             const firstItem = 1;
                             const lastItem = Math.min(10, totalCount);
                             paginationInfoContainer.innerHTML =
-                                `Showing ${firstItem} to ${lastItem} of ${totalCount} lectures`;
+                                `Showing ${firstItem} to ${lastItem} of ${totalCount} resources`;
                         } else {
                             paginationInfoContainer.innerHTML = '';
                         }
@@ -249,20 +228,20 @@
 
                     // Update pagination controls (show if >10 results)
                     const responsePagination = doc.querySelector('.pagination');
-                    if (responsePagination) {
+                    if (paginationContainer && responsePagination) {
                         paginationContainer.innerHTML = responsePagination.innerHTML;
-                    } else {
+                    } else if (paginationContainer) {
                         paginationContainer.innerHTML = '';
                     }
 
                     attachCircleEffect();
-                    refreshAnimations();
+                    refreshAnimations && refreshAnimations();
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    dynamicContent.innerHTML = '<div class="error-message">Failed to load lectures</div>';
-                    paginationInfoContainer.innerHTML = '';
-                    paginationContainer.innerHTML = '';
+                    if (dynamicContent) dynamicContent.innerHTML = '<div class="error-message">Failed to load results</div>';
+                    if (paginationInfoContainer) paginationInfoContainer.innerHTML = '';
+                    if (paginationContainer) paginationContainer.innerHTML = '';
                 });
         }
 
@@ -282,8 +261,5 @@
         filterCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', updateResults);
         });
-
-        // Initial attachment of effects
-        attachCircleEffect();
     });
 </script>

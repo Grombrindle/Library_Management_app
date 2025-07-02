@@ -12,6 +12,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\ResourceController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Lecture;
@@ -323,6 +324,38 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::put('/updatequiz/{id}', [QuizController::class, 'edit']);
 
+
+
+    Route::get('/resources', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/Resources');
+        else
+            return abort(404);
+    });
+    Route::get('/resource/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['resource' => $id]);
+            return view('Admin/FullAdmin/Resource');
+        } else
+            return abort(404);
+    });
+    Route::get('/addresource', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/ResourceAdd');
+        else
+            return abort(404);
+    });
+    Route::post('/addresource', [ResourceController::class, 'add']);
+    Route::get('/resource/edit/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['resource' => $id]);
+            return view('Admin/FullAdmin/ResourceEdit');
+        } else
+            return abort(404);
+    });
+    Route::put('/editresource/{id}', [ResourceController::class, 'edit']);
+    Route::delete('/deleteresource/{id}', [ResourceController::class, 'delete']);
+
     Route::get('/subject/{id}/courses', function ($id, Request $request) {
         // Store the subject ID in the session
         if (Auth::user()->privileges == 2) {
@@ -474,6 +507,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('lecture/show/{id}/720', [FileController::class, 'show720'])->name('file720.show');
     Route::get('lecture/show/{id}/1080', [FileController::class, 'show1080'])->name('file1080.show');
     Route::get('lecture/show/{id}/pdf', [FileController::class, 'showPDF'])->name('filepdf.show');
+
+    Route::get('resource/show/{id}/pdf', [FileController::class, 'showResourcePDF'])->name('filepdfresource.show');
+    Route::get('resource/show/{id}/audio', [FileController::class, 'showResourceAudio'])->name('fileaudioresource.show');
 
     Route::get('/welcome', function () {
         if (Auth::user()->privileges == 2)

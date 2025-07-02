@@ -1,3 +1,4 @@
+@ -1,198 +1,152 @@
 @props(['teacher' => App\Models\Teacher::findOrFail(session('teacher'))])
 <x-layout>
 
@@ -195,4 +196,3 @@
                 updateCharCount(textarea, 200);
     })
 </script>
-

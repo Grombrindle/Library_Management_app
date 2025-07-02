@@ -217,9 +217,11 @@ class Lecture extends Model
             ->take(3)
             ->get();
 
+
         if ($withReview->count() >= 3) {
             return $withReview;
         }
+
 
         $needed = 3 - $withReview->count();
         $withoutReview = $this->ratings()
@@ -232,10 +234,10 @@ class Lecture extends Model
             ->take($needed)
             ->get();
 
+
         return $withReview->concat($withoutReview);
     }
-    public function getRatingsCountAttribute()
-    {
+public function getRatingsCountAttribute() {
         return $this->ratings()->count();
     }
 

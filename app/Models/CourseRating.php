@@ -45,6 +45,10 @@ class CourseRating extends Model
         return $this->unhelpful()->count();
     }
 
+    public function ratings() {
+        return $this->hasMany(CourseRating::class, 'course_id');
+    }
+
     public function getRatingsCountAttribute() {
         return $this->ratings()->count();
     }

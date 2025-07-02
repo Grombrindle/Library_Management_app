@@ -99,7 +99,6 @@
         @if ($links['YouTube'])
             <a href="{{ $links['YouTube'] }}">YouTube</a>
         @endif
-
         <br>
         <br>
         <div style="display:inline-block; vertical-align:middle;">

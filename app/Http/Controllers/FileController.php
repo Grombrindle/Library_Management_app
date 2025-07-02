@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Lecture;
+use App\Models\Resource;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Crypt;
@@ -91,6 +92,44 @@ class FileController extends Controller
 
         return response()->file($filePath, [
             'Content-Type' => 'application/pdf',
+        ]);
+    }
+
+    public function showResourcePDF($id)
+    {
+        $resource = Resource::findOrFail($id);
+
+        if (!$resource || !$resource->pdf_file) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'PDF not found'
+            ], 404);
+        }
+        return response()->file($resource->pdf_file, [
+            'Content-Type' => 'application/pdf',
+        ]);
+    }
+
+    public function showResourceAudio($id)
+    {
+        $resource = Resource::find($id);
+        if (!$resource || !$resource->audio_file) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'Audio not found'
+            ], 404);
+        }
+        $filePath = public_path($resource->audio_file);
+        if (!file_exists($filePath)) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'File not found on server'
+            ], 404);
+        }
+        // Guess the mime type
+        $mimeType = mime_content_type($filePath);
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
         ]);
     }
 
@@ -192,7 +231,6 @@ class FileController extends Controller
                 "success" => true,
                 "url" => $signedUrl
             ]);
-
         } catch (Exception $e) {
             // Cleanup on failure
             if (isset($output) && is_resource($output)) {
@@ -228,6 +266,4 @@ class FileController extends Controller
             echo Storage::get($file);
         }, basename($file));
     }
-
-
 }

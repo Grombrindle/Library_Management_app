@@ -149,6 +149,7 @@ class Teacher extends Model
     {
         // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
         $withReview = $this->ratings()
+
             ->whereNotNull('review')
             ->withCount(['helpful', 'unhelpful'])
             ->orderByDesc('helpful_count')
@@ -161,10 +162,14 @@ class Teacher extends Model
 
         if ($withReview->count() >= 3) {
             return $withReview;
+
+
+
         }
 
         $needed = 3 - $withReview->count();
         $withoutReview = $this->ratings()
+
             ->whereNull('review')
             ->withCount(['helpful', 'unhelpful'])
             ->orderByDesc('helpful_count')
@@ -175,6 +180,10 @@ class Teacher extends Model
             ->get();
 
         return $withReview->concat($withoutReview);
+
+
+
+
     }
 
     public function getRatingBreakdownAttribute()

@@ -49,7 +49,7 @@ class LectureSeeder extends Seeder
             $users = User::inRandomOrder()->take($numRatings)->get();
 
             foreach ($users as $user) {
-                $rating = rand(1, 5); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5);
                 DB::table('lecture_rating')->insert([
                     'user_id' => $user->id,
                     'lecture_id' => $lecture->id,

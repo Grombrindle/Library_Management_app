@@ -496,6 +496,7 @@ class TeacherController extends Controller
                 unlink(public_path($teacher->image));
             }
 
+            $teacher->description = $request->input('teacher_description');
             $teacher->image = $path;
         }
         $teacher->description = $request->input('teacher_description');

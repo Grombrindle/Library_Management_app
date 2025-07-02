@@ -219,6 +219,9 @@
         width: 400px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         color: var(--filter-text);
+        max-height: 75vh;
+        min-height: 200px;
+        overflow-y: hidden;
     }
 
     .filter-dropdown.show {
@@ -238,6 +241,9 @@
     .filter-columns {
         display: flex;
         flex-wrap: wrap;
+        min-height: 100px;
+        max-height: 50vh;
+        overflow-y: auto;
     }
 
     .filter-column {
@@ -383,6 +389,30 @@
                             {{ request('sort') === 'name-z-a' ? 'checked' : '' }}> {{ __('messages.nameZA') }}</label>
                 @endif
 
+                <!-- Author A-Z/Z-A (for resources) -->
+                @if (isset($model) && count($model) && isset($model[0]->author))
+                    <label><input type="radio" name="sort" value="author-a-z"
+                            {{ request('sort') === 'author-a-z' ? 'checked' : '' }}> {{ __('messages.authorAZ') }}</label>
+                    <label><input type="radio" name="sort" value="author-z-a"
+                            {{ request('sort') === 'author-z-a' ? 'checked' : '' }}> {{ __('messages.authorZA') }}</label>
+                @endif
+
+                <!-- Publish Date (for resources) -->
+                @if (isset($model) && count($model) && isset($model[0]['publish date']))
+                    <label><input type="radio" name="sort" value="publish-newest"
+                            {{ request('sort') === 'publish-newest' ? 'checked' : '' }}> {{ __('messages.publishNewest') }}</label>
+                    <label><input type="radio" name="sort" value="publish-oldest"
+                            {{ request('sort') === 'publish-oldest' ? 'checked' : '' }}> {{ __('messages.publishOldest') }}</label>
+                @endif
+
+                <!-- Rating (for resources) -->
+                @if (isset($model) && count($model) && isset($model[0]->rating))
+                    <label><input type="radio" name="sort" value="rating-highest"
+                            {{ request('sort') === 'rating-highest' ? 'checked' : '' }}> {{ __('messages.ratingHighest') }}</label>
+                    <label><input type="radio" name="sort" value="rating-lowest"
+                            {{ request('sort') === 'rating-lowest' ? 'checked' : '' }}> {{ __('messages.ratingLowest') }}</label>
+                @endif
+
                 <!-- Username A-Z/Z-A (conditional) -->
                 @if ($showUsernameSort)
                     <label><input type="radio" name="sort" value="username-a-z"
@@ -404,7 +434,7 @@
 
                 <!-- Filter by Subjects (for users and teachers) -->
                 @if (!empty($filterOptions) && !$filterByTeachers)
-                    <label><strong>{{ __('messages.filterByCourse') }}</strong></label>
+                    <label><strong>{{ __('messages.filterBySubject') }}</strong></label>
                     <div style="margin: 0 0; padding: 10px 0;">
                         <button type="button" id="toggle-all"
                                 style="margin-left: 10px; padding: 5px 10px; border: 1px solid var(--filter-text); border-radius: 4px; cursor: pointer; color: var(--filter-text);">
@@ -415,8 +445,8 @@
                         @foreach (array_chunk($filterOptions, 6, true) as $chunk)
                             <div class="filter-column">
                                 @foreach ($chunk as $key => $value)
-                                    <label><input type="checkbox" name="courses[]" value="{{ $key }}"
-                                            {{ in_array($key, request('courses', [])) ? 'checked' : '' }}>
+                                    <label><input type="checkbox" name="subjects[]" value="{{ $key }}"
+                                            {{ in_array($key, request('subjects', [])) ? 'checked' : '' }}>
                                         {{ $value }}</label>
                                 @endforeach
                             </div>
@@ -586,7 +616,7 @@
         function updateToggleButton() {
             if (toggleAllButton) {
                 const checkboxes = document.querySelectorAll(
-                    'input[name="teachers[]"], input[name="courses[]"]');
+                    'input[name="teachers[]"], input[name="subjects[]"]');
                 const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                 toggleAllButton.textContent = allChecked ? '{{ __("messages.deselectAll") }}' : '{{ __("messages.selectAll") }}';
             }
@@ -596,7 +626,7 @@
         if (toggleAllButton) {
             toggleAllButton.addEventListener('click', function() {
                 const checkboxes = document.querySelectorAll(
-                    'input[name="teachers[]"], input[name="courses[]"]');
+                    'input[name="teachers[]"], input[name="subjects[]"]');
                 const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                 checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
                 updateToggleButton();
@@ -605,7 +635,7 @@
         }
 
         // Update toggle button when checkboxes change
-        const checkboxes = document.querySelectorAll('input[name="teachers[]"], input[name="courses[]"]');
+        const checkboxes = document.querySelectorAll('input[name="teachers[]"], input[name="subjects[]"]');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', updateToggleButton);
         });
