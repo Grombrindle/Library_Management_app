@@ -482,6 +482,10 @@
                 {{ __('messages.admins') }}
                 <span class="nav-count">{{ App\Models\Admin::count() }}</span>
             </a>
+            <a href="/resources" class="NavBarText">
+                {{ __('messages.resources') }}
+                <span class="nav-count">{{ App\Models\Resource::count() }}</span>
+            </a>
         @elseif (Auth::user()->privileges == 1)
             <a href="/users" class="NavBarText">
                 {{ __('messages.users') }}
@@ -575,6 +579,10 @@
             <a href="/admins" class="NavBarText" id="adminsLink">
                 {{ __('messages.admins') }}
                 <span class="nav-count">{{ App\Models\Admin::count() }}</span>
+            </a>
+            <a href="/resources" class="NavBarText" id="resourcesLink">
+                {{ __('messages.resources') }}
+                <span class="nav-count">{{ App\Models\Resource::count() }}</span>
             </a>
     @elseif (Auth::user()->privileges == 1)
         <div class="NavBarElement" style="margin-right: 5%;">
@@ -697,7 +705,7 @@
         const mobileDropdown = document.getElementById('mobileLanguageDropdown');
         const desktopDropdown = document.getElementById('desktopLanguageDropdown');
         const languageToggles = document.querySelectorAll('.language-toggle');
-        
+
         let clickedOnToggle = false;
         languageToggles.forEach(toggle => {
             if (toggle.contains(event.target)) {

@@ -164,10 +164,12 @@
                     {{__('messages.addUser')}}
                 @elseif ($object == 'Course')
                     {{__('messages.addCourse')}}
-                    @elseif ($object == 'Lecture')
+                @elseif ($object == 'Lecture')
                     {{__('messages.addLecture')}}
                 @elseif ($object == 'Subject')
                     {{__('messages.addSubject')}}
+                @else
+                    {{__('messages.add')}}
                 @endif
             </button>
     </form>

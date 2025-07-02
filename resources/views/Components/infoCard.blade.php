@@ -319,10 +319,12 @@
                     {{__('messages.editUser')}}
                 @elseif ($objectType == 'Course')
                     {{__('messages.editCourse')}}
-                    @elseif ($objectType == 'Lecture')
+                @elseif ($objectType == 'Lecture')
                     {{__('messages.editLecture')}}
                 @elseif ($objectType == 'Subject')
                     {{__('messages.editSubject')}}
+                @elseif ($objectType == 'Resource')
+                    {{__('messages.editResource')}}
                 @endif
             </a>
         </div>
@@ -388,10 +390,12 @@
                     {{__('messages.deleteUser')}}
                 @elseif ($objectType == 'Course')
                     {{__('messages.deleteCourse')}}
-                    @elseif ($objectType == 'Lecture')
+                @elseif ($objectType == 'Lecture')
                     {{__('messages.deleteLecture')}}
                 @elseif ($objectType == 'Subject')
                     {{__('messages.deleteSubject')}}
+                @elseif ($objectType == 'Resource')
+                    {{__('messages.deleteResource')}}
                 @endif
             </button>
         @endif
@@ -461,7 +465,7 @@
                 const row = document.createElement('div');
                 row.className = 'quiz-question-row';
                 row.innerHTML = `
-                    <input type="text" class="quiz-question-input" value="${q.questionText.replace(/"/g, '&quot;')}" placeholder="Question text" style="flex:1;max-width:60%"> 
+                    <input type="text" class="quiz-question-input" value="${q.questionText.replace(/"/g, '&quot;')}" placeholder="Question text" style="flex:1;max-width:60%">
                     <button type="button" class="quiz-remove-btn" title="Remove question">-</button>
                 `;
                 // Remove button

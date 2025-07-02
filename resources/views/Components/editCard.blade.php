@@ -515,19 +515,22 @@
         @endif
         <br>
         <button type="submit" class="submit-button">
-                @if ($object == 'Teacher')
-                    {{__('messages.updateTeacher')}}
-                @elseif($object == 'Admin')
-                    {{__('messages.updateAdmin')}}
-                @elseif ($object == 'User')
-                    {{__('messages.updateUser')}}
-                @elseif ($object == 'Course')
-                    {{__('messages.updateCourse')}}
-                    @elseif ($object == 'Lecture')
-                    {{__('messages.updateLecture')}}
-                @elseif ($object == 'Subject')
-                    {{__('messages.updateSubject')}}
-                @endif</button>
+            @if ($object == 'Teacher')
+                {{__('messages.editTeacher')}}
+            @elseif($object == 'Admin')
+                {{__('messages.editAdmin')}}
+            @elseif ($object == 'User')
+                {{__('messages.editUser')}}
+            @elseif ($object == 'Course')
+                {{__('messages.editCourse')}}
+            @elseif ($object == 'Lecture')
+                {{__('messages.editLecture')}}
+            @elseif ($object == 'Subject')
+                {{__('messages.editSubject')}}
+            @else
+                {{__('messages.edit')}}
+            @endif
+        </button>
     </form>
 </div>
 

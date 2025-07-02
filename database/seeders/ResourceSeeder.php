@@ -15,7 +15,9 @@ class ResourceSeeder extends Seeder
      */
     public function run(): void
     {
-        Resource::factory()->count(10)->create();
+        Resource::factory()->count(10)->create([
+            'pdf_file' => '/Files/Resources/default.pdf',
+        ]);
 
         foreach (Resource::all() as $resource) {
 
@@ -28,6 +30,7 @@ class ResourceSeeder extends Seeder
                     'user_id' => $user->id,
                     'resource_id' => $resource->id,
                     'rating' => $rating,
+                    // 'pdf_file'=> 'tata',
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);

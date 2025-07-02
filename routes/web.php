@@ -514,4 +514,33 @@ Route::group(['middleware' => ['auth']], function () {
         return redirect()->route('logout.confirmation');
     });
     Route::post('/registerout', [AdminController::class, 'logout']);
+
+    Route::get('/resources', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/Resources');
+        else
+            return abort(404);
+    });
+    Route::get('/resource/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['resource' => $id]);
+            return view('Admin/FullAdmin/Resource');
+        } else
+            return abort(404);
+    });
+    Route::get('/addresource', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/ResourceAdd');
+        else
+            return abort(404);
+    });
+    Route::post('/addresource', [\App\Http\Controllers\ResourceController::class, 'add']);
+    Route::get('/resource/edit/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['resource' => $id]);
+            return view('Admin/FullAdmin/ResourceEdit');
+        } else
+            return abort(404);
+    });
+    Route::put('/editresource/{id}', [\App\Http\Controllers\ResourceController::class, 'edit']);
 });

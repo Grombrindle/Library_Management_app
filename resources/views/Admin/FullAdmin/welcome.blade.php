@@ -367,6 +367,11 @@
                     {{ __('messages.admins') }}
                 </div>
             </a>
+            <a href="/resources" class="button" style="text-decoration: none; margin-left: 270px">
+                <div class="text">
+                    {{ __('messages.resources') }}
+                </div>
+            </a>
         </div>
     </div>
     <div class="circle"id="circle"></div>

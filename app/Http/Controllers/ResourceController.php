@@ -178,4 +178,76 @@ class ResourceController extends Controller
         ], 404);
     }
 
+    public function add(Request $request)
+    {
+        $validated = $request->validate([
+            'resource_name' => 'required|string|max:255',
+            'resource_description' => 'nullable|string',
+            'resource_literary_or_scientific' => 'required|integer',
+            'resource_subject_id' => 'required|integer|exists:subjects,id',
+            'resource_publish_date' => 'required|date',
+            'resource_author' => 'required|string|max:255',
+            'resource_pdf_file' => 'required|file|mimes:pdf',
+            'resource_audio_file' => 'nullable|file|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/x-m4a',
+            'resource_image' => 'nullable|image|max:2048',
+        ]);
+
+        $pdfPath = $request->file('resource_pdf_file')->store('Files/Resources', 'public');
+        $audioPath = $request->file('resource_audio_file') ? $request->file('resource_audio_file')->store('Files/Resources/Audio', 'public') : null;
+        $imagePath = $request->file('resource_image') ? $request->file('resource_image')->store('Images/Resources', 'public') : '/Images/Resources/default.png';
+
+        $resource = new Resource();
+        $resource->name = $validated['resource_name'];
+        $resource->description = $validated['resource_description'];
+        $resource->literaryOrScientific = $validated['resource_literary_or_scientific'];
+        $resource->subject_id = $validated['resource_subject_id'];
+        $resource->{'publish date'} = $validated['resource_publish_date'];
+        $resource->author = $validated['resource_author'];
+        $resource->pdf_file = '/storage/' . $pdfPath;
+        $resource->audio_file = $audioPath ? '/storage/' . $audioPath : null;
+        $resource->image = $imagePath;
+        $resource->save();
+
+        return redirect('/confirmadd');
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $resource = Resource::findOrFail($id);
+        $validated = $request->validate([
+            'resource_name' => 'required|string|max:255',
+            'resource_description' => 'nullable|string',
+            'resource_literary_or_scientific' => 'required|integer',
+            'resource_subject_id' => 'required|integer|exists:subjects,id',
+            'resource_publish_date' => 'required|date',
+            'resource_author' => 'required|string|max:255',
+            'resource_pdf_file' => 'nullable|file|mimes:pdf',
+            'resource_audio_file' => 'nullable|file|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/x-m4a',
+            'resource_image' => 'nullable|image|max:2048',
+        ]);
+
+        $resource->name = $validated['resource_name'];
+        $resource->description = $validated['resource_description'];
+        $resource->literaryOrScientific = $validated['resource_literary_or_scientific'];
+        $resource->subject_id = $validated['resource_subject_id'];
+        $resource->{'publish date'} = $validated['resource_publish_date'];
+        $resource->author = $validated['resource_author'];
+
+        if ($request->hasFile('resource_pdf_file')) {
+            $pdfPath = $request->file('resource_pdf_file')->store('Files/Resources', 'public');
+            $resource->pdf_file = '/storage/' . $pdfPath;
+        }
+        if ($request->hasFile('resource_audio_file')) {
+            $audioPath = $request->file('resource_audio_file')->store('Files/Resources/Audio', 'public');
+            $resource->audio_file = '/storage/' . $audioPath;
+        }
+        if ($request->hasFile('resource_image')) {
+            $imagePath = $request->file('resource_image')->store('Images/Resources', 'public');
+            $resource->image = $imagePath;
+        }
+        $resource->save();
+
+        return redirect('/confirmupdate');
+    }
+
 }
