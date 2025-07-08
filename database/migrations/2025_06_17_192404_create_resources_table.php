@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Subject;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,12 +18,10 @@ return new class extends Migration
             $table->integer('literaryOrScientific');
             $table->foreignIdFor(Subject::class);
             $table->date('publish date');
-            $table->string('image')->default('/Images/Resources/default.png');
-            $table->string('file')->default('/Files/Resources/default.pdf');
-            $table->string('pdf_file');
+            $table->string('image')->default('Images/Resources/default.png');
+            $table->string('pdf_file')->default('Files/Resources/default.pdf');
             $table->string('audio_file')->nullable();
             $table->string('author')->default('John Doe');
-            $table->integer('pages');
             $table->timestamps();
         });
     }

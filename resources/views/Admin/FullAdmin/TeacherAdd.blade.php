@@ -45,24 +45,18 @@
         @enderror
         <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
             <label for="teacher_description">
-                {{ __('messages.teacherDescription') }} :
+                {{ __('messages.courseDescription') }} :
             </label>
             <div style="position: relative; width: 80%;">
-                <textarea name="teacher_description" id="teacher_description" autocomplete="off" value="{{ old('teacher_description') }}"
+                <textarea name="teacher_description" id="teacher_description" autocomplete="off"
+                    value="{{ old('teacher_description') }}"
                     style="height:150px; width:100%; font-size:16px; padding:10px; padding-bottom:30px; resize:vertical;max-height:500px;"
                     maxlength="200" oninput="updateCharCount(this, 200)"></textarea>
-                <div id="charCount" style="position: absolute; bottom: 5px; right: 10px; font-size: 12px; color: #666; padding: 2px 6px; border-radius: 3px;">
+                <div id="charCount"
+                    style="position: absolute; bottom: 5px; right: 10px; font-size: 12px; color: #666; padding: 2px 6px; border-radius: 3px;">
                     0/200
                 </div>
             </div>
-        </div>
-        <br>
-        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
-            <label for="teacher_password">
-                {{ __('messages.teacherPassword') }}:
-            </label>
-            <input type="password" name="teacher_password" id="teacher_password" value=""
-                style="height:20%; text-align:center; font-size:40%; width:fit-content;" minlength="8" required>
         </div>
         <br>
 
@@ -160,7 +154,6 @@
     </x-addcard>
 </x-layout>
 
-
 <script>
 
     function updateCharCount(textarea, maxLength) {
@@ -188,4 +181,3 @@
                 updateCharCount(textarea, 200);
     })
 </script>
-

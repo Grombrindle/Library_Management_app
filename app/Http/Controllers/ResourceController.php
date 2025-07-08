@@ -149,8 +149,8 @@ class ResourceController extends Controller
 
 
     }
-
-    public function fetchRatings($id) {
+    public function fetchRatings($id)
+    {
         $ratings = DB::table('resources_ratings')->where('resource_id', $id)->get();
         return response()->json([
             'ratings' => $ratings
@@ -187,10 +187,25 @@ class ResourceController extends Controller
 
     public function add(Request $request)
     {
+        // Ensure directories exist
+        $imageDir = 'Images/Resources';
+        if (!file_exists(public_path($imageDir))) {
+            mkdir(public_path($imageDir), 0755, true);
+        }
+
+        // Handle image upload (object_image)
+        if (!is_null($request->file('object_image'))) {
+            $file = $request->file('object_image');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path($imageDir), $filename);
+            $imagePath = $imageDir . '/' . $filename;
+        } else {
+            $imagePath = 'Images/Resources/default.png';
+        }
+
         $validated = $request->validate([
             'resource_name' => 'required|string|max:255',
             'resource_description' => 'nullable|string',
-            'resource_literary_or_scientific' => 'required|integer',
             'resource_subject_id' => 'required|integer|exists:subjects,id',
             'resource_publish_date' => 'required|date',
             'resource_author' => 'required|string|max:255',
@@ -199,23 +214,46 @@ class ResourceController extends Controller
             'resource_image' => 'nullable|image|max:2048',
         ]);
 
-        $pdfPath = $request->file('resource_pdf_file')->store('Files/Resources', 'public');
-        $audioPath = $request->file('resource_audio_file') ? $request->file('resource_audio_file')->store('Files/Resources/Audio', 'public') : null;
-        $imagePath = $request->file('resource_image') ? $request->file('resource_image')->store('Images/Resources', 'public') : '/Images/Resources/default.png';
+        // PDF
+        $pdfDir = public_path('Files/Resources');
+        if (!file_exists($pdfDir))
+            mkdir($pdfDir, 0755, true);
+        $pdfPath = null;
+        if ($request->hasFile('resource_pdf_file')) {
+            $pdf = $request->file('resource_pdf_file');
+            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdf->move($pdfDir, $pdfName);
+            $pdfPath = 'Files/Resources/' . $pdfName;
+        }
+
+        // Audio
+        $audioDir = public_path('Files/Resources/Audio');
+        if (!file_exists($audioDir))
+            mkdir($audioDir, 0755, true);
+        $audioPath = null;
+        if ($request->hasFile('resource_audio_file')) {
+            $audio = $request->file('resource_audio_file');
+            $audioName = time() . '_' . $audio->getClientOriginalName();
+            $audio->move($audioDir, $audioName);
+            $audioPath = 'Files/Resources/Audio/' . $audioName;
+        }
 
         $resource = new Resource();
         $resource->name = $validated['resource_name'];
         $resource->description = $validated['resource_description'];
-        $resource->literaryOrScientific = $validated['resource_literary_or_scientific'];
         $resource->subject_id = $validated['resource_subject_id'];
         $resource->{'publish date'} = $validated['resource_publish_date'];
         $resource->author = $validated['resource_author'];
-        $resource->pdf_file = '/storage/' . $pdfPath;
-        $resource->audio_file = $audioPath ? '/storage/' . $audioPath : null;
+        $resource->pdf_file = $pdfPath;
+        $resource->audio_file = $audioPath;
         $resource->image = $imagePath;
+        $resource->literaryOrScientific = $resource->subject->literaryOrScientific;
         $resource->save();
 
-        return redirect('/confirmadd');
+        $data = ['element' => 'resource', 'id' => $resource->id, 'name' => $resource->name];
+        session(['add_info' => $data]);
+        session(['link' => '/resources']);
+        return redirect()->route('add.confirmation');
     }
 
     public function edit(Request $request, $id)
@@ -224,37 +262,89 @@ class ResourceController extends Controller
         $validated = $request->validate([
             'resource_name' => 'required|string|max:255',
             'resource_description' => 'nullable|string',
-            'resource_literary_or_scientific' => 'required|integer',
-            'resource_subject_id' => 'required|integer|exists:subjects,id',
             'resource_publish_date' => 'required|date',
             'resource_author' => 'required|string|max:255',
-            'resource_pdf_file' => 'nullable|file|mimes:pdf',
-            'resource_audio_file' => 'nullable|file|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/x-m4a',
             'resource_image' => 'nullable|image|max:2048',
         ]);
 
         $resource->name = $validated['resource_name'];
         $resource->description = $validated['resource_description'];
-        $resource->literaryOrScientific = $validated['resource_literary_or_scientific'];
-        $resource->subject_id = $validated['resource_subject_id'];
+        $resource->literaryOrScientific = $resource->subject->literaryOrScientific;
         $resource->{'publish date'} = $validated['resource_publish_date'];
         $resource->author = $validated['resource_author'];
 
+        // Handle image upload and replacement
+        $imageDir = 'Images/Resources';
+        if (!file_exists(public_path($imageDir))) {
+            mkdir(public_path($imageDir), 0755, true);
+        }
+        if (!is_null($request->file('object_image'))) {
+            $file = $request->file('object_image');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path($imageDir), $filename);
+            $newImagePath = $imageDir . '/' . $filename;
+            // Delete old image if it's not the default
+            if ($resource->image != 'Images/Resources/default.png' && file_exists(public_path($resource->image))) {
+                unlink(public_path($resource->image));
+            }
+            $resource->image = $newImagePath;
+        }
+
+        // PDF
+        $pdfDir = public_path('Files/Resources');
+        if (!file_exists($pdfDir))
+            mkdir($pdfDir, 0755, true);
         if ($request->hasFile('resource_pdf_file')) {
-            $pdfPath = $request->file('resource_pdf_file')->store('Files/Resources', 'public');
-            $resource->pdf_file = '/storage/' . $pdfPath;
+            $pdf = $request->file('resource_pdf_file');
+            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdf->move($pdfDir, $pdfName);
+            $resource->pdf_file = 'Files/Resources/' . $pdfName;
         }
+
+        // Audio
+        $audioDir = public_path('Files/Resources/Audio');
+        if (!file_exists($audioDir))
+            mkdir($audioDir, 0755, true);
         if ($request->hasFile('resource_audio_file')) {
-            $audioPath = $request->file('resource_audio_file')->store('Files/Resources/Audio', 'public');
-            $resource->audio_file = '/storage/' . $audioPath;
+            $audio = $request->file('resource_audio_file');
+            $audioName = time() . '_' . $audio->getClientOriginalName();
+            $audio->move($audioDir, $audioName);
+            $resource->audio_file = 'Files/Resources/Audio/' . $audioName;
         }
-        if ($request->hasFile('resource_image')) {
-            $imagePath = $request->file('resource_image')->store('Images/Resources', 'public');
-            $resource->image = $imagePath;
-        }
+
         $resource->save();
 
-        return redirect('/confirmupdate');
+        $data = ['element' => 'resource', 'id' => $resource->id, 'name' => $resource->name];
+        session(['update_info' => $data]);
+        session(['link' => '/resources']);
+        return redirect()->route('update.confirmation');
+    }
+
+    public function delete($id)
+    {
+        $resource = Resource::findOrFail($id);
+        $name = $resource->name;
+        // Delete old image if it's not the default
+        if ($resource->image != "Images/Resources/default.png" && file_exists(public_path($resource->image))) {
+            unlink(public_path($resource->image));
+        }
+
+        if ($resource->pdf_file != "Files/Resources/default.pdf" && file_exists(public_path($resource->file_pdf))) {
+            // dd(public_path($resource->pdf_file));
+            // dd($resource->file_pdf != "Files/Resources/default.pdf");
+            unlink(public_path($resource->pdf_file));
+        }
+
+        if (file_exists(public_path($resource->audio_file)) && $resource->audio_file != null && $resource->audio_file != 'Files/Resources/Audio/default.mp3') {
+            unlink(public_path($resource->audio_file));
+        }
+
+        $resource->delete();
+
+        $data = ['element' => 'resource', 'name' => $name];
+        session(['delete_info' => $data]);
+        session(['link' => '/resources']);
+        return redirect()->route('delete.confirmation');
     }
 
 }

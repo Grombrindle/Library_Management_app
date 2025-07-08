@@ -17,17 +17,18 @@ class QuestionFactory extends Factory
      */
     public function definition(): array
     {
-        $num = rand(2,4);
+        $num = rand(2, 4);
 
         $answers = [];
 
-        for($i = 0; $i < $num; $i++) {
+        for ($i = 0; $i < $num; $i++) {
             if ($num == 2) {
                 $answers[] = ($i == 0) ? "True" : "False";
             } else {
                 $answers[] = $this->faker->sentence(3, true);
             }
         }
+
 
         return [
             'questionText' => $this->faker->sentence() . '?',

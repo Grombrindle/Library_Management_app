@@ -16,7 +16,7 @@ class ResourceSeeder extends Seeder
     public function run(): void
     {
         Resource::factory()->count(10)->create([
-            'pdf_file' => '/Files/Resources/default.pdf',
+            'pdf_file' => 'Files/Resources/default.pdf',
         ]);
 
         foreach (Resource::all() as $resource) {
@@ -25,7 +25,7 @@ class ResourceSeeder extends Seeder
             $users = User::inRandomOrder()->take($numRatings)->get();
 
             foreach ($users as $user) {
-                $rating = rand(1, 5); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5);
                 DB::table('resources_ratings')->insert([
                     'user_id' => $user->id,
                     'resource_id' => $resource->id,

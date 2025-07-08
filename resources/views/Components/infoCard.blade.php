@@ -77,9 +77,9 @@
         margin-top: 1rem;
     }
 
-    .quizContainer  {
+    .quizContainer {
         text-align: left;
-        font-size:1.3rem;
+        font-size: 1.3rem;
     }
 
     .quiz-question-row {
@@ -88,6 +88,7 @@
         gap: 0.5rem;
         margin-bottom: 1.2rem;
     }
+
     .quiz-remove-btn {
         background: #e74c3c;
         color: #fff;
@@ -100,9 +101,11 @@
         margin-left: 0.5rem;
         transition: background 0.2s;
     }
+
     .quiz-remove-btn:hover {
         background: #c0392b;
     }
+
     .quiz-add-btn {
         background: #555184;
         color: #fff;
@@ -116,10 +119,12 @@
         display: block;
         transition: background 0.2s;
     }
+
     .quiz-add-btn:hover {
         background: #9997BC;
         color: #555184;
     }
+
     .quiz-options-inputs {
         display: flex;
         flex-direction: column;
@@ -127,6 +132,7 @@
         margin-left: 1.5rem;
         margin-top: 0.3rem;
     }
+
     .quiz-option-input {
         width: 90%;
         padding: 0.2rem 0.5rem;
@@ -136,7 +142,8 @@
         margin-bottom: 0.2rem;
     }
 
-    .button, .deleteButton {
+    .button,
+    .deleteButton {
         background-color: #555184;
         border: 0.15rem white solid;
         text-decoration: none;
@@ -152,113 +159,143 @@
         width: fit-content;
         cursor: pointer;
         outline: none;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         -webkit-tap-highlight-color: transparent;
     }
-    .button:focus, .deleteButton:focus {
+
+    .button:focus,
+    .deleteButton:focus {
         border-color: #9997BC;
         box-shadow: 0 0 0 2px #9997BC33;
     }
-    .button:hover:not(:disabled), .deleteButton:hover:not(:disabled) {
+
+    .button:hover:not(:disabled),
+    .deleteButton:hover:not(:disabled) {
         background-color: #9997BC;
         border: 0.15rem solid #555184;
         color: #555184;
     }
-    .button:disabled, .deleteButton:disabled {
+
+    .button:disabled,
+    .deleteButton:disabled {
         background-color: #eee;
         border-color: darkgray;
         color: darkgray;
         cursor: not-allowed;
     }
+
     .deleteButton {
         background-color: #e74c3c;
         border: 0.15rem white solid;
         color: #fff;
     }
+
     .deleteButton:hover:not(:disabled) {
         border-color: #e74c3c;
         background-color: #222;
         color: #e74c3c;
     }
+
     /* Responsive Design */
     @media (max-width: 1200px) {
         .ObjectContainer {
             width: 32rem;
         }
+
         .textContainer {
             font-size: 1.25rem;
         }
     }
+
     @media (max-width: 992px) {
         .ObjectContainer {
             width: 26rem;
         }
+
         .textContainer {
             font-size: 1.1rem;
         }
     }
+
     @media (max-width: 768px) {
         .ObjectContainer {
             width: 98vw;
             padding: 2% 1%;
         }
+
         .textContainer {
             font-size: 1rem;
         }
-        .button, .deleteButton {
+
+        .button,
+        .deleteButton {
             font-size: 1rem;
             padding: 0.5rem 1rem;
         }
     }
+
     @media (max-width: 576px) {
         .ObjectContainer {
             width: 100vw;
             border-width: 3px;
             padding: 2% 0.5%;
         }
+
         .textContainer {
             font-size: 0.95rem;
         }
-        .button, .deleteButton {
+
+        .button,
+        .deleteButton {
             font-size: 0.95rem;
             padding: 0.5rem 0.75rem;
         }
     }
+
     @media (max-width: 400px) {
         .ObjectContainer {
             width: 100vw;
             border-width: 2px;
             padding: 1% 0.25%;
         }
+
         .textContainer {
             font-size: 1.5rem;
         }
-        .button, .deleteButton {
+
+        .button,
+        .deleteButton {
             font-size: 1.8rem;
             padding: 0.4rem 0.5rem;
         }
     }
+
     /* Touch device optimizations */
     @media (hover: none) {
-        .button:hover, .deleteButton:hover {
+
+        .button:hover,
+        .deleteButton:hover {
             background-color: #9997BC;
             color: #fff;
             box-shadow: none;
             transform: none;
         }
-        .button:active, .deleteButton:active {
+
+        .button:active,
+        .deleteButton:active {
             background-color: #555184;
             color: #fff;
             transform: scale(0.98);
         }
     }
+
     .modal-overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0, 0, 0, 0.6);
         display: none;
         align-items: center;
         justify-content: center;
@@ -266,15 +303,17 @@
         opacity: 0;
         transition: opacity 0.4s ease;
     }
+
     .modal-overlay.active {
         display: flex;
         opacity: 1;
     }
+
     .modal-box {
         background: white;
         border-radius: 12px;
         padding: 2rem 2.5rem;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
         max-width: 90vw;
         max-height: 80vh;
         overflow-y: auto;
@@ -282,12 +321,14 @@
         position: relative;
         opacity: 1;
         transform: translateY(100vh) scale(0.98);
-        transition: transform 0.5s cubic-bezier(.23,1.01,.32,1), opacity 0.3s;
+        transition: transform 0.5s cubic-bezier(.23, 1.01, .32, 1), opacity 0.3s;
     }
+
     .modal-overlay.active .modal-box {
         transform: translateY(0) scale(1);
         opacity: 1;
     }
+
     @media (max-width: 600px) {
         .modal-box {
             padding: 1rem 0.5rem;
@@ -312,53 +353,73 @@
 
             <a href="/{{ $editLink }}" class="button">
                 @if ($objectType == 'Teacher')
-                    {{__('messages.editTeacher')}}
+                    {{ __('messages.editTeacher') }}
                 @elseif($objectType == 'Admin')
-                    {{__('messages.editAdmin')}}
+                    {{ __('messages.editAdmin') }}
                 @elseif ($objectType == 'User')
-                    {{__('messages.editUser')}}
+                    {{ __('messages.editUser') }}
                 @elseif ($objectType == 'Course')
-                    {{__('messages.editCourse')}}
+                    {{ __('messages.editCourse') }}
                 @elseif ($objectType == 'Lecture')
-                    {{__('messages.editLecture')}}
+                    {{ __('messages.editLecture') }}
                 @elseif ($objectType == 'Subject')
-                    {{__('messages.editSubject')}}
+                    {{ __('messages.editSubject') }}
                 @elseif ($objectType == 'Resource')
-                    {{__('messages.editResource')}}
+                    {{ __('messages.editResource') }}
                 @endif
             </a>
         </div>
     @endif
     @if ($file != null)
         <div style="height:fit-content;">
-            @if ($object->file_pdf != null)
-                <a href="show/{{ $object->id }}/pdf" target="_blank" class="button" style="background-color:#9997BC">{{__('messages.showLecture')}} PDF</a>
+            @if ($objectType == 'Resource')
+                <a href="show/{{ $object->id }}/pdf" target="_blank" class="button"
+                    style="background-color:#9997BC">{{ __('messages.showResource') }} PDF</a>
+                    @if ($object->audio_file != null)
+                <a href="show/{{ $object->id }}/audio" target="_blank" class="button"
+                    style="background-color:#9997BC">{{ __('messages.showResourceAudio') }}</a>
+                    @else
+                    <button class="button" disabled>{{ __('messages.showResourceAudio') }}</button>
+                    @endif
             @else
-                @if ($object->file_360 != null)
-                    <a href="show/{{ $object->id }}/360" target="_blank" class="button" style="background-color:#9997BC">{{__('messages.showLecture')}} 360p</a>
+                @if ($object->file_pdf != null)
+                    <a href="show/{{ $object->id }}/pdf" target="_blank" class="button"
+                        style="background-color:#9997BC">{{ __('messages.showLecture') }} PDF</a>
                 @else
-                    <button class="button" disabled>{{__('messages.showLecture')}} 360p</button>
-                @endif
-                @if ($object->file_720 != null)
-                    <a href="show/{{ $object->id }}/720" target="_blank" class="button" style="background-color:#9997BC">{{__('messages.showLecture')}} 720p</a>
-                @else
-                    <button class="button" disabled>{{__('messages.showLecture')}} 720p</button>
-                @endif
-                @if ($object->file_1080 != null)
-                    <a href="show/{{ $object->id }}/1080" target="_blank" class="button"
-                    style="background-color:#9997BC; margin-left:auto;margin-right:auto;">{{__('messages.showLecture')}} 1080p</a>
-            @else
-                <button class="button" style="margin-left:auto;margin-right:auto;" disabled>{{__('messages.showLecture')}} 1080p</button>
+                    @if ($object->file_360 != null)
+                        <a href="show/{{ $object->id }}/360" target="_blank" class="button"
+                            style="background-color:#9997BC">{{ __('messages.showLecture') }} 360p</a>
+                    @else
+                        <button class="button" disabled>{{ __('messages.showLecture') }} 360p</button>
+                    @endif
+                    @if ($object->file_720 != null)
+                        <a href="show/{{ $object->id }}/720" target="_blank" class="button"
+                            style="background-color:#9997BC">{{ __('messages.showLecture') }} 720p</a>
+                    @else
+                        <button class="button" disabled>{{ __('messages.showLecture') }} 720p</button>
+                    @endif
+                    @if ($object->file_1080 != null)
+                        <a href="show/{{ $object->id }}/1080" target="_blank" class="button"
+                            style="background-color:#9997BC; margin-left:auto;margin-right:auto;">{{ __('messages.showLecture') }}
+                            1080p</a>
+                    @else
+                        <button class="button" style="margin-left:auto;margin-right:auto;"
+                            disabled>{{ __('messages.showLecture') }} 1080p</button>
+                    @endif
                 @endif
             @endif
         </div>
-        <button class="button" id="showQuizBtn" style="margin-top: 10px;">Show quiz</button>
+        @if ($objectType == 'Lecture')
+            <button class="button" id="showQuizBtn" style="margin-top: 10px;">Show quiz</button>
+        @endif
     @endif
     @if ($addLecture != null)
-        <a href="addlecture/{{ $object->id }}" class="button" style="background-color:#9997BC">{{__('messages.addLecture')}}</a>
+        <a href="addlecture/{{ $object->id }}" class="button"
+            style="background-color:#9997BC">{{ __('messages.addLecture') }}</a>
     @endif
     @if ($addCourse != null)
-        <a href="addcourse/{{ $object->id }}" class="button" style="background-color:#9997BC">{{__('messages.addCourse')}}</a>
+        <a href="addcourse/{{ $object->id }}" class="button"
+            style="background-color:#9997BC">{{ __('messages.addCourse') }}</a>
     @endif
     {{-- <div style="margin-bottom:5%;">
         @if ($lecturesCount != null)
@@ -383,38 +444,38 @@
         @if ($deleteLink != null)
             <button class="deleteButton" style="">
                 @if ($objectType == 'Teacher')
-                    {{__('messages.deleteTeacher')}}
+                    {{ __('messages.deleteTeacher') }}
                 @elseif($objectType == 'Admin')
-                    {{__('messages.deleteAdmin')}}
+                    {{ __('messages.deleteAdmin') }}
                 @elseif ($objectType == 'User')
-                    {{__('messages.deleteUser')}}
+                    {{ __('messages.deleteUser') }}
                 @elseif ($objectType == 'Course')
-                    {{__('messages.deleteCourse')}}
+                    {{ __('messages.deleteCourse') }}
                 @elseif ($objectType == 'Lecture')
-                    {{__('messages.deleteLecture')}}
+                    {{ __('messages.deleteLecture') }}
                 @elseif ($objectType == 'Subject')
-                    {{__('messages.deleteSubject')}}
+                    {{ __('messages.deleteSubject') }}
                 @elseif ($objectType == 'Resource')
-                    {{__('messages.deleteResource')}}
+                    {{ __('messages.deleteResource') }}
                 @endif
             </button>
         @endif
     </form>
 </div>
-@if ($objectType == "Lecture")
-<div class="modal-overlay" id="quizModal">
-    <div class="modal-box">
-        <form id="quizEditForm" method="POST" action="/updatequiz/{{ $object->quiz->id }}">
-            @csrf
-            @method('PUT')
-            <div class="quizContainer" id="quizContainer">
-            </div>
-            <input type="hidden" name="quiz_data" id="quizDataInput">
-            <button type="button" class="quiz-add-btn" id="addQuestionBtn">+</button>
-            <button type="submit" class="button" id="updateQuizBtn" style="margin-top:1rem;">Update Quiz</button>
-        </form>
+@if ($objectType == 'Lecture')
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal-box">
+            <form id="quizEditForm" method="POST" action="/updatequiz/{{ $object->quiz->id }}">
+                @csrf
+                @method('PUT')
+                <div class="quizContainer" id="quizContainer">
+                </div>
+                <input type="hidden" name="quiz_data" id="quizDataInput">
+                <button type="button" class="quiz-add-btn" id="addQuestionBtn">+</button>
+                <button type="submit" class="button" id="updateQuizBtn" style="margin-top:1rem;">Update Quiz</button>
+            </form>
+        </div>
     </div>
-</div>
 @endif
 <script>
     function handleDelete(event, isCurrentAdmin, name, warning) {
@@ -427,11 +488,12 @@
     }
 
     function confirmDelete(name, warning) {
-        return confirm('{{ __("messages.confirmDeleteItem", ["name" => $name, "warning" => $warning]) }}');
+        return confirm('{{ __('messages.confirmDeleteItem', ['name' => $name, 'warning' => $warning]) }}');
     }
 
     function preventDelete() {
-        alert('{{ __("messages.cannotDeleteAccount") }}');    }
+        alert('{{ __('messages.cannotDeleteAccount') }}');
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         const showQuizBtn = document.getElementById('showQuizBtn');
@@ -480,12 +542,14 @@
                 // Options and correct answer radio
                 const optionsDiv = document.createElement('div');
                 optionsDiv.className = 'quiz-options-inputs';
-                if (!q.options || q.options.length === 0 || (q.options[0] === '' && q.options[1] === '')) {
+                if (!q.options || q.options.length === 0 || (q.options[0] === '' && q.options[1] ===
+                        '')) {
                     q.options = ['True', 'False'];
                 }
                 // Only set correctAnswerIndex to 0 if it is undefined/null and there are at least 2 non-empty options
                 const nonEmptyOptions = (q.options || []).filter(opt => opt && opt.trim() !== '');
-                if (typeof q.correctAnswerIndex !== 'number' || q.correctAnswerIndex < 0 || q.correctAnswerIndex >= nonEmptyOptions.length) {
+                if (typeof q.correctAnswerIndex !== 'number' || q.correctAnswerIndex < 0 || q
+                    .correctAnswerIndex >= nonEmptyOptions.length) {
                     q.correctAnswerIndex = nonEmptyOptions.length >= 2 ? 0 : null;
                 }
                 let nonEmptyCount = 0;
@@ -502,7 +566,9 @@
                         // Use a timeout to restore focus and cursor after re-render
                         setTimeout(() => {
                             renderQuiz();
-                            const newInput = document.querySelectorAll('.quiz-question-row')[idx].querySelectorAll('.quiz-option-input')[o];
+                            const newInput = document.querySelectorAll(
+                                '.quiz-question-row')[idx].querySelectorAll(
+                                '.quiz-option-input')[o];
                             if (newInput) {
                                 newInput.focus();
                                 newInput.setSelectionRange(cursorPos, cursorPos);
@@ -553,7 +619,10 @@
                 document.getElementById('quizEditForm').appendChild(addBtn);
             }
             addBtn.onclick = function() {
-                quizData.push({ questionText: '', options: ['True', 'False'] });
+                quizData.push({
+                    questionText: '',
+                    options: ['True', 'False']
+                });
                 renderQuiz();
             };
         }

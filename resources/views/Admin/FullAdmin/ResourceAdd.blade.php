@@ -48,15 +48,7 @@
         @error('resource_audio_file')
             <div class="error">{{ $message }}</div>
         @enderror
-        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
-            <label for="resource_image">
-                {{ __('messages.resourceImage') }}:
-            </label>
-            <input type="file" name="resource_image" id="resource_image" accept="image/*">
-        </div>
-        @error('resource_image')
-            <div class="error">{{ $message }}</div>
-        @enderror
+        {{-- There's already an image at the top from the addcard component --}}
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
             <label for="resource_publish_date">
                 {{ __('messages.resourcePublishDate') }}:
@@ -67,24 +59,12 @@
             <div class="error">{{ $message }}</div>
         @enderror
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
-            <label for="resource_literary_or_scientific">
-                {{ __('messages.resourceType') }}:
-            </label>
-            <select name="resource_literary_or_scientific" id="resource_literary_or_scientific" required>
-                <option value="1">{{ __('messages.literary') }}</option>
-                <option value="2">{{ __('messages.scientific') }}</option>
-            </select>
-        </div>
-        @error('resource_literary_or_scientific')
-            <div class="error">{{ $message }}</div>
-        @enderror
-        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
             <label for="resource_subject_id">
                 {{ __('messages.resourceSubject') }}:
             </label>
             <select name="resource_subject_id" id="resource_subject_id" required>
                 @foreach(App\Models\Subject::all() as $subject)
-                    <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                    <option value="{{ $subject->id }}">{{ $subject->name }} ({{ $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific') }})</option>
                 @endforeach
             </select>
         </div>
@@ -92,4 +72,4 @@
             <div class="error">{{ $message }}</div>
         @enderror
     </x-addcard>
-</x-layout> 
+</x-layout>

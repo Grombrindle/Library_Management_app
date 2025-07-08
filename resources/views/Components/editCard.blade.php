@@ -182,7 +182,7 @@
         gap: 10px;
         /* bottom: 100%; */
         /* top: auto; */
-        right:1rem;
+        right: 1rem;
     }
 
     .dropdown-content a {
@@ -238,7 +238,7 @@
         width: 100%;
         height: 100%;
     }
-    
+
     .switch {
         position: relative;
         display: inline-block;
@@ -398,21 +398,23 @@
             <div
                 style="display:flex; flex-direction:column; align-items:center; margin-top:5%;margin-bottom:5%; font-size:2rem;">
                 <label for="object_image">
-                @if ($object == 'Teacher')
-                    {{__('messages.teacherImage')}}
-                @elseif($object == 'Admin')
-                    {{__('messages.adminImage')}}
-                @elseif ($object == 'Course')
-                    {{__('messages.courseImage')}}
+                    @if ($object == 'Teacher')
+                        {{ __('messages.teacherImage') }}
+                    @elseif($object == 'Admin')
+                        {{ __('messages.adminImage') }}
+                    @elseif ($object == 'Course')
+                        {{ __('messages.courseImage') }}
                     @elseif ($object == 'Lecture')
-                    {{__('messages.lectureImage')}}
-                @elseif ($object == 'Subject')
-                    {{__('messages.subjectImage')}}
-                @endif</label>
+                        {{ __('messages.lectureImage') }}
+                    @elseif ($object == 'Subject')
+                        {{ __('messages.subjectImage') }}
+                    @endif
+                </label>
                 <input type="file" name="object_image" id="object_image"
                     placeholder="Enter the image of the {{ Str::lower($object) }}" accept="image/*"
                     onchange="validateImageSize(this)">
-                <label for="object_image" style="color:#222; font-size:2rem; text-align:center">{{__('messages.imageSizeWarning')}}</label>
+                <label for="object_image"
+                    style="color:#222; font-size:2rem; text-align:center">{{ __('messages.imageSizeWarning') }}</label>
             </div>
             @error('object_image')
                 <div class="error">{{ $message }}</div>
@@ -426,56 +428,61 @@
                     <button type="button" class="subject-button selected"
                         data-subject-id="{{ $subject->id }}">{{ $subject->name }}
                         @if ($menu == 'Course')
-                                ({{$subject->subject->name}})
-                            @endif
+                            ({{ $subject->subject->name }})
+                        @endif
                     </button>
                 @endforeach
             </div>
             <br>
             <div class="dropdown-container">
-                <label for="subject-dropdown" style="font-size: 30px;">@if ($menu == 'Teacher')
-                    {{__('messages.addTeacher')}}
-                @elseif ($menu == 'Subject')
-                    {{__('messages.addSubject')}}
-                @endif
-            </label>
+                <label for="subject-dropdown" style="font-size: 30px;">
+                    @if ($menu == 'Teacher')
+                        {{ __('messages.addTeacher') }}
+                    @elseif ($menu == 'Subject')
+                        {{ __('messages.addSubject') }}
+                    @endif
+                </label>
                 <select id="subject-dropdown" class="dropdown" style="padding:0.5rem 2.5rem">
-                    <option value="">@if ($menu == 'Teacher')
-                    {{__('messages.selectTeacher')}}
-                @elseif ($menu == 'Course')
-                    {{__('messages.selectCourse')}}
-                @elseif ($menu == 'Subject')
-                    {{__('messages.selectSubject')}}
-                @endif
-            </option>
+                    <option value="">
+                        @if ($menu == 'Teacher')
+                            {{ __('messages.selectTeacher') }}
+                        @elseif ($menu == 'Course')
+                            {{ __('messages.selectCourse') }}
+                        @elseif ($menu == 'Subject')
+                            {{ __('messages.selectSubject') }}
+                        @endif
+                    </option>
                     @foreach ($menuModel as $subject)
                         @if (!in_array($subject->id, $selectedSubjects))
                             <option value="{{ $subject->id }}">{{ $subject->name }} @if ($menu == 'Course')
-                                ({{$subject->subject->name}})
-                            @endif
-                        </option>
+                                    ({{ $subject->subject->name }})
+                                @endif
+                            </option>
                         @endif
                     @endforeach
                 </select>
-                <input type="button" id="add-subject-btn" class="add-subject-btn" value="@if ($menu == 'Teacher'){{__('messages.addTeacher')}}@elseif ($menu == 'Course'){{__('messages.addCourse')}}@elseif ($menu == 'Subject'){{__('messages.addSubject')}}@endif">
+                <input type="button" id="add-subject-btn" class="add-subject-btn"
+                    value="@if ($menu == 'Teacher') {{ __('messages.addTeacher') }}@elseif ($menu == 'Course'){{ __('messages.addCourse') }}@elseif ($menu == 'Subject'){{ __('messages.addSubject') }} @endif">
             </div>
             <input type="hidden" name="selected_objects" id="selected_objects_input">
         @endif
         @if ($lectures != false)
             <label for="selected_lectures">
-                {{__('messages.lectures')}}<br>
-                ({{__('messages.clickToRemoveAndReAdd')}})
+                {{ __('messages.lectures') }}<br>
+                ({{ __('messages.clickToRemoveAndReAdd') }})
 
             </label>
             <br>
             <div id="subscribed-lectures-container" class="buttonContainer">
                 @foreach ($model->lectures->pluck('id')->toArray() as $lecture)
                     <button type="button" class="lecture-button selected" data-lecture-id="{{ $lecture }}"
-                        onclick="toggleLectureSelection(this)">{{ App\Models\Lecture::findOrFail($lecture)->name }} <br> ({{ App\Models\Lecture::findOrFail($lecture)->course->subject->name }}, {{ App\Models\Lecture::findOrFail($lecture)->course->name }})</button>
+                        onclick="toggleLectureSelection(this)">{{ App\Models\Lecture::findOrFail($lecture)->name }}
+                        <br> ({{ App\Models\Lecture::findOrFail($lecture)->course->subject->name }},
+                        {{ App\Models\Lecture::findOrFail($lecture)->course->name }})</button>
                 @endforeach
             </div>
             <div class="dropdown" id="lectureD">
-                <button class="dropbtn" onclick="toggleDropdown(event)">{{__('messages.selectLecture')}}</button>
+                <button class="dropbtn" onclick="toggleDropdown(event)">{{ __('messages.selectLecture') }}</button>
                 <div class="dropdown-content" id="lectureDropdown">
                     @foreach (App\Models\Course::all() as $subject)
                         @if (!in_array($subject->id, $model->courses->pluck('id')->toArray()))
@@ -483,19 +490,25 @@
                                 <a>{{ $subject->name }} ({{ $subject->subject->name }}) >
                                     <div class="nested-dropdown">
                                         @if ($subject->lectures->isEmpty())
-                                            <div style="padding:0.25rem 0.25rem; background-color:darkgray">{{ __('messages.noLecturesForSubject', ['subject' => $subject->name]) }}</div>
+                                            <div style="padding:0.25rem 0.25rem; background-color:darkgray">
+                                                {{ __('messages.noLecturesForSubject', ['subject' => $subject->name]) }}
+                                            </div>
                                         @else
                                             @foreach ($subject->lectures as $lecture)
                                                 @if (!in_array($lecture->id, $model->lectures->pluck('id')->toArray()))
                                                     <div data-lecture-id="{{ $lecture->id }}"
                                                         style="padding:0.25rem 0.25rem; cursor:pointer"
                                                         onclick="selectLecture(this)">
-                                                        {{ $lecture->name }} <br> ({{ $lecture->course->subject->name }}, {{ $lecture->course->name }})
+                                                        {{ $lecture->name }} <br>
+                                                        ({{ $lecture->course->subject->name }},
+                                                        {{ $lecture->course->name }})
                                                     </div>
                                                 @else
                                                     <div
                                                         style="padding:0.25rem 0.25rem; cursor:pointer; color:#333333; cursor:default; background-color:darkgray">
-                                                        {{ $lecture->name }} <br> ({{ $lecture->course->subject->name }}, {{ $lecture->course->name }})
+                                                        {{ $lecture->name }} <br>
+                                                        ({{ $lecture->course->subject->name }},
+                                                        {{ $lecture->course->name }})
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -505,7 +518,7 @@
                             </div>
                         @else
                             <div class="subject-item" style="background-color:darkgray; line-height:2.5rem">
-                                {{ $subject->name }} <br> ({{__('messages.alreadySubscribed')}})
+                                {{ $subject->name }} <br> ({{ __('messages.alreadySubscribed') }})
                             </div>
                         @endif
                     @endforeach
@@ -516,19 +529,21 @@
         <br>
         <button type="submit" class="submit-button">
             @if ($object == 'Teacher')
-                {{__('messages.editTeacher')}}
+                {{ __('messages.editTeacher') }}
             @elseif($object == 'Admin')
-                {{__('messages.editAdmin')}}
+                {{ __('messages.editAdmin') }}
             @elseif ($object == 'User')
-                {{__('messages.editUser')}}
+                {{ __('messages.editUser') }}
             @elseif ($object == 'Course')
-                {{__('messages.editCourse')}}
+                {{ __('messages.editCourse') }}
             @elseif ($object == 'Lecture')
-                {{__('messages.editLecture')}}
+                {{ __('messages.editLecture') }}
             @elseif ($object == 'Subject')
-                {{__('messages.editSubject')}}
+                {{ __('messages.editSubject') }}
+            @elseif ($object == 'Resource')
+                {{ __('messages.editResource') }}
             @else
-                {{__('messages.edit')}}
+                {{ __('messages.edit') }}
             @endif
         </button>
     </form>
@@ -573,7 +588,8 @@
         let initialValues = {};
         let submitButton = document.querySelector(".submit-button");
         // Check banned status
-        let initialBannedStatus = @json($isBanned) ? true : false; // Changed to isBanned to match Laravel convention
+        let initialBannedStatus = @json($isBanned) ? true :
+        false; // Changed to isBanned to match Laravel convention
         const bannedCheckbox = document.getElementById('isBanned'); // Changed to match HTML id
         if (bannedCheckbox) {
             if (bannedCheckbox.checked !== initialBannedStatus) {
@@ -601,8 +617,8 @@
             }
             let initialSubjectsSet = new Set(@json($selectedSubjects).map(String));
             let selectedSubjectsSet = new Set([...selectedSubjects].map(String));
-                console.log(initialSubjectsSet);
-                console.log(selectedSubjectsSet);
+            console.log(initialSubjectsSet);
+            console.log(selectedSubjectsSet);
             if (!setsAreEqual(initialSubjectsSet, selectedSubjectsSet)) hasChanged = true;
             @if ($lectures != false)
                 let initialLecturesSet = new Set(@json($selectedLectures).map(String));

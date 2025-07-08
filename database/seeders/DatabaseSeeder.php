@@ -104,7 +104,7 @@ class DatabaseSeeder extends Seeder
             $users = User::inRandomOrder()->take($numRatings)->get();
 
             foreach ($users as $user) {
-                $rating = rand(1, 5); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5);
                 DB::table('course_rating')->insert([
                     'user_id' => $user->id,
                     'course_id' => $course->id,
@@ -131,16 +131,16 @@ class DatabaseSeeder extends Seeder
             $users = User::inRandomOrder()->take($numRatings)->get();
 
             foreach ($users as $user) {
-                $rating = rand(1, 5); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5);
                 DB::table('lecture_rating')->insert([
                     'user_id' => $user->id,
                     'lecture_id' => $lecture->id,
                     'rating' => $rating,
-                    'review' => rand(0,max: 1) ? null : fake()->realText(100),
+                    'review' => rand(0,1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
-                $rating = rand(1, 5); // This will give us whole numbers or half numbers
+                $rating = rand(1, 5);
                 DB::table('teacher_ratings')->insert([
                     'user_id' => $user->id,
                     'teacher_id' => $teacher->id,

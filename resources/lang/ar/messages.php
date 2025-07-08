@@ -193,7 +193,6 @@ return [
     'scientific' => 'علمي',
     'literary' => 'أدبي',
     'teacherDescription' => 'وصف المدرس',
-    'teacherDescription' => 'وصف المدرس',
     'resources' => 'الموارد',
     'resource' => 'مورد',
     'addResource' => 'إضافة مورد',
@@ -211,5 +210,5 @@ return [
     'listenAudio' => 'استمع للصوت',
     'viewCurrentPdf' => 'عرض PDF الحالي',
     'listenCurrentAudio' => 'استمع للصوت الحالي',
-    'edit'=> 'تعديل',
+    'edit' => 'تعديل',
 ];

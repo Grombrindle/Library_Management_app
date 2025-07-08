@@ -305,12 +305,13 @@ class LectureController extends Controller
             $pdf = $request->file('lecture_file_pdf');
             $pdfName = time() . '_' . $pdf->getClientOriginalName();
             $pdf->move($pdfDir, $pdfName);
-            $filePathPdf = 'Files\PDFs\\' . $pdfName;
+            $filePathPdf = 'Files/PDFs/' . $pdfName;
             $parser = new Parser();
             $pdf = $parser->parseFile(public_path($filePathPdf));
             $pages = $pdf->getPages();
             $pageCount = count($pages);
             $pages = $pageCount;
+            dd($pages,$pageCount,$filePathPdf);
         }
 
         $lecture = Lecture::create([
