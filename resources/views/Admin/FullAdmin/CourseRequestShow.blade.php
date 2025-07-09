@@ -17,20 +17,25 @@
                 @endif
             </p>
             @if ($request->status === 'rejected')
-                <p style="color:red"><strong>{{ __('messages.courseRequestRejectionReason') }}:</strong> {{ $request->rejection_reason }}</p>
+                <p style="color:red"><strong>{{ __('messages.courseRequestRejectionReason') }}:</strong>
+                    {{ $request->rejection_reason }}</p>
             @endif
             @if ($request->status === 'pending')
-                <form action="{{ route('admin.course_requests.approve', $request->id) }}" method="POST" style="display:inline-block;">
+                <form action="{{ route('admin.course_requests.approve', $request->id) }}" method="POST"
+                    style="display:inline-block;">
                     @csrf
                     <button type="submit" class="btn btn-success">{{ __('messages.approve') }}</button>
                 </form>
-                <form action="{{ route('admin.course_requests.reject', $request->id) }}" method="POST" style="display:inline-block;">
+                <form action="{{ route('admin.course_requests.reject', $request->id) }}" method="POST"
+                    style="display:inline-block;">
                     @csrf
-                    <input type="text" name="rejection_reason" placeholder="{{ __('messages.rejectionReason') }}" class="form-control" style="width:200px;display:inline-block;">
+                    <input type="text" name="rejection_reason" placeholder="{{ __('messages.rejectionReason') }}"
+                        class="form-control" style="width:200px;display:inline-block;">
                     <button type="submit" class="btn btn-danger">{{ __('messages.reject') }}</button>
                 </form>
             @endif
-            <a href="{{ route('admin.course_requests.index') }}" class="btn btn-secondary mt-3">{{ __('messages.backToRequests') }}</a>
+            <a href="{{ route('admin.course_requests.index') }}"
+                class="btn btn-secondary mt-3">{{ __('messages.backToRequests') }}</a>
         </x-card>
     </x-cardcontainer>
 </x-layout>

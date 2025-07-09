@@ -517,7 +517,7 @@
 
     <div class="container">
         @if ($addLink != null)
-            <a href="/{{ $addLink }}" class="addButton">{{Str::upper(__('messages.add'))}}</a>
+            <a href="{{ $addLink }}" class="addButton">{{Str::upper(__('messages.add'))}}</a>
         @endif
         @if ($deleteSubs != false)
             <form action="/deletesubs" method="POST" onsubmit="return validateSubs()">

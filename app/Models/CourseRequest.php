@@ -22,6 +22,8 @@ class CourseRequest extends Model
         'admin_id',
         'course_id',
         'rejection_reason',
+        'lecturesCount',
+        'subscriptions',
     ];
 
     protected $casts = [

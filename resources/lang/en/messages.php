@@ -228,11 +228,6 @@ return [
     'courseRequestUpdate' => 'Update Course Request',
     // Course Request Workflow
     'courseRequests' => 'Course Requests',
-    'courseRequestIndex' => 'My Course Requests',
-    'courseRequestCreate' => 'Submit New Request',
-    'courseRequestAdd' => 'Submit New Course Request',
-    'courseRequestEdit' => 'Edit & Resubmit Course Request',
-    'courseRequestShow' => 'Course Request Details',
     'courseRequestName' => 'Course Name',
     'courseRequestDescription' => 'Description',
     'courseRequestSubject' => 'Subject',

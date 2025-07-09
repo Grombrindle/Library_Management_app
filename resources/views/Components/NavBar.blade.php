@@ -120,7 +120,7 @@
         flex-direction: column;
         padding: 10px 0;
         min-width: 200px;
-        width:100%;
+        width: 100%;
         border-radius: 0 0 5px 5px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
@@ -162,8 +162,8 @@
         margin-right: 7px;
         right: auto;
         font-size: 1.55rem;
-        width:2.5rem;
-        height:2.5rem;
+        width: 2.5rem;
+        height: 2.5rem;
     }
 
     .mobile-logout {
@@ -329,8 +329,7 @@
         text-align: right;
     }
 
-    @media (max-width: 400px) .mobile-menu.nav-count {
-    }
+    @media (max-width: 400px) .mobile-menu.nav-count {}
 
     [dir="rtl"] .language-dropdown {
         margin-right: 5%;
@@ -486,7 +485,7 @@
                 {{ __('messages.resources') }}
                 <span class="nav-count">{{ App\Models\Resource::count() }}</span>
             </a>
-            <a href="/admin/course-requests" class="NavBarText">
+            <a href="/admin/course-requests/show" class="NavBarText">
                 {{ __('messages.courseRequests') ?? 'Course Requests' }}
             </a>
         @elseif (Auth::user()->privileges == 1)
@@ -495,28 +494,28 @@
                 <span class="nav-count">{{ App\Models\User::count() }}</span>
             </a>
         @elseif (Auth::user()->privileges == 0)
-                @php
-                    $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
-                    $lecCount = 0;
-                    foreach ($teacher->courses as $course) {
-                        $lecCount += $course->lectures->count();
-                    }
-                @endphp
-                <a href="/teacher/course-requests" class="NavBarText">
-                    {{ __('messages.courseRequests') ?? 'Course Requests' }}
-                </a>
-                <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:100%;">
-                    {{__('messages.yourSubjects')}}
-                    <span class="nav-count">{{ $teacher->subjects->count() }}</span>
-                </a>
-                <a href="/courses" class="NavBarText" id="Link" style="width:100%;">
-                    {{__('messages.yourCourses')}}
-                    <span class="nav-count">{{ $teacher->courses->count() }}</span>
-                </a>
-                <a href="/lectures" class="NavBarText" id="Link" style="width:100%;">
-                    {{__('messages.yourLectures')}}
-                    <span class="nav-count">{{ $lecCount }}</span>
-                </a>
+            @php
+                $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
+                $lecCount = 0;
+                foreach ($teacher->courses as $course) {
+                    $lecCount += $course->lectures->count();
+                }
+            @endphp
+            <a href="/teacher/course-requests/show" class="NavBarText">
+                {{ __('messages.courseRequests') ?? 'Course Requests' }}
+            </a>
+            <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:100%;">
+                {{__('messages.yourSubjects')}}
+                <span class="nav-count">{{ $teacher->subjects->count() }}</span>
+            </a>
+            <a href="/courses" class="NavBarText" id="Link" style="width:100%;">
+                {{__('messages.yourCourses')}}
+                <span class="nav-count">{{ $teacher->courses->count() }}</span>
+            </a>
+            <a href="/lectures" class="NavBarText" id="Link" style="width:100%;">
+                {{__('messages.yourLectures')}}
+                <span class="nav-count">{{ $lecCount }}</span>
+            </a>
         @endif
 
         <!-- Mobile Logout Button -->
@@ -561,108 +560,108 @@
 
     <!-- Original Desktop Navigation -->
     @if (Auth::user()->privileges == 2)
-    <div class="NavBarElement" style="margin-right: 5%;">
-        <a href="/courses" class="NavBarText" id="coursesLink">
-            {{ __('messages.courses') }}
-            <span class="nav-count">{{ App\Models\Course::count() }}</span>
-        </a>
-        <a href="/subjects" class="NavBarText" id="subjectsLink">
-            {{ __('messages.subjects') }}
-            <span class="nav-count">{{ App\Models\Subject::count() }}</span>
-        </a>
-        <a href="/lectures" class="NavBarText" id="lecturesLink">
-            {{ __('messages.lectures') }}
-            <span class="nav-count">{{ App\Models\Lecture::count() }}</span>
-        </a>
-        <a href="/teachers" class="NavBarText" id="teachersLink">
-            {{ __('messages.teachers') }}
-            <span class="nav-count">{{ App\Models\Teacher::count() }}</span>
-        </a>
-        <a href="/users" class="NavBarText" id="usersLink">
-            {{ __('messages.users') }}
-            <span class="nav-count">{{ App\Models\User::count() }}</span>
-        </a>
-        <a href="/admins" class="NavBarText" id="adminsLink">
-            {{ __('messages.admins') }}
-            <span class="nav-count">{{ App\Models\Admin::count() }}</span>
-        </a>
-        <a href="/resources" class="NavBarText" id="resourcesLink">
-            {{ __('messages.resources') }}
-            <span class="nav-count">{{ App\Models\Resource::count() }}</span>
-        </a>
-        <a href="/admin/course-requests" class="NavBarText" id="adminCourseRequestsLink">
-            {{ __('messages.courseRequests') ?? 'Course Requests' }}
-        </a>
-    </div> {{-- Added closing div here --}}
-@elseif (Auth::user()->privileges == 1)
-    <div class="NavBarElement" style="margin-right: 5%;">
-        <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
-            {{ __('messages.users') }}
-            <span class="nav-count">{{ App\Models\User::count() }}</span>
-        </a>
-    </div> {{-- Added closing div here --}}
-@elseif (Auth::user()->privileges == 0)
-    @php
-        $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
-        $lecCount = 0;
-        foreach ($teacher->courses as $course) {
-            $lecCount += $course->lectures->count();
-        }
-    @endphp
-    <div class="NavBarElement" style="margin-right: 5%;">
-        <a href="/teacher/course-requests" class="NavBarText" id="courseRequestsLink" style="width:8%;">
-            {{ __('messages.courseRequests') ?? 'Course Requests' }}
-        </a>
-        <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:8%;">
-            {{__('messages.yourSubjects')}}
-            <span class="nav-count">{{ $teacher->subjects->count() }}</span>
-        </a>
-        <a href="/courses" class="NavBarText" id="Link" style="width:8%;">
-            {{__('messages.yourCourses')}}
-            <span class="nav-count">{{ $teacher->courses->count() }}</span>
-        </a>
-        <a href="/lectures" class="NavBarText" id="Link" style="width:8%;">
-            {{__('messages.yourLectures')}}
-            <span class="nav-count">{{ $lecCount }}</span>
-        </a>
-    </div> {{-- Added closing div here --}}
-    <form action="/logout" method="POST"
-        style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
-        onsubmit="return confirmLogout()">
-        @csrf
-        <button type="submit" id="adminsLink" class="NavBarLogout" style="">
-            <div style="text-align:center">{{ __('messages.logout') }}</div>
-        </button>
-    </form>
-    <div class="language-dropdown">
-        <button class="language-toggle" onclick="toggleLanguageDropdown(event, 'desktopLanguageDropdown')">
-            <span class="material-symbols-outlined">language</span>
-        </button>
-        <div class="dropdown-content" id="desktopLanguageDropdown">
-            <a href="#" onclick="changeLanguage('en')">
-                <span class="flag-icon flag-icon-us"></span> English
+        <div class="NavBarElement" style="margin-right: 5%;">
+            <a href="/courses" class="NavBarText" id="coursesLink">
+                {{ __('messages.courses') }}
+                <span class="nav-count">{{ App\Models\Course::count() }}</span>
             </a>
-            <a href="#" onclick="changeLanguage('fr')">
-                <span class="flag-icon flag-icon-fr"></span> Français
+            <a href="/subjects" class="NavBarText" id="subjectsLink">
+                {{ __('messages.subjects') }}
+                <span class="nav-count">{{ App\Models\Subject::count() }}</span>
             </a>
-            <a href="#" onclick="changeLanguage('de')">
-                <span class="flag-icon flag-icon-de"></span> Deutsch
+            <a href="/lectures" class="NavBarText" id="lecturesLink">
+                {{ __('messages.lectures') }}
+                <span class="nav-count">{{ App\Models\Lecture::count() }}</span>
             </a>
-            <a href="#" onclick="changeLanguage('tr')">
-                <span class="flag-icon flag-icon-tr"></span> Türkçe
+            <a href="/teachers" class="NavBarText" id="teachersLink">
+                {{ __('messages.teachers') }}
+                <span class="nav-count">{{ App\Models\Teacher::count() }}</span>
             </a>
-            <a href="#" onclick="changeLanguage('es')">
-                <span class="flag-icon flag-icon-es"></span> Español
+            <a href="/users" class="NavBarText" id="usersLink">
+                {{ __('messages.users') }}
+                <span class="nav-count">{{ App\Models\User::count() }}</span>
             </a>
-            <a href="#" onclick="changeLanguage('ar')">
-                <span class="flag-icon flag-icon-sa"></span> عربي
+            <a href="/admins" class="NavBarText" id="adminsLink">
+                {{ __('messages.admins') }}
+                <span class="nav-count">{{ App\Models\Admin::count() }}</span>
             </a>
+            <a href="/resources" class="NavBarText" id="resourcesLink">
+                {{ __('messages.resources') }}
+                <span class="nav-count">{{ App\Models\Resource::count() }}</span>
+            </a>
+            <a href="/admin/course-requests/show" class="NavBarText" id="adminCourseRequestsLink">
+                {{ __('messages.courseRequests') ?? 'Course Requests' }}
+            </a>
+        </div> {{-- Added closing div here --}}
+    @elseif (Auth::user()->privileges == 1)
+        <div class="NavBarElement" style="margin-right: 5%;">
+            <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
+                {{ __('messages.users') }}
+                <span class="nav-count">{{ App\Models\User::count() }}</span>
+            </a>
+        </div> {{-- Added closing div here --}}
+    @elseif (Auth::user()->privileges == 0)
+        @php
+            $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
+            $lecCount = 0;
+            foreach ($teacher->courses as $course) {
+                $lecCount += $course->lectures->count();
+            }
+        @endphp
+        <div class="NavBarElement" style="margin-right: 5%;">
+            <a href="/teacher/course-requests/show" class="NavBarText" id="courseRequestsLink" style="width:8%;">
+                {{ __('messages.courseRequests') ?? 'Course Requests' }}
+            </a>
+            <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:8%;">
+                {{__('messages.yourSubjects')}}
+                <span class="nav-count">{{ $teacher->subjects->count() }}</span>
+            </a>
+            <a href="/courses" class="NavBarText" id="Link" style="width:8%;">
+                {{__('messages.yourCourses')}}
+                <span class="nav-count">{{ $teacher->courses->count() }}</span>
+            </a>
+            <a href="/lectures" class="NavBarText" id="Link" style="width:8%;">
+                {{__('messages.yourLectures')}}
+                <span class="nav-count">{{ $lecCount }}</span>
+            </a>
+        </div> {{-- Added closing div here --}}
+        <form action="/logout" method="POST"
+            style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
+            onsubmit="return confirmLogout()">
+            @csrf
+            <button type="submit" id="adminsLink" class="NavBarLogout" style="">
+                <div style="text-align:center">{{ __('messages.logout') }}</div>
+            </button>
+        </form>
+        <div class="language-dropdown">
+            <button class="language-toggle" onclick="toggleLanguageDropdown(event, 'desktopLanguageDropdown')">
+                <span class="material-symbols-outlined">language</span>
+            </button>
+            <div class="dropdown-content" id="desktopLanguageDropdown">
+                <a href="#" onclick="changeLanguage('en')">
+                    <span class="flag-icon flag-icon-us"></span> English
+                </a>
+                <a href="#" onclick="changeLanguage('fr')">
+                    <span class="flag-icon flag-icon-fr"></span> Français
+                </a>
+                <a href="#" onclick="changeLanguage('de')">
+                    <span class="flag-icon flag-icon-de"></span> Deutsch
+                </a>
+                <a href="#" onclick="changeLanguage('tr')">
+                    <span class="flag-icon flag-icon-tr"></span> Türkçe
+                </a>
+                <a href="#" onclick="changeLanguage('es')">
+                    <span class="flag-icon flag-icon-es"></span> Español
+                </a>
+                <a href="#" onclick="changeLanguage('ar')">
+                    <span class="flag-icon flag-icon-sa"></span> عربي
+                </a>
+            </div>
         </div>
-    </div>
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <span class="material-symbols-outlined">light_mode</span>
-    </button>
-@endif {{-- Added closing endif here for the initial @if --}}
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span class="material-symbols-outlined">light_mode</span>
+        </button>
+    @endif {{-- Added closing endif here for the initial @if --}}
 </nav>
 
 <script>
@@ -714,7 +713,7 @@
     }
 
     // Close dropdowns when clicking outside
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         const mobileDropdown = document.getElementById('mobileLanguageDropdown');
         const desktopDropdown = document.getElementById('desktopLanguageDropdown');
         const languageToggles = document.querySelectorAll('.language-toggle');

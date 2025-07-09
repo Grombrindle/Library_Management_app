@@ -3,11 +3,13 @@
     <x-cardcontainer :model="$requests" addLink="" :showNameSort="false" num="{{ $requests->count() }}">
         <div style="width:100%; display:flex; flex-direction:column; gap:20px;">
             @foreach ($requests as $request)
-                <x-card object="CourseRequest" image="/Images/Web/MindSpark.png" link="{{ route('admin.course_requests.show', $request->id) }}">
+                <x-card object="CourseRequest" image="/Images/Web/MindSpark.png"
+                    link="admin/course-requests/{{ $request->id }}">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
                             <strong>{{ __('messages.courseRequestName') }}:</strong> {{ $request->name }}<br>
-                            <strong>{{ __('messages.courseRequestTeacher') }}:</strong> {{ $request->teacher->name ?? 'N/A' }}<br>
+                            <strong>{{ __('messages.courseRequestTeacher') }}:</strong>
+                            {{ $request->teacher->name ?? 'N/A' }}<br>
                             <strong>{{ __('messages.courseRequestStatus') }}:</strong>
                             @if($request->status === 'pending')
                                 <span class="badge bg-warning">{{ ucfirst($request->status) }}</span>
@@ -18,15 +20,20 @@
                             @endif
                         </div>
                         <div>
-                            <a href="{{ route('admin.course_requests.show', $request->id) }}" class="btn btn-info btn-sm">{{ __('messages.view') }}</a>
+                            <a href="/admin/course-requests/{{ $request->id }}"
+                                class="btn btn-info btn-sm">{{ __('messages.view') }}</a>
                             @if ($request->status === 'pending')
-                                <form action="{{ route('admin.course_requests.approve', $request->id) }}" method="POST" style="display:inline-block;">
+                                <form action="{{ route('admin.course_requests.approve', $request->id) }}" method="POST"
+                                    style="display:inline-block;">
                                     @csrf
                                     <button type="submit" class="btn btn-success btn-sm">{{ __('messages.approve') }}</button>
                                 </form>
-                                <form action="{{ route('admin.course_requests.reject', $request->id) }}" method="POST" style="display:inline-block;">
+                                <form action="{{ route('admin.course_requests.reject', $request->id) }}" method="POST"
+                                    style="display:inline-block;">
                                     @csrf
-                                    <input type="text" name="rejection_reason" placeholder="{{ __('messages.rejectionReason') }}" class="form-control form-control-sm" style="width:150px;display:inline-block;">
+                                    <input type="text" name="rejection_reason"
+                                        placeholder="{{ __('messages.rejectionReason') }}" class="form-control form-control-sm"
+                                        style="width:150px;display:inline-block;">
                                     <button type="submit" class="btn btn-danger btn-sm">{{ __('messages.reject') }}</button>
                                 </form>
                             @endif
