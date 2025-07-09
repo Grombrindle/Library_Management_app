@@ -58,7 +58,8 @@ class LectureController extends Controller
         }
     }
 
-    public function fetchRatings($id) {
+    public function fetchRatings($id)
+    {
         $ratings = DB::table('lecture_rating')->where('lecture_id', $id)->get();
         return response()->json([
             'ratings' => $ratings
@@ -210,6 +211,7 @@ class LectureController extends Controller
                 ],
                 [
                     'rating' => $request->input('rating'),
+                    'review' => $request->input('review'),
                     'updated_at' => now()
                 ]
             );
@@ -228,15 +230,15 @@ class LectureController extends Controller
 
     public function add(Request $request)
     {
-        
+
         // dd("s");
 
         // dd("s");
         // Ensure all required directories exist
         $this->ensureDirectoriesExist();
-        
 
-      
+
+
 
 
 
@@ -311,7 +313,7 @@ class LectureController extends Controller
             $pages = $pdf->getPages();
             $pageCount = count($pages);
             $pages = $pageCount;
-            dd($pages,$pageCount,$filePathPdf);
+            dd($pages, $pageCount, $filePathPdf);
         }
 
         $lecture = Lecture::create([

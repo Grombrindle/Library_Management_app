@@ -22,11 +22,13 @@ class CourseController extends Controller
         }
 
         $courses = $teacher->courses()
-            ->with(['subject' => function ($query) {
-                $query->select('id', 'name', 'literaryOrScientific');
-            }])
+            ->with([
+                'subject' => function ($query) {
+                    $query->select('id', 'name', 'literaryOrScientific');
+                }
+            ])
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -63,7 +65,7 @@ class CourseController extends Controller
         $courses = Course::count() ? Course::all() : null;
 
         if ($courses) {
-            foreach($courses as $course) {
+            foreach ($courses as $course) {
                 $course->rating = DB::table('course_rating')
                     ->where('course_id', $course->id)
                     ->avg('rating') ?? null;
@@ -81,7 +83,7 @@ class CourseController extends Controller
         $courses = Course::withAvg('ratings', 'rating')
             ->orderByDesc('created_at')
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -96,7 +98,7 @@ class CourseController extends Controller
         $courses = Course::withAvg('ratings', 'rating')
             ->orderByDesc('ratings_avg_rating')
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -111,7 +113,7 @@ class CourseController extends Controller
         $courses = Course::withCount('users')
             ->orderByDesc('users_count')
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -135,7 +137,7 @@ class CourseController extends Controller
                 (1 + (COALESCE(ratings_avg_rating, 0) / 5))
             '))
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -151,7 +153,7 @@ class CourseController extends Controller
             ->withCount('users')
             ->withAvg('ratings', 'rating')
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -192,17 +194,19 @@ class CourseController extends Controller
         ]);
     }
 
-    public function fetchRatings($id) {
+    public function fetchRatings($id)
+    {
         $ratings = DB::table('course_rating')->where('course_id', $id)->get();
         return response()->json([
             'ratings' => $ratings
         ]);
     }
 
-    public function rate(Request $request, $id) {
+    public function rate(Request $request, $id)
+    {
         $course = Course::find($id);
 
-        if($course) {
+        if ($course) {
             $rate = DB::table('course_rating')->updateOrInsert(
                 [
                     'user_id' => Auth::user()->id,
@@ -210,6 +214,7 @@ class CourseController extends Controller
                 ],
                 [
                     'rating' => $request->input('rating'),
+                    'review' => $request->input('review'),
                     'updated_at' => now()
                 ]
             );
