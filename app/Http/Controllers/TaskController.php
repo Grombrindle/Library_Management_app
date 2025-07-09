@@ -9,14 +9,16 @@ use App\Models\Task;
 class TaskController extends Controller
 {
     //
-    public function fetchAll() {
+    public function fetchAll()
+    {
         return response()->json([
             'success' => true,
             'tasks' => Auth::user()->tasks()->get()
         ]);
     }
 
-    public function add(Request $request) {
+    public function add(Request $request)
+    {
         $task = Task::create([
             'title' => $request->input('title'),
             'description' => $request->input('description'),
@@ -29,7 +31,8 @@ class TaskController extends Controller
         ]);
     }
 
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, $id)
+    {
         $task = Task::findOrFail($id);
         $task->update([
             'description' => $request->input('description'),
@@ -41,7 +44,8 @@ class TaskController extends Controller
         ]);
     }
 
-    public function toggleChecked($id) {
+    public function toggleChecked($id)
+    {
         $task = Task::findOrFail($id);
         $task->isChecked ^= true;
         $task->save();
@@ -51,7 +55,8 @@ class TaskController extends Controller
         ]);
     }
 
-    public function toggleDelete($id) {
+    public function toggleDelete($id)
+    {
         $task = Task::findOrFail($id);
         $task->isTrashed ^= true;
         $task->trashed_at = $task->trashed_at ? null : now();
@@ -62,12 +67,45 @@ class TaskController extends Controller
         ]);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $task = Task::findOrFail($id);
         $task->delete();
         return response()->json([
             'success' => true,
             'tasks' => Auth::user()->tasks()->get()
+        ]);
+    }
+
+    /**
+     * Get all soft-deleted tasks for the authenticated user.
+     */
+    public function trashedTasks(Request $request)
+    {
+        $user = $request->user();
+
+        $tasks = Task::onlyTrashed()
+            ->where('user_id', $user->id)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $tasks,
+        ]);
+    }
+
+    /**
+     * Get all available (non-deleted) tasks for the authenticated user.
+     */
+    public function availableTasks(Request $request)
+    {
+        $user = $request->user();
+
+        $tasks = Task::where('user_id', $user->id)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $tasks,
         ]);
     }
 }

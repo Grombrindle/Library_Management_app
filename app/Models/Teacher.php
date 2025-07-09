@@ -136,7 +136,7 @@ class Teacher extends Model
     }
 
 
-    function getCoursesAttribute()
+    function getCourseNamesAttribute()
     {
         return $this->courses()->get()->pluck('name');
     }
@@ -227,6 +227,11 @@ class Teacher extends Model
         return $rating ? $rating->rating : null;
     }
 
-    protected $appends = ['rating', 'courses', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
+    protected $appends = ['rating', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
+
+    public function courseRequests()
+    {
+        return $this->hasMany(CourseRequest::class);
+    }
 
 }

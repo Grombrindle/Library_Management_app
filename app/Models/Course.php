@@ -67,10 +67,10 @@ class Course extends Model
     }
 
     //dis new
-    public function getRatingsCountAttribute()
-    {
-        return $this->ratings()->count();
-    }
+    // public function getRatingsCountAttribute()
+    // {
+    //     return $this->ratings()->count();
+    // }
 
     public function getFeaturedRatingsAttribute()
     {
@@ -122,24 +122,28 @@ class Course extends Model
             ->count();
     }
 
-    public function getDurationAttribute() {
+    public function getDurationAttribute()
+    {
         $lectures = $this->lectures()->where('type', 1)->get();
         $sum = 0;
-        foreach($lectures as $lecture) {
+        foreach ($lectures as $lecture) {
             $sum += $lecture->duration;
         }
         return $sum;
     }
 
-    public function getDurationFormattedAttribute() {
+    public function getDurationFormattedAttribute()
+    {
         return \App\Models\Lecture::formatDuration($this->duration);
     }
 
-    public function getDurationFormattedLongAttribute() {
+    public function getDurationFormattedLongAttribute()
+    {
         return \App\Models\Lecture::formatDurationLong($this->duration);
     }
 
-    public function getDurationHumanAttribute() {
+    public function getDurationHumanAttribute()
+    {
         return \App\Models\Lecture::formatDurationHuman($this->duration);
     }
 
@@ -173,7 +177,8 @@ class Course extends Model
         return $fullBreakdown;
     }
 
-    public function getFirstRatingsAttribute() {
+    public function getFirstRatingsAttribute()
+    {
         return $this->ratings()->orderByDesc('rating')->take(3)->get();
     }
 
@@ -213,11 +218,17 @@ class Course extends Model
     //     });
     // }
 
-    public function getLectureNumAttribute() {
+    public function getLectureNumAttribute()
+    {
         return $this->lectures()->get()->count();
     }
 
     protected $appends = ['rating', 'subscription_count', 'rating_breakdown', 'FeaturedRatings', 'lectureNum'];
 
     // protected $with = ['ratings'];
+
+    public function courseRequest()
+    {
+        return $this->hasOne(CourseRequest::class);
+    }
 }

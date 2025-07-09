@@ -579,4 +579,22 @@ Route::group(['middleware' => ['auth']], function () {
             return abort(404);
     });
     Route::put('/editresource/{id}', [\App\Http\Controllers\ResourceController::class, 'edit']);
+
+    // Course Request Approval Workflow
+    Route::group(['prefix' => 'teacher/course-requests', 'as' => 'teacher.course_requests.'], function () {
+        Route::get('/show', [\App\Http\Controllers\CourseRequestController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\CourseRequestController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\CourseRequestController::class, 'store'])->name('store');
+        Route::get('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [\App\Http\Controllers\CourseRequestController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'update'])->name('update');
+    });
+
+    // Admin routes (privileges == 2)
+    Route::group(['prefix' => 'admin/course-requests', 'as' => 'admin.course_requests.'], function () {
+        Route::get('/show', [\App\Http\Controllers\CourseRequestController::class, 'adminIndex'])->name('index');
+        Route::get('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'adminShow'])->name('show');
+        Route::post('/{id}/approve', [\App\Http\Controllers\CourseRequestController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [\App\Http\Controllers\CourseRequestController::class, 'reject'])->name('reject');
+    });
 });
