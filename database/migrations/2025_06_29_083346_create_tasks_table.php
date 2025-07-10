@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use App\Models\User;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -20,6 +19,7 @@ return new class extends Migration
             $table->boolean('isTrashed')->default(0);
             $table->foreignIdFor(User::class);
             $table->decimal('estimatedHours', 10, 1);
+            $table->softDeletes();
             $table->timestamp('trashed_at')->nullable();
             $table->timestamps();
         });

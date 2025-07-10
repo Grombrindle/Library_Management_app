@@ -122,12 +122,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallresourcesrecommended', [ResourceController::class, 'fetchAllRecommended']);
     Route::post('/rateresource/{id}', [ResourceController::class, 'rate']);
 
+
+    //TASKS
     Route::get('/gettasks', [TaskController::class, 'fetchAll']);
     Route::post('/addtask', [TaskController::class, 'add']);
     Route::put('/checktask/{id}', [TaskController::class, 'toggleChecked']);
     Route::put('/trashtask/{id}', [TaskController::class, 'toggleDelete']);
+    Route::put('/restoretask/{id}', [TaskController::class, 'restore']);
     Route::put('/edittask/{id}', [TaskController::class, 'edit']);
     Route::delete('/deletetask/{id}', [TaskController::class, 'delete']);
+    Route::get('/gettrashedtasks', [TaskController::class, 'trashedTasks']);
+    Route::get('/getavailabletasks', [TaskController::class, 'availableTasks']);
 
     Route::get('/getwatchlistlectures', [WatchlistController::class, 'fetchLectures']);
     Route::get('/getwatchlistcourses', [WatchlistController::class, 'fetchCourses']);
@@ -145,8 +150,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');
     Route::post('/ban', [SessionController::class, 'banUser'])->name('ban.user');
-
-
 
 
 

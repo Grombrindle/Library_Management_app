@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -56,5 +56,4 @@ class Admin extends Authenticatable
         'created_at',
         'updated_at'
     ];
-
 }

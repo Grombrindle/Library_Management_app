@@ -438,6 +438,13 @@
         margin-right: 0;
         margin-left: 8px;
     }
+
+    /* Desktop only: hide on small screens */
+    @media (max-width: 992px) {
+        .desktop-only {
+            display: none !important;
+        }
+    }
 </style>
 
 <nav class="NavBar">
@@ -486,6 +493,10 @@
                 {{ __('messages.resources') }}
                 <span class="nav-count">{{ App\Models\Resource::count() }}</span>
             </a>
+            <a href="/admin/course-requests/show" class="NavBarText">
+                {{ __('messages.courseRequests') ?? 'Course Requests' }}
+                <span class="nav-count">{{ App\Models\CourseRequest::where('status', 'pending')->count() }}</span>
+            </a>
         @elseif (Auth::user()->privileges == 1)
             <a href="/users" class="NavBarText">
                 {{ __('messages.users') }}
@@ -498,7 +509,13 @@
                     foreach ($teacher->courses as $course) {
                         $lecCount += $course->lectures->count();
                     }
+                    // Only count course requests for this teacher
+                    $teacherCourseRequestsCount = $teacher->courseRequests()->count();
                 @endphp
+                <a href="/teacher/course-requests/show" class="NavBarText">
+                    {{ __('messages.courseRequests') ?? 'Course Requests' }}
+                    <span class="nav-count">{{ $teacherCourseRequestsCount }}</span>
+                </a>
                 <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:100%;">
                     {{__('messages.yourSubjects')}}
                     <span class="nav-count">{{ $teacher->subjects->count() }}</span>
@@ -522,6 +539,17 @@
         </form>
 
         <div class="button-container">
+            <!-- Course Requests Icon Button -->
+            @php $pendingRequests = App\Models\CourseRequest::where('status', 'pending')->count(); @endphp
+            @if (Auth::user()->privileges == 2)
+                <a href="/admin/course-requests/show" style="position:relative;">
+                    <span class="material-symbols-outlined">inbox</span>
+                    @if($pendingRequests > 0)
+                        <span class="nav-count" style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingRequests }}</span>
+                    @endif
+                </a>
+            @endif
+            <!-- End Course Requests Icon Button -->
             <div class="language-dropdown">
                 <button class="language-toggle" onclick="toggleLanguageDropdown(event, 'mobileLanguageDropdown')">
                     <span class="material-symbols-outlined">language</span>
@@ -584,6 +612,7 @@
                 {{ __('messages.resources') }}
                 <span class="nav-count">{{ App\Models\Resource::count() }}</span>
             </a>
+            <!-- End Desktop Course Requests Icon Button -->
     @elseif (Auth::user()->privileges == 1)
         <div class="NavBarElement" style="margin-right: 5%;">
             <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
@@ -597,8 +626,14 @@
                     foreach ($teacher->courses as $course) {
                         $lecCount += $course->lectures->count();
                     }
+                    // Only count course requests for this teacher
+                    $teacherCourseRequestsCount = $teacher->courseRequests()->count();
                 @endphp
                 <div class="NavBarElement" style="margin-right: 5%;">
+                    <a href="/teacher/course-requests/show" class="NavBarText" id="courseRequestsLink" style="width:8%;">
+                        {{ __('messages.courseRequests') ?? 'Course Requests' }}
+                        <span class="nav-count">{{ $teacherCourseRequestsCount }}</span>
+                    </a>
                     <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:8%;">
                         {{__('messages.yourSubjects')}}
                         <span class="nav-count">{{ $teacher->subjects->count() }}</span>
@@ -648,6 +683,16 @@
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <span class="material-symbols-outlined">light_mode</span>
                 </button>
+                <!-- Desktop Course Requests Icon Button -->
+                @if(Auth::user()->privileges == 2)
+                @php $pendingRequests = App\Models\CourseRequest::where('status', 'pending')->count(); @endphp
+                <a href="/admin/course-requests/show" target="blank" class="desktop-only" style="position:relative;">
+                    <span class="material-symbols-outlined" style="color:white">inbox</span>
+                    @if($pendingRequests > 0)
+                        <span class="nav-count" style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingRequests }}</span>
+                    @endif
+                </a>
+                @endif
             </div>
 
 </nav>

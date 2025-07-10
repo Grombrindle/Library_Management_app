@@ -181,8 +181,9 @@ class TeacherController extends Controller
         $courses = "";
         $teacher = Teacher::find($id);
         if ($teacher) {
-            $count = $teacher->courses->count();
-            foreach ($teacher->courses as $index => $course) {
+            $teacherCourses = $teacher->courses()->get();
+            $count = $teacherCourses->count();
+            foreach ($teacherCourses as $index => $course) {
                 $courses .= $course->name;
                 if ($index < $count - 1)
                     $courses .= " - ";
@@ -307,17 +308,19 @@ class TeacherController extends Controller
         ]);
     }
 
-    public function fetchRatings($id) {
+    public function fetchRatings($id)
+    {
         $ratings = DB::table('teacher_ratings')->where('teacher_id', $id)->get();
         return response()->json([
             'ratings' => $ratings
         ]);
     }
 
-    public function rate(Request $request, $id) {
+    public function rate(Request $request, $id)
+    {
         $teacher = Teacher::find($id);
 
-        if($teacher) {
+        if ($teacher) {
             $rate = DB::table('teacher_ratings')->updateOrInsert(
                 [
                     'user_id' => Auth::user()->id,
@@ -325,6 +328,7 @@ class TeacherController extends Controller
                 ],
                 [
                     'rating' => $request->input('rating'),
+                    'review' => $request->input('review'),
                     'updated_at' => now()
                 ]
             );

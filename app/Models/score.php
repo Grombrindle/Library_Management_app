@@ -18,8 +18,27 @@ class score extends Model
         'user_id',
         'quiz_id',
         'correctAnswers',
+        'sparks',
         'created_at',
         'updated_at'
     ];
+
+    public function getAnswersAttribute() {
+        $answers = json_decode($this->correctAnswers, true);
+        if (!is_array($answers) || count($answers) === 0) {
+            return 0;
+        }
+        $ones = array_sum($answers);
+        $total = count($answers);
+        return round(($ones / $total) * 100, 2) . "%";
+    }
+
+    public function getAnswersCountAttribute() {
+        $answers = json_decode($this->correctAnswers, true);
+        $ones = array_sum($answers);
+        return $ones;
+    }
+
+    protected $appends = ['answers', 'answersCount'];
     //
 }

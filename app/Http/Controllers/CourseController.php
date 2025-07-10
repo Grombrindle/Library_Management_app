@@ -22,11 +22,13 @@ class CourseController extends Controller
         }
 
         $courses = $teacher->courses()
-            ->with(['subject' => function ($query) {
-                $query->select('id', 'name', 'literaryOrScientific');
-            }])
+            ->with([
+                'subject' => function ($query) {
+                    $query->select('id', 'name', 'literaryOrScientific');
+                }
+            ])
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -63,7 +65,7 @@ class CourseController extends Controller
         $courses = Course::count() ? Course::all() : null;
 
         if ($courses) {
-            foreach($courses as $course) {
+            foreach ($courses as $course) {
                 $course->rating = DB::table('course_rating')
                     ->where('course_id', $course->id)
                     ->avg('rating') ?? null;
@@ -81,7 +83,7 @@ class CourseController extends Controller
         $courses = Course::withAvg('ratings', 'rating')
             ->orderByDesc('created_at')
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -96,7 +98,7 @@ class CourseController extends Controller
         $courses = Course::withAvg('ratings', 'rating')
             ->orderByDesc('ratings_avg_rating')
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -111,7 +113,7 @@ class CourseController extends Controller
         $courses = Course::withCount('users')
             ->orderByDesc('users_count')
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -135,7 +137,7 @@ class CourseController extends Controller
                 (1 + (COALESCE(ratings_avg_rating, 0) / 5))
             '))
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -151,7 +153,7 @@ class CourseController extends Controller
             ->withCount('users')
             ->withAvg('ratings', 'rating')
             ->get()
-            ->map(function($course) {
+            ->map(function ($course) {
                 $course->sources = json_decode($course->sources, true);
                 return $course;
             });
@@ -192,17 +194,19 @@ class CourseController extends Controller
         ]);
     }
 
-    public function fetchRatings($id) {
+    public function fetchRatings($id)
+    {
         $ratings = DB::table('course_rating')->where('course_id', $id)->get();
         return response()->json([
             'ratings' => $ratings
         ]);
     }
 
-    public function rate(Request $request, $id) {
+    public function rate(Request $request, $id)
+    {
         $course = Course::find($id);
 
-        if($course) {
+        if ($course) {
             $rate = DB::table('course_rating')->updateOrInsert(
                 [
                     'user_id' => Auth::user()->id,
@@ -210,6 +214,7 @@ class CourseController extends Controller
                 ],
                 [
                     'rating' => $request->input('rating'),
+                    'review' => $request->input('review'),
                     'updated_at' => now()
                 ]
             );
@@ -228,22 +233,25 @@ class CourseController extends Controller
 
     public function add(Request $request)
     {
+        $imagePath = "Images/Courses/default.png";
+        $requestImagePath = null;
         if (!is_null($request->file('object_image'))) {
             $file = $request->file('object_image');
-            $directory = 'Images/Courses';
+            $directory = 'Images/CourseRequests';
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-
             if (!file_exists(public_path($directory))) {
                 mkdir(public_path($directory), 0755, true);
             }
-
             $file->move(public_path($directory), $filename);
-            $path = $directory . '/' . $filename;
+            $requestImagePath = $directory . '/' . $filename;
+            $imagePath = $directory . '/' . $filename;
         } else {
-            $path = "Images/Courses/default.png";
+            $requestImagePath = null;
         }
 
-        if ($request->input('teacher') != null)
+
+        if ($request->input('teacher') != null) {
+
             $course = Course::make([
                 'name' => $request->input('course_name'),
                 'teacher_id' => $request->input('teacher'),
@@ -252,22 +260,39 @@ class CourseController extends Controller
                 'subscriptions' => 0,
                 'sources' => json_encode($request->input('sources', []))
             ]);
-        elseif (Auth::user()->privileges == 0)
-            $course = Course::make([
-                'name' => $request->input('course_name'),
-                'teacher_id' => Auth::user()->teacher_id,
-                'subject_id' => $request->input('subject'),
-                'lecturesCount' => 0,
-                'subscriptions' => 0,
-                'sources' => json_encode($request->input('sources', []))
-            ]);
+            $course->image = $imagePath;
+            $course->save();
 
-        $course->image = $path;
-        $course->save();
-        $data = ['element' => 'course', 'id' => $course->id, 'name' => $course->name];
-        session(['add_info' => $data]);
-        session(['link' => '/courses']);
-        return redirect()->route('add.confirmation');
+            $data = ['element' => 'course', 'id' => $course->id, 'name' => $course->name];
+            session(['add_info' => $data]);
+            session(['link' => '/courses']);
+            return redirect()->route('add.confirmation');
+        } else {
+
+            // If teacher, also create a course request
+            if (Auth::user()->privileges == 0) {
+                $courseRequestData = [
+                    'teacher_id' => Auth::user()->teacher_id,
+                    'name' => $request->input('course_name'),
+                    'description' => $request->input('course_description', null),
+                    'subject_id' => $request->input('subject'),
+                    'image' => $requestImagePath,
+                    'sources' => $request->input('sources'),
+                    'price' => $request->input('price', null),
+                    'status' => 'pending',
+                    'admin_id' => null,
+                    'course_id' => $request->input('id'),
+                    'rejection_reason' => null,
+                    'lecturesCount' => $request->input('lecturesCount'),
+                    'subscriptions' => $request->input('subscriptions'),
+                ];
+                \App\Models\CourseRequest::create($courseRequestData);
+            }
+            $data = ['element' => 'course', 'id' => $request->input('id'), 'name' => $request->input('course_name')];
+            session(['add_info' => $data]);
+            session(['link' => '/courses']);
+            return redirect()->route('add.confirmation');
+        }
     }
 
     public function edit(Request $request, $id)

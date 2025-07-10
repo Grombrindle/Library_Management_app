@@ -17,7 +17,7 @@
             @enderror
             <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
                 <label for="course_description">
-                    {{ __('messages.courseDescription') }} ({{ __('messages.optional') }}):
+                    {{ __('messages.courseDescription') }}:
                 </label>
                 <textarea name="course_description" id="course_description" autocomplete="off" value="{{ old('course_description') }}"
                     style="height:150px; width:80%; font-size:16px; padding:10px; resize:vertical;max-height:500px;"></textarea>

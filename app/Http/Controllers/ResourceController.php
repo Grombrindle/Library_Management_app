@@ -149,7 +149,8 @@ class ResourceController extends Controller
 
 
     }
-    public function fetchRatings($id) {
+    public function fetchRatings($id)
+    {
         $ratings = DB::table('resources_ratings')->where('resource_id', $id)->get();
         return response()->json([
             'ratings' => $ratings
@@ -168,6 +169,7 @@ class ResourceController extends Controller
                 ],
                 [
                     'rating' => $request->input('rating'),
+                    'review' => $request->input('review'),
                     'updated_at' => now()
                 ]
             );
@@ -215,7 +217,8 @@ class ResourceController extends Controller
 
         // PDF
         $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
+        if (!file_exists($pdfDir))
+            mkdir($pdfDir, 0755, true);
         $pdfPath = null;
         if ($request->hasFile('resource_pdf_file')) {
             $pdf = $request->file('resource_pdf_file');
@@ -226,7 +229,8 @@ class ResourceController extends Controller
 
         // Audio
         $audioDir = public_path('Files/Resources/Audio');
-        if (!file_exists($audioDir)) mkdir($audioDir, 0755, true);
+        if (!file_exists($audioDir))
+            mkdir($audioDir, 0755, true);
         $audioPath = null;
         if ($request->hasFile('resource_audio_file')) {
             $audio = $request->file('resource_audio_file');
@@ -289,7 +293,8 @@ class ResourceController extends Controller
 
         // PDF
         $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
+        if (!file_exists($pdfDir))
+            mkdir($pdfDir, 0755, true);
         if ($request->hasFile('resource_pdf_file')) {
             $pdf = $request->file('resource_pdf_file');
             $pdfName = time() . '_' . $pdf->getClientOriginalName();
@@ -299,7 +304,8 @@ class ResourceController extends Controller
 
         // Audio
         $audioDir = public_path('Files/Resources/Audio');
-        if (!file_exists($audioDir)) mkdir($audioDir, 0755, true);
+        if (!file_exists($audioDir))
+            mkdir($audioDir, 0755, true);
         if ($request->hasFile('resource_audio_file')) {
             $audio = $request->file('resource_audio_file');
             $audioName = time() . '_' . $audio->getClientOriginalName();

@@ -19,6 +19,8 @@ class QuestionFactory extends Factory
     {
         $num = rand(2, 4);
 
+        $diff = rand(1, 3);
+
         $answers = [];
 
         for ($i = 0; $i < $num; $i++) {
@@ -29,11 +31,19 @@ class QuestionFactory extends Factory
             }
         }
 
+        if ($diff == 1)
+            $diff = 'EASY';
+        else if ($diff == 3)
+            $diff = 'HARD';
+        else
+            $diff = 'MEDIUM';
+
 
         return [
             'questionText' => $this->faker->sentence() . '?',
             'options' => json_encode($answers, JSON_UNESCAPED_SLASHES),
             'correctAnswerIndex' => $this->faker->numberBetween(0, $num - 1),
+            'difficulty' => $diff,
             'quiz_id' => Quiz::inRandomOrder()->first()->id ?? Quiz::factory()->create()->id,
         ];
     }

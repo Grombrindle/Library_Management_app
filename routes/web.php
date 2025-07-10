@@ -56,7 +56,6 @@ Route::group(['middleware' => ['auth']], function () {
             return view('Teacher/Subjects');
         else
             return abort(404);
-
     });
     Route::get('/teachers', function () {
         if (Auth::user()->privileges == 2)
@@ -153,7 +152,6 @@ Route::group(['middleware' => ['auth']], function () {
             return view('Admin/SemiAdmin/User');
         else
             return abort(404);
-
     });
     Route::get('/admin/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
@@ -247,7 +245,7 @@ Route::group(['middleware' => ['auth']], function () {
             return view('Admin/FullAdmin/TeacherEdit', ['subjects' => []]);
         } else
             return abort(404);
-    })->name('teacher.edit');//might have to change this
+    })->name('teacher.edit'); //might have to change this
 
 
     Route::put('/editteacher/{id}', [TeacherController::class, 'edit'])->name('teacher.update');
@@ -275,7 +273,6 @@ Route::group(['middleware' => ['auth']], function () {
             return redirect()->route('teacher.edit', ['id' => session('teacher')]);
         } else
             return abort(404);
-
     });
     Route::get('/addcourse', function () {
         if (Auth::user()->privileges == 2)
@@ -550,4 +547,57 @@ Route::group(['middleware' => ['auth']], function () {
         return redirect()->route('logout.confirmation');
     });
     Route::post('/registerout', [AdminController::class, 'logout']);
+
+    Route::get('/resources', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/Resources');
+        else
+            return abort(404);
+    });
+    Route::get('/resource/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['resource' => $id]);
+            return view('Admin/FullAdmin/Resource');
+        } else
+            return abort(404);
+    });
+    Route::get('/addresource', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/ResourceAdd');
+        else
+            return abort(404);
+    });
+    Route::post('/addresource', [\App\Http\Controllers\ResourceController::class, 'add']);
+    Route::get('/resource/edit/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['resource' => $id]);
+            return view('Admin/FullAdmin/ResourceEdit');
+        } else
+            return abort(404);
+    });
+    Route::put('/editresource/{id}', [\App\Http\Controllers\ResourceController::class, 'edit']);
+
+    // Course Request Approval Workflow
+    Route::group(['prefix' => 'teacher/course-requests', 'as' => 'teacher.course_requests.'], function () {
+        Route::get('/show', [\App\Http\Controllers\CourseRequestController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\CourseRequestController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\CourseRequestController::class, 'store'])->name('store');
+        Route::get('/{id}', function ($id) {
+            session(['courseRequest' => $id]);
+            return app(\App\Http\Controllers\CourseRequestController::class)->show($id);
+        })->name('show');
+        Route::get('/{id}/edit', [\App\Http\Controllers\CourseRequestController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'update'])->name('update');
+    });
+
+    // Admin routes (privileges == 2)
+    Route::group(['prefix' => 'admin/course-requests', 'as' => 'admin.course_requests.'], function () {
+        Route::get('/show', [\App\Http\Controllers\CourseRequestController::class, 'adminIndex'])->name('index');
+        Route::get('/{id}', function ($id) {
+            session(['courseRequest' => $id]);
+            return app(\App\Http\Controllers\CourseRequestController::class)->adminShow($id);
+        })->name('show');
+        Route::post('/{id}/approve', [\App\Http\Controllers\CourseRequestController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [\App\Http\Controllers\CourseRequestController::class, 'reject'])->name('reject');
+    });
 });

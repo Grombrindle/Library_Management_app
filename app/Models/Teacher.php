@@ -136,7 +136,7 @@ class Teacher extends Model
     }
 
 
-    function getCoursesAttribute()
+    function getCourseNamesAttribute()
     {
         return $this->courses()->get()->pluck('name');
     }
@@ -218,15 +218,21 @@ class Teacher extends Model
     }
 
     public function getUserRatingAttribute()
-    {
-        if (!Auth::check()) {
-            return null;
-        }
-
-        $rating = Auth::user()->teacherRatings()->where('teacher_id', $this->id)->first();
-        return $rating ? $rating->rating : null;
+{
+    $user = Auth::user();
+    if (!$user || !($user instanceof \App\Models\User)) {
+        return null;
     }
 
-    protected $appends = ['rating', 'courses', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
+    $rating = $user->teacherRatings()->where('teacher_id', $this->id)->first();
+    return $rating ? $rating->rating : null;
+}
+
+    protected $appends = ['rating', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
+
+    public function courseRequests()
+    {
+        return $this->hasMany(CourseRequest::class);
+    }
 
 }
