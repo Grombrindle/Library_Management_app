@@ -160,6 +160,7 @@ class CourseRequestController extends Controller
             'lecturesCount' => $request->lecturesCount ?? 0,
             'subscriptions' => $request->subscriptions ?? 0,
             'image' => $imagePath,
+            'requirements' => $request->requirements,
             'sources' => $request->sources ?? [],
             'price' => $request->price ?? 0,
         ]);

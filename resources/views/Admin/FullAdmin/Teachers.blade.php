@@ -139,13 +139,13 @@
                             @endif
                             <br>
                             ● {{__('messages.courses')}}:
-                            @if ($teacher->courses()->count() == 0)
+                            @if ($teacher->courses->count() == 0)
                                 <div style="color:var(--text-color-inverted);">&emsp;{{ __('messages.none') }}</div>
                             @else
                                 <br>
                                 &emsp;
                                 [
-                                @foreach ($teacher->courses() as $course)
+                                @foreach ($teacher->courses as $course)
                                     {{ $course->name }}
                                     @if (!$loop->last)
                                         -

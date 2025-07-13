@@ -4,7 +4,7 @@
 <x-layout>
     <x-breadcrumb :links="[
         __('messages.home') => url('/welcome'),
-        __('messages.courseRequests') => route('admin.course_requests.index'),
+        __('messages.yourRequests') => route('admin.course_requests.index'),
         __('messages.courseRequestShow') => Request::url(),
     ]" />
     <x-infocard :object="$courseRequest" image="/Images/Web/MindSpark.png" objectType="CourseRequest"

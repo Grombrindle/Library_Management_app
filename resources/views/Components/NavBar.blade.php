@@ -513,7 +513,7 @@
                     $teacherCourseRequestsCount = $teacher->courseRequests()->count();
                 @endphp
                 <a href="/teacher/course-requests/show" class="NavBarText">
-                    {{ __('messages.courseRequests') ?? 'Course Requests' }}
+                    {{ __('messages.yourRequests') ?? 'Your Requests' }}
                     <span class="nav-count">{{ $teacherCourseRequestsCount }}</span>
                 </a>
                 <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:100%;">
@@ -631,7 +631,7 @@
                 @endphp
                 <div class="NavBarElement" style="margin-right: 5%;">
                     <a href="/teacher/course-requests/show" class="NavBarText" id="courseRequestsLink" style="width:8%;">
-                        {{ __('messages.courseRequests') ?? 'Course Requests' }}
+                        {{ __('messages.yourRequests') ?? 'Your Requests' }}
                         <span class="nav-count">{{ $teacherCourseRequestsCount }}</span>
                     </a>
                     <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:8%;">

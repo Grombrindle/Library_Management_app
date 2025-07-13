@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
             $table->string('image')->nullable();
             $table->json('sources')->nullable();
+            $table->json('requirements')->nullable();
             $table->string('price')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->foreignId('admin_id')->nullable()->constrained('admins')->nullOnDelete();

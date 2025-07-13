@@ -232,6 +232,7 @@ return [
     'backToRequests' => 'Retour aux demandes',
     'allCourseRequests' => 'Toutes les demandes de cours',
     'courseRequestTeacher' => 'Enseignant',
+    'requirements' => 'Prérequis',
     'view' => 'Voir',
     'approve' => 'Approuver',
     'reject' => 'Rejeter',
@@ -239,4 +240,5 @@ return [
     'pending' => 'EN ATTENTE',
     'approved' => 'APPROUVÉ',
     'rejected' => 'REJETÉ',
+    'yourRequests' => 'Vos demandes',
 ];

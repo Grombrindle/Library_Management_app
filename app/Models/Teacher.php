@@ -162,9 +162,6 @@ class Teacher extends Model
 
         if ($withReview->count() >= 3) {
             return $withReview;
-
-
-
         }
 
         $needed = 3 - $withReview->count();
@@ -180,9 +177,6 @@ class Teacher extends Model
             ->get();
 
         return $withReview->concat($withoutReview);
-
-
-
 
     }
 

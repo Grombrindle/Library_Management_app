@@ -20,8 +20,8 @@
     }
 @endphp
 
-<x-layout :objects=true object="{{ __('messages.courseRequests') }}">
-    <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.courseRequests') => Request::url()]" />
+<x-layout :objects=true object="{{ __('messages.yourRequests') }}">
+    <x-breadcrumb :links="[__('messages.home') => url(path: '/welcome'), __('messages.yourRequests') => Request::url()]" />
     <x-cardcontainer :model=$modelToPass addLink="" :showNameSort=false num="{{ $modelToPass->count() }}" :search=false>
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedRequests as $chunk)

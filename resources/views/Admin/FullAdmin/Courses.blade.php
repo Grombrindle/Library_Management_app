@@ -66,7 +66,7 @@
 
     // Prepare filter options
     $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
-    
+
     // Split course into chunks
     $chunkSize = 2;
     $chunkedCourses = array_fill(0, $chunkSize, []);
@@ -92,6 +92,8 @@
                             ● {{ __('messages.fromTeacher') }}: {{ $course->teacher->name }}<br>
                             ● {{ __('messages.lecturesNum') }}: {{ $course->lectures->count() }}<br>
                             ● {{ __('messages.usersSubTo') }}: {{ $course->users->count() }}<br>
+                            ● {{ __('messages.requirements') }}:
+                            [{{ $course->requirements ?: 'No requirements specified' }}]
                             <br>
                             <div style="display:inline-block; vertical-align:middle;">
                                 @php

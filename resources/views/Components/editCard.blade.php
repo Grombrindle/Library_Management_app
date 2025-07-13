@@ -425,10 +425,12 @@
         @if ($relations)
             <div id="subject-buttons-container" class="buttonContainer">
                 @foreach ($subjects as $subject)
-                    <button type="button" class="subject-button selected"
-                        data-subject-id="{{ $subject->id }}">{{ $subject->name }}
-                        @if ($menu == 'Course')
-                            ({{ $subject->subject->name }})
+                    <button type="button" class="subject-button selected" data-subject-id="{{ $subject->id }}">
+                        @if ($menu == 'Subject')
+                            {{ $subject->name }} ({{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
+                        @elseif ($menu == 'Course')
+                            {{ $subject->name }} ({{ $subject->subject->name }}
+                            {{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
                         @endif
                     </button>
                 @endforeach
@@ -454,8 +456,13 @@
                     </option>
                     @foreach ($menuModel as $subject)
                         @if (!in_array($subject->id, $selectedSubjects))
-                            <option value="{{ $subject->id }}">{{ $subject->name }} @if ($menu == 'Course')
-                                    ({{ $subject->subject->name }})
+                            <option value="{{ $subject->id }}">
+                                @if ($menu == 'Subject')
+                                    {{ $subject->name }}
+                                    ({{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
+                                @elseif ($menu == 'Course')
+                                    {{ $subject->name }} ({{ $subject->subject->name }}
+                                    {{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
                                 @endif
                             </option>
                         @endif
@@ -477,7 +484,7 @@
                 @foreach ($model->lectures->pluck('id')->toArray() as $lecture)
                     <button type="button" class="lecture-button selected" data-lecture-id="{{ $lecture }}"
                         onclick="toggleLectureSelection(this)">{{ App\Models\Lecture::findOrFail($lecture)->name }}
-                        <br> ({{ App\Models\Lecture::findOrFail($lecture)->course->subject->name }},
+                        <br> ({{ App\Models\Lecture::findOrFail($lecture)->course->subject->name }}  {{ App\Models\Lecture::findOrFail($lecture)->course->subject->literaryOrScientific ? 'Scientific' : 'Literary'}},
                         {{ App\Models\Lecture::findOrFail($lecture)->course->name }})</button>
                 @endforeach
             </div>
@@ -500,7 +507,7 @@
                                                         style="padding:0.25rem 0.25rem; cursor:pointer"
                                                         onclick="selectLecture(this)">
                                                         {{ $lecture->name }} <br>
-                                                        ({{ $lecture->course->subject->name }},
+                                                        ({{ $lecture->course->subject->name }} {{$lecture->course->subject->literaryOrScientific ? 'Scientific' : 'Literary'}},
                                                         {{ $lecture->course->name }})
                                                     </div>
                                                 @else
@@ -589,7 +596,7 @@
         let submitButton = document.querySelector(".submit-button");
         // Check banned status
         let initialBannedStatus = @json($isBanned) ? true :
-        false; // Changed to isBanned to match Laravel convention
+            false; // Changed to isBanned to match Laravel convention
         const bannedCheckbox = document.getElementById('isBanned'); // Changed to match HTML id
         if (bannedCheckbox) {
             if (bannedCheckbox.checked !== initialBannedStatus) {
