@@ -47,17 +47,7 @@ class Teacher extends Model
     /** @use HasFactory<\Database\Factories\TeacherFactory> */
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'userName',
-        'countryCode',
-        'number',
-        'password',
-        'image',
-        'links',
-        'created_at',
-        'updated_at'
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'links' => 'array'
@@ -82,11 +72,6 @@ class Teacher extends Model
         return $this->hasMany(Course::class);
     }
 
-    public function requests()
-    {
-        return $this->hasMany(TeacherRequest::class);
-    }
-
     function subjects()
     {
         return $this->belongsToMany(Subject::class, 'teacher_subject');
@@ -94,9 +79,8 @@ class Teacher extends Model
 
     public function universities()
     {
-        return $this->belongsToMany(University::class, 'teacher_university');
+        return $this->belongsToMany(university::class, 'teacher_university');
     }
-
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);
@@ -106,15 +90,6 @@ class Teacher extends Model
     {
         return $this->belongsToMany(User::class, 'favourites')
             ->withTimestamps();
-    }
-
-    public function favourites()
-    {
-        return $this->hasMany(Favourite::class);
-    }
-    public function getFirstSubjectNameAttribute()
-    {
-        return $this->subjects->first()->name ?? 'General';
     }
 
     public function ratings()
@@ -148,7 +123,7 @@ class Teacher extends Model
             ->get();
 
         if ($withReview->count() >= 3) {
-            return $withReview->map(function ($review) {
+            return $withReview->map(function($review) {
                 $review->user_name = $review->user ? $review->user->userName : null;
                 return $review;
             });
@@ -164,7 +139,7 @@ class Teacher extends Model
             ->get();
 
         $all = $withReview->concat($withoutReview);
-        return $all->map(function ($review) {
+        return $all->map(function($review) {
             $review->user_name = $review->user ? $review->user->userName : null;
             return $review;
         });

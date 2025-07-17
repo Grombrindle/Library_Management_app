@@ -482,10 +482,6 @@
                 {{ __('messages.admins') }}
                 <span class="nav-count">{{ App\Models\Admin::count() }}</span>
             </a>
-            <a href="/teacher-requests" class="NavBarText">
-                {{ __('messages.requests') ?? 'Requests' }}
-                <span class="nav-count">{{ App\Models\TeacherRequest::where('status', 'pending')->count() }}</span>
-            </a>
         @elseif (Auth::user()->privileges == 1)
             <a href="/users" class="NavBarText">
                 {{ __('messages.users') }}
@@ -580,10 +576,6 @@
                 {{ __('messages.admins') }}
                 <span class="nav-count">{{ App\Models\Admin::count() }}</span>
             </a>
-            <a href="/teacher-requests" class="NavBarText" id="requestsLink">
-                {{ __('messages.requests') ?? 'Requests' }}
-                <span class="nav-count">{{ App\Models\TeacherRequest::where('status', 'pending')->count() }}</span>
-            </a>
     @elseif (Auth::user()->privileges == 1)
         <div class="NavBarElement" style="margin-right: 5%;">
             <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
@@ -612,7 +604,7 @@
                         <span class="nav-count">{{ $lecCount }}</span>
                     </a>
     @endif
-                <form action="{{ route('admin.logout') }}" method="POST"
+                <form action="/logout" method="POST"
                     style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
                     onsubmit="return confirmLogout()">
                     @csrf

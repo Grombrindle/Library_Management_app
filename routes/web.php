@@ -30,6 +30,8 @@ use App\Http\Controllers\TeacherRequestController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 
+
+//WEBSITE SECTION
 Route::group(['middleware' => 'web'], function () {
     Route::get('language/{locale}', function ($locale) {
         $validLocales = ['en', 'ar', 'fr', 'de', 'es', 'tr'];
@@ -59,32 +61,34 @@ Route::group(['middleware' => 'web'], function () {
     //     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     // });
 
-    Route::middleware('auth.api')->get('/user', function (Request $request) {
-        return $request->user();
-    });
-    Route::get('/', function () {
-        return redirect()->route('web.home');
-    });
-    Route::get(
-        '/admin/login',
-        [SessionController::class, 'loginView']
-    )->name('admin.login');
-    // Route::post('/reg', [SessionController::class, 'adminlogin']);
-    Route::post('/weblogin', [SessionController::class, 'loginWeb']);
 
 
-    //WEBSITE SECTION
-
-    Route::get('/webHome', [WebHomeController::class, 'index'])->name('web.home');
     Route::get('/webHome2', function () {
         return view('Website.v2WebHome');
     });
     Route::get('/webCourses', [WebCoursesController::class, 'index'])->name('web.courses');
     Route::get('/webProfs', [WebTeachersController::class, 'index'])->name('web.teachers');
     Route::get('/webProfile', [WebProfileController::class, 'show'])->name('web.profile')->middleware('auth');
-    Route::get('/welcome', [WebHomeController::class, 'index'])->name('welcome');
+    Route::get('/webHome', [WebHomeController::class, 'index'])->name('web.home');
+    // Route::get('/webHome', [WebHomeController::class, 'index'])->name('web.home');
 
     //END WEBSITE SECTION
+
+
+    Route::middleware('auth.api')->get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::get('/', function () {
+        return redirect()->route('web.home');
+    });
+    // Route::post('/admin/login', [SessionController::class, 'loginView'])->name('login.store');
+    Route::get(
+        '/admin/login',
+        [SessionController::class, 'loginView']
+    )->name('admin.login');
+    // Route::post('/reg', [SessionController::class, 'adminlogin']);
+    Route::post('/weblogin', [SessionController::class, 'loginWeb2']);
+
 
 
 

@@ -44,24 +44,6 @@ class Admin extends Authenticatable
     /** @use HasFactory<\Database\Factories\AdminFactory> */
     use HasFactory, HasApiTokens;
 
-    protected $fillable = [
-        'name',
-        'userName',
-        'password',
-        'privileges',
-        'countryCode',
-        'number',
-        'image',
-        'teacher_id',
-        'created_at',
-        'updated_at'
-    ];
-    
-    /**
-     * Get the teacher requests processed by this admin
-     */
-    public function processedRequests()
-    {
-        return $this->hasMany(TeacherRequest::class, 'admin_id');
-    }
+    protected $guarded = [];
+
 }

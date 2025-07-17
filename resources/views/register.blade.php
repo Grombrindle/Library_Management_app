@@ -393,10 +393,10 @@
             <img src="{{ asset('Images/Web/MindSpark outline.png') }}" alt="Mind Spark Logo" class="logo">
         </div>
         <div class="name">{{ __('messages.appName') }}</div>
-        <form class="container" method="POST" action="{{ route('register.store') }}">
+        <form class="container" method="POST" action="/weblogin">
             @csrf
             <div class="textfieldContainer">
-                <input class="textfield" id="userName" type="text" name="userName" placeholder="{{ __('messages.username') }}"
+                <input class="textfield" id="userName" type="text" name="userName" placeholder="{{ __('messages.usernamePlaceholder') }}"
                     style="text-align:center;" autocomplete="off" title="" value="{{ old('userName') }}" required>
             </div>
             @error('userName')
@@ -427,4 +427,4 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
         });
     </script>
-</x-layout> 
+</x-layout>

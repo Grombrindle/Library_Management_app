@@ -26,11 +26,16 @@ class AuthenticatedSessionController extends Controller
     {
         try {
             $request->authenticate();
-            
+
             $request->session()->regenerate();
-            
+
             return redirect()->intended(route('web.profile'));
         } catch (\Illuminate\Validation\ValidationException $e) {
+            $credentials = $request->only('userName', 'password');
+            $admin = \App\Models\Admin::where('userName', $credentials['userName'])->first();
+            if ($admin && \Illuminate\Support\Facades\Hash::check($credentials['password'], $admin->password)) {
+                return redirect()->route('admin.login')->with('message', 'Please log in through the admin portal.');
+            }
             return back()->withErrors([
                 'userName' => __('messages.failed'),
             ])->withInput($request->only('userName'));
@@ -50,4 +55,4 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
-} 
+}

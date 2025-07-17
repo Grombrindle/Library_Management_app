@@ -4,10 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Teacher;
 use App\Models\Subject;
-use App\Models\University;
+use App\Models\Teacher;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Admin;
 
 class TeacherSeeder extends Seeder
 {
@@ -16,32 +16,30 @@ class TeacherSeeder extends Seeder
      */
     public function run(): void
     {
-        $subjects = Subject::all();
-        $universities = University::all();
+        for ($i = 0; $i < 10; $i++) {
+            $randomDigits = mt_rand(100000000, 999999999);
+            $teacher = Teacher::factory()->create([
+                'userName' => fake()->name(),
+                'name' => fake()->name(),
+                'countryCode' => '+963',
+                'number' => $randomDigits,
+                'password' => Hash::make('password'),
+                'image' => 'Images/Admins/teacherDefault.png',
+                'links' => '{"Facebook": "https://facebook", "Instagram": "https://instagram", "Telegram": "https://telegram", "YouTube": "https://youtube"}',
+            ]);
+            Subject::where('id', rand(1, Subject::count()))->first()->teachers()->attach($teacher->id);
 
-        if ($subjects->isEmpty() || $universities->isEmpty()) {
-            $this->command->info('Please seed subjects and universities first.');
-            return;
+            Admin::factory()->create([
+                'name' => $teacher->name,
+                'userName' => $teacher->userName,
+                'password' => $teacher->password,
+                'teacher_id' => $teacher->id,
+                'countryCode' => '+963',
+                'number' => $teacher->number,
+                'privileges' => 0,
+                'image' => $teacher->image,
+            ]);
         }
-
-        $teachers = Teacher::factory(50)->create([
-            'image' => function() {
-                // Generates a random image URL from Picsum Photos
-                return 'https://picsum.photos/seed/' . fake()->unique()->word . '/400/400';
-            }
-        ]);
-
-        // Assign subjects and universities to each teacher
-        foreach ($teachers as $teacher) {
-            // Assign 1 to 3 random subjects
-            $teacher->subjects()->attach(
-                $subjects->random(rand(1, 3))->pluck('id')->toArray()
-            );
-
-            // Assign 1 to 2 random universities
-            $teacher->universities()->attach(
-                $universities->random(rand(1, 2))->pluck('id')->toArray()
-            );
-        }
+        //
     }
 }
