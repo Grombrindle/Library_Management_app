@@ -30,6 +30,12 @@ use App\Models\User;
  */
 class Subscription extends Model
 {
+
+    protected $casts = [
+        'created_at' => 'date:Y-m-d',
+        'updated_at' => 'date:Y-m-d',
+    ];
+
     /** @use HasFactory<\Database\Factories\SubscriptionFactory> */
     use HasFactory;
 

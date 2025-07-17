@@ -17,8 +17,8 @@ class ResourceFactory extends Factory
      */
     public function definition(): array
     {
-        
-        
+
+
         // $table->string('name');
         // $table->text('description')->nullable();
         // $table->integer('literaryOrScientific');
@@ -32,6 +32,7 @@ class ResourceFactory extends Factory
         $literaryOrScientific = rand(0, 1);
         $sub = rand(1, Subject::count());
         $pub = fake()->date();
+        $audio_file = rand(0,1) == 0 ? null : 'Files/Resources/Audio/default.mp3';
 
         return [
             'name' => $name,
@@ -39,6 +40,7 @@ class ResourceFactory extends Factory
             'literaryOrScientific' => $literaryOrScientific,
             'subject_id' => $sub,
             'publish date' => $pub,
+            'audio_file' => $audio_file
         ];
     }
 }

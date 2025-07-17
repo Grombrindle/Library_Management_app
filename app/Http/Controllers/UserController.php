@@ -25,7 +25,7 @@ class UserController extends Controller
 
         $courses = "";
         $count = $user->courses ? $user->courses->count() : null;
-        
+
         if($count != null)
         foreach ($user->courses as $index => $course) {
             $courses .= $course->name;
@@ -456,6 +456,34 @@ class UserController extends Controller
                 'reason' => "Password Doesn't Match"
             ]);
         }
+    }
+
+    public function updateNumber(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'number' => [
+                'required',
+                'string',
+                Rule::unique('users', 'number')->ignore(Auth::id()),
+            ],
+        ], [
+            'number.unique' => "Phone number already taken",
+            'number.required' => "Phone number is required"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => "false",
+                'reason' => $validator->errors()->first()
+            ], 422);
+        }
+
+        Auth::user()->number = $request->input('number');
+        Auth::user()->save();
+
+        return response()->json([
+            'success' => "true"
+        ]);
     }
 
     public function deleteSubs()

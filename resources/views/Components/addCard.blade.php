@@ -128,7 +128,7 @@
         <div
             style="display:flex; flex-direction:column; align-items:center; margin-top:5%;margin-bottom:5%; font-size:2rem;">
             <label for="object_image">
-                
+
             @if ($object == 'Teacher')
                     {{__('messages.teacherImage')}}
                 @elseif($object == 'Admin')
@@ -164,10 +164,14 @@
                     {{__('messages.addUser')}}
                 @elseif ($object == 'Course')
                     {{__('messages.addCourse')}}
-                    @elseif ($object == 'Lecture')
+                @elseif ($object == 'Lecture')
                     {{__('messages.addLecture')}}
                 @elseif ($object == 'Subject')
                     {{__('messages.addSubject')}}
+                @elseif ($object == 'Resource')
+                    {{__('messages.addResource')}}
+                @else
+                    {{__('messages.add')}}
                 @endif
             </button>
     </form>

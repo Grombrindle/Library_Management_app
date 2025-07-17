@@ -96,7 +96,7 @@ class TeacherController extends Controller
         $teacher = Teacher::find($id);
         if ($teacher) {
             $courses = $teacher->courses()->get();
-            
+
             // Add isFavorite field to each course
             $courses->each(function ($course) {
                 $course->isFavorite = Auth::user()->favoriteCourses()
@@ -181,8 +181,9 @@ class TeacherController extends Controller
         $courses = "";
         $teacher = Teacher::find($id);
         if ($teacher) {
-            $count = $teacher->courses->count();
-            foreach ($teacher->courses as $index => $course) {
+            $teacherCourses = $teacher->courses()->get();
+            $count = $teacherCourses->count();
+            foreach ($teacherCourses as $index => $course) {
                 $courses .= $course->name;
                 if ($index < $count - 1)
                     $courses .= " - ";
@@ -306,11 +307,20 @@ class TeacherController extends Controller
             'is_favorited' => $isFavorited
         ]);
     }
-    
-    public function rate(Request $request, $id) {
+
+    public function fetchRatings($id)
+    {
+        $ratings = DB::table('teacher_ratings')->where('teacher_id', $id)->get();
+        return response()->json([
+            'ratings' => $ratings
+        ]);
+    }
+
+    public function rate(Request $request, $id)
+    {
         $teacher = Teacher::find($id);
 
-        if($teacher) {
+        if ($teacher) {
             $rate = DB::table('teacher_ratings')->updateOrInsert(
                 [
                     'user_id' => Auth::user()->id,
@@ -318,6 +328,7 @@ class TeacherController extends Controller
                 ],
                 [
                     'rating' => $request->input('rating'),
+                    'review' => $request->input('review'),
                     'updated_at' => now()
                 ]
             );
@@ -392,6 +403,7 @@ class TeacherController extends Controller
         $teacher = Teacher::create([
             'userName' => $userName,
             'name' => $name,
+            'description' => $request->input('teacher_description'),
             'number' => $number,
             'countryCode' => '+963',
             'password' => Hash::make($password),
@@ -488,8 +500,10 @@ class TeacherController extends Controller
                 unlink(public_path($teacher->image));
             }
 
+            $teacher->description = $request->input('teacher_description');
             $teacher->image = $path;
         }
+        $teacher->description = $request->input('teacher_description');
         $teacher->save();
 
         $teacher = Admin::where('teacher_id', $teacher->id)->first();
