@@ -16,13 +16,8 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-<<<<<<< HEAD
-            $table->foreignIdFor(User::Class)->constrained()->onDelete('cascade');
-            $table->foreignIdFor(Course::Class)->constrained()->onDelete('cascade');
-=======
             $table->foreignIdFor(User::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Course::class)->constrained()->onDelete('cascade');
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
             $table->timestamps();
         });
     }

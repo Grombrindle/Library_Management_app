@@ -64,12 +64,6 @@ class TaskController extends Controller
 
     public function toggleDelete($id)
     {
-<<<<<<< HEAD
-        $task = Task::findOrFail($id);
-        $task->isTrashed ^= true;
-        $task->trashed_at = $task->trashed_at ? null : now();
-        $task->save();
-=======
         $task = Task::withTrashed()->findOrFail($id);
         if ($task->user_id !== Auth::id()) {
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
@@ -79,15 +73,12 @@ class TaskController extends Controller
         } else {
             $task->delete();
         }
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         return response()->json([
             'success' => true,
             'task' => Task::withTrashed()->findOrFail($id)
         ]);
     }
 
-<<<<<<< HEAD
-=======
     public function restore($id)
     {
         $task = Task::onlyTrashed()->findOrFail($id);
@@ -101,7 +92,6 @@ class TaskController extends Controller
         ]);
     }
 
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     public function delete($id)
     {
         $task = Task::findOrFail($id);
@@ -128,11 +118,7 @@ class TaskController extends Controller
 
         return response()->json([
             'status' => 'success',
-<<<<<<< HEAD
-            'data' => $tasks,
-=======
             'tasks' => $tasks,
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         ]);
     }
 
@@ -147,11 +133,7 @@ class TaskController extends Controller
 
         return response()->json([
             'status' => 'success',
-<<<<<<< HEAD
-            'data' => $tasks,
-=======
             'tasks' => $tasks,
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         ]);
     }
 }

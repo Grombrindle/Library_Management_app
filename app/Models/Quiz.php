@@ -44,15 +44,11 @@ class Quiz extends Model
 
     use HasFactory;
 
-<<<<<<< HEAD
-    protected $guarded = [];
-=======
     protected $fillable = [
         'lecture_id',
         'created_at',
         'updated_at'
     ];
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
 
     public function lecture()
     {

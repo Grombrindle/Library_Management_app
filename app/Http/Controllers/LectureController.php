@@ -313,10 +313,6 @@ class LectureController extends Controller
             $pages = $pdf->getPages();
             $pageCount = count($pages);
             $pages = $pageCount;
-<<<<<<< HEAD
-            dd($pages, $pageCount, $filePathPdf);
-=======
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         }
 
         $lecture = Lecture::create([

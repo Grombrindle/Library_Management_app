@@ -48,9 +48,6 @@ class Teacher extends Model
     /** @use HasFactory<\Database\Factories\TeacherFactory> */
     use HasFactory;
 
-<<<<<<< HEAD
-    protected $guarded = [];
-=======
     protected $fillable = [
         'name',
         'userName',
@@ -64,7 +61,6 @@ class Teacher extends Model
         'created_at',
         'updated_at'
     ];
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
 
     protected $casts = [
         'created_at' => 'date:Y-m-d',
@@ -165,17 +161,7 @@ class Teacher extends Model
             ->get();
 
         if ($withReview->count() >= 3) {
-<<<<<<< HEAD
-            return $withReview->map(function($review) {
-                $review->user_name = $review->user ? $review->user->userName : null;
-                return $review;
-            });
-=======
             return $withReview;
-
-
-
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
         }
 
         $needed = 3 - $withReview->count();
@@ -190,19 +176,8 @@ class Teacher extends Model
             ->take($needed)
             ->get();
 
-<<<<<<< HEAD
-        $all = $withReview->concat($withoutReview);
-        return $all->map(function($review) {
-            $review->user_name = $review->user ? $review->user->userName : null;
-            return $review;
-        });
-=======
         return $withReview->concat($withoutReview);
 
-
-
-
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
     }
 
     public function getRatingBreakdownAttribute()
@@ -243,17 +218,12 @@ class Teacher extends Model
         return null;
     }
 
-<<<<<<< HEAD
-    protected $appends = ['rating', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
-
-=======
     $rating = $user->teacherRatings()->where('teacher_id', $this->id)->first();
     return $rating ? $rating->rating : null;
 }
 
     protected $appends = ['rating', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
 
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     public function courseRequests()
     {
         return $this->hasMany(CourseRequest::class);

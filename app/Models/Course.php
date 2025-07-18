@@ -106,8 +106,6 @@ class Course extends Model
     }
 
     //dis new
-<<<<<<< HEAD
-=======
     // public function getRatingsCountAttribute()
     // {
     //     return $this->ratings()->count();
@@ -200,30 +198,24 @@ class Course extends Model
 
 
     //dis new
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
     public function getRatingsCountAttribute()
     {
-        return $this->ratings()->count();
+        // Get the count of each rating (1-5) for this course
+        $breakdown = $this->ratings()
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating')
+            ->toArray();
+
+        // Ensure all ratings 1-5 are present, even if 0
+        $fullBreakdown = [];
+        foreach (range(1, 5) as $rating) {
+            $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
+        }
+
+        return $fullBreakdown;
     }
 
-<<<<<<< HEAD
-    public function getVideoLecturesCountAttribute()
-    {
-        return $this->lectures()
-            ->where(function ($query) {
-                $query->whereNotNull('file_360')
-                    ->orWhereNotNull('file_720')
-                    ->orWhereNotNull('file_1080');
-            })
-            ->count();
-    }
-
-    public function getPdfLessonsCountAttribute()
-    {
-        return $this->lectures()
-            ->whereNotNull('pdf_file')
-            ->count();
-=======
     public function getFirstRatingsAttribute()
     {
         return $this->ratings()->orderByDesc('rating')->take(3)->get();
@@ -268,17 +260,9 @@ class Course extends Model
     public function getLectureNumAttribute()
     {
         return $this->lectures()->get()->count();
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
     }
 
-    protected $appends = [
-        'rating',
-        'subscription_count',
-        'ratings_count',
-        'video_lectures_count',
-        'pdf_lessons_count',
-    ];
-
+    protected $appends = ['rating', 'subscription_count', 'rating_breakdown', 'FeaturedRatings', 'lectureNum'];
 
     // protected $with = ['ratings'];
 
@@ -286,8 +270,4 @@ class Course extends Model
     {
         return $this->hasOne(CourseRequest::class);
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321

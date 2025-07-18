@@ -36,8 +36,6 @@ class ChangeFillableCommand extends Command
         
         $convertedModels = 0;
         $skippedModels = 0;
-
-        
         
         foreach ($modelFiles as $modelFile) {
             $className = pathinfo($modelFile, PATHINFO_FILENAME);

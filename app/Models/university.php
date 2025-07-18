@@ -37,7 +37,12 @@ class university extends Model
     /** @use HasFactory<\Database\Factories\UniversityFactory> */
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'image',
+        'created_at',
+        'updated_at'
+    ];
 
     public function teachers() {
         return $this->belongsToMany(Teacher::class, 'teacher_university');

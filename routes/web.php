@@ -24,30 +24,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 
-<<<<<<< HEAD
-
-//WEBSITE SECTION
-Route::group(['middleware' => 'web'], function () {
-    Route::get('language/{locale}', function ($locale) {
-        $validLocales = ['en', 'ar', 'fr', 'de', 'es', 'tr'];
-        if (!in_array($locale, $validLocales)) {
-            $locale = config('app.locale');
-        }
-        app()->setLocale($locale);
-        session()->put('locale', $locale);
-        return redirect()->back()->withCookie(cookie('locale', $locale, 60 * 24 * 365));
-    })->name('language.switch');
-    Route::get('/profile/edit', [WebProfileController::class, 'edit'])->name('web.profile.edit');
-    Route::put('/profile/update', [WebProfileController::class, 'update'])->name('web.profile.update');
-    Route::get('/my-courses', [WebProfileController::class, 'myCourses'])->name('web.my-courses');
-    Route::get('/favorites', [WebProfileController::class, 'favorites'])->name('web.favorites');
-    Route::post('/favorites/toggle/{type}/{id}', [WebProfileController::class, 'toggleFavorite'])->name('web.favorites.toggle');
-    Route::middleware('guest')->group(function () {
-        Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
-        Route::post('register', [RegisteredUserController::class, 'store'])->name('register.store');
-        Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
-        Route::post('login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
-=======
 Route::middleware('auth.api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -80,8 +56,6 @@ Route::group(['middleware' => ['auth']], function () {
             return view('Teacher/Subjects');
         else
             return abort(404);
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
-
     });
     Route::get('/teachers', function () {
         if (Auth::user()->privileges == 2)
@@ -251,8 +225,6 @@ Route::group(['middleware' => ['auth']], function () {
     // });
     // Route::post('/adduser', [UserController::class, 'add']);
 
-<<<<<<< HEAD
-=======
 
     Route::get('/subject/edit/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
@@ -288,21 +260,10 @@ Route::group(['middleware' => ['auth']], function () {
         else
             return abort(404);
     });
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
 
     Route::put('/edituser/{id}', [UserController::class, 'edit']);
     Route::delete('/deleteuser/{id}', [UserController::class, 'delete']);
 
-<<<<<<< HEAD
-    Route::get('/webHome2', function () {
-        return view('Website.v2WebHome');
-    });
-    Route::get('/webCourses', [WebCoursesController::class, 'index'])->name('web.courses');
-    Route::get('/webProfs', [WebTeachersController::class, 'index'])->name('web.teachers');
-    Route::get('/webProfile', [WebProfileController::class, 'show'])->name('web.profile')->middleware('auth');
-    Route::get('/webHome', [WebHomeController::class, 'index'])->name('web.home');
-    // Route::get('/webHome', [WebHomeController::class, 'index'])->name('web.home');
-=======
     Route::get('/admin/edit/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
             session(['admin' => $id]);
@@ -322,7 +283,6 @@ Route::group(['middleware' => ['auth']], function () {
             return abort(404);
     });
     Route::post('/addcourse', [CourseController::class, 'add']);
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
 
     Route::get('/course/edit/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
@@ -360,22 +320,6 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     Route::put('/updatequiz/{id}', [QuizController::class, 'edit']);
-
-
-    Route::middleware('auth.api')->get('/user', function (Request $request) {
-        return $request->user();
-    });
-    Route::get('/', function () {
-        return redirect()->route('web.home');
-    });
-    // Route::post('/admin/login', [SessionController::class, 'loginView'])->name('login.store');
-    Route::get(
-        '/admin/login',
-        [SessionController::class, 'loginView']
-    )->name('admin.login');
-    // Route::post('/reg', [SessionController::class, 'adminlogin']);
-    Route::post('/weblogin', [SessionController::class, 'loginWeb2']);
-
 
 
 
@@ -638,14 +582,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/show', [\App\Http\Controllers\CourseRequestController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\CourseRequestController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\CourseRequestController::class, 'store'])->name('store');
-<<<<<<< HEAD
-        Route::get('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'show'])->name('show');
-=======
         Route::get('/{id}', function ($id) {
             session(['courseRequest' => $id]);
             return app(\App\Http\Controllers\CourseRequestController::class)->show($id);
         })->name('show');
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         Route::get('/{id}/edit', [\App\Http\Controllers\CourseRequestController::class, 'edit'])->name('edit');
         Route::put('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'update'])->name('update');
     });
@@ -653,14 +593,10 @@ Route::group(['middleware' => ['auth']], function () {
     // Admin routes (privileges == 2)
     Route::group(['prefix' => 'admin/course-requests', 'as' => 'admin.course_requests.'], function () {
         Route::get('/show', [\App\Http\Controllers\CourseRequestController::class, 'adminIndex'])->name('index');
-<<<<<<< HEAD
-        Route::get('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'adminShow'])->name('show');
-=======
         Route::get('/{id}', function ($id) {
             session(['courseRequest' => $id]);
             return app(\App\Http\Controllers\CourseRequestController::class)->adminShow($id);
         })->name('show');
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         Route::post('/{id}/approve', [\App\Http\Controllers\CourseRequestController::class, 'approve'])->name('approve');
         Route::post('/{id}/reject', [\App\Http\Controllers\CourseRequestController::class, 'reject'])->name('reject');
     });
