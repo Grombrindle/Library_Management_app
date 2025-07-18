@@ -162,9 +162,6 @@ class Teacher extends Model
 
         if ($withReview->count() >= 3) {
             return $withReview;
-
-
-
         }
 
         $needed = 3 - $withReview->count();
@@ -180,9 +177,6 @@ class Teacher extends Model
             ->get();
 
         return $withReview->concat($withoutReview);
-
-
-
 
     }
 
@@ -218,17 +212,23 @@ class Teacher extends Model
     }
 
     public function getUserRatingAttribute()
-    {
-        if (!Auth::check()) {
-            return null;
-        }
-
-        $rating = Auth::user()->teacherRatings()->where('teacher_id', $this->id)->first();
-        return $rating ? $rating->rating : null;
+{
+    $user = Auth::user();
+    if (!$user || !($user instanceof \App\Models\User)) {
+        return null;
     }
+
+<<<<<<< HEAD
+    protected $appends = ['rating', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
+
+=======
+    $rating = $user->teacherRatings()->where('teacher_id', $this->id)->first();
+    return $rating ? $rating->rating : null;
+}
 
     protected $appends = ['rating', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
 
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     public function courseRequests()
     {
         return $this->hasMany(CourseRequest::class);

@@ -14,10 +14,18 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
             $table->string('name');
+<<<<<<< HEAD
             $table->text('description');
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
             $table->string('image')->nullable();
             $table->json('sources')->nullable();
+=======
+            $table->text('description')->nullable();
+            $table->foreignId('subject_id')->constrained()->onDelete('cascade');
+            $table->string('image')->nullable();
+            $table->json('sources')->nullable();
+            $table->json('requirements')->nullable();
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
             $table->string('price')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->foreignId('admin_id')->nullable()->constrained('admins')->nullOnDelete();

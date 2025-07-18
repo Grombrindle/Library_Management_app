@@ -17,6 +17,7 @@ class Course extends Model
         'description',
         'teacher_id',
         'subject_id',
+        'requirements',
         'lecturesCount',
         'subscriptions',
         'image',
@@ -31,7 +32,27 @@ class Course extends Model
         'updated_at' => 'date:Y-m-d',
         'sources' => 'array',
         'price' => 'string',
+        'requirements' => 'array'
     ];
+
+    public function getRequirementsAttribute($value)
+    {
+        // If requirements is already an array (from casting), use it directly
+        if (is_array($value)) {
+            return implode(' - ', $value);
+        }
+
+        // If requirements is a JSON string, decode it first
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                return implode(' - ', $decoded);
+            }
+        }
+
+        // If it's already a string or null, return as is
+        return $value;
+    }
 
     public function teacher()
     {
@@ -59,6 +80,24 @@ class Course extends Model
     {
         $avgRating = $this->ratings()->avg('rating');
         return $avgRating ? round($avgRating, 2) : null;
+    }
+
+    public function getRatingBreakdownAttribute()
+    {
+        // Get the count of each rating (1-5) for this course
+        $breakdown = $this->ratings()
+            ->selectRaw('rating, COUNT(*) as count')
+            ->groupBy('rating')
+            ->pluck('count', 'rating')
+            ->toArray();
+
+        // Ensure all ratings 1-5 are present, even if 0
+        $fullBreakdown = [];
+        foreach (range(1, 5) as $rating) {
+            $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
+        }
+
+        return $fullBreakdown;
     }
 
     public function getSubscriptionCountAttribute()
@@ -231,4 +270,8 @@ class Course extends Model
     {
         return $this->hasOne(CourseRequest::class);
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321

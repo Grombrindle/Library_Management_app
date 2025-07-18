@@ -58,6 +58,7 @@ return [
     'updatedSuccessfully' => ':name başarıyla güncellendi!',
     'yourSubjects' => 'Konularınız',
     'yourLectures' => 'Dersleriniz',
+    'yourRequests' => 'İstekleriniz',
     'mindSparkApp' => 'Mind Spark',
     'menu' => '☰ Menü',
     'close' => '✕ Kapat',
@@ -230,8 +231,18 @@ return [
     'backToRequests' => 'Taleplere Geri Dön',
     'allCourseRequests' => 'Tüm Kurs Talepleri',
     'courseRequestTeacher' => 'Öğretmen',
+<<<<<<< HEAD
+=======
+    'requirements' => 'Gereksinimler',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     'view' => 'Görüntüle',
     'approve' => 'Onayla',
     'reject' => 'Reddet',
     'rejectionReason' => 'Neden (isteğe bağlı)',
+<<<<<<< HEAD
+=======
+    'pending' => 'BEKLEMEDE',
+    'approved' => 'ONAYLANDI',
+    'rejected' => 'REDDEDİLDİ',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
 ];

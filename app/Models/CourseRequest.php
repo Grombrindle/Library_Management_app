@@ -24,10 +24,18 @@ class CourseRequest extends Model
         'rejection_reason',
         'lecturesCount',
         'subscriptions',
+<<<<<<< HEAD
+=======
+        'requirements',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     ];
 
     protected $casts = [
         'sources' => 'array',
+<<<<<<< HEAD
+=======
+        'requirements' => 'array',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     ];
 
     public function teacher()

@@ -132,7 +132,7 @@
     <x-cardcontainer :model=$modelToPass :addLink=null :filterOptions=$filterOptions :showSubjectCountFilter=true
         :showUsernameSort=true :showNameSort=false num="{{ $num }}" :deleteSubs=true :showBannedFilter="true">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
-            
+
             @foreach ($chunkedUsers as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $user)
@@ -168,6 +168,8 @@
                                 <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">{{ __('messages.banned') }}
                                 </div>
                             @endif
+                            ● {{ __('messages.sparks') }}: {{$user->sparks}}<br>
+                            ● {{ __('messages.sparkies') }}: {{$user->sparkies}}<br>
                         </x-card>
                     @endforeach
                 </div>

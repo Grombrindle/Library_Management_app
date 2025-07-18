@@ -10,6 +10,7 @@
     'num' => null,
     'deleteSubs' => false,
     'showBannedFilter' => false,
+    'search' => true,
 ])
 
 <head>
@@ -49,7 +50,7 @@
         font-size: 1.1rem;
         cursor: pointer;
         outline: none;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         -webkit-tap-highlight-color: transparent;
     }
 
@@ -74,7 +75,8 @@
         border: 2px solid #ccc;
         border-radius: 10px;
         font-size: 1.5rem;
-        padding: 10px 40px;  /* Adjusted padding to accommodate buttons */
+        padding: 10px 40px;
+        /* Adjusted padding to accommodate buttons */
         align-self: flex-start;
         margin-right: auto;
         box-sizing: border-box;
@@ -101,35 +103,102 @@
 
     /* Responsive Design */
     @media (max-width: 1200px) {
-        .ObjectContainer { width: 100vw; }
-        .container { width: 70%; }
-        .chunk { width: 70%; }
-        .addButton { font-size: 1rem; }
+        .ObjectContainer {
+            width: 100vw;
+        }
+
+        .container {
+            width: 70%;
+        }
+
+        .chunk {
+            width: 70%;
+        }
+
+        .addButton {
+            font-size: 1rem;
+        }
     }
+
     @media (max-width: 992px) {
-        .ObjectContainer { flex-direction: column; width: 100vw; }
-        .container { width: 100%; }
-        .chunk { width: 100%; }
-        .addButton { font-size: 0.95rem; min-width: 100px; }
+        .ObjectContainer {
+            flex-direction: column;
+            width: 100vw;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .chunk {
+            width: 100%;
+        }
+
+        .addButton {
+            font-size: 0.95rem;
+            min-width: 100px;
+        }
     }
+
     @media (max-width: 768px) {
-        .ObjectContainer { flex-direction: column; width: 100vw; }
-        .container { width: 100%; flex-direction: column; }
-        .chunk { width: 100%; }
-        .addButton { font-size: 0.9rem; min-width: 90px; }
+        .ObjectContainer {
+            flex-direction: column;
+            width: 100vw;
+        }
+
+        .container {
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .chunk {
+            width: 100%;
+        }
+
+        .addButton {
+            font-size: 0.9rem;
+            min-width: 90px;
+        }
     }
+
     @media (max-width: 576px) {
-        .ObjectContainer { width: 100vw; }
-        .container { width: 100%; }
-        .chunk { width: 100%; }
-        .addButton { font-size: 0.85rem; min-width: 80px; }
+        .ObjectContainer {
+            width: 100vw;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .chunk {
+            width: 100%;
+        }
+
+        .addButton {
+            font-size: 0.85rem;
+            min-width: 80px;
+        }
     }
+
     @media (max-width: 400px) {
-        .ObjectContainer { width: 100vw; }
-        .container { width: 100%; }
-        .chunk { width: 100%; }
-        .addButton { font-size: 0.8rem; min-width: 70px; }
+        .ObjectContainer {
+            width: 100vw;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .chunk {
+            width: 100%;
+        }
+
+        .addButton {
+            font-size: 0.8rem;
+            min-width: 70px;
+        }
     }
+
     /* Touch device optimizations */
     @media (hover: none) {
         .addButton:hover {
@@ -138,6 +207,7 @@
             box-shadow: none;
             transform: none;
         }
+
         .addButton:active {
             background-color: #29C829;
             color: #fff;
@@ -359,165 +429,188 @@
 </style>
 <div style="width:80%; display:flex;flex-direction:row;">
     <!-- Search Form -->
-    <div class="container">
-        <form id="search-form">
-            <input type="text" class="search-bar" name="search" placeholder="{{ __('messages.search') }}"
-                value="{{ request('search') }}">
-            <button type="submit" style="top:50%;">
-                <span class="material-symbols-outlined">
-                    search
-                </span>
-            </button>
-            <button type="button" id="filter-button" style="top:50%;">
-                <span class="material-symbols-outlined">
-                    filter_alt
-                </span>
-            </button>
-            <div class="filter-dropdown" id="filter-dropdown">
-                <label><strong>{{ __('messages.sortBy') }}</strong></label>
-                <!-- Newest/Oldest -->
-                <label><input type="radio" name="sort" value="newest"
-                        {{ request('sort', 'newest') === 'newest' ? 'checked' : '' }}> {{ __('messages.newest') }}</label>
-                <label><input type="radio" name="sort" value="oldest"
-                        {{ request('sort') === 'oldest' ? 'checked' : '' }}> {{ __('messages.oldest') }}</label>
+    @if ($search)
+        <div class="container">
+            <form id="search-form">
+                <input type="text" class="search-bar" name="search" placeholder="{{ __('messages.search') }}"
+                    value="{{ request('search') }}">
+                <button type="submit" style="top:50%;">
+                    <span class="material-symbols-outlined">
+                        search
+                    </span>
+                </button>
+                <button type="button" id="filter-button" style="top:50%;">
+                    <span class="material-symbols-outlined">
+                        filter_alt
+                    </span>
+                </button>
+                <div class="filter-dropdown" id="filter-dropdown">
+                    <label><strong>{{ __('messages.sortBy') }}</strong></label>
+                    <!-- Newest/Oldest -->
+                    <label><input type="radio" name="sort" value="newest"
+                            {{ request('sort', 'newest') === 'newest' ? 'checked' : '' }}>
+                        {{ __('messages.newest') }}</label>
+                    <label><input type="radio" name="sort" value="oldest"
+                            {{ request('sort') === 'oldest' ? 'checked' : '' }}> {{ __('messages.oldest') }}</label>
 
-                <!-- Name A-Z/Z-A (conditional) -->
-                @if ($showNameSort)
-                    <label><input type="radio" name="sort" value="name-a-z"
-                            {{ request('sort') === 'name-a-z' ? 'checked' : '' }}> {{ __('messages.nameAZ') }}</label>
-                    <label><input type="radio" name="sort" value="name-z-a"
-                            {{ request('sort') === 'name-z-a' ? 'checked' : '' }}> {{ __('messages.nameZA') }}</label>
-                @endif
+                    <!-- Name A-Z/Z-A (conditional) -->
+                    @if ($showNameSort)
+                        <label><input type="radio" name="sort" value="name-a-z"
+                                {{ request('sort') === 'name-a-z' ? 'checked' : '' }}>
+                            {{ __('messages.nameAZ') }}</label>
+                        <label><input type="radio" name="sort" value="name-z-a"
+                                {{ request('sort') === 'name-z-a' ? 'checked' : '' }}>
+                            {{ __('messages.nameZA') }}</label>
+                    @endif
 
-                <!-- Author A-Z/Z-A (for resources) -->
-                @if (isset($model) && count($model) && isset($model[0]->author))
-                    <label><input type="radio" name="sort" value="author-a-z"
-                            {{ request('sort') === 'author-a-z' ? 'checked' : '' }}> {{ __('messages.authorAZ') }}</label>
-                    <label><input type="radio" name="sort" value="author-z-a"
-                            {{ request('sort') === 'author-z-a' ? 'checked' : '' }}> {{ __('messages.authorZA') }}</label>
-                @endif
+                    <!-- Author A-Z/Z-A (for resources) -->
+                    @if (isset($model) && count($model) && isset($model[0]->author))
+                        <label><input type="radio" name="sort" value="author-a-z"
+                                {{ request('sort') === 'author-a-z' ? 'checked' : '' }}>
+                            {{ __('messages.authorAZ') }}</label>
+                        <label><input type="radio" name="sort" value="author-z-a"
+                                {{ request('sort') === 'author-z-a' ? 'checked' : '' }}>
+                            {{ __('messages.authorZA') }}</label>
+                    @endif
 
-                <!-- Publish Date (for resources) -->
-                @if (isset($model) && count($model) && isset($model[0]['publish date']))
-                    <label><input type="radio" name="sort" value="publish-newest"
-                            {{ request('sort') === 'publish-newest' ? 'checked' : '' }}> {{ __('messages.publishNewest') }}</label>
-                    <label><input type="radio" name="sort" value="publish-oldest"
-                            {{ request('sort') === 'publish-oldest' ? 'checked' : '' }}> {{ __('messages.publishOldest') }}</label>
-                @endif
+                    <!-- Publish Date (for resources) -->
+                    @if (isset($model) && count($model) && isset($model[0]['publish date']))
+                        <label><input type="radio" name="sort" value="publish-newest"
+                                {{ request('sort') === 'publish-newest' ? 'checked' : '' }}>
+                            {{ __('messages.publishNewest') }}</label>
+                        <label><input type="radio" name="sort" value="publish-oldest"
+                                {{ request('sort') === 'publish-oldest' ? 'checked' : '' }}>
+                            {{ __('messages.publishOldest') }}</label>
+                    @endif
 
-                <!-- Rating (for resources) -->
-                @if (isset($model) && count($model) && isset($model[0]->rating))
-                    <label><input type="radio" name="sort" value="rating-highest"
-                            {{ request('sort') === 'rating-highest' ? 'checked' : '' }}> {{ __('messages.ratingHighest') }}</label>
-                    <label><input type="radio" name="sort" value="rating-lowest"
-                            {{ request('sort') === 'rating-lowest' ? 'checked' : '' }}> {{ __('messages.ratingLowest') }}</label>
-                @endif
+                    <!-- Rating (for resources) -->
+                    @if (isset($model) && count($model) && isset($model[0]->rating))
+                        <label><input type="radio" name="sort" value="rating-highest"
+                                {{ request('sort') === 'rating-highest' ? 'checked' : '' }}>
+                            {{ __('messages.ratingHighest') }}</label>
+                        <label><input type="radio" name="sort" value="rating-lowest"
+                                {{ request('sort') === 'rating-lowest' ? 'checked' : '' }}>
+                            {{ __('messages.ratingLowest') }}</label>
+                    @endif
 
-                <!-- Username A-Z/Z-A (conditional) -->
-                @if ($showUsernameSort)
-                    <label><input type="radio" name="sort" value="username-a-z"
-                            {{ request('sort') === 'username-a-z' ? 'checked' : '' }}> {{ __('messages.usernameAZ') }}</label>
-                    <label><input type="radio" name="sort" value="username-z-a"
-                            {{ request('sort') === 'username-z-a' ? 'checked' : '' }}> {{ __('messages.usernameZA') }}</label>
-                @endif
+                    <!-- Username A-Z/Z-A (conditional) -->
+                    @if ($showUsernameSort)
+                        <label><input type="radio" name="sort" value="username-a-z"
+                                {{ request('sort') === 'username-a-z' ? 'checked' : '' }}>
+                            {{ __('messages.usernameAZ') }}</label>
+                        <label><input type="radio" name="sort" value="username-z-a"
+                                {{ request('sort') === 'username-z-a' ? 'checked' : '' }}>
+                            {{ __('messages.usernameZA') }}</label>
+                    @endif
 
-                <!-- Filter by Privileges (conditional) -->
-                @if ($showPrivilegeFilter)
-                    <label><strong>{{ __('messages.filterByPrivileges') }}</strong></label>
-                    <label><input type="checkbox" name="privileges[]" value="2"
-                            {{ in_array('2', request('privileges', [])) ? 'checked' : '' }}> {{ __('messages.admin') }}</label>
-                    <label><input type="checkbox" name="privileges[]" value="1"
-                            {{ in_array('1', request('privileges', [])) ? 'checked' : '' }}> {{ __('messages.semiAdmin') }}</label>
-                    <label><input type="checkbox" name="privileges[]" value="0"
-                            {{ in_array('0', request('privileges', [])) ? 'checked' : '' }}> {{ __('messages.teacher') }}</label>
-                @endif
+                    <!-- Filter by Privileges (conditional) -->
+                    @if ($showPrivilegeFilter)
+                        <label><strong>{{ __('messages.filterByPrivileges') }}</strong></label>
+                        <label><input type="checkbox" name="privileges[]" value="2"
+                                {{ in_array('2', request('privileges', [])) ? 'checked' : '' }}>
+                            {{ __('messages.admin') }}</label>
+                        <label><input type="checkbox" name="privileges[]" value="1"
+                                {{ in_array('1', request('privileges', [])) ? 'checked' : '' }}>
+                            {{ __('messages.semiAdmin') }}</label>
+                        <label><input type="checkbox" name="privileges[]" value="0"
+                                {{ in_array('0', request('privileges', [])) ? 'checked' : '' }}>
+                            {{ __('messages.teacher') }}</label>
+                    @endif
 
-                <!-- Filter by Subjects (for users and teachers) -->
-                @if (!empty($filterOptions) && !$filterByTeachers)
-                    <label><strong>{{ __('messages.filterBySubject') }}</strong></label>
-                    <div style="margin: 0 0; padding: 10px 0;">
-                        <button type="button" id="toggle-all"
+                    <!-- Filter by Subjects (for users and teachers) -->
+                    @if (!empty($filterOptions) && !$filterByTeachers)
+                        <label><strong>{{ __('messages.filterBySubject') }}</strong></label>
+                        <div style="margin: 0 0; padding: 10px 0;">
+                            <button type="button" id="toggle-all"
                                 style="margin-left: 10px; padding: 5px 10px; border: 1px solid var(--filter-text); border-radius: 4px; cursor: pointer; color: var(--filter-text);">
-                            {{ __('messages.selectAll') }}
-                        </button>
-                    </div>
-                    <div class="filter-columns" style="margin-top:4%;">
-                        @foreach (array_chunk($filterOptions, 6, true) as $chunk)
-                            <div class="filter-column">
-                                @foreach ($chunk as $key => $value)
-                                    <label><input type="checkbox" name="subjects[]" value="{{ $key }}"
-                                            {{ in_array($key, request('subjects', [])) ? 'checked' : '' }}>
-                                        {{ $value }}</label>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
+                                {{ __('messages.selectAll') }}
+                            </button>
+                        </div>
+                        <div class="filter-columns" style="margin-top:4%;">
+                            @foreach (array_chunk($filterOptions, 6, true) as $chunk)
+                                <div class="filter-column">
+                                    @foreach ($chunk as $key => $value)
+                                        <label><input type="checkbox" name="subjects[]" value="{{ $key }}"
+                                                {{ in_array($key, request('subjects', [])) ? 'checked' : '' }}>
+                                            {{ $value }}</label>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
 
-                <!-- Filter by Teachers (for subjects) -->
-                @if (!empty($filterOptions) && $filterByTeachers)
-                    <label><strong>{{ __('messages.filterByTeachers') }}</strong></label>
-                    <button type="button" id="toggle-all"
-                    style="top:25.5%;padding: 5px 10px; border: 1px solid #000000; border-radius: 4px; cursor: pointer;">{{ __('messages.selectAll') }}</button>
-                    <div class="filter-columns" style="margin-top:4%;">
-                        @foreach (array_chunk($filterOptions, 6, true) as $chunk)
-                            <div class="filter-column">
-                                @foreach ($chunk as $key => $value)
-                                    <label><input type="checkbox" name="teachers[]" value="{{ $key }}"
-                                            {{ in_array($key, request('teachers', [])) ? 'checked' : '' }}>
-                                        {{ $value }}</label>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
+                    <!-- Filter by Teachers (for subjects) -->
+                    @if (!empty($filterOptions) && $filterByTeachers)
+                        <label><strong>{{ __('messages.filterByTeachers') }}</strong></label>
+                        <button type="button" id="toggle-all"
+                            style="top:25.5%;padding: 5px 10px; border: 1px solid #000000; border-radius: 4px; cursor: pointer;">{{ __('messages.selectAll') }}</button>
+                        <div class="filter-columns" style="margin-top:4%;">
+                            @foreach (array_chunk($filterOptions, 6, true) as $chunk)
+                                <div class="filter-column">
+                                    @foreach ($chunk as $key => $value)
+                                        <label><input type="checkbox" name="teachers[]" value="{{ $key }}"
+                                                {{ in_array($key, request('teachers', [])) ? 'checked' : '' }}>
+                                            {{ $value }}</label>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
 
-                <!-- Filter by Number of Subjects (for users and teachers) -->
-                @if ($showCourseCountFilter && !$filterByTeachers)
-                    <label><strong>{{ __('messages.filterByCourseCount') }}</strong></label>
-                    <label><input type="checkbox" name="none" id="filter-none"
-                            {{ request('none') ? 'checked' : '' }}> {{ __('messages.none') }}</label>
-                    <label><input type="checkbox" name="course_count[]" value="1"
-                            {{ in_array('1', request('course_count', [])) ? 'checked' : '' }}> 1</label>
-                    <label><input type="checkbox" name="course_count[]" value="2-3"
-                            {{ in_array('2-3', request('course_count', [])) ? 'checked' : '' }}> 2-3</label>
-                    <label><input type="checkbox" name="course_count[]" value="4-5"
-                            {{ in_array('4-5', request('course_count', [])) ? 'checked' : '' }}> 4-5</label>
-                    <label><input type="checkbox" name="course_count[]" value="6+"
-                            {{ in_array('6+', request('course_count', [])) ? 'checked' : '' }}> 6+</label>
-                @endif
+                    <!-- Filter by Number of Subjects (for users and teachers) -->
+                    @if ($showCourseCountFilter && !$filterByTeachers)
+                        <label><strong>{{ __('messages.filterByCourseCount') }}</strong></label>
+                        <label><input type="checkbox" name="none" id="filter-none"
+                                {{ request('none') ? 'checked' : '' }}> {{ __('messages.none') }}</label>
+                        <label><input type="checkbox" name="course_count[]" value="1"
+                                {{ in_array('1', request('course_count', [])) ? 'checked' : '' }}> 1</label>
+                        <label><input type="checkbox" name="course_count[]" value="2-3"
+                                {{ in_array('2-3', request('course_count', [])) ? 'checked' : '' }}> 2-3</label>
+                        <label><input type="checkbox" name="course_count[]" value="4-5"
+                                {{ in_array('4-5', request('course_count', [])) ? 'checked' : '' }}> 4-5</label>
+                        <label><input type="checkbox" name="course_count[]" value="6+"
+                                {{ in_array('6+', request('course_count', [])) ? 'checked' : '' }}> 6+</label>
+                    @endif
 
-                <!-- Filter by Number of Teachers (for subjects) -->
-                @if ($showCourseCountFilter && $filterByTeachers)
-                    <label><strong>{{ __('messages.filterByTeacherCount') }}</strong></label>
-                    <label><input type="checkbox" name="none" id="filter-none"
-                            {{ request('none') ? 'checked' : '' }}> {{ __('messages.none') }}</label>
-                    <label><input type="checkbox" name="teacher_count[]" value="1"
-                            {{ in_array('1', request('teacher_count', [])) ? 'checked' : '' }}> 1</label>
-                    <label><input type="checkbox" name="teacher_count[]" value="2-3"
-                            {{ in_array('2-3', request('teacher_count', [])) ? 'checked' : '' }}> 2-3</label>
-                    <label><input type="checkbox" name="teacher_count[]" value="4-5"
-                            {{ in_array('4-5', request('teacher_count', [])) ? 'checked' : '' }}> 4-5</label>
-                    <label><input type="checkbox" name="teacher_count[]" value="6+"
-                            {{ in_array('6+', request('teacher_count', [])) ? 'checked' : '' }}> 6+</label>
-                @endif
+                    <!-- Filter by Number of Teachers (for subjects) -->
+                    @if ($showCourseCountFilter && $filterByTeachers)
+                        <label><strong>{{ __('messages.filterByTeacherCount') }}</strong></label>
+                        <label><input type="checkbox" name="none" id="filter-none"
+                                {{ request('none') ? 'checked' : '' }}> {{ __('messages.none') }}</label>
+                        <label><input type="checkbox" name="teacher_count[]" value="1"
+                                {{ in_array('1', request('teacher_count', [])) ? 'checked' : '' }}> 1</label>
+                        <label><input type="checkbox" name="teacher_count[]" value="2-3"
+                                {{ in_array('2-3', request('teacher_count', [])) ? 'checked' : '' }}> 2-3</label>
+                        <label><input type="checkbox" name="teacher_count[]" value="4-5"
+                                {{ in_array('4-5', request('teacher_count', [])) ? 'checked' : '' }}> 4-5</label>
+                        <label><input type="checkbox" name="teacher_count[]" value="6+"
+                                {{ in_array('6+', request('teacher_count', [])) ? 'checked' : '' }}> 6+</label>
+                    @endif
 
-                @if ($showBannedFilter)
-                    <label><strong>{{ __('messages.filterByBanStatus') }}</strong></label>
-                    <label><input type="radio" name="ban_status" value="all"
-                            {{ request('ban_status', 'all') === 'all' ? 'checked' : '' }}> {{ __('messages.allUsers') }}</label>
-                    <label><input type="radio" name="ban_status" value="banned"
-                            {{ request('ban_status') === 'banned' ? 'checked' : '' }}> {{ __('messages.bannedOnly') }}</label>
-                    <label><input type="radio" name="ban_status" value="active"
-                            {{ request('ban_status') === 'active' ? 'checked' : '' }}> {{ __('messages.activeOnly') }}</label>
-                @endif
-            </div>
-        </form>
-    </div>
+                    @if ($showBannedFilter)
+                        <label><strong>{{ __('messages.filterByBanStatus') }}</strong></label>
+                        <label><input type="radio" name="ban_status" value="all"
+                                {{ request('ban_status', 'all') === 'all' ? 'checked' : '' }}>
+                            {{ __('messages.allUsers') }}</label>
+                        <label><input type="radio" name="ban_status" value="banned"
+                                {{ request('ban_status') === 'banned' ? 'checked' : '' }}>
+                            {{ __('messages.bannedOnly') }}</label>
+                        <label><input type="radio" name="ban_status" value="active"
+                                {{ request('ban_status') === 'active' ? 'checked' : '' }}>
+                            {{ __('messages.activeOnly') }}</label>
+                    @endif
+                </div>
+            </form>
+        </div>
+    @endif
 
     <div class="container">
         @if ($addLink != null)
+<<<<<<< HEAD
             <a href="{{ $addLink }}" class="addButton">{{Str::upper(__('messages.add'))}}</a>
+=======
+            <a href="{{ $addLink }}" class="addButton">{{ Str::upper(__('messages.add')) }}</a>
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         @endif
         @if ($deleteSubs != false)
             <form action="/deletesubs" method="POST" onsubmit="return validateSubs()">
@@ -618,7 +711,8 @@
                 const checkboxes = document.querySelectorAll(
                     'input[name="teachers[]"], input[name="subjects[]"]');
                 const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
-                toggleAllButton.textContent = allChecked ? '{{ __("messages.deselectAll") }}' : '{{ __("messages.selectAll") }}';
+                toggleAllButton.textContent = allChecked ? '{{ __('messages.deselectAll') }}' :
+                    '{{ __('messages.selectAll') }}';
             }
         }
 
@@ -690,7 +784,7 @@
         }
 
         // Handle search input
-        if (searchBar) {
+        if (@json($search)) {
             searchBar.addEventListener('input', function() {
                 const query = searchBar.value;
                 const selectedSort = document.querySelector('input[name="sort"]:checked')?.value ||
@@ -783,5 +877,6 @@
     });
 
     function validateSubs() {
-        return confirm('{{ __("messages.confirmDeleteSubscriptions") }}');    }
+        return confirm('{{ __('messages.confirmDeleteSubscriptions') }}');
+    }
 </script>

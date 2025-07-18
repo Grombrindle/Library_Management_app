@@ -233,46 +233,100 @@ class CourseController extends Controller
 
     public function add(Request $request)
     {
+        $imagePath = "Images/Courses/default.png";
+        $requestImagePath = null;
         if (!is_null($request->file('object_image'))) {
             $file = $request->file('object_image');
-            $directory = 'Images/Courses';
+            $directory = 'Images/CourseRequests';
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-
             if (!file_exists(public_path($directory))) {
                 mkdir(public_path($directory), 0755, true);
             }
-
             $file->move(public_path($directory), $filename);
-            $path = $directory . '/' . $filename;
+            $requestImagePath = $directory . '/' . $filename;
+            $imagePath = $directory . '/' . $filename;
         } else {
-            $path = "Images/Courses/default.png";
+            $requestImagePath = null;
         }
 
-        if ($request->input('teacher') != null)
+
+        if ($request->input('teacher') != null) {
+
+            $sourcesInput = $request->input('sources', []);
+            // If sources is a string, decode it; if already array/object, keep as is
+            if (is_string($sourcesInput)) {
+                $sourcesDecoded = json_decode($sourcesInput, true);
+                $sources = is_array($sourcesDecoded) ? $sourcesDecoded : [];
+            } else {
+                $sources = $sourcesInput;
+            }
+
+            $requirementsInput = $request->input('requirements', []);
+            if (is_string($requirementsInput)) {
+                $requirementsDecoded = json_decode($requirementsInput, true);
+                $requirements = is_array($requirementsDecoded) ? $requirementsDecoded : [];
+            } else {
+                $requirements = $requirementsInput;
+            }
+
             $course = Course::make([
                 'name' => $request->input('course_name'),
                 'teacher_id' => $request->input('teacher'),
                 'subject_id' => $request->input('subject'),
+                'description' => $request->input('course_description'),
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
-                'sources' => json_encode($request->input('sources', []))
+                'sources' => $sources ? json_encode($sources) : null,
+                'requirements' => $requirements
             ]);
-        elseif (Auth::user()->privileges == 0)
-            $course = Course::make([
-                'name' => $request->input('course_name'),
-                'teacher_id' => Auth::user()->teacher_id,
-                'subject_id' => $request->input('subject'),
-                'lecturesCount' => 0,
-                'subscriptions' => 0,
-                'sources' => json_encode($request->input('sources', []))
-            ]);
+            $course->image = $imagePath;
+            $course->save();
 
-        $course->image = $path;
-        $course->save();
-        $data = ['element' => 'course', 'id' => $course->id, 'name' => $course->name];
-        session(['add_info' => $data]);
-        session(['link' => '/courses']);
-        return redirect()->route('add.confirmation');
+            $data = ['element' => 'course', 'id' => $course->id, 'name' => $course->name];
+            session(['add_info' => $data]);
+            session(['link' => '/courses']);
+            return redirect()->route('add.confirmation');
+        } else {
+
+            // If teacher, also create a course request
+            if (Auth::user()->privileges == 0) {
+                $sourcesInput = $request->input('sources', []);
+                if (is_string($sourcesInput)) {
+                    $sourcesDecoded = json_decode($sourcesInput, true);
+                    $sources = is_array($sourcesDecoded) ? $sourcesDecoded : [];
+                } else {
+                    $sources = $sourcesInput;
+                }
+                $requirementsInput = $request->input('requirements', []);
+                if (is_string($requirementsInput)) {
+                    $requirementsDecoded = json_decode($requirementsInput, true);
+                    $requirements = is_array($requirementsDecoded) ? $requirementsDecoded : [];
+                } else {
+                    $requirements = $requirementsInput;
+                }
+                $courseRequestData = [
+                    'teacher_id' => Auth::user()->teacher_id,
+                    'name' => $request->input('course_name'),
+                    'description' => $request->input('course_description', null),
+                    'subject_id' => $request->input('subject'),
+                    'image' => $requestImagePath,
+                    'sources' => json_encode($sources),
+                    'requirements' => $requirements,
+                    'price' => $request->input('price', null),
+                    'status' => 'pending',
+                    'admin_id' => null,
+                    'course_id' => $request->input('id'),
+                    'rejection_reason' => null,
+                    'lecturesCount' => $request->input('lecturesCount'),
+                    'subscriptions' => $request->input('subscriptions'),
+                ];
+                \App\Models\CourseRequest::create($courseRequestData);
+            }
+            $data = ['element' => 'course', 'id' => $request->input('id'), 'name' => $request->input('course_name')];
+            session(['add_info' => $data]);
+            session(['link' => '/courses']);
+            return redirect()->route('add.confirmation');
+        }
     }
 
     public function edit(Request $request, $id)

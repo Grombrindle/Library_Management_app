@@ -145,7 +145,7 @@
                                 <br>
                                 &emsp;
                                 [
-                                @foreach ($teacher->courses() as $course)
+                                @foreach ($teacher->courses as $course)
                                     {{ $course->name }}
                                     @if (!$loop->last)
                                         -

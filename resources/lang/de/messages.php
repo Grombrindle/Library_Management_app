@@ -231,8 +231,19 @@ return [
     'backToRequests' => 'Zurück zu den Anfragen',
     'allCourseRequests' => 'Alle Kursanfragen',
     'courseRequestTeacher' => 'Lehrer',
+<<<<<<< HEAD
+=======
+    'requirements' => 'Anforderungen',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     'view' => 'Ansehen',
     'approve' => 'Genehmigen',
     'reject' => 'Ablehnen',
     'rejectionReason' => 'Grund (optional)',
+<<<<<<< HEAD
+=======
+    'pending' => 'AUSSTEHEND',
+    'approved' => 'GENEHMIGT',
+    'rejected' => 'ABGELEHNT',
+    'yourRequests' => 'Ihre Anfragen',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
 ];

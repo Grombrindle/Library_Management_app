@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Quiz::class);
-            $table->integer('correctAnswers');
+            $table->json('correctAnswers');
+            $table->integer('sparks');
             $table->timestamps();
         });
     }

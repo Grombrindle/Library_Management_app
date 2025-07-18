@@ -14,6 +14,7 @@
     'file' => null,
     'addLecture' => null,
     'addCourse' => null,
+    'request' => false,
 ])
 <style>
     .ObjectContainer {
@@ -337,7 +338,7 @@
 </style>
 
 
-<div class="ObjectContainer">
+<div class="ObjectContainer" style="@if($request) margin-top:10rem; @endif">
     @if ($image != null)
         <img src="{{ $image }}" alt="{{ $objectType }} Image"
             style="width: 100px; aspect-ratio: 1/1; object-fit:scale-down; border-radius: 8px;">

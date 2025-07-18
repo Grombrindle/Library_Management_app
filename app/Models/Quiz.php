@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use App\Models\score;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $subject_id
@@ -55,4 +57,17 @@ class Quiz extends Model
     public function questions() {
         return $this->hasMany(Question::class, 'quiz_id');
     }
+    public function getScoreAttribute() {
+        $user = Auth::user();
+        if (!$user) return null;
+        $score = score::where('user_id', $user->id)
+            ->where('quiz_id', $this->id)
+            ->first();
+        return $score;
+    }
+    public function getQuestionsAttribute() {
+        return $this->questions()->get();
+    }
+
+    protected $appends = ['score', 'questions'];
 }

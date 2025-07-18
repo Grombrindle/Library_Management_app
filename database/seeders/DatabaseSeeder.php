@@ -89,9 +89,9 @@ class DatabaseSeeder extends Seeder
                 'image' => 'Images/Courses/default.png',
 
                 'sources' => json_encode([
-                    ['name' => 'Course Introduction', 'link' => fake()->url()],
-                    ['name' => 'Basic Concepts', 'link' => fake()->url()],
-                    ['name' => 'Advanced Topics', 'link' => fake()->url()]
+                    'Course Introduction' => fake()->url(),
+                    'Basic Concepts' => fake()->url(),
+                    'Advanced Topics' => fake()->url(),
                 ]),
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
@@ -109,7 +109,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'course_id' => $course->id,
                     'rating' => $rating,
-                    'review' => rand(0,1) ? null : fake()->realText(100),
+                    'review' => rand(0, 1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -136,7 +136,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'lecture_id' => $lecture->id,
                     'rating' => $rating,
-                    'review' => rand(0,1) ? null : fake()->realText(100),
+                    'review' => rand(0, 1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -145,7 +145,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'teacher_id' => $teacher->id,
                     'rating' => $rating,
-                    'review' => rand(0,1) ? null : fake()->realText(100),
+                    'review' => rand(0, 1) ? null : fake()->realText(100),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -215,7 +215,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'A special course for the seeded teacher.',
             'image' => 'Images/Courses/default.png',
             'sources' => json_encode([
-                ['name' => 'Course Introduction', 'link' => 'https://example.com/intro'],
+                'Course Introduction' => 'https://example.com/intro',
             ]),
         ]);
         // Create a lecture for this course

@@ -37,9 +37,9 @@ class CourseSeeder extends Seeder
                 'description' => fake()->text(),
                 'image' => 'Images/Courses/default.png',
                 'sources' => json_encode([
-                    ['name' => 'Course Introduction', 'link' => fake()->url()],
-                    ['name' => 'Basic Concepts', 'link' => fake()->url()],
-                    ['name' => 'Advanced Topics', 'link' => fake()->url()]
+                    'Course Introduction' => fake()->url(),
+                    'Basic Concepts' => fake()->url(),
+                    'Advanced Topics' => fake()->url(),
                 ]),
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
@@ -61,7 +61,6 @@ class CourseSeeder extends Seeder
                     'updated_at' => now()
                 ]);
             }
-
         }
     }
 }

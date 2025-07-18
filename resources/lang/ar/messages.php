@@ -59,6 +59,7 @@ return [
     'updatedSuccessfully' => 'تم تحديث :name بنجاح!',
     'yourSubjects' => 'موادك',
     'yourLectures' => 'محاضراتك',
+    'yourRequests' => 'طلباتك',
     'mindSparkApp' => 'مايند سبارك',
     'menu' => '☰ القائمة',
     'close' => '✕ إغلاق',
@@ -241,8 +242,18 @@ return [
     'backToRequests' => 'العودة إلى الطلبات',
     'allCourseRequests' => 'جميع طلبات الدورات',
     'courseRequestTeacher' => 'المدرس',
+<<<<<<< HEAD
+=======
+    'requirements' => 'المتطلبات',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     'view' => 'عرض',
     'approve' => 'موافقة',
     'reject' => 'رفض',
     'rejectionReason' => 'السبب (اختياري)',
+<<<<<<< HEAD
+=======
+    'pending' => 'قيد الانتظار',
+    'approved' => 'موافق عليه',
+    'rejected' => 'مرفوض',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
 ];

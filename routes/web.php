@@ -56,7 +56,6 @@ Route::group(['middleware' => ['auth']], function () {
             return view('Teacher/Subjects');
         else
             return abort(404);
-
     });
     Route::get('/teachers', function () {
         if (Auth::user()->privileges == 2)
@@ -153,7 +152,6 @@ Route::group(['middleware' => ['auth']], function () {
             return view('Admin/SemiAdmin/User');
         else
             return abort(404);
-
     });
     Route::get('/admin/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
@@ -247,7 +245,7 @@ Route::group(['middleware' => ['auth']], function () {
             return view('Admin/FullAdmin/TeacherEdit', ['subjects' => []]);
         } else
             return abort(404);
-    })->name('teacher.edit');//might have to change this
+    })->name('teacher.edit'); //might have to change this
 
 
     Route::put('/editteacher/{id}', [TeacherController::class, 'edit'])->name('teacher.update');
@@ -275,7 +273,6 @@ Route::group(['middleware' => ['auth']], function () {
             return redirect()->route('teacher.edit', ['id' => session('teacher')]);
         } else
             return abort(404);
-
     });
     Route::get('/addcourse', function () {
         if (Auth::user()->privileges == 2)
@@ -585,7 +582,14 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/show', [\App\Http\Controllers\CourseRequestController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\CourseRequestController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\CourseRequestController::class, 'store'])->name('store');
+<<<<<<< HEAD
         Route::get('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'show'])->name('show');
+=======
+        Route::get('/{id}', function ($id) {
+            session(['courseRequest' => $id]);
+            return app(\App\Http\Controllers\CourseRequestController::class)->show($id);
+        })->name('show');
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         Route::get('/{id}/edit', [\App\Http\Controllers\CourseRequestController::class, 'edit'])->name('edit');
         Route::put('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'update'])->name('update');
     });
@@ -593,7 +597,14 @@ Route::group(['middleware' => ['auth']], function () {
     // Admin routes (privileges == 2)
     Route::group(['prefix' => 'admin/course-requests', 'as' => 'admin.course_requests.'], function () {
         Route::get('/show', [\App\Http\Controllers\CourseRequestController::class, 'adminIndex'])->name('index');
+<<<<<<< HEAD
         Route::get('/{id}', [\App\Http\Controllers\CourseRequestController::class, 'adminShow'])->name('show');
+=======
+        Route::get('/{id}', function ($id) {
+            session(['courseRequest' => $id]);
+            return app(\App\Http\Controllers\CourseRequestController::class)->adminShow($id);
+        })->name('show');
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         Route::post('/{id}/approve', [\App\Http\Controllers\CourseRequestController::class, 'approve'])->name('approve');
         Route::post('/{id}/reject', [\App\Http\Controllers\CourseRequestController::class, 'reject'])->name('reject');
     });

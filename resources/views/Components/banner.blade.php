@@ -5,8 +5,9 @@
         width: 100%;
         justify-content: center;
         align-items: center;
-        margin-bottom: 2.5%;
+        margin-bottom: 2rem;
         padding: 0 1rem;
+        margin-top:2rem;
         position: relative;
     }
 
@@ -142,7 +143,6 @@
 
     .Banner {
         background: var(--card-bg);
-        margin-top: clamp(1%, 2vw, 2%);
         font-size: clamp(14px, 1.5vw + 8px, 20px);
         border: var(--card-border) clamp(2px, 0.5vw, 4px) solid;
         color: var(--text-color);

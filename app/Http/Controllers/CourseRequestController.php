@@ -136,6 +136,21 @@ class CourseRequestController extends Controller
         $request = CourseRequest::findOrFail($id);
         if ($request->status !== 'pending')
             abort(403);
+        // Handle image: copy from CourseRequests to Courses
+        $imagePath = 'Images/Courses/default.png';
+        if ($request->image && (preg_match('/^Images\/CourseRequests\//', $request->image) || preg_match('/^Images\\CourseRequests\\/', $request->image))) {
+            $sourcePath = public_path($request->image);
+            if (file_exists($sourcePath)) {
+                $directory = 'Images/Courses';
+                $filename = uniqid() . '.' . pathinfo($sourcePath, PATHINFO_EXTENSION);
+                if (!file_exists(public_path($directory))) {
+                    mkdir(public_path($directory), 0755, true);
+                }
+                $destPath = public_path($directory . '/' . $filename);
+                copy($sourcePath, $destPath);
+                $imagePath = $directory . '/' . $filename;
+            }
+        }
         // Create the course with all required fields
         $course = Course::create([
             'name' => $request->name,
@@ -144,7 +159,8 @@ class CourseRequestController extends Controller
             'subject_id' => $request->subject_id,
             'lecturesCount' => $request->lecturesCount ?? 0,
             'subscriptions' => $request->subscriptions ?? 0,
-            'image' => $request->image ?? '',
+            'image' => $imagePath,
+            'requirements' => $request->requirements,
             'sources' => $request->sources ?? [],
             'price' => $request->price ?? 0,
         ]);

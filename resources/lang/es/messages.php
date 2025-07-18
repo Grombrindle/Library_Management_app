@@ -59,6 +59,7 @@ return [
     'updatedSuccessfully' => '¡:name actualizado exitosamente!',
     'yourSubjects' => 'Tus Asignaturas',
     'yourLectures' => 'Tus Clases',
+    'yourRequests' => 'Tus solicitudes',
     'mindSparkApp' => 'Mind Spark',
     'menu' => '☰ Menú',
     'close' => '✕ Cerrar',
@@ -231,8 +232,18 @@ return [
     'backToRequests' => 'Volver a solicitudes',
     'allCourseRequests' => 'Todas las solicitudes de curso',
     'courseRequestTeacher' => 'Profesor',
+<<<<<<< HEAD
+=======
+    'requirements' => 'Requisitos',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
     'view' => 'Ver',
     'approve' => 'Aprobar',
     'reject' => 'Rechazar',
     'rejectionReason' => 'Motivo (opcional)',
+<<<<<<< HEAD
+=======
+    'pending' => 'PENDIENTE',
+    'approved' => 'APROBADO',
+    'rejected' => 'RECHAZADO',
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
 ];
