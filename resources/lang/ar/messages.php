@@ -193,6 +193,9 @@ return [
     'subjectType' => 'نوع المادة',
     'scientific' => 'علمي',
     'literary' => 'أدبي',
+<<<<<<< HEAD
+];
+=======
     'teacherDescription' => 'وصف المدرس',
     'resources' => 'الموارد',
     'resource' => 'مورد',
@@ -257,3 +260,4 @@ return [
     'rejected' => 'مرفوض',
 >>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
 ];
+>>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d

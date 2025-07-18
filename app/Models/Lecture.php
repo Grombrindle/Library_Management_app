@@ -49,6 +49,9 @@ class Lecture extends Model
 
     /** @use HasFactory<\Database\Factories\LectureFactory> */
     use HasFactory;
+<<<<<<< HEAD
+    protected $guarded = [];
+=======
     protected $fillable = [
         'name',
         'file_360',
@@ -66,6 +69,7 @@ class Lecture extends Model
         'created_at',
         'updated_at'
     ];
+>>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
 
     public function course()
     {

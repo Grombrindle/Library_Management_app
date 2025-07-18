@@ -49,15 +49,7 @@ class Subject extends Model
     /** @use HasFactory<\Database\Factories\SubjectFactory> */
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'lecturesCount',
-        'subscriptions',
-        'image',
-        'literaryOrScientific',
-        'created_at',
-        'updated_at'
-    ];
+    protected $guarded = [];
 
     public function teachers()
     {

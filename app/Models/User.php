@@ -75,6 +75,9 @@ class User extends Authenticatable
      * @return array<string, string>
      */
 
+<<<<<<< HEAD
+    protected $guarded = [];
+=======
     protected $fillable = [
         'userName',
         'countryCode',
@@ -94,6 +97,7 @@ class User extends Authenticatable
         'updated_at' => 'date:Y-m-d',
     ];
 
+>>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
     /**
      * The attributes that should be hidden for serialization.
      *
