@@ -94,7 +94,7 @@ class TaskController extends Controller
 
     public function delete($id)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::withTrashed()->findOrFail($id);
         if ($task->user_id !== Auth::id()) {
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
         }

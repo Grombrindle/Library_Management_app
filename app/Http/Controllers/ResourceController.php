@@ -14,7 +14,7 @@ class ResourceController extends Controller
     function fetch($id)
     {
         $resource = Resource::findOrFail($id);
-        $resource->url = url($resource->file);
+
 
         return response()->json([
             'success' => 'true',
@@ -25,11 +25,7 @@ class ResourceController extends Controller
     function fetchFromSubject($id)
     {
         $resources = Resource::where('subject_id', $id)
-            ->get()
-            ->map(function ($resource) {
-                $resource->url = url($resource->file);
-                return $resource;
-            });
+            ->get();
 
         return response()->json([
             'success' => 'true',
@@ -39,10 +35,7 @@ class ResourceController extends Controller
 
     function fetchAll()
     {
-        $resources = Resource::all()->map(function ($resource) {
-            $resource->url = url($resource->file);
-            return $resource;
-        });
+        $resources = Resource::all();
 
         return response()->json([
             'success' => 'true',
@@ -51,12 +44,7 @@ class ResourceController extends Controller
     }
     function fetchAllRecent()
     {
-        $resources = Resource::orderByDesc('created_at')
-            ->get()
-            ->map(function ($resource) {
-                $resource->url = url($resource->file);
-                return $resource;
-            });
+        $resources = Resource::orderByDesc('created_at')->get();
 
         return response()->json([
             'success' => 'true',
@@ -67,11 +55,7 @@ class ResourceController extends Controller
     {
         $resources = Resource::withAvg('ratings', 'rating')
             ->orderByDesc('ratings_avg_rating')
-            ->get()
-            ->map(function ($resource) {
-                $resource->url = url($resource->file);
-                return $resource;
-            });
+            ->get();
 
         return response()->json([
             'success' => 'true',
@@ -95,11 +79,7 @@ class ResourceController extends Controller
                     ) *
                     (1 + (COALESCE(ratings_avg_rating, 0) / 5))
                 '))
-                ->get()
-                ->map(function ($resource) {
-                    $resource->url = url($resource->file);
-                    return $resource;
-                });
+                ->get();
 
             return response()->json([
                 'success' => 'true',
@@ -136,11 +116,7 @@ class ResourceController extends Controller
                 ) *
                 (1 + (COALESCE(ratings_avg_rating, 0) / 5))
             '))
-            ->get()
-            ->map(function ($resource) {
-                $resource->url = url($resource->file);
-                return $resource;
-            });
+            ->get();
 
         return response()->json([
             'success' => 'true',
