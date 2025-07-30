@@ -413,6 +413,13 @@
                 <button class="button">{{ __('messages.loginButton') }}</button>
             </div>
         </form>
+
+        <br>
+
+
+    <div style="margin-top:15px;text-align:center">
+        <a href="{{ route('web.login') }}" style="color:var(--text-color)">{{__('messages.areUser')}}</a>
+    </div>
     </div>
 
     <script>
@@ -422,7 +429,7 @@
                 .split('; ')
                 .find(row => row.startsWith('theme='))
                 ?.split('=')[1];
-                
+
             const savedTheme = cookieTheme || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
         });

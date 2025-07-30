@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Lecture;
@@ -34,12 +35,46 @@ Route::get(
 // Route::post('/reg', [SessionController::class, 'adminlogin']);
 Route::post('/weblogin', [SessionController::class, 'loginWeb']);
 
+// Auth routes
+Route::view('/login', 'auth.login')->name('web.login');
+Route::view('/register', 'auth.register')->name('web.register');
+Route::view('/simple-login', 'auth.simple-login')->name('web.simple-login');
+Route::view('/web-login', 'auth.web-login')->name('web.web-login');
+Route::view('/web-register', 'auth.web-register')->name('register');
+
+// Named routes for forms and actions referenced in Blade files
+Route::post('/login', [WebController::class, 'login'])->name('login.store');
+Route::get('/admin/login', [SessionController::class, 'adminLoginView'])->name('admin.login');
+Route::post('/register', [WebController::class, 'register'])->name('register.store');
+Route::put('/profile/update', [WebController::class, 'update'])->name('web.profile.update');
+// You may need to implement adminLoginView and register methods in SessionController if not present
+
+// Website routes
+Route::view('/home', 'website.webHome')->name('web.home');
+Route::get('/webcourses', function (\Illuminate\Http\Request $request) {
+    $search = $request->input('search', '');
+    $category = $request->input('category', '');
+    $featuredCourse = null; // You can later replace this with a query for the actual featured course
+    $courses = Course::paginate(12); // Paginate results for compatibility with appends/links in Blade
+    return view('website.webCourses', compact('search', 'category', 'featuredCourse', 'courses'));
+})->name('web.courses');
+
+Route::view('/edit-profile', 'website.webEditProfile')->name('web.profile.edit');
+Route::view('/favorites', 'website.webFavorites')->name('web.favorites');
+Route::view('/my-courses', 'website.webMyCourses')->name('web.my-courses');
+Route::view('/profile', 'website.webProfile')->name('web.profile');
+Route::view('/webteachers', 'website.webTeachers')->name('web.teachers');
+
 
 
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/test', function () {
+    Route::get('/testdiagram', function () {
         return view('DiagramTest');
+    });
+
+    Route::get('/test', function () {
+        return view('auth/login');
     });
     Route::get('/check-views', function () {
         return [
