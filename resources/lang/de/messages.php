@@ -231,29 +231,13 @@ return [
     'backToRequests' => 'Zurück zu den Anfragen',
     'allCourseRequests' => 'Alle Kursanfragen',
     'courseRequestTeacher' => 'Lehrer',
-<<<<<<< HEAD
     'requirements' => 'Anforderungen',
-=======
-<<<<<<< HEAD
-=======
-    'requirements' => 'Anforderungen',
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
->>>>>>> 7eee2c33febddca43ae4a164832d8d78027d64d6
     'view' => 'Ansehen',
     'approve' => 'Genehmigen',
     'reject' => 'Ablehnen',
     'rejectionReason' => 'Grund (optional)',
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 7eee2c33febddca43ae4a164832d8d78027d64d6
     'pending' => 'AUSSTEHEND',
     'approved' => 'GENEHMIGT',
     'rejected' => 'ABGELEHNT',
     'yourRequests' => 'Ihre Anfragen',
-<<<<<<< HEAD
-=======
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
->>>>>>> 7eee2c33febddca43ae4a164832d8d78027d64d6
 ];

@@ -139,7 +139,7 @@
                             @endif
                             <br>
                             ● {{__('messages.courses')}}:
-                            @if ($teacher->courses()->count() == 0)
+                            @if ($teacher->courses->count() == 0)
                                 <div style="color:var(--text-color-inverted);">&emsp;{{ __('messages.none') }}</div>
                             @else
                                 <br>

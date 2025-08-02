@@ -231,28 +231,12 @@ return [
     'backToRequests' => 'Taleplere Geri Dön',
     'allCourseRequests' => 'Tüm Kurs Talepleri',
     'courseRequestTeacher' => 'Öğretmen',
-<<<<<<< HEAD
     'requirements' => 'Gereksinimler',
-=======
-<<<<<<< HEAD
-=======
-    'requirements' => 'Gereksinimler',
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
->>>>>>> 7eee2c33febddca43ae4a164832d8d78027d64d6
     'view' => 'Görüntüle',
     'approve' => 'Onayla',
     'reject' => 'Reddet',
     'rejectionReason' => 'Neden (isteğe bağlı)',
-<<<<<<< HEAD
     'pending' => 'BEKLEMEDE',
     'approved' => 'ONAYLANDI',
     'rejected' => 'REDDEDİLDİ',
-=======
-<<<<<<< HEAD
-=======
-    'pending' => 'BEKLEMEDE',
-    'approved' => 'ONAYLANDI',
-    'rejected' => 'REDDEDİLDİ',
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
->>>>>>> 7eee2c33febddca43ae4a164832d8d78027d64d6
 ];

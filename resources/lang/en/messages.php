@@ -193,8 +193,6 @@ return [
     'subjectType' => 'Subject Type',
     'scientific' => 'Scientific',
     'literary' => 'Literary',
-<<<<<<< HEAD
-=======
     'teacherDescription' => 'Teacher Description',
     'resources' => 'Resources',
     'resource' => 'Resource',
@@ -246,23 +244,12 @@ return [
     'backToRequests' => 'Back to Requests',
     'allCourseRequests' => 'All Course Requests',
     'courseRequestTeacher' => 'Teacher',
-<<<<<<< HEAD
     'requirements' => 'Requirements',
-=======
-<<<<<<< HEAD
-=======
-    'requirements' => 'Requirements',
->>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
->>>>>>> 7eee2c33febddca43ae4a164832d8d78027d64d6
     'view' => 'View',
     'approve' => 'Approve',
     'reject' => 'Reject',
     'rejectionReason' => 'Reason (optional)',
-<<<<<<< HEAD
     'pending' => 'PENDING',
     'approved' => 'APPROVED',
     'rejected' => 'REJECTED',
-=======
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
->>>>>>> 7eee2c33febddca43ae4a164832d8d78027d64d6
 ];

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Quiz::class);
             $table->json('correctAnswers');
             $table->integer('sparks');
+            $table->integer('sparkies')->default(0);
             $table->timestamps();
         });
     }

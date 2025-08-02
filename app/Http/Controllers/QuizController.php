@@ -65,7 +65,7 @@ class QuizController extends Controller
             ],
             [
                 'correctAnswers' => json_encode($request->input('correctAnswers')),
-                'sparks' => 0 // <-- This should be here!
+                // We'll set sparks and sparkies below after calculation
             ]
         );
 
@@ -102,8 +102,9 @@ class QuizController extends Controller
             }
             $user->save();
             $total_sparkies = $user->sparkies;
-            // Store the sparks gained in this quiz in the score record
-            $score->sparks = $sparks;
+            // Store the user's total sparks and sparkies at quiz completion
+            $score->sparks = $user->sparks;
+            $score->sparkies = $user->sparkies;
             $score->save();
         } else {
             $user = Auth::user();

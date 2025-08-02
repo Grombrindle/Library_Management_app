@@ -378,4 +378,70 @@ class CourseController extends Controller
         session(['link' => '/courses']);
         return redirect()->route('delete.confirmation');
     }
+
+    /**
+     * Purchase a course using sparkies.
+     * @param Request $request
+     * @param int $courseId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function purchaseCourse(Request $request, $courseId)
+    {
+        $user = Auth::user();
+        $course = Course::find($courseId);
+        if (!$course) {
+            return response()->json(['success' => false, 'message' => 'Course not found'], 404);
+        }
+        if ($user->courses()->where('course_id', $courseId)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Already purchased'], 400);
+        }
+        $price = (int) $course->price;
+        if ($user->sparkies < $price) {
+            return response()->json(['success' => false, 'message' => 'Insufficient sparkies'], 400);
+        }
+        // Deduct sparkies and subscribe
+        $user->sparkies -= $price;
+        $user->save();
+        $user->courses()->attach($courseId);
+        return response()->json(['success' => true, 'message' => 'Course purchased successfully']);
+    }
+
+    /**
+     * Set the price of a course (admin only).
+     */
+    public function setCoursePrice(Request $request, $courseId)
+    {
+        $user = Auth::user();
+        if (!$user || !$user->is_admin) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+        $course = Course::find($courseId);
+        if (!$course) {
+            return response()->json(['success' => false, 'message' => 'Course not found'], 404);
+        }
+        $validated = $request->validate([
+            'price' => 'required|integer|min:0',
+        ]);
+        $course->price = $validated['price'];
+        $course->save();
+        return response()->json(['success' => true, 'message' => 'Course price updated', 'course' => $course]);
+    }
+
+    /**
+     * Unified endpoint for all course categories.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function coursesOverview()
+    {
+        $recommended = $this->fetchAllRecommended()->getData(true)['courses'] ?? [];
+        $topRated = $this->fetchAllRated()->getData(true)['courses'] ?? [];
+        $recent = $this->fetchAllRecent()->getData(true)['courses'] ?? [];
+        $all = $this->fetchall()->getData(true)['courses'] ?? [];
+        return response()->json([
+            'recommendedCourses' => $recommended,
+            'topRatedCourses' => $topRated,
+            'recentCourses' => $recent,
+            'allCourses' => $all,
+        ]);
+    }
 }

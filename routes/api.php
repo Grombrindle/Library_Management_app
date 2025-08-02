@@ -90,6 +90,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallcoursesrecommended', [CourseController::class, 'fetchAllRecommended']);
     Route::get('/favoritecourse/{id}', [CourseController::class, 'checkFavoriteCourse']);
     Route::post('/ratecourse/{id}', [CourseController::class, 'rate']);
+    Route::post('/course/{course}/purchase', [CourseController::class, 'purchaseCourse']);
+    Route::get('/courses/overview', [CourseController::class, 'coursesOverview']);
+    Route::post('/course/{course}/set-price', [CourseController::class, 'setCoursePrice']);
 
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);

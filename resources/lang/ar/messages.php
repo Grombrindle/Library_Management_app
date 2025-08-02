@@ -193,9 +193,6 @@ return [
     'subjectType' => 'نوع المادة',
     'scientific' => 'علمي',
     'literary' => 'أدبي',
-<<<<<<< HEAD
-];
-=======
     'teacherDescription' => 'وصف المدرس',
     'resources' => 'الموارد',
     'resource' => 'مورد',
@@ -245,19 +242,12 @@ return [
     'backToRequests' => 'العودة إلى الطلبات',
     'allCourseRequests' => 'جميع طلبات الدورات',
     'courseRequestTeacher' => 'المدرس',
-<<<<<<<<< Temporary merge branch 1
-=========
     'requirements' => 'المتطلبات',
->>>>>>>>> Temporary merge branch 2
     'view' => 'عرض',
     'approve' => 'موافقة',
     'reject' => 'رفض',
     'rejectionReason' => 'السبب (اختياري)',
-<<<<<<<<< Temporary merge branch 1
-=========
     'pending' => 'قيد الانتظار',
     'approved' => 'موافق عليه',
     'rejected' => 'مرفوض',
->>>>>>>>> Temporary merge branch 2
 ];
->>>>>>> e73af6b1ebd96206329fc3d1d432110fc515a04d
