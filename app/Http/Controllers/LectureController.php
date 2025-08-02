@@ -230,17 +230,12 @@ class LectureController extends Controller
 
     public function add(Request $request)
     {
-        
-        // dd("s");
 
         // dd("s");
 
         // dd("s");
         // Ensure all required directories exist
         $this->ensureDirectoriesExist();
-        
-
-      
 
 
 

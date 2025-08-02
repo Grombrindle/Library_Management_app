@@ -606,7 +606,11 @@
 
     <div class="container">
         @if ($addLink != null)
+<<<<<<< HEAD
+            <a href="{{ $addLink }}" class="addButton">{{Str::upper(__('messages.add'))}}</a>
+=======
             <a href="{{ $addLink }}" class="addButton">{{ Str::upper(__('messages.add')) }}</a>
+>>>>>>> a239985f5d0e6f8a5ad9a53b67fa56104e903321
         @endif
         @if ($deleteSubs != false)
             <form action="/deletesubs" method="POST" onsubmit="return validateSubs()">
