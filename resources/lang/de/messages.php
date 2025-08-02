@@ -231,8 +231,13 @@ return [
     'backToRequests' => 'Zurück zu den Anfragen',
     'allCourseRequests' => 'Alle Kursanfragen',
     'courseRequestTeacher' => 'Lehrer',
+    'requirements' => 'Anforderungen',
     'view' => 'Ansehen',
     'approve' => 'Genehmigen',
     'reject' => 'Ablehnen',
     'rejectionReason' => 'Grund (optional)',
+    'pending' => 'AUSSTEHEND',
+    'approved' => 'GENEHMIGT',
+    'rejected' => 'ABGELEHNT',
+    'yourRequests' => 'Ihre Anfragen',
 ];

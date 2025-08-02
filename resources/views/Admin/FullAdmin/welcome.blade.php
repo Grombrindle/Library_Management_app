@@ -79,7 +79,8 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .button:hover, .button:focus {
+        .button:hover,
+        .button:focus {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-color: var(--welcome-btn);
@@ -111,8 +112,8 @@
         }
 
         .buttonGrid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 1rem;
             width: 100%;
             max-width: 800px;
@@ -249,6 +250,7 @@
             html {
                 overflow-x: hidden;
             }
+
             .title {
                 font-size: 2.5rem;
             }
@@ -268,7 +270,7 @@
                 width: 90%;
                 margin-left: auto;
                 margin-right: auto;
-                margin-top:1rem;
+                margin-top: 1rem;
             }
         }
 
@@ -317,7 +319,8 @@
         }
 
         /* High-DPI screens */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        @media (-webkit-min-device-pixel-ratio: 2),
+        (min-resolution: 192dpi) {
             .button {
                 border-width: 2px;
             }
@@ -337,41 +340,47 @@
     </div>
     <div class="buttonContainer">
         <div class="buttonGrid">
-            <a href="/courses" class="button" id="button" style="text-decoration: none;">
-                <div class="text">
-                    {{ __('messages.courses') }}
-                </div>
-            </a>
-            <a href="/subjects" class="button" id="button" style="text-decoration: none;">
-                <div class="text">
-                    {{ __('messages.subjects') }}
-                </div>
-            </a>
-            <a href="/lectures" class="button" style="text-decoration: none;">
-                <div class="text">
-                    {{ __('messages.lectures') }}
-                </div>
-            </a>
-            <a href="/teachers" class="button" style="text-decoration: none;">
-                <div class="text">
-                    {{ __('messages.teachers') }}
-                </div>
-            </a>
-            <a href="/users" class="button" style="text-decoration: none;">
-                <div class="text">
-                    {{ __('messages.users') }}
-                </div>
-            </a>
-            <a href="/admins" class="button" id="button" style="text-decoration: none;">
-                <div class="text">
-                    {{ __('messages.admins') }}
-                </div>
-            </a>
-            <a href="/resources" class="button" style="text-decoration: none; margin-left: 270px">
-                <div class="text">
-                    {{ __('messages.resources') }}
-                </div>
-            </a>
+            <div style="display:flex; flex-direction:row; gap: 3rem;">
+                <a href="/courses" class="button" id="button" style="text-decoration: none;">
+                    <div class="text">
+                        {{ __('messages.courses') }}
+                    </div>
+                </a>
+                <a href="/subjects" class="button" id="button" style="text-decoration: none;">
+                    <div class="text">
+                        {{ __('messages.subjects') }}
+                    </div>
+                </a>
+            </div>
+            <div style="display:flex; flex-direction:row; gap: 3rem;">
+                <a href="/lectures" class="button" style="text-decoration: none;">
+                    <div class="text">
+                        {{ __('messages.lectures') }}
+                    </div>
+                </a>
+                <a href="/teachers" class="button" style="text-decoration: none;">
+                    <div class="text">
+                        {{ __('messages.teachers') }}
+                    </div>
+                </a>
+                <a href="/users" class="button" style="text-decoration: none;">
+                    <div class="text">
+                        {{ __('messages.users') }}
+                    </div>
+                </a>
+            </div>
+            <div style="display:flex; flex-direction:row; gap: 3rem;">
+                <a href="/admins" class="button" id="button" style="text-decoration: none;">
+                    <div class="text">
+                        {{ __('messages.admins') }}
+                    </div>
+                </a>
+                <a href="/resources" class="button" style="text-decoration: none;">
+                    <div class="text">
+                        {{ __('messages.resources') }}
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
     <div class="circle"id="circle"></div>

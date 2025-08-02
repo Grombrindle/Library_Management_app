@@ -19,6 +19,9 @@ return new class extends Migration {
             $table->string('password');
             $table->boolean('isBanned');
 
+            $table->integer('sparks')->default(0);
+            $table->integer('sparkies')->default(0);
+
             $table->integer('counter')->default(0);
             $table->timestamp('last_screenshot_at')->nullable();
 

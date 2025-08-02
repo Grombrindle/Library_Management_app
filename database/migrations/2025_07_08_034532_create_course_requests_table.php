@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,15 +14,18 @@ return new class extends Migration
             $table->id();
             $table->foreignId('teacher_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->foreignId('subject_id')->constrained()->onDelete('cascade');
             $table->string('image')->nullable();
             $table->json('sources')->nullable();
+            $table->json('requirements')->nullable();
             $table->string('price')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->foreignId('admin_id')->nullable()->constrained('admins')->nullOnDelete();
             $table->foreignId('course_id')->nullable()->constrained('courses')->nullOnDelete();
             $table->text('rejection_reason')->nullable();
+            $table->integer('lecturesCount')->nullable();
+            $table->integer('subscriptions')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

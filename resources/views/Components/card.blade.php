@@ -95,9 +95,11 @@
         0% {
             transform: translateY(5px);
         }
+
         50% {
             transform: translateY(-5px);
         }
+
         100% {
             transform: translateY(5px);
         }
@@ -109,10 +111,12 @@
             opacity: 1;
             transform: translateY(0) scale(1);
         }
+
         70% {
             opacity: 1;
             transform: translateY(-40px) scale(1.05);
         }
+
         100% {
             opacity: 0;
             transform: translateY(-80px) scale(0.95);
@@ -155,17 +159,37 @@
     }
 </style>
 
-<a href="/{{ $link }}" class="Object"
-    style="@if ($image == null) justify-content:center; text-align:center; @endif">
-    @if ($image != null)
-        <div class="image-container">
-            <img src="{{ $image }}" alt="{{ $object }} image" class="subject-image">
-        </div>
-        <div style="width:1px; height:100%; background-color:var(--text-color); margin-right:2%; margin-left:2%; z-index:2;"></div>
-    @endif
-    <div class="textContainer">{{ $slot }}</div>
-    <div id="circle" class="circle"></div>
-</a>
+@if ($link !== '#' && $link !== '')
+    @php
+        $isAbsolute = Str::startsWith($link, ['http://', 'https://', '//']);
+    @endphp
+    <a href="{{ $isAbsolute ? $link : '/' . ltrim($link, '/') }}" class="Object"
+        style="@if ($image == null) justify-content:center; text-align:center; @endif">
+        @if ($image != null)
+            <div class="image-container">
+                <img src="{{ $image }}" alt="{{ $object }} image" class="subject-image">
+            </div>
+            <div
+                style="width:1px; height:100%; background-color:var(--text-color); margin-right:2%; margin-left:2%; z-index:2;">
+            </div>
+        @endif
+        <div class="textContainer">{{ $slot }}</div>
+        <div id="circle" class="circle"></div>
+    </a>
+@else
+    <div class="Object" style="@if ($image == null) justify-content:center; text-align:center; @endif">
+        @if ($image != null)
+            <div class="image-container">
+                <img src="{{ $image }}" alt="{{ $object }} image" class="subject-image">
+            </div>
+            <div
+                style="width:1px; height:100%; background-color:var(--text-color); margin-right:2%; margin-left:2%; z-index:2;">
+            </div>
+        @endif
+        <div class="textContainer">{{ $slot }}</div>
+        <div id="circle" class="circle"></div>
+    </div>
+@endif
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -208,7 +232,7 @@
 <script>
     function bindDisappearAnimations() {
         document.querySelectorAll('.Object:not(.disappear)').forEach(card => {
-            card.addEventListener('click', function() {
+            card.addEventListener('click', function () {
                 this.classList.add('disappear');
             });
         });
@@ -222,4 +246,3 @@
         bindDisappearAnimations(); // Re-attach to new/filtered cards
     }
 </script>
-

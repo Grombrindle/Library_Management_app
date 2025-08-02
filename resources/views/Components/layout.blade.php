@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
-    
+
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     <link rel="icon" href="{{ asset('Images/Web/favicon.ico') }}" sizes="any">
 
     <link rel="icon" href="{{ asset('Images/Web/favicon.svg') }}" type="image/svg+xml">
@@ -33,10 +33,10 @@
             font-size: clamp(7px, 1vw + 4px, 11px);
             overflow-x: hidden;
         }
-        
+
         /* Remove all breakpoints above 1200px, and interpolate between 400px and 1200px */
         /* Remove @media (max-width: 992px), (max-width: 768px), (max-width: 480px) for html */
-        
+
         /* For body, ensure min-height: 100vh and proportional padding/margin if needed */
         body {
             margin: 0;
@@ -57,7 +57,7 @@
             animation: gradientShift 5s infinite ease-in-out;
             position: relative;
         }
-        
+
 
         /* Style for all select elements */
         select {
@@ -125,7 +125,7 @@
             background-color: rgba(0, 0, 0, 0.1);
             transition: opacity 0.3s ease;
         }
-        
+
         select:disabled {
             background-color: #2a2a2a;
             color: #666;

@@ -81,7 +81,8 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .button:hover, .button:focus {
+        .button:hover,
+        .button:focus {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-color: var(--welcome-btn);
@@ -282,7 +283,8 @@
         }
 
         /* High-DPI screens */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+        @media (-webkit-min-device-pixel-ratio: 2),
+        (min-resolution: 192dpi) {
             .button {
                 border-width: 2px;
             }
@@ -299,12 +301,16 @@
     <div class="title">
         {{ __('messages.welcome') }} {{ Auth::user()->userName }}!
     </div>
-    <div class="buttonContainer">
-        <div style="width:50%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
-
+    <div class="buttonContainer" style="display:grid; grid-template-columns: 1fr 1fr;">
+        <div style="width:100%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
+            <a href="teacher/course-requests/show" class="button" style="text-decoration: none;">
+                <div class="text">{{ __('messages.yourRequests') }}</div>
+            </a>
             <a href="/subjects" class="button" style="text-decoration: none;">
                 <div class="text">{{ __('messages.yourSubjects') }}</div>
             </a>
+        </div>
+        <div style="width:100%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px;">
             <a href="/courses" class="button" style="text-decoration: none;">
                 <div class="text">{{ __('messages.yourCourses') }}</div>
             </a>

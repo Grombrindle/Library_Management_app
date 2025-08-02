@@ -128,10 +128,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/addtask', [TaskController::class, 'add']);
     Route::put('/checktask/{id}', [TaskController::class, 'toggleChecked']);
     Route::put('/trashtask/{id}', [TaskController::class, 'toggleDelete']);
+    Route::put('/restoretask/{id}', [TaskController::class, 'restore']);
     Route::put('/edittask/{id}', [TaskController::class, 'edit']);
     Route::delete('/deletetask/{id}', [TaskController::class, 'delete']);
-    Route::get('/tasks/trashed', [TaskController::class, 'trashedTasks']);
-    Route::get('/tasks/available', [TaskController::class, 'availableTasks']);
+    Route::get('/gettrashedtasks', [TaskController::class, 'trashedTasks']);
+    Route::get('/getavailabletasks', [TaskController::class, 'availableTasks']);
 
     Route::get('/getwatchlistlectures', [WatchlistController::class, 'fetchLectures']);
     Route::get('/getwatchlistcourses', [WatchlistController::class, 'fetchCourses']);

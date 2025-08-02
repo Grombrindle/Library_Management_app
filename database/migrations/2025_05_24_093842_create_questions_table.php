@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('questionText');
             $table->json('options');
             $table->integer('correctAnswerIndex');
+            $table->enum('difficulty', ['EASY', 'MEDIUM', 'HARD'])->default('MEDIUM');
             $table->foreignIdFor(Quiz::class);
             $table->timestamps();
         });

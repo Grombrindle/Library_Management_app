@@ -22,10 +22,14 @@ class CourseRequest extends Model
         'admin_id',
         'course_id',
         'rejection_reason',
+        'lecturesCount',
+        'subscriptions',
+        'requirements',
     ];
 
     protected $casts = [
         'sources' => 'array',
+        'requirements' => 'array',
     ];
 
     public function teacher()

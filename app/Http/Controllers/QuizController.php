@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\Lecture;
 use App\Models\Quiz;
 use App\Models\question;
+use App\Models\User;
 
 class QuizController extends Controller
 {
@@ -63,12 +64,59 @@ class QuizController extends Controller
                 'quiz_id' => $id
             ],
             [
-                'correctAnswers' => $request->input('correctAnswers')
+                'correctAnswers' => json_encode($request->input('correctAnswers')),
+                'sparks' => 0 // <-- This should be here!
             ]
         );
+
+        $sparky = null;
+        $sparks = 0;
+        $total_sparkies = null;
+        // Only execute if the score was just created
+        if ($score->wasRecentlyCreated) {
+            // Calculate sparks
+            $correctAnswers = $request->input('correctAnswers', []);
+            $quiz = Quiz::findOrFail($id);
+            $questions = $quiz->questions()->orderBy('id')->get();
+            foreach ($questions as $index => $question) {
+                if (isset($correctAnswers[$index]) && $correctAnswers[$index]) {
+                    switch ($question->difficulty) {
+                        case 'EASY':
+                            $sparks += 1;
+                            break;
+                        case 'MEDIUM':
+                            $sparks += 3;
+                            break;
+                        case 'HARD':
+                            $sparks += 5;
+                            break;
+                    }
+                }
+            }
+            $user = Auth::user();
+            $user->sparks += $sparks;
+            if ($user->sparks >= 1000) {
+                $user->sparks -= 1000;
+                $user->sparkies += 1;
+                $sparky = true;
+            }
+            $user->save();
+            $total_sparkies = $user->sparkies;
+            // Store the sparks gained in this quiz in the score record
+            $score->sparks = $sparks;
+            $score->save();
+        } else {
+            $user = Auth::user();
+            $total_sparkies = $user->sparkies;
+        }
+
         return response()->json([
             'success' => true,
-            'status' => $score->wasRecentlyCreated ? 'created' : 'updated'
+            'status' => $score->wasRecentlyCreated ? 'created' : 'updated',
+            'sparks_added' => $sparks,
+            'total_sparks' => $user->sparks,
+            'sparky_added' => $sparky ? 'true' : false,
+            'total_sparkies' => $total_sparkies
         ]);
     }
     public function edit(Request $request, $id)
@@ -81,12 +129,12 @@ class QuizController extends Controller
         foreach ($data as $question) {
             // Remove empty options
             $originalOptions = $question['options'];
-            $options = array_values(array_filter($originalOptions, function($opt) {
+            $options = array_values(array_filter($originalOptions, function ($opt) {
                 return isset($opt) && trim($opt) !== '';
             }));
             // Map the original correctAnswerIndex to the new filtered array
             $originalIndex = $question['correctAnswerIndex'];
-            $nonEmptyIndexes = array_keys(array_filter($originalOptions, function($opt) {
+            $nonEmptyIndexes = array_keys(array_filter($originalOptions, function ($opt) {
                 return isset($opt) && trim($opt) !== '';
             }));
             $newCorrectIndex = array_search($originalIndex, $nonEmptyIndexes);

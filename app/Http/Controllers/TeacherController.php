@@ -328,6 +328,7 @@ class TeacherController extends Controller
                 ],
                 [
                     'rating' => $request->input('rating'),
+                    'review' => $request->input('review'),
                     'updated_at' => now()
                 ]
             );
