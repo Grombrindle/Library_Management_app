@@ -252,4 +252,136 @@ return [
     'pending' => 'PENDING',
     'approved' => 'APPROVED',
     'rejected' => 'REJECTED',
+
+    // Auth pages - missing translations
+    'dontHaveAccount' => 'Don\'t have an account?',
+    'register' => 'Register',
+    'areYouTeacherOrAdmin' => 'Are you a teacher or admin?',
+    'areUser' => 'Are you a user?',
+    'loginHere' => 'Login here',
+    'clickHere' => 'Click here',
+    'alreadyHaveAccount' => 'Already have an account?',
+    'login' => 'Login',
+    'confirmPassword' => 'Confirm Password',
+    'password' => 'Password',
+    'username' => 'Username',
+
+    // Website pages - missing translations
+    'discoverLearningPath' => 'Discover Your Learning Path',
+    'joinCommunity' => 'Join our community of learners and expert teachers to enhance your knowledge and skills.',
+    'exploreCourses' => 'Explore Courses',
+    'activeStudents' => 'Active Students',
+    'engagedLearning' => 'Engaged and learning on our platform',
+    'expertTeachers' => 'Expert Teachers',
+    'sharingKnowledge' => 'Sharing their knowledge and passion',
+    'courseLibrary' => 'Course Library',
+    'wideRangeSubjects' => 'Covering a wide range of subjects',
+    'featuredCourses' => 'Featured Courses',
+    'meetTopTeachers' => 'Meet Our Top Teachers',
+    'readyToLearn' => 'Ready to Start Learning?',
+    'joinThousands' => 'Join thousands of students who are already learning and growing with us.',
+    'getStartedNow' => 'Get Started Now',
+
+    // Website Courses Page
+    'exploreCourseLibrary' => 'Explore Our Course Library',
+    'findPerfectCourse' => 'Find the perfect course to expand your knowledge and skills, taught by industry experts.',
+    'searchCoursesTeachers' => 'Search courses, teachers...',
+    'all' => 'All',
+    'scientific' => 'Scientific',
+    'literary' => 'Literary',
+    'topRatedCourse' => 'Top Rated Course',
+    'topRated' => 'Top Rated',
+    'notRatedYet' => 'Not rated yet',
+    'allCourses' => 'All Courses',
+    'noCoursesFound' => 'No Courses Found',
+    'close' => 'Close',
+    'rating' => 'Rating',
+    'students' => 'Students',
+    'lectures' => 'Lectures',
+    'description' => 'Description',
+    'by' => 'By',
+
+    // Website Teachers Page
+    'meetExpertTeachers' => 'Meet Our Expert Teachers',
+    'learnFromProfessionals' => 'Learn from experienced professionals who are passionate about education.',
+    'searchTeachersPlaceholder' => 'Search teachers by name, subject, or university...',
+    'search' => 'Search',
+    'featuredTeacherMonth' => 'Featured Teacher of the Month',
+    'courses' => 'Courses',
+    'favorites' => 'Favorites',
+    'joinTeachingCommunity' => 'Join Our Teaching Community',
+
+    // Website Profile Page
+    'student' => 'Student',
+    'dashboard' => 'Dashboard',
+    'myCourses' => 'My Courses',
+    'myFavorites' => 'My Favorites',
+    'myQuizzes' => 'My Quizzes',
+    'settings' => 'Settings',
+    'completed' => 'Completed',
+    'certificates' => 'Certificates',
+    'continueLearning' => 'Continue Learning',
+    'viewAll' => 'View All',
+    'noActiveCourses' => 'No Active Courses',
+    'noAchievementsYet' => 'No Achievements Yet',
+
+    // Website My Courses Page
+    'myCoursesTitle' => 'My Courses',
+    'progress' => 'Progress',
+    'noCoursesYet' => 'No Courses Yet',
+    'enrollToStart' => 'Enroll in courses to start learning',
+
+    // Website Favorites Page
+    'myFavoritesTitle' => 'My Favorites',
+    'favoriteCourses' => 'Favorite Courses',
+    'noFavoriteCourses' => 'No Favorite Courses',
+    'addCoursesToFavorites' => 'Add courses to your favorites',
+    'favoriteTeachers' => 'Favorite Teachers',
+    'noFavoriteTeachers' => 'No Favorite Teachers',
+    'addTeachersToFavorites' => 'Add teachers to your favorites',
+
+    // Website Edit Profile Page
+    'editProfile' => 'Edit Profile',
+    'clickCameraToChange' => 'Click camera icon to change avatar',
+    'username' => 'Username',
+    'phoneNumber' => 'Phone Number',
+
+    // Components
+    'mindSpark' => 'MindSpark',
+    'notifications' => 'Notifications',
+    'login' => 'Login',
+    'signUp' => 'Sign Up',
+    'teacherProfile' => 'Teacher Profile',
+    'quickLinks' => 'Quick Links',
+    'privacyPolicy' => 'Privacy Policy',
+    'termsOfService' => 'Terms of Service',
+    'cookiePolicy' => 'Cookie Policy',
+
+    // Course Requirements
+    'aBrain' => 'A Brain',
+    'calculator' => 'Calculator',
+    'penAndPaper' => 'Pen and Paper',
+    'laptop' => 'Laptop',
+    'textbook' => 'Textbook',
+    'internetAccess' => 'Internet Access',
+    'notebook' => 'Notebook',
+    'headphones' => 'Headphones',
+    'other' => 'Other',
+
+    // File Types
+    'pdf' => 'PDF',
+    'video' => 'Video',
+
+    // Quiz
+    'showQuiz' => 'Show quiz',
+    'showLectures' => 'Show Lectures',
+    'showSubscriptions' => 'Show Subscriptions',
+    'updateQuiz' => 'Update Quiz',
+
+    // Error Messages
+    'failedToLoadResults' => 'Failed to load results',
+
+    // Scoring System
+    'sparks' => 'Sparks',
+    'sparkies' => 'Sparkies',
 ];

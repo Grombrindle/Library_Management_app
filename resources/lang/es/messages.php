@@ -240,4 +240,136 @@ return [
     'pending' => 'PENDIENTE',
     'approved' => 'APROBADO',
     'rejected' => 'RECHAZADO',
+
+    // Auth pages - missing translations
+    'dontHaveAccount' => '¿No tienes una cuenta?',
+    'register' => 'Registrarse',
+    'areYouTeacherOrAdmin' => '¿Eres profesor o administrador?',
+    'areUser' => '¿Eres un usuario?',
+    'loginHere' => 'Inicia sesión aquí',
+    'clickHere' => 'Haz clic aquí',
+    'alreadyHaveAccount' => '¿Ya tienes una cuenta?',
+    'login' => 'Iniciar sesión',
+    'confirmPassword' => 'Confirmar contraseña',
+    'password' => 'Contraseña',
+    'username' => 'Nombre de usuario',
+
+    // Website pages - missing translations
+    'discoverLearningPath' => 'Descubre tu camino de aprendizaje',
+    'joinCommunity' => 'Únete a nuestra comunidad de estudiantes y profesores expertos para mejorar tu conocimiento y habilidades.',
+    'exploreCourses' => 'Explorar cursos',
+    'activeStudents' => 'Estudiantes activos',
+    'engagedLearning' => 'Comprometidos y aprendiendo en nuestra plataforma',
+    'expertTeachers' => 'Profesores expertos',
+    'sharingKnowledge' => 'Compartiendo su conocimiento y pasión',
+    'courseLibrary' => 'Biblioteca de cursos',
+    'wideRangeSubjects' => 'Cubriendo una amplia gama de materias',
+    'featuredCourses' => 'Cursos destacados',
+    'meetTopTeachers' => 'Conoce a nuestros mejores profesores',
+    'readyToLearn' => '¿Listo para empezar a aprender?',
+    'joinThousands' => 'Únete a miles de estudiantes que ya están aprendiendo y creciendo con nosotros.',
+    'getStartedNow' => 'Comenzar ahora',
+
+    // Website Courses Page
+    'exploreCourseLibrary' => 'Explora nuestra biblioteca de cursos',
+    'findPerfectCourse' => 'Encuentra el curso perfecto para expandir tu conocimiento y habilidades, impartido por expertos de la industria.',
+    'searchCoursesTeachers' => 'Buscar cursos, profesores...',
+    'all' => 'Todos',
+    'scientific' => 'Científico',
+    'literary' => 'Literario',
+    'topRatedCourse' => 'Curso mejor valorado',
+    'topRated' => 'Mejor valorado',
+    'notRatedYet' => 'Aún no valorado',
+    'allCourses' => 'Todos los cursos',
+    'noCoursesFound' => 'No se encontraron cursos',
+    'close' => 'Cerrar',
+    'rating' => 'Valoración',
+    'students' => 'Estudiantes',
+    'lectures' => 'Clases',
+    'description' => 'Descripción',
+    'by' => 'Por',
+
+    // Website Teachers Page
+    'meetExpertTeachers' => 'Conoce a nuestros profesores expertos',
+    'learnFromProfessionals' => 'Aprende de profesionales experimentados que son apasionados por la educación.',
+    'searchTeachersPlaceholder' => 'Buscar profesores por nombre, materia o universidad...',
+    'search' => 'Buscar',
+    'featuredTeacherMonth' => 'Profesor destacado del mes',
+    'courses' => 'Cursos',
+    'favorites' => 'Favoritos',
+    'joinTeachingCommunity' => 'Únete a nuestra comunidad de enseñanza',
+
+    // Website Profile Page
+    'student' => 'Estudiante',
+    'dashboard' => 'Panel de control',
+    'myCourses' => 'Mis cursos',
+    'myFavorites' => 'Mis favoritos',
+    'myQuizzes' => 'Mis cuestionarios',
+    'settings' => 'Configuración',
+    'completed' => 'Completado',
+    'certificates' => 'Certificados',
+    'continueLearning' => 'Continuar aprendiendo',
+    'viewAll' => 'Ver todo',
+    'noActiveCourses' => 'No hay cursos activos',
+    'noAchievementsYet' => 'Aún no hay logros',
+
+    // Website My Courses Page
+    'myCoursesTitle' => 'Mis cursos',
+    'progress' => 'Progreso',
+    'noCoursesYet' => 'Aún no hay cursos',
+    'enrollToStart' => 'Inscríbete en cursos para empezar a aprender',
+
+    // Website Favorites Page
+    'myFavoritesTitle' => 'Mis favoritos',
+    'favoriteCourses' => 'Cursos favoritos',
+    'noFavoriteCourses' => 'No hay cursos favoritos',
+    'addCoursesToFavorites' => 'Añade cursos a tus favoritos',
+    'favoriteTeachers' => 'Profesores favoritos',
+    'noFavoriteTeachers' => 'No hay profesores favoritos',
+    'addTeachersToFavorites' => 'Añade profesores a tus favoritos',
+
+    // Website Edit Profile Page
+    'editProfile' => 'Editar perfil',
+    'clickCameraToChange' => 'Haz clic en el icono de la cámara para cambiar el avatar',
+    'username' => 'Nombre de usuario',
+    'phoneNumber' => 'Número de teléfono',
+
+    // Components
+    'mindSpark' => 'MindSpark',
+    'notifications' => 'Notificaciones',
+    'login' => 'Iniciar sesión',
+    'signUp' => 'Registrarse',
+    'teacherProfile' => 'Perfil del profesor',
+    'quickLinks' => 'Enlaces rápidos',
+    'privacyPolicy' => 'Política de privacidad',
+    'termsOfService' => 'Términos de servicio',
+    'cookiePolicy' => 'Política de cookies',
+
+    // Course Requirements
+    'aBrain' => 'Un cerebro',
+    'calculator' => 'Calculadora',
+    'penAndPaper' => 'Lápiz y papel',
+    'laptop' => 'Portátil',
+    'textbook' => 'Libro de texto',
+    'internetAccess' => 'Acceso a internet',
+    'notebook' => 'Cuaderno',
+    'headphones' => 'Auriculares',
+    'other' => 'Otro',
+
+    // File Types
+    'pdf' => 'PDF',
+    'video' => 'Video',
+
+    // Quiz
+    'showQuiz' => 'Mostrar cuestionario',
+    'showLectures' => 'Mostrar clases',
+    'showSubscriptions' => 'Mostrar suscripciones',
+    'updateQuiz' => 'Actualizar cuestionario',
+
+    // Error Messages
+    'failedToLoadResults' => 'Error al cargar los resultados',
+
+    // Scoring System
+    'sparks' => 'Chispas',
+    'sparkies' => 'Sparkies',
 ];

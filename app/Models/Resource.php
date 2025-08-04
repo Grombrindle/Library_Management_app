@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ResourceRating;
 use Illuminate\Support\Facades\Auth;
+use getID3;
 
 class Resource extends Model
 {
@@ -31,7 +32,6 @@ class Resource extends Model
         'created_at',
         'updated_at'
     ];
-
 
     public function ratings()
     {
@@ -138,7 +138,7 @@ class Resource extends Model
         $filePath = public_path($value);
         if (!file_exists($filePath)) return null;
         try {
-            $getID3 = new \getID3;
+            $getID3 = new getID3();
             $info = $getID3->analyze($filePath);
             if (isset($info['playtime_seconds'])) {
                 return (float) $info['playtime_seconds'];
@@ -189,7 +189,7 @@ class Resource extends Model
         if (!file_exists($filePath)) return null;
         try {
             // Use getID3 if available
-            $getID3 = new \getID3;
+            $getID3 = new getID3();
             $info = $getID3->analyze($filePath);
             if (isset($info['pdf']['pages'])) {
                 return (int) $info['pdf']['pages'];
@@ -209,6 +209,7 @@ class Resource extends Model
     }
 
     protected $appends = [
+        'subjectName',
         'rating',
         'rating_breakdown',
         'FeaturedRatings',

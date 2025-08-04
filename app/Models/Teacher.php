@@ -138,7 +138,14 @@ class Teacher extends Model
 
     function getCourseNamesAttribute()
     {
-        return $this->courses()->get()->pluck('name');
+        $courses = $this->courses()->pluck('name');
+        $coursesNames = "";
+        foreach ($courses as $course) {
+            $coursesNames .= $course;
+            if($course)
+                $coursesNames .= " - ";
+        }
+        return rtrim($coursesNames, ' - ');
     }
     function getCoursesNumAttribute()
     {

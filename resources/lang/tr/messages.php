@@ -239,4 +239,136 @@ return [
     'pending' => 'BEKLEMEDE',
     'approved' => 'ONAYLANDI',
     'rejected' => 'REDDEDİLDİ',
+
+    // Auth pages - missing translations
+    'dontHaveAccount' => 'Hesabınız yok mu?',
+    'register' => 'Kayıt ol',
+    'areYouTeacherOrAdmin' => 'Öğretmen veya yönetici misiniz?',
+    'areUser' => 'Kullanıcı mısınız?',
+    'loginHere' => 'Buradan giriş yapın',
+    'clickHere' => 'Buraya tıklayın',
+    'alreadyHaveAccount' => 'Zaten hesabınız var mı?',
+    'login' => 'Giriş yap',
+    'confirmPassword' => 'Şifreyi onayla',
+    'password' => 'Şifre',
+    'username' => 'Kullanıcı adı',
+
+    // Website pages - missing translations
+    'discoverLearningPath' => 'Öğrenme yolculuğunuzu keşfedin',
+    'joinCommunity' => 'Bilgi ve becerilerinizi geliştirmek için öğrenciler ve uzman öğretmenler topluluğumuza katılın.',
+    'exploreCourses' => 'Kursları keşfedin',
+    'activeStudents' => 'Aktif öğrenciler',
+    'engagedLearning' => 'Platformumuzda öğrenmeye odaklanmış',
+    'expertTeachers' => 'Uzman öğretmenler',
+    'sharingKnowledge' => 'Bilgi ve tutkularını paylaşan',
+    'courseLibrary' => 'Kurs kütüphanesi',
+    'wideRangeSubjects' => 'Geniş bir konu yelpazesini kapsayan',
+    'featuredCourses' => 'Öne çıkan kurslar',
+    'meetTopTeachers' => 'En iyi öğretmenlerimizle tanışın',
+    'readyToLearn' => 'Öğrenmeye hazır mısınız?',
+    'joinThousands' => 'Zaten bizimle öğrenen ve büyüyen binlerce öğrenciye katılın.',
+    'getStartedNow' => 'Şimdi başlayın',
+
+    // Website Courses Page
+    'exploreCourseLibrary' => 'Kurs kütüphanemizi keşfedin',
+    'findPerfectCourse' => 'Bilgi ve becerilerinizi geliştirmek için endüstri uzmanları tarafından öğretilen mükemmel kursu bulun.',
+    'searchCoursesTeachers' => 'Kurs, öğretmen ara...',
+    'all' => 'Tümü',
+    'scientific' => 'Fen',
+    'literary' => 'Edebiyat',
+    'topRatedCourse' => 'En çok puan alan kurs',
+    'topRated' => 'En çok puan alan',
+    'notRatedYet' => 'Henüz puanlanmamış',
+    'allCourses' => 'Tüm kurslar',
+    'noCoursesFound' => 'Kurs bulunamadı',
+    'close' => 'Kapat',
+    'rating' => 'Puanlama',
+    'students' => 'Öğrenciler',
+    'lectures' => 'Dersler',
+    'description' => 'Açıklama',
+    'by' => 'Tarafından',
+
+    // Website Teachers Page
+    'meetExpertTeachers' => 'Uzman öğretmenlerimizle tanışın',
+    'learnFromProfessionals' => 'Eğitime tutkulu deneyimli profesyonellerden öğrenin.',
+    'searchTeachersPlaceholder' => 'Öğretmenleri isim, konu veya üniversiteye göre ara...',
+    'search' => 'Ara',
+    'featuredTeacherMonth' => 'Ayın öne çıkan öğretmeni',
+    'courses' => 'Kurslar',
+    'favorites' => 'Favoriler',
+    'joinTeachingCommunity' => 'Öğretim topluluğumuza katılın',
+
+    // Website Profile Page
+    'student' => 'Öğrenci',
+    'dashboard' => 'Kontrol Paneli',
+    'myCourses' => 'Kurslarım',
+    'myFavorites' => 'Favorilerim',
+    'myQuizzes' => 'Sınavlarım',
+    'settings' => 'Ayarlar',
+    'completed' => 'Tamamlandı',
+    'certificates' => 'Sertifikalar',
+    'continueLearning' => 'Öğrenmeye devam et',
+    'viewAll' => 'Tümünü görüntüle',
+    'noActiveCourses' => 'Aktif kurs yok',
+    'noAchievementsYet' => 'Henüz başarı yok',
+
+    // Website My Courses Page
+    'myCoursesTitle' => 'Kurslarım',
+    'progress' => 'İlerleme',
+    'noCoursesYet' => 'Henüz kurs yok',
+    'enrollToStart' => 'Öğrenmeye başlamak için kurslara kayıt olun',
+
+    // Website Favorites Page
+    'myFavoritesTitle' => 'Favorilerim',
+    'favoriteCourses' => 'Favori kurslar',
+    'noFavoriteCourses' => 'Favori kurs yok',
+    'addCoursesToFavorites' => 'Kursları favorilerinize ekleyin',
+    'favoriteTeachers' => 'Favori öğretmenler',
+    'noFavoriteTeachers' => 'Favori öğretmen yok',
+    'addTeachersToFavorites' => 'Öğretmenleri favorilerinize ekleyin',
+
+    // Website Edit Profile Page
+    'editProfile' => 'Profili düzenle',
+    'clickCameraToChange' => 'Avatarı değiştirmek için kamera simgesine tıklayın',
+    'username' => 'Kullanıcı adı',
+    'phoneNumber' => 'Telefon numarası',
+
+    // Components
+    'mindSpark' => 'MindSpark',
+    'notifications' => 'Bildirimler',
+    'login' => 'Giriş yap',
+    'signUp' => 'Kayıt ol',
+    'teacherProfile' => 'Öğretmen profili',
+    'quickLinks' => 'Hızlı bağlantılar',
+    'privacyPolicy' => 'Gizlilik politikası',
+    'termsOfService' => 'Hizmet şartları',
+    'cookiePolicy' => 'Çerez politikası',
+
+    // Course Requirements
+    'aBrain' => 'Bir beyin',
+    'calculator' => 'Hesap makinesi',
+    'penAndPaper' => 'Kalem ve kağıt',
+    'laptop' => 'Dizüstü bilgisayar',
+    'textbook' => 'Ders kitabı',
+    'internetAccess' => 'İnternet erişimi',
+    'notebook' => 'Defter',
+    'headphones' => 'Kulaklık',
+    'other' => 'Diğer',
+
+    // File Types
+    'pdf' => 'PDF',
+    'video' => 'Video',
+
+    // Quiz
+    'showQuiz' => 'Sınavı göster',
+    'showLectures' => 'Dersleri göster',
+    'showSubscriptions' => 'Abonelikleri göster',
+    'updateQuiz' => 'Sınavı güncelle',
+
+    // Error Messages
+    'failedToLoadResults' => 'Sonuçlar yüklenemedi',
+
+    // Scoring System
+    'sparks' => 'Kıvılcımlar',
+    'sparkies' => 'Sparkies',
 ];

@@ -14,6 +14,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HelpfulController;
+use App\Http\Controllers\SavedMessageController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\WatchlistController;
 
@@ -51,6 +52,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/changepassword', [UserController::class, 'updatePassword']);
     Route::put('/changenumber', [UserController::class, 'updateNumber']);
     Route::put('/changeusername', [UserController::class, 'updateUsername']);
+    Route::put('/changeavatar', [UserController::class, 'updateAvatar']);
 
     Route::get('/getteacher/{id}', [TeacherController::class, 'fetch']);
     Route::get('/getteachersubjects/{id}', [TeacherController::class, 'fetchSubjects']);
@@ -88,8 +90,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallcoursessubscribed', [CourseController::class, 'fetchAllSubscribed']);
     Route::get('/getallcoursesusersubscribed', [CourseController::class, 'fetchAllUserSubscribed']);
     Route::get('/getallcoursesrecommended', [CourseController::class, 'fetchAllRecommended']);
+    Route::get('/getallhomepage', [CourseController::class, 'fetchHomePage']);
     Route::get('/favoritecourse/{id}', [CourseController::class, 'checkFavoriteCourse']);
     Route::post('/ratecourse/{id}', [CourseController::class, 'rate']);
+    Route::post('/course/{id}/purchase', [CourseController::class, 'purchaseCourse']);
+    Route::get('/courses/overview', [CourseController::class, 'coursesOverview']);
+    // Route::post('/course/{course}/set-price', [CourseController::class, 'setCoursePrice']);
 
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
@@ -146,6 +152,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getlectureratings/{id}', [LectureController::class, 'fetchRatings']);
     Route::get('/getresourceratings/{id}', [ResourceController::class, 'fetchRatings']);
     Route::get('/getteacherratings/{id}', [TeacherController::class, 'fetchRatings']);
+
+    Route::post('/togglesaved', [SavedMessageController::class, 'toggleSaved']);
 
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');

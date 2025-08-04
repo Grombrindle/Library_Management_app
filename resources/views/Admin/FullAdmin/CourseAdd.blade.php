@@ -46,6 +46,40 @@
                 <input type="hidden" name="requirements" id="requirements-hidden">
             </div>
             <!-- End Requirements Section -->
+            <!-- Price Section -->
+            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
+                <label for="course_price" style="margin-bottom:5%;">
+                    Course Price:
+                </label>
+                <div style="position:relative; width: fit-content; height:fit-content;">
+                    <input type="number" name="course_price" id="course_price" value="{{ old('course_price', 0) }}"
+                        min="0" step="0.01" autocomplete="off"
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content; padding-left:20px;" required>
+                    <span style="position: absolute; left: 8px; top: 60%; transform: translateY(-50%); font-size:40%; color: black; pointer-events: none;">$</span>
+                </div>
+            </div>
+            @error('course_price')
+                <div class="error">{{ $message }}</div>
+            @enderror
+
+            <!-- Price Toggle Section -->
+            <div style="margin-top: 20px; display: flex; align-items: center; flex-direction:column; justify-content: space-between; margin-left:auto; margin-right:auto; width:fit-content">
+                <div>
+                    <label for="course_paid" style="font-weight: bold;">
+                        Course Status
+                    </label>
+                    <br>
+                    <span style="margin-left: 10px;">
+                        {{ old('course_paid') ? 'Purchaseable with Sparkies' : 'Unurchaseable with Sparkies' }}
+                    </span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" name="course_paid" id="course_paid" value="1" {{ old('course_paid') ? 'checked' : '' }}>
+                    <span class="slider round course-switch"></span>
+                </label>
+            </div>
+            <br>
+
             <label for="subject">
                 {{ __('messages.subject') }}: <br>
             </label>
@@ -144,6 +178,11 @@
         font-weight: bold;
         box-shadow: 0 4px 12px rgba(85,81,132,0.15);
     }
+
+    /* Course switch styling */
+    input:checked + .course-switch {
+        background-color: #555184;
+    }
 </style>
 
 <script>
@@ -202,10 +241,13 @@
     function updateSourcesJson() {
         const names = document.querySelectorAll('.source-name');
         const links = document.querySelectorAll('.source-link');
-        const sources = {};
+        const sources = [];
         for (let i = 0; i < names.length; i++) {
             if (names[i].value && links[i].value) {
-                sources[names[i].value] = links[i].value;
+                sources.push({
+                    name: names[i].value,
+                    link: links[i].value
+                });
             }
         }
         document.getElementById('sources-json').value = JSON.stringify(sources);
@@ -229,5 +271,22 @@
         }
         // Ensure requirements are updated before submit
         document.querySelector('form').addEventListener('submit', updateRequirementsHidden);
+    });
+
+    // Course switch functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const courseSwitch = document.getElementById('course_paid');
+        const statusSpan = courseSwitch.parentElement.parentElement.querySelector('span');
+
+        function updateStatus() {
+            if (courseSwitch.checked) {
+                statusSpan.textContent = 'Purchaseable with Sparkies';
+            } else {
+                statusSpan.textContent = 'Unpurchaseable with Sparkies';
+            }
+        }
+
+        courseSwitch.addEventListener('change', updateStatus);
+        updateStatus(); // Set initial status
     });
 </script>

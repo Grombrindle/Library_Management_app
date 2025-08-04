@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('number')->unique();
             $table->string('password');
             $table->boolean('isBanned');
+            $table->integer('avatar')->default(0);
 
             $table->integer('sparks')->default(0);
             $table->integer('sparkies')->default(0);

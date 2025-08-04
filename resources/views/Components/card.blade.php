@@ -53,11 +53,11 @@
     }
 
     .circle {
-        filter: blur(50px);
+        filter: blur(30px);
         position: absolute;
         width: 450px;
         height: 450px;
-        background-color: #2E3061;
+        background: radial-gradient(#2E3061 0%, #fc5c7c98 100%);
         border-radius: 50%;
         pointer-events: none;
         transform: translate(-50%, -50%);

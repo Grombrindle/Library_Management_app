@@ -82,6 +82,7 @@ class User extends Authenticatable
         'password',
         'isBanned',
         'counter',
+        'avatar',
         'last_screenshot_at',
         'remember_token',
         'created_at',

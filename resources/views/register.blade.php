@@ -418,7 +418,8 @@
 
 
     <div style="margin-top:15px;text-align:center">
-        <a href="{{ route('web.login') }}" style="color:var(--text-color)">{{__('messages.areUser')}}</a>
+        <span>{{ __('messages.areUser') }}</span>
+        <a href="{{ route('web.login') }}" style="color:var(--text-color)">{{__('messages.clickHere')}}</a>
     </div>
     </div>
 

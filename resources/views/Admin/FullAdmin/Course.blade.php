@@ -23,8 +23,8 @@
                     $sources = is_array($course->sources) ? $course->sources : json_decode($course->sources, true);
                 @endphp
                 @if ($sources)
-                    @foreach ($sources as $name => $link)
-                        <a href="{{ $link }}" target="_blank" rel="noopener noreferrer">{{ $name }}</a>
+                    @foreach ($sources as $source)
+                        <a href="{{ $source['link'] }}" target="_blank" rel="noopener noreferrer">{{ $source['name'] }}</a>
                         @if (!$loop->last)
                             ,
                         @endif

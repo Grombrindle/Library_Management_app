@@ -33,13 +33,13 @@
             <section class="py-12 bg-[#f8f8fa]">
                 <div class="container mx-auto px-6">
                     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        @foreach(App\Models\Teacher::all() as $teacher)
+                        @foreach(App\Models\Teacher::withCount('favoritedByUsers')->get() as $teacher)
                             <x-web-teacher-card :teacher="$teacher" />
                         @endforeach
                     </div>
 
                     <div class="mt-12">
-                        {{ App\Models\Teacher::paginate(12)->appends(request()->query())->links() }}
+                        {{ App\Models\Teacher::withCount('favoritedByUsers')->paginate(12)->appends(request()->query())->links() }}
                     </div>
                 </div>
             </section>

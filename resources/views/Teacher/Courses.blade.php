@@ -87,6 +87,11 @@
                     <div class="chunk">
                         @foreach ($chunk as $course)
                                     <x-card link="course/{{ $course->id }}" image="{{ asset($course->image) }}" object="Course">
+                                        <!-- Price Display -->
+                                        <div style="position: absolute; top: 10px; {{ app()->getLocale() === 'ar' ? 'left: 10px;' : 'right: 10px;' }} background: rgba(0, 0, 0, 0.7); color: white; padding: 5px 10px; border-radius: 15px; font-weight: bold; font-size: 14px; z-index: 10;">
+                                            ${{ number_format($course->price ?? 0, 2) }}
+                                        </div>
+
                                         ● {{ __('messages.courseName') }}: {{ $course->name }}<br>
                                         ● {{ __('messages.forSubject') }}: {{ $course->subject->name }}<br>
                                         ● {{ __('messages.description') }}: {{ $course->description }}<br>

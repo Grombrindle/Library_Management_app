@@ -25,7 +25,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 
-Route::middleware('auth.api')->get('/user', function (Request $request) {
+Route::middleware('api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get(
@@ -62,7 +62,12 @@ Route::get('/webcourses', function (\Illuminate\Http\Request $request) {
 Route::view('/edit-profile', 'website.webEditProfile')->name('web.profile.edit');
 Route::view('/favorites', 'website.webFavorites')->name('web.favorites');
 Route::view('/my-courses', 'website.webMyCourses')->name('web.my-courses');
-Route::view('/profile', 'website.webProfile')->name('web.profile');
+Route::get('/profile', function() {
+    if(Auth::user()) {
+        return view('Website/webProfile');
+    }
+    return redirect()->route('web.login');
+})->name('web.profile');
 Route::view('/webteachers', 'website.webTeachers')->name('web.teachers');
 
 

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
-use Smalot\PdfParser\Parser;
+// use Smalot\PdfParser\Parser; // Using full namespace instead
 use Illuminate\Support\Facades\DB;
 use getID3;
 
@@ -308,7 +308,7 @@ class LectureController extends Controller
             $pdfName = time() . '_' . $pdf->getClientOriginalName();
             $pdf->move($pdfDir, $pdfName);
             $filePathPdf = 'Files/PDFs/' . $pdfName;
-            $parser = new Parser();
+            $parser = new \Smalot\PdfParser\Parser();
             $pdf = $parser->parseFile(public_path($filePathPdf));
             $pages = $pdf->getPages();
             $pageCount = count($pages);

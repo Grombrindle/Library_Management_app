@@ -7,6 +7,7 @@ use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class CourseController extends Controller
 {
@@ -183,6 +184,69 @@ class CourseController extends Controller
         ]);
     }
 
+    public function fetchHomePage()
+    {
+        // Use caching to improve performance for frequently accessed data
+        $cacheKey = 'homepage_courses_' . (Auth::id() ?? 'guest');
+        $cacheDuration = 300; // 5 minutes
+
+        return Cache::remember($cacheKey, $cacheDuration, function () {
+            // Get recommended courses (using the existing algorithm) - only essential fields
+            $recommendedCourses = Course::select(['id', 'name', 'image'])
+                ->withCount(['users', 'ratings', 'lectures'])
+                ->withAvg('ratings', 'rating')
+                ->orderByDesc(DB::raw('
+                    (
+                        (COALESCE(ratings_avg_rating, 0) * 0.5) +
+                        (ratings_count * 0.2) +
+                        (users_count * 0.2) +
+                        (lectures_count * 0.1)
+                    ) *
+                    (1 + (COALESCE(ratings_avg_rating, 0) / 5))
+                '))
+                ->limit(7)
+                ->get();
+
+            // Get top-rated courses - only essential fields
+            $topRatedCourses = Course::select(['id', 'name', 'image'])
+                ->withAvg('ratings', 'rating')
+                ->orderByDesc('ratings_avg_rating')
+                ->limit(7)
+                ->get();
+
+            // Get most-subscribed courses - only essential fields
+            $mostSubscribedCourses = Course::select(['id', 'name', 'image'])
+                ->withCount('users')
+                ->orderByDesc('users_count')
+                ->limit(7)
+                ->get();
+
+            // Get recent courses - only essential fields
+            $recentCourses = Course::select(['id', 'name', 'image'])
+                ->orderByDesc('created_at')
+                ->limit(7)
+                ->get();
+
+            // Get user-subscribed courses (if user is authenticated) - only essential fields
+            $userSubscribedCourses = null;
+            if (Auth::check()) {
+                $userSubscribedCourses = Auth::user()->courses()
+                    ->select('courses.id', 'courses.name', 'courses.image')
+                    ->limit(7)
+                    ->get();
+            }
+
+            return response()->json([
+                'success' => true,
+                'recommended' => $recommendedCourses,
+                'top_rated' => $topRatedCourses,
+                'most_subscribed' => $mostSubscribedCourses,
+                'recent' => $recentCourses,
+                'user_subscribed' => $userSubscribedCourses,
+            ]);
+        });
+    }
+
     public function checkFavoriteCourse($id)
     {
         $isFavorited = Auth::user()->favoriteCourses()
@@ -233,6 +297,10 @@ class CourseController extends Controller
 
     public function add(Request $request)
     {
+        if ($request->input('course_price') <= 0) {
+            return back()->withErrors(['course_price' => 'Course price must be greater than 0']);
+        }
+
         $imagePath = "Images/Courses/default.png";
         $requestImagePath = null;
         if (!is_null($request->file('object_image'))) {
@@ -269,6 +337,19 @@ class CourseController extends Controller
                 $requirements = $requirementsInput;
             }
 
+            // Calculate sparkies price based on course price
+            $sparkiesPrice = 0;
+            if ($request->input('course_paid')) {
+                $coursePrice = $request->input('course_price');
+                if ($coursePrice <= 5) {
+                    $sparkiesPrice = 1;
+                } elseif ($coursePrice <= 10) {
+                    $sparkiesPrice = 2;
+                } else {
+                    $sparkiesPrice = 3;
+                }
+            }
+
             $course = Course::make([
                 'name' => $request->input('course_name'),
                 'teacher_id' => $request->input('teacher'),
@@ -277,6 +358,9 @@ class CourseController extends Controller
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
                 'sources' => $sources ? json_encode($sources) : null,
+                'price' => $request->input('course_price'),
+                'sparkies' => $request->input('course_paid') ? true : false,
+                'sparkiesPrice' => $sparkiesPrice,
                 'requirements' => $requirements
             ]);
             $course->image = $imagePath;
@@ -304,15 +388,30 @@ class CourseController extends Controller
                 } else {
                     $requirements = $requirementsInput;
                 }
+                // Calculate sparkies price based on course price for course request
+                $sparkiesPrice = 0;
+                if ($request->input('course_paid')) {
+                    $coursePrice = $request->input('course_price');
+                    if ($coursePrice <= 5) {
+                        $sparkiesPrice = 1;
+                    } elseif ($coursePrice <= 10) {
+                        $sparkiesPrice = 2;
+                    } else {
+                        $sparkiesPrice = 3;
+                    }
+                }
+
                 $courseRequestData = [
                     'teacher_id' => Auth::user()->teacher_id,
                     'name' => $request->input('course_name'),
                     'description' => $request->input('course_description', null),
                     'subject_id' => $request->input('subject'),
                     'image' => $requestImagePath,
-                    'sources' => json_encode($sources),
+                    'sources' => $sources ? json_encode($sources) : null,
                     'requirements' => $requirements,
-                    'price' => $request->input('price', null),
+                    'price' => $request->input('course_price', null),
+                    'sparkies' => $request->input('course_paid') ? true : false,
+                    'sparkiesPrice' => $sparkiesPrice,
                     'status' => 'pending',
                     'admin_id' => null,
                     'course_id' => $request->input('id'),
@@ -333,6 +432,16 @@ class CourseController extends Controller
     {
         $course = Course::findOrFail($id);
 
+
+        // Handle sources input (stringified JSON or array)
+        $sourcesInput = $request->input('sources', []);
+        if (is_string($sourcesInput)) {
+            $sourcesDecoded = json_decode($sourcesInput, true);
+            $sources = is_array($sourcesDecoded) ? $sourcesDecoded : [];
+        } else {
+            $sources = $sourcesInput;
+        }
+
         if (!is_null($request->file('object_image'))) {
             $file = $request->file('object_image');
             $directory = 'Images/Courses';
@@ -351,9 +460,25 @@ class CourseController extends Controller
 
             $course->image = $path;
         }
+        // Calculate sparkies price based on course price
+        $sparkiesPrice = 0;
+        if ($request->input('course_paid')) {
+            $coursePrice = $request->input('course_price');
+            if ($coursePrice <= 5) {
+                $sparkiesPrice = 1;
+            } elseif ($coursePrice <= 10) {
+                $sparkiesPrice = 2;
+            } else {
+                $sparkiesPrice = 3;
+            }
+        }
+
         $course->name = $request->input('course_name');
         $course->description = $request->input('course_description');
-        $course->sources = json_encode($request->input('sources', []));
+        $course->sources = $sources ? json_encode($sources) : null;
+        $course->price = $request->input('course_price');
+        $course->sparkies = $request->input('course_paid') ? true : false;
+        $course->sparkiesPrice = $sparkiesPrice;
         $course->save();
         $data = ['element' => 'course', 'id' => $id, 'name' => $course->name];
         session(['update_info' => $data]);
@@ -377,5 +502,74 @@ class CourseController extends Controller
         session(['delete_info' => $data]);
         session(['link' => '/courses']);
         return redirect()->route('delete.confirmation');
+    }
+    public function purchaseCourse(Request $request, $id)
+    {
+        $user = Auth::user();
+        $course = Course::find($id);
+
+        if (!$course) {
+            return response()->json(['success' => false, 'message' => 'Course not found'], 404);
+        }
+
+        if ($user->courses()->where('course_id', $id)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Already purchased'], 400);
+        }
+
+        // Check if course is purchasable with sparkies
+        if (!$course->sparkies) {
+            return response()->json(['success' => false, 'message' => 'Course is not purchasable with sparkies'], 400);
+        }
+
+        $sparkiesPrice = (int) $course->sparkiesPrice;
+        if ($user->sparkies < $sparkiesPrice) {
+            return response()->json(['success' => false, 'message' => 'Insufficient sparkies'], 400);
+        }
+
+        // Deduct sparkies and subscribe
+        $user->sparkies -= $sparkiesPrice;
+        $user->save();
+        $user->courses()->attach($id);
+
+        return response()->json(['success' => true, 'message' => 'Course purchased successfully']);
+    }
+
+    /**
+     * Set the price of a course (admin only).
+     */
+    // public function setCoursePrice(Request $request, $courseId)
+    // {
+    //     $user = Auth::user();
+    //     if (!$user || !$user->is_admin) {
+    //         return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+    //     }
+    //     $course = Course::find($courseId);
+    //     if (!$course) {
+    //         return response()->json(['success' => false, 'message' => 'Course not found'], 404);
+    //     }
+    //     $validated = $request->validate([
+    //         'price' => 'required|integer|min:0',
+    //     ]);
+    //     $course->price = $validated['price'];
+    //     $course->save();
+    //     return response()->json(['success' => true, 'message' => 'Course price updated', 'course' => $course]);
+    // }
+
+    /**
+     * Unified endpoint for all course categories.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function coursesOverview()
+    {
+        $recommended = $this->fetchAllRecommended()->getData(true)['courses'] ?? [];
+        $topRated = $this->fetchAllRated()->getData(true)['courses'] ?? [];
+        $recent = $this->fetchAllRecent()->getData(true)['courses'] ?? [];
+        $all = $this->fetchall()->getData(true)['courses'] ?? [];
+        return response()->json([
+            'recommendedCourses' => $recommended,
+            'topRatedCourses' => $topRated,
+            'recentCourses' => $recent,
+            'allCourses' => $all,
+        ]);
     }
 }

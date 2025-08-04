@@ -250,4 +250,136 @@ return [
     'pending' => 'قيد الانتظار',
     'approved' => 'موافق عليه',
     'rejected' => 'مرفوض',
+
+    // Auth pages - missing translations
+    'dontHaveAccount' => 'ليس لديك حساب؟',
+    'register' => 'تسجيل',
+    'areYouTeacherOrAdmin' => 'هل أنت معلم أو مدير؟',
+    'areUser' => 'هل أنت مستخدم؟',
+    'loginHere' => 'تسجيل الدخول هنا',
+    'clickHere' => 'انقر هنا',
+    'alreadyHaveAccount' => 'لديك حساب بالفعل؟',
+    'login' => 'تسجيل الدخول',
+    'confirmPassword' => 'تأكيد كلمة المرور',
+    'password' => 'كلمة المرور',
+    'username' => 'اسم المستخدم',
+
+    // Website pages - missing translations
+    'discoverLearningPath' => 'اكتشف مسار تعلمك',
+    'joinCommunity' => 'انضم إلى مجتمعنا من المتعلمين والمعلمين الخبراء لتعزيز معرفتك ومهاراتك.',
+    'exploreCourses' => 'استكشف الدورات',
+    'activeStudents' => 'الطلاب النشطون',
+    'engagedLearning' => 'منخرطون في التعلم على منصتنا',
+    'expertTeachers' => 'المعلمون الخبراء',
+    'sharingKnowledge' => 'يشاركون معرفتهم وشغفهم',
+    'courseLibrary' => 'مكتبة الدورات',
+    'wideRangeSubjects' => 'تغطي مجموعة واسعة من المواد',
+    'featuredCourses' => 'الدورات المميزة',
+    'meetTopTeachers' => 'تعرف على أفضل معلمينا',
+    'readyToLearn' => 'مستعد للبدء في التعلم؟',
+    'joinThousands' => 'انضم إلى آلاف الطلاب الذين يتعلمون وينمون معنا بالفعل.',
+    'getStartedNow' => 'ابدأ الآن',
+
+    // Website Courses Page
+    'exploreCourseLibrary' => 'استكشف مكتبة دوراتنا',
+    'findPerfectCourse' => 'اعثر على الدورة المثالية لتوسيع معرفتك ومهاراتك، يدرسها خبراء الصناعة.',
+    'searchCoursesTeachers' => 'البحث في الدورات والمعلمين...',
+    'all' => 'الكل',
+    'scientific' => 'علمي',
+    'literary' => 'أدبي',
+    'topRatedCourse' => 'أعلى دورة تقييماً',
+    'topRated' => 'أعلى تقييماً',
+    'notRatedYet' => 'لم يتم التقييم بعد',
+    'allCourses' => 'جميع الدورات',
+    'noCoursesFound' => 'لم يتم العثور على دورات',
+    'close' => 'إغلاق',
+    'rating' => 'التقييم',
+    'students' => 'الطلاب',
+    'lectures' => 'المحاضرات',
+    'description' => 'الوصف',
+    'by' => 'بواسطة',
+
+    // Website Teachers Page
+    'meetExpertTeachers' => 'تعرف على معلمينا الخبراء',
+    'learnFromProfessionals' => 'تعلم من المحترفين ذوي الخبرة الذين شغوفون بالتعليم.',
+    'searchTeachersPlaceholder' => 'البحث في المعلمين بالاسم أو المادة أو الجامعة...',
+    'search' => 'بحث',
+    'featuredTeacherMonth' => 'معلم الشهر المميز',
+    'courses' => 'الدورات',
+    'favorites' => 'المفضلة',
+    'joinTeachingCommunity' => 'انضم إلى مجتمع التدريس',
+
+    // Website Profile Page
+    'student' => 'طالب',
+    'dashboard' => 'لوحة التحكم',
+    'myCourses' => 'دوراتي',
+    'myFavorites' => 'مفضلتي',
+    'myQuizzes' => 'اختباراتي',
+    'settings' => 'الإعدادات',
+    'completed' => 'مكتمل',
+    'certificates' => 'الشهادات',
+    'continueLearning' => 'استمر في التعلم',
+    'viewAll' => 'عرض الكل',
+    'noActiveCourses' => 'لا توجد دورات نشطة',
+    'noAchievementsYet' => 'لا توجد إنجازات بعد',
+
+    // Website My Courses Page
+    'myCoursesTitle' => 'دوراتي',
+    'progress' => 'التقدم',
+    'noCoursesYet' => 'لا توجد دورات بعد',
+    'enrollToStart' => 'سجل في الدورات لبدء التعلم',
+
+    // Website Favorites Page
+    'myFavoritesTitle' => 'مفضلتي',
+    'favoriteCourses' => 'الدورات المفضلة',
+    'noFavoriteCourses' => 'لا توجد دورات مفضلة',
+    'addCoursesToFavorites' => 'أضف دورات إلى مفضلتك',
+    'favoriteTeachers' => 'المعلمون المفضلون',
+    'noFavoriteTeachers' => 'لا يوجد معلمون مفضلون',
+    'addTeachersToFavorites' => 'أضف معلمين إلى مفضلتك',
+
+    // Website Edit Profile Page
+    'editProfile' => 'تعديل الملف الشخصي',
+    'clickCameraToChange' => 'انقر على أيقونة الكاميرا لتغيير الصورة الرمزية',
+    'username' => 'اسم المستخدم',
+    'phoneNumber' => 'رقم الهاتف',
+
+    // Components
+    'mindSpark' => 'ميند سبارك',
+    'notifications' => 'الإشعارات',
+    'login' => 'تسجيل الدخول',
+    'signUp' => 'إنشاء حساب',
+    'teacherProfile' => 'الملف الشخصي للمعلم',
+    'quickLinks' => 'روابط سريعة',
+    'privacyPolicy' => 'سياسة الخصوصية',
+    'termsOfService' => 'شروط الخدمة',
+    'cookiePolicy' => 'سياسة ملفات تعريف الارتباط',
+
+    // Course Requirements
+    'aBrain' => 'دماغ',
+    'calculator' => 'آلة حاسبة',
+    'penAndPaper' => 'قلم وورقة',
+    'laptop' => 'حاسوب محمول',
+    'textbook' => 'كتاب مدرسي',
+    'internetAccess' => 'الوصول للإنترنت',
+    'notebook' => 'دفتر ملاحظات',
+    'headphones' => 'سماعات رأس',
+    'other' => 'أخرى',
+
+    // File Types
+    'pdf' => 'PDF',
+    'video' => 'فيديو',
+
+    // Quiz
+    'showQuiz' => 'عرض الاختبار',
+    'showLectures' => 'عرض المحاضرات',
+    'showSubscriptions' => 'عرض الاشتراكات',
+    'updateQuiz' => 'تحديث الاختبار',
+
+    // Error Messages
+    'failedToLoadResults' => 'فشل في تحميل النتائج',
+
+    // Scoring System
+    'sparks' => 'شرارات',
+    'sparkies' => 'سباركيز',
 ];

@@ -239,57 +239,6 @@
         height: 100%;
     }
 
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
-    }
-
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: .4s;
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        transition: .4s;
-    }
-
-    input:checked+.slider {
-        background-color: #f44336;
-    }
-
-    input:checked+.slider:before {
-        transform: translateX(26px);
-    }
-
-    .slider.round {
-        border-radius: 34px;
-    }
-
-    .slider.round:before {
-        border-radius: 50%;
-    }
-
     .edit-card {
         background: var(--card-bg);
         margin-top: clamp(1%, 2vw, 2%);
@@ -604,18 +553,44 @@
             }
         }
         document.querySelectorAll(
-            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
+            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], textarea").forEach(
             input => {
                 initialValues[input.name] = input.value;
             });
 
+        // Store initial values for checkboxes
+        document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+            initialValues[checkbox.name] = checkbox.checked;
+        });
+
+        // Store initial value for sources JSON
+        const sourcesJsonInput = document.getElementById('sources-json');
+        if (sourcesJsonInput) {
+            initialValues['sources'] = sourcesJsonInput.value;
+        }
+
         function checkForChanges() {
             let hasChanged = false;
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
+                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], textarea").forEach(
                 input => {
                     if (input.value !== initialValues[input.name]) hasChanged = true;
                 });
+
+            // Check checkboxes (including course_paid switch)
+            document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                const initialValue = initialValues[checkbox.name];
+                if (checkbox.checked !== (initialValue === '1' || initialValue === true)) {
+                    hasChanged = true;
+                }
+            });
+
+            // Check sources JSON
+            const sourcesJsonInput = document.getElementById('sources-json');
+            if (sourcesJsonInput && sourcesJsonInput.value !== initialValues['sources']) {
+                hasChanged = true;
+            }
+
             const bannedCheckbox = document.getElementById('isBanned'); // Changed to match HTML id
             if (bannedCheckbox) {
                 if (bannedCheckbox.checked !== initialBannedStatus) {
@@ -697,9 +672,14 @@
             document.getElementById('selected_objects_input').value = JSON.stringify(Array.from(selectedSubjects));
         }
         document.querySelectorAll(
-            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], select, textarea"
         ).forEach(input => {
             input.addEventListener("input", checkForChanges);
+        });
+
+        // Add event listeners for checkboxes
+        document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+            checkbox.addEventListener("change", checkForChanges);
         });
         submitButton.disabled = true;
     </script>
@@ -711,30 +691,68 @@
             let initialValues = {};
 
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], select, textarea"
             ).forEach(
                 input => {
                     initialValues[input.name] = input.value;
                 });
 
+            // Store initial values for checkboxes
+            document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                initialValues[checkbox.name] = checkbox.checked;
+            });
+
+            // Store initial value for sources JSON - delay to ensure sources are properly initialized
+            setTimeout(() => {
+                const sourcesJsonInput = document.getElementById('sources-json');
+                if (sourcesJsonInput) {
+                    initialValues['sources'] = sourcesJsonInput.value;
+                }
+            }, 150);
+
             function checkForChanges() {
                 let hasChanged = false;
                 document.querySelectorAll(
-                    "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+                    "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], select, textarea"
                 ).forEach(
                     input => {
                         if (input.value !== initialValues[input.name]) hasChanged = true;
                     });
+
+                // Check checkboxes (including course_paid switch)
+                document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                    const initialValue = initialValues[checkbox.name];
+                    if (checkbox.checked !== (initialValue === '1' || initialValue === true)) {
+                        hasChanged = true;
+                    }
+                });
+
+                // Check sources JSON
+                const sourcesJsonInput = document.getElementById('sources-json');
+                if (sourcesJsonInput && sourcesJsonInput.value !== initialValues['sources']) {
+                    // hasChanged = true;
+                }
+
                 submitButton.disabled = !hasChanged;
             }
 
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], select, textarea").forEach(
+                "input[type='text'], input[type='password'], input[type='file'], input[type='number'], select, textarea").forEach(
                 input => {
                     input.addEventListener("input", checkForChanges);
                     input.addEventListener("change", checkForChanges);
                 });
+
+            // Add event listeners for checkboxes
+            document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                checkbox.addEventListener("change", checkForChanges);
+            });
             submitButton.disabled = true;
+
+            // Global function to trigger change detection (for sources updates)
+            window.triggerEditCardChangeDetection = function() {
+                checkForChanges();
+            };
         });
     </script>
 @endif

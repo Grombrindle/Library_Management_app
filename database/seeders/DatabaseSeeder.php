@@ -89,9 +89,9 @@ class DatabaseSeeder extends Seeder
                 'image' => 'Images/Courses/default.png',
 
                 'sources' => json_encode([
-                    'Course Introduction' => fake()->url(),
-                    'Basic Concepts' => fake()->url(),
-                    'Advanced Topics' => fake()->url(),
+                    ['name' => 'Course Introduction', 'link' => fake()->url()],
+                    ['name' => 'Basic Concepts', 'link' => fake()->url()],
+                    ['name' => 'Advanced Topics', 'link' => fake()->url()],
                 ]),
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
@@ -215,7 +215,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'A special course for the seeded teacher.',
             'image' => 'Images/Courses/default.png',
             'sources' => json_encode([
-                'Course Introduction' => 'https://example.com/intro',
+                ['name' => 'Course Introduction', 'link' => 'https://example.com/intro'],
             ]),
         ]);
         // Create a lecture for this course
@@ -248,6 +248,7 @@ class DatabaseSeeder extends Seeder
             'number' => 999999993,
             'password' => Hash::make('password'),
             'isBanned' => 0,
+            'sparkies' => 5,
         ]);
 
         $this->call(SubjectSeeder::class);
@@ -261,5 +262,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TaskSeeder::class);
         $this->call(WatchlistSeeder::class);
         $this->call(HelpfulSeeder::class);
+        $this->call(SavedMessageSeeder::class);
     }
 }
