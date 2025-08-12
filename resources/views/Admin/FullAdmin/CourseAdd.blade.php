@@ -86,7 +86,7 @@
             <select name="subject" id="subject" required>
                 <option value="" selected>{{ __('messages.selectSubject') }}</option>
                 @foreach (App\Models\Subject::all() as $subject)
-                    <option value="{{ $subject->id }}">{{ $subject->name }} ({{$subject->literaryOrScientific ? "Literary" : "Scientific"}})</option>
+                    <option value="{{ $subject->id }}">{{ $subject->name }} ({{$subject->literaryOrScientific ? "Scientific" : "Literary"}})</option>
                 @endforeach
             </select>
             <br>

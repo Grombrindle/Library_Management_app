@@ -4,6 +4,7 @@ return [
     'courses' => 'Courses',
     'teachers' => 'Teachers',
     'admins' => 'Admins',
+    'adminsAndTeachers' => 'Admins & Teachers',
     'subjects' => 'Subjects',
     'lectures' => 'Lectures',
     'users' => 'Users',
@@ -384,4 +385,25 @@ return [
     // Scoring System
     'sparks' => 'Sparks',
     'sparkies' => 'Sparkies',
+
+    // Popup Messages
+    'whatWouldYouLikeToAdd' => 'What would you like to add?',
+
+    // Exam related translations
+    'exams' => 'Exams',
+    'exam' => 'Exam',
+    'examTitle' => 'Exam Title',
+    'examDescription' => 'Exam Description',
+    'examDate' => 'Exam Date',
+    'examThumbnail' => 'Exam Thumbnail',
+    'examPdfFile' => 'Exam PDF File',
+    'addExam' => 'Add Exam',
+    'editExam' => 'Edit Exam',
+    'deleteExam' => 'Delete Exam',
+    'updateExam' => 'Update Exam',
+    'examImage' => 'Exam Image',
+    'viewThumbnail' => 'View Thumbnail',
+    'viewCurrentThumbnail' => 'View Current Thumbnail',
+    'currentFile' => 'Current File',
+    'pdfSizeWarning' => 'Make sure the PDF size is less than 10MB',
 ];

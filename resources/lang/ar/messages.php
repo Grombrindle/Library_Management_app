@@ -4,6 +4,7 @@ return [
     'courses' => 'الدورات',
     'teachers' => 'المدرسون',
     'admins' => 'المدراء',
+    'adminsAndTeachers' => 'المدراء والمدرسون',
     'subjects' => 'المواد',
     'lectures' => 'المحاضرات',
     'users' => 'المستخدمون',
@@ -382,4 +383,17 @@ return [
     // Scoring System
     'sparks' => 'شرارات',
     'sparkies' => 'سباركيز',
+
+    // Popup Messages
+    'whatWouldYouLikeToAdd' => 'ماذا تريد أن تضيف؟',
+    'exams' => 'الامتحانات',
+    'examTitle' => 'عنوان الامتحان',
+    'examDescription' => 'وصف الامتحان',
+    'examDate' => 'تاريخ الامتحان',
+    'examPdfFile' => 'ملف PDF للامتحان',
+    'chooseFile' => 'اختر ملفاً',
+    'pdfSizeWarning' => 'تأكد أن حجم ملف PDF أقل من 10 ميجابايت',
+    'invalidFileType' => 'نوع الملف غير صالح. يرجى رفع ملف PDF.',
+    'addExam' => 'إضافة امتحان',
+    'editExam' => 'تعديل الامتحان',
 ];

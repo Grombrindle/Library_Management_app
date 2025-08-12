@@ -36,6 +36,7 @@
 
     .addButton {
         background-color: rgb(41, 200, 41);
+        font-family: 'Pridi';
         border: black 2px solid;
         text-decoration: none;
         color: black;
@@ -426,6 +427,109 @@
     #filter-button {
         right: 0;
     }
+
+    /* Popup Styles */
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        visibility: hidden;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .popup-overlay.show {
+        visibility: visible;
+        opacity: 1;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .popup-content {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .popup-overlay.show .popup-content {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .popup-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .popup-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .popup-button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        min-width: 120px;
+    }
+
+    .popup-button.admin {
+        background-color: #555184;
+        color: white;
+    }
+
+    .popup-button.admin:hover {
+        background-color: #444073;
+        transform: translateY(-2px);
+    }
+
+    .popup-button.teacher {
+        background-color: #29C829;
+        color: white;
+    }
+
+    .popup-button.teacher:hover {
+        background-color: #22a822;
+        transform: translateY(-2px);
+    }
+
+    .popup-close {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+        padding: 5px;
+    }
+
+    .popup-close:hover {
+        color: #333;
+    }
 </style>
 <div style="width:80%; display:flex;flex-direction:row;">
     <!-- Search Form -->
@@ -606,7 +710,11 @@
 
     <div class="container">
         @if ($addLink != null)
-            <a href="{{ $addLink }}" class="addButton">{{ Str::upper(__('messages.add')) }}</a>
+            @if ($addLink === 'addadmin')
+                <button class="addButton" onclick="showAddPopup()">{{ Str::upper(__('messages.add')) }}</button>
+            @else
+                <a href="{{ $addLink }}" class="addButton">{{ Str::upper(__('messages.add')) }}</a>
+            @endif
         @endif
         @if ($deleteSubs != false)
             <form action="/deletesubs" method="POST" onsubmit="return validateSubs()">
@@ -620,6 +728,18 @@
 
 <div class="ObjectContainer">
     {{ $slot }}
+</div>
+
+<!-- Add Popup -->
+<div id="addPopup" class="popup-overlay">
+    <div class="popup-content">
+        <button class="popup-close" onclick="hideAddPopup()">&times;</button>
+        <div class="popup-title">{{ __('messages.whatWouldYouLikeToAdd') }}</div>
+        <div class="popup-buttons">
+            <a href="/addadmin" class="popup-button admin">{{ __('messages.addAdmin') }}</a>
+            <a href="/addteacher" class="popup-button teacher">{{ __('messages.addTeacher') }}</a>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -875,4 +995,32 @@
     function validateSubs() {
         return confirm('{{ __('messages.confirmDeleteSubscriptions') }}');
     }
+
+    // Popup functions
+    function showAddPopup() {
+        const popup = document.getElementById('addPopup');
+        popup.classList.add('show');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+
+    function hideAddPopup() {
+        const popup = document.getElementById('addPopup');
+        popup.classList.remove('show');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+
+    // Close popup when clicking outside
+    document.addEventListener('click', function(event) {
+        const popup = document.getElementById('addPopup');
+        if (event.target === popup) {
+            hideAddPopup();
+        }
+    });
+
+    // Close popup with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            hideAddPopup();
+        }
+    });
 </script>

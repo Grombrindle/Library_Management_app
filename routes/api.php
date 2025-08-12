@@ -13,6 +13,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HelpfulController;
 use App\Http\Controllers\SavedMessageController;
 use App\Http\Controllers\TaskController;
@@ -110,11 +111,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/ratelecture/{id}', [LectureController::class, 'rate']);
     // Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);     Not through the API
 
+    Route::get('/getexam/{id}', [ExamController::class, 'fetch']);
+    Route::get('/getallexams', [ExamController::class, 'fetchAll']);
+    Route::get('/getallsubjectexams/{id}', [ExamController::class, 'fetchFromSubject']);
+    Route::get('/getallyearexams/{year}', [ExamController::class, 'fetchFromYear']);
+
     Route::get('/getteacherimage/{id}', [ImageController::class, 'fetchTeacher']);
     Route::get('/getlectureimage/{id}', [ImageController::class, 'fetchLecture']);
     Route::get('/getsubjectimage/{id}', [ImageController::class, 'fetchSubject']);
     Route::get('/getcourseimage/{id}', [ImageController::class, 'fetchCourse']);
     Route::get('/getresourceimage/{id}', [ImageController::class, 'fetchResource']);
+    Route::get('/getexamimage/{id}', [ImageController::class, 'fetchExam']);
 
     Route::get('/getscore/{id}', [QuizController::class, 'fetchScore']);
     Route::get('/getcoursescores/{id}', [QuizController::class, 'checkScores']);

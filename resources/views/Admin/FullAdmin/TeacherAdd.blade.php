@@ -61,7 +61,7 @@
         <br>
 
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;" name="teacher_links">
-            <label for="teacher_name" style="margin-bottom:10%;">
+            <label for="teacher_links" style="margin-bottom:10%;">
                 {{ __('messages.teacherSocialLinks') }} ({{ __('messages.optional') }}):
             </label>
             <div style="display:grid; grid-template-columns: 1fr 1fr;gap:5%;">

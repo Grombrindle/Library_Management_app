@@ -4,6 +4,7 @@ return [
     'universities' => 'Universités',
     'teachers' => 'Enseignants',
     'admins' => 'Administrateurs',
+    'adminsAndTeachers' => 'Administrateurs et Enseignants',
     'subjects' => 'Matières',
     'lectures' => 'Leçons',
     'users' => 'Utilisateurs',
@@ -373,4 +374,17 @@ return [
     // Scoring System
     'sparks' => 'Étincelles',
     'sparkies' => 'Sparkies',
+
+    // Popup Messages
+    'whatWouldYouLikeToAdd' => 'Que souhaitez-vous ajouter ?',
+    'exams' => 'Examens',
+    'examTitle' => "Titre de l'examen",
+    'examDescription' => "Description de l'examen",
+    'examDate' => "Date de l'examen",
+    'examPdfFile' => "Fichier PDF de l'examen",
+    'chooseFile' => 'Choisir un fichier',
+    'pdfSizeWarning' => 'Assurez-vous que le fichier PDF fait moins de 10 Mo',
+    'invalidFileType' => 'Type de fichier invalide. Veuillez télécharger un fichier PDF.',
+    'addExam' => 'Ajouter un examen',
+    'editExam' => "Modifier l'examen",
 ];

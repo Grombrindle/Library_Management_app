@@ -338,7 +338,7 @@
 </style>
 
 
-<div class="ObjectContainer" style="@if($request) margin-top:10rem; @endif">
+<div class="ObjectContainer" style="@if ($request) margin-top:10rem; @endif">
     @if ($image != null)
         <img src="{{ $image }}" alt="{{ $objectType }} Image"
             style="width: 100px; aspect-ratio: 1/1; object-fit:scale-down; border-radius: 8px;">
@@ -361,6 +361,8 @@
                     {{ __('messages.editUser') }}
                 @elseif ($objectType == 'Course')
                     {{ __('messages.editCourse') }}
+                @elseif ($objectType == 'Exam')
+                    {{ __('messages.editExam') }}
                 @elseif ($objectType == 'Lecture')
                     {{ __('messages.editLecture') }}
                 @elseif ($objectType == 'Subject')
@@ -376,12 +378,15 @@
             @if ($objectType == 'Resource')
                 <a href="show/{{ $object->id }}/pdf" target="_blank" class="button"
                     style="background-color:#9997BC">{{ __('messages.showResource') }} PDF</a>
-                    @if ($object->audio_file != null)
-                <a href="show/{{ $object->id }}/audio" target="_blank" class="button"
-                    style="background-color:#9997BC">{{ __('messages.showResourceAudio') }}</a>
-                    @else
+                @if ($object->audio_file != null)
+                    <a href="show/{{ $object->id }}/audio" target="_blank" class="button"
+                        style="background-color:#9997BC">{{ __('messages.showResourceAudio') }}</a>
+                @else
                     <button class="button" disabled>{{ __('messages.showResourceAudio') }}</button>
-                    @endif
+                @endif
+            @elseif($objectType == 'Exam')
+                <a href="show/{{ $object->id }}" target="_blank" class="button"
+                    style="background-color:#9997BC">{{ __('messages.showExam') }} PDF</a>
             @else
                 @if ($object->file_pdf != null)
                     <a href="show/{{ $object->id }}/pdf" target="_blank" class="button"
@@ -452,6 +457,8 @@
                     {{ __('messages.deleteUser') }}
                 @elseif ($objectType == 'Course')
                     {{ __('messages.deleteCourse') }}
+                    @elseif ($objectType == 'Exam')
+                        {{ __('messages.deleteExam') }}
                 @elseif ($objectType == 'Lecture')
                     {{ __('messages.deleteLecture') }}
                 @elseif ($objectType == 'Subject')

@@ -10,7 +10,7 @@
         image="{{ asset($course->image) }}">
         <br>
         ● {{ __('messages.courseName') }}: {{ $course->name }}<br>
-        ● {{ __('messages.forSubject') }}: <a href="/subject/{{ $course->subject->id }}">{{ $course->subject->name }} ({{ $course->subject->literaryOrScientific ? "Literary" : "Scientific" }})</a>
+        ● {{ __('messages.forSubject') }}: <a href="/subject/{{ $course->subject->id }}">{{ $course->subject->name }} ({{ $course->subject->literaryOrScientific ? "Scientific" : "Literary" }})</a>
         <br>
         ● {{ __('messages.description') }}:{{ $course->description }}<br>
         ● {{ __('messages.teacher') }}: <a href="/teacher/{{ $course->teacher->id }}">{{ $course->teacher->name }}</a>

@@ -3,7 +3,7 @@
 <x-layout>
     <x-breadcrumb :links="[
         __('messages.home') => url('/welcome'),
-        __('messages.teachers') => url('/teacher'),
+        __('messages.teachers') => url('/admins?view=teachers'),
         $teacher->name => Request::url(),
     ]" align=true />
     <x-infocard :editLink="'teacher/edit/' . $teacher->id" deleteLink="deleteteacher/{{ $teacher->id }}" :object=$teacher objectType="Teacher"

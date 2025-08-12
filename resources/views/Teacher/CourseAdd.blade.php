@@ -88,7 +88,7 @@
                 <option value="" selected>{{ __('messages.selectSubject') }}</option>
                 @foreach (App\Models\Teacher::findOrFail(Auth::user()->teacher_id)->subjects as $subject)
                     <option value="{{ $subject->id }}">{{ $subject->name }}
-                        ({{ $subject->literaryOrScientific ? 'Literary' : 'Scientific' }})
+                        ({{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
                     </option>
                 @endforeach
             </select>

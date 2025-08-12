@@ -342,7 +342,11 @@
         @method('PUT')
         @if ($image)
             <div style="width:50%; height:10%; margin-left:auto; margin-right:auto">
-                <img src="{{ asset($objectModel->image) }}" alt="" id="image_preview" class="image">
+                @if ($object == 'Exam')
+                    <img src="{{ asset($objectModel->thumbnailUrl) }}" alt="" id="image_preview" class="image">
+                @else
+                    <img src="{{ asset($objectModel->image) }}" alt="" id="image_preview" class="image">
+                @endif
             </div>
             <div
                 style="display:flex; flex-direction:column; align-items:center; margin-top:5%;margin-bottom:5%; font-size:2rem;">
@@ -433,7 +437,8 @@
                 @foreach ($model->lectures->pluck('id')->toArray() as $lecture)
                     <button type="button" class="lecture-button selected" data-lecture-id="{{ $lecture }}"
                         onclick="toggleLectureSelection(this)">{{ App\Models\Lecture::findOrFail($lecture)->name }}
-                        <br> ({{ App\Models\Lecture::findOrFail($lecture)->course->subject->name }}  {{ App\Models\Lecture::findOrFail($lecture)->course->subject->literaryOrScientific ? 'Scientific' : 'Literary'}},
+                        <br> ({{ App\Models\Lecture::findOrFail($lecture)->course->subject->name }}
+                        {{ App\Models\Lecture::findOrFail($lecture)->course->subject->literaryOrScientific ? 'Scientific' : 'Literary' }},
                         {{ App\Models\Lecture::findOrFail($lecture)->course->name }})</button>
                 @endforeach
             </div>
@@ -456,7 +461,8 @@
                                                         style="padding:0.25rem 0.25rem; cursor:pointer"
                                                         onclick="selectLecture(this)">
                                                         {{ $lecture->name }} <br>
-                                                        ({{ $lecture->course->subject->name }} {{$lecture->course->subject->literaryOrScientific ? 'Scientific' : 'Literary'}},
+                                                        ({{ $lecture->course->subject->name }}
+                                                        {{ $lecture->course->subject->literaryOrScientific ? 'Scientific' : 'Literary' }},
                                                         {{ $lecture->course->name }})
                                                     </div>
                                                 @else
@@ -488,6 +494,8 @@
                 {{ __('messages.editTeacher') }}
             @elseif($object == 'Admin')
                 {{ __('messages.editAdmin') }}
+            @elseif($object == 'Exam')
+                {{ __('messages.editExam') }}
             @elseif ($object == 'User')
                 {{ __('messages.editUser') }}
             @elseif ($object == 'Course')
@@ -553,7 +561,8 @@
             }
         }
         document.querySelectorAll(
-            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], textarea").forEach(
+            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], textarea"
+        ).forEach(
             input => {
                 initialValues[input.name] = input.value;
             });
@@ -572,7 +581,8 @@
         function checkForChanges() {
             let hasChanged = false;
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], textarea").forEach(
+                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], textarea"
+            ).forEach(
                 input => {
                     if (input.value !== initialValues[input.name]) hasChanged = true;
                 });
@@ -737,7 +747,8 @@
             }
 
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], input[type='number'], select, textarea").forEach(
+                "input[type='text'], input[type='password'], input[type='file'], input[type='number'], select, textarea"
+            ).forEach(
                 input => {
                     input.addEventListener("input", checkForChanges);
                     input.addEventListener("change", checkForChanges);

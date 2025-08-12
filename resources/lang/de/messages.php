@@ -4,6 +4,7 @@ return [
     'courses' => 'Kurse',
     'teachers' => 'Lehrer',
     'admins' => 'Administratoren',
+    'adminsAndTeachers' => 'Administratoren & Lehrer',
     'subjects' => 'Fächer',
     'lectures' => 'Vorlesungen',
     'users' => 'Benutzer',
@@ -372,4 +373,17 @@ return [
     // Scoring System
     'sparks' => 'Funken',
     'sparkies' => 'Sparkies',
+
+    // Popup Messages
+    'whatWouldYouLikeToAdd' => 'Was möchten Sie hinzufügen?',
+    'exams' => 'Prüfungen',
+    'examTitle' => 'Prüfungstitel',
+    'examDescription' => 'Prüfungsbeschreibung',
+    'examDate' => 'Prüfungsdatum',
+    'examPdfFile' => 'Prüfungs-PDF-Datei',
+    'chooseFile' => 'Datei auswählen',
+    'pdfSizeWarning' => 'Stellen Sie sicher, dass die PDF-Datei weniger als 10 MB groß ist',
+    'invalidFileType' => 'Ungültiger Dateityp. Bitte laden Sie eine PDF-Datei hoch.',
+    'addExam' => 'Prüfung hinzufügen',
+    'editExam' => 'Prüfung bearbeiten',
 ];

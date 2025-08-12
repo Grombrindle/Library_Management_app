@@ -358,9 +358,9 @@
                         {{ __('messages.lectures') }}
                     </div>
                 </a>
-                <a href="/teachers" class="button" style="text-decoration: none;">
+                <a href="/exams" class="button" style="text-decoration: none;">
                     <div class="text">
-                        {{ __('messages.teachers') }}
+                        {{ __('messages.exams') }}
                     </div>
                 </a>
                 <a href="/users" class="button" style="text-decoration: none;">

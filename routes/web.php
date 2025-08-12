@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ExamController;
 use App\Models\Teacher;
 use App\Models\Course;
+use App\Models\Exam;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SubjectController;
@@ -548,6 +550,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('resource/show/{id}/pdf', [FileController::class, 'showResourcePDF'])->name('filepdfresource.show');
     Route::get('resource/show/{id}/audio', [FileController::class, 'showResourceAudio'])->name('fileaudioresource.show');
 
+
+    Route::get('exam/show/{id}', [FileController::class, 'showExam'])->name('exam.show');
+
     Route::get('/welcome', function () {
         if (Auth::user()->privileges == 2)
             return view('Admin/FullAdmin/welcome');
@@ -616,6 +621,76 @@ Route::group(['middleware' => ['auth']], function () {
             return abort(404);
     });
     Route::put('/editresource/{id}', [\App\Http\Controllers\ResourceController::class, 'edit']);
+
+    // Exam routes
+    Route::get('/exams', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/Exams');
+        else
+            return abort(404);
+    });
+
+    Route::get('/exam/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['exam' => $id]);
+            return view('Admin/FullAdmin/Exam');
+        } else
+            return abort(404);
+    });
+
+    Route::get('/addexam', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/ExamAdd');
+        else
+            return abort(404);
+    });
+    Route::post('/addexam', [ExamController::class, 'add']);
+
+    Route::get('/exam/edit/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['exam' => $id]);
+            return view('Admin/FullAdmin/ExamEdit');
+        } else
+            return abort(404);
+    });
+
+    Route::put('/editexam/{id}', [ExamController::class, 'edit']);
+    Route::delete('/deleteexam/{id}', [ExamController::class, 'delete']);
+
+
+    // Subject-specific exam routes
+    Route::get('/subject/{id}/exams', function ($id, Request $request) {
+        if (Auth::user()->privileges == 2) {
+            session(['subject' => $id]);
+
+            // Get the exam IDs for the subject
+            $examIDs = Subject::findOrFail($id)->exams->pluck('id')->toArray();
+
+            // Fetch the exams
+            $exams = Exam::whereIn('id', $examIDs)->get();
+
+            // Pagination settings
+            $perPage = 10; // Number of items per page
+            $currentPage = $request->input('page', 1); // Get the current page from the request
+            $offset = ($currentPage - 1) * $perPage;
+
+            // Slice the collection to get the items for the current page
+            $currentPageItems = $exams->slice($offset, $perPage)->values();
+
+            // Create a LengthAwarePaginator instance
+            $paginatedExams = new LengthAwarePaginator(
+                $currentPageItems, // Items for the current page
+                $exams->count(), // Total number of items
+                $perPage, // Items per page
+                $currentPage, // Current page
+                ['path' => $request->url(), 'query' => $request->query()] // Additional options
+            );
+
+            // Pass the paginated exams to the view
+            return view('Admin/FullAdmin/Exams', ['exams' => $paginatedExams, 'subjectID' => $id]);
+        } else
+            return abort(404);
+    });
 
     // Course Request Approval Workflow
     Route::group(['prefix' => 'teacher/course-requests', 'as' => 'teacher.course_requests.'], function () {

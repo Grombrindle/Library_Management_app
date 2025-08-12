@@ -469,6 +469,10 @@
                 {{ __('messages.courses') }}
                 <span class="nav-count">{{ App\Models\Course::count() }}</span>
             </a>
+            <a href="/exams" class="NavBarText">
+                {{ __('messages.exams') }}
+                <span class="nav-count">{{ App\Models\Exam::count() }}</span>
+            </a>
             <a href="/subjects" class="NavBarText">
                 {{ __('messages.subjects') }}
                 <span class="nav-count">{{ App\Models\Subject::count() }}</span>
@@ -477,16 +481,16 @@
                 {{ __('messages.lectures') }}
                 <span class="nav-count">{{ App\Models\Lecture::count() }}</span>
             </a>
-            <a href="/teachers" class="NavBarText">
+            {{-- <a href="/teachers" class="NavBarText">
                 {{ __('messages.teachers') }}
                 <span class="nav-count">{{ App\Models\Teacher::count() }}</span>
-            </a>
+            </a> --}}
             <a href="/users" class="NavBarText">
                 {{ __('messages.users') }}
                 <span class="nav-count">{{ App\Models\User::count() }}</span>
             </a>
             <a href="/admins" class="NavBarText">
-                {{ __('messages.admins') }}
+                {{ __('messages.adminsAndTeachers') }}
                 <span class="nav-count">{{ App\Models\Admin::count() }}</span>
             </a>
             <a href="/resources" class="NavBarText">
@@ -596,16 +600,20 @@
                 {{ __('messages.lectures') }}
                 <span class="nav-count">{{ App\Models\Lecture::count() }}</span>
             </a>
-            <a href="/teachers" class="NavBarText" id="teachersLink">
+            <a href="/exams" class="NavBarText">
+                {{ __('messages.exams') }}
+                <span class="nav-count">{{ App\Models\Exam::count() }}</span>
+            </a>
+            {{-- <a href="/teachers" class="NavBarText" id="teachersLink">
                 {{ __('messages.teachers') }}
                 <span class="nav-count">{{ App\Models\Teacher::count() }}</span>
-            </a>
+            </a> --}}
             <a href="/users" class="NavBarText" id="usersLink">
                 {{ __('messages.users') }}
                 <span class="nav-count">{{ App\Models\User::count() }}</span>
             </a>
             <a href="/admins" class="NavBarText" id="adminsLink">
-                {{ __('messages.admins') }}
+                <span style="margin-top:1.2rem; font-size:1.1rem">{{ __('messages.adminsAndTeachers') }}</span>
                 <span class="nav-count">{{ App\Models\Admin::count() }}</span>
             </a>
             <a href="/resources" class="NavBarText" id="resourcesLink">

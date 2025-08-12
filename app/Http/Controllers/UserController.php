@@ -289,7 +289,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'success' => true,
-                'isSubscribed' => Auth::user()->lectures ? (Auth::user()->lectures->pluck('id')->contains($id)) : false || (Auth::user()->courses ? (Auth::user()->courses->pluck('id')->contains($id)) : false),
+                'isSubscribed' => ((Auth::user()->lectures ? (Auth::user()->lectures->pluck('id')->contains($id)) : false )|| (Auth::user()->courses ? (Auth::user()->courses->pluck('id')->contains((Lecture::findOrFail($id)->course_id))) : false)),
             ]);
         }
     }

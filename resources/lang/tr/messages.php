@@ -4,6 +4,7 @@ return [
     'courses' => 'Kurslar',
     'teachers' => 'Öğretmenler',
     'admins' => 'Yöneticiler',
+    'adminsAndTeachers' => 'Yöneticiler ve Öğretmenler',
     'subjects' => 'Konular',
     'lectures' => 'Dersler',
     'users' => 'Kullanıcılar',
@@ -371,4 +372,17 @@ return [
     // Scoring System
     'sparks' => 'Kıvılcımlar',
     'sparkies' => 'Sparkies',
+
+    // Popup Messages
+    'whatWouldYouLikeToAdd' => 'Ne eklemek istersiniz?',
+    'exams' => 'Sınavlar',
+    'examTitle' => 'Sınav Başlığı',
+    'examDescription' => 'Sınav Açıklaması',
+    'examDate' => 'Sınav Tarihi',
+    'examPdfFile' => 'Sınav PDF Dosyası',
+    'chooseFile' => 'Dosya Seç',
+    'pdfSizeWarning' => "PDF dosyasının boyutunun 10MB'dan küçük olduğundan emin olun",
+    'invalidFileType' => 'Geçersiz dosya türü. Lütfen bir PDF dosyası yükleyin.',
+    'addExam' => 'Sınav Ekle',
+    'editExam' => 'Sınavı Düzenle',
 ];

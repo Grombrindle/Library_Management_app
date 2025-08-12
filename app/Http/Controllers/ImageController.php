@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Lecture;
 use App\Models\Subject;
 use App\Models\Resource;
+use App\Models\Exam;
 
 class ImageController extends Controller
 {
@@ -97,7 +98,7 @@ class ImageController extends Controller
             ], 404);
         }
     }
-    
+
     public function fetchResource($id)
     {
         $resource = Resource::find($id);
@@ -116,6 +117,27 @@ class ImageController extends Controller
             return response()->json([
                 'success' => 'false',
                 'reason' => 'Resource Not Found'
+            ], 404);
+        }
+    }
+    public function fetchExam($id)
+    {
+        $exam = Exam::find($id);
+        if ($exam) {
+            $path = $exam->thumbnailUrl;
+            $filePath = public_path($path);
+            if (file_exists($filePath)) {
+                $mimeType = mime_content_type($filePath);
+                return response()->file($filePath, ['Content-Type' => $mimeType]);
+            }
+            return response()->json([
+                'success' => 'false',
+                'reason' => 'Image Not Found'
+            ], 404);
+        } else {
+            return response()->json([
+                'success' => 'false',
+                'reason' => 'Exam Not Found'
             ], 404);
         }
     }
