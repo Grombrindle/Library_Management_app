@@ -48,7 +48,7 @@ class Exam extends Model
         return Url($this->pdf);
     }
 
-    public function getSubjectNameAttribute() {
+    public function getCategoryAttribute() {
         return Subject::findOrFail($this->subject_id)->name;
     }
 
@@ -57,5 +57,5 @@ class Exam extends Model
     }
 
 
-    protected $appends = ['pdfUrl', 'subjectName', 'literaryOrScientific'];
+    protected $appends = ['pdfUrl', 'category', 'literaryOrScientific'];
 }
