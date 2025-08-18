@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\Subject;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\DB;
@@ -238,6 +239,15 @@ class CourseController extends Controller
 
             return response()->json([
                 'success' => true,
+                'subjects' => Subject::select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
+                    return [
+                        'id' => $subject->id,
+                        'name' => $subject->name,
+                        'literaryOrScientific' => $subject->literaryOrScientific,
+                        'image' => $subject->image,
+                        'imageUrl' => url($subject->image),
+                    ];
+                }),
                 'recommended' => $recommendedCourses,
                 'top_rated' => $topRatedCourses,
                 'most_subscribed' => $mostSubscribedCourses,
