@@ -545,7 +545,26 @@ class DatabaseSeeder extends Seeder
             'number' => $teacher->number,
             'image' => $teacher->image,
         ]);
+        foreach (Teacher::all() as $teacher) {
+
+            $numRatings = rand(2, 4);
+            $users = User::inRandomOrder()->take($numRatings)->get();
+
+            foreach ($users as $user) {
+                $rating = rand(1, 5);
+                DB::table('teacher_ratings')->insert([
+                    'user_id' => $user->id,
+                    'teacher_id' => $teacher->id,
+                    'rating' => $rating,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+        }
         $this->call(SubscriptionSeeder::class);
+        $this->call(ResourceSeeder::class);
+        $this->call(QuizSeeder::class);
+        $this->call(QuestionSeeder::class);
     }
 }
 

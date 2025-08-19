@@ -133,6 +133,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallresourcesrecent', [ResourceController::class, 'fetchAllRecent']);
     Route::get('/getallresourcesrated', [ResourceController::class, 'fetchAllRated']);
     Route::get('/getallresourcesrecommended', [ResourceController::class, 'fetchAllRecommended']);
+    Route::get('/getallresourcespage', [ResourceController::class, 'fetchAllPage']);
     Route::post('/rateresource/{id}', [ResourceController::class, 'rate']);
 
 
