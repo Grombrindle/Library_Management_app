@@ -178,7 +178,16 @@ class ResourceController extends Controller
 
             return response()->json([
                 'success' => true,
-                'subjects' => Subject::select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
+                'scientificSubjects' => Subject::where('literaryOrScientific',1)->select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
+                    return [
+                        'id' => $subject->id,
+                        'name' => $subject->name,
+                        'literaryOrScientific' => $subject->literaryOrScientific,
+                        'image' => $subject->image,
+                        'imageUrl' => url($subject->image),
+                    ];
+                }),
+                'literarySubjects' => Subject::where('literaryOrScientific', 0)->select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
                     return [
                         'id' => $subject->id,
                         'name' => $subject->name,
