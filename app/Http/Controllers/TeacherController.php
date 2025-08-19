@@ -105,6 +105,22 @@ class TeacherController extends Controller
                 $course->sources = json_decode($course->sources, true);
             });
 
+            $recentCourses = Teacher::findOrFail($id)->courses()->withAvg('ratings', 'rating')
+                ->orderByDesc('created_at')
+                ->get()
+                ->map(function ($course) {
+                    $course->sources = json_decode($course->sources, true);
+                    return $course;
+                });
+
+            $topRatedCourses = Teacher::findOrFail($id)->courses()->withAvg('ratings', 'rating')
+                ->orderByDesc('ratings_avg_rating')
+                ->get()
+                ->map(function ($course) {
+                    $course->sources = json_decode($course->sources, true);
+                    return $course;
+                });
+
             if ($courses) {
                 foreach ($courses as $course) {
                     $course->rating = DB::table('course_rating')
@@ -114,7 +130,9 @@ class TeacherController extends Controller
             }
             return response()->json([
                 'success' => "true",
-                'courses' => $courses
+                'courses' => $courses,
+                'recent' => $recentCourses,
+                'top_rated' => $topRatedCourses
             ]);
         } else {
             return response()->json([
@@ -294,7 +312,6 @@ class TeacherController extends Controller
             'success' => true,
             'teachers' => $subject->teachers()
         ]);
-
     }
 
     public function checkFavoriteTeacher(Teacher $teacher)
@@ -535,5 +552,4 @@ class TeacherController extends Controller
         session(['link' => '/teachers']);
         return redirect()->route('delete.confirmation');
     }
-
 }
