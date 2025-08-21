@@ -193,7 +193,7 @@ class CourseController extends Controller
 
         return Cache::remember($cacheKey, $cacheDuration, function () {
             // Get recommended courses (using the existing algorithm) - only essential fields
-            $recommendedCourses = Course::select(['id', 'name', 'image'])
+            $recommendedCourses = Course::select()
                 ->withCount(['users', 'ratings', 'lectures'])
                 ->withAvg('ratings', 'rating')
                 ->orderByDesc(DB::raw('
@@ -208,33 +208,56 @@ class CourseController extends Controller
                 ->limit(7)
                 ->get();
 
+            foreach ($recommendedCourses as $course) {
+                $course->sources = json_decode($course->sources, true);
+            }
+
             // Get top-rated courses - only essential fields
-            $topRatedCourses = Course::select(['id', 'name', 'image'])
+            $topRatedCourses = Course::select()
                 ->withAvg('ratings', 'rating')
                 ->orderByDesc('ratings_avg_rating')
                 ->limit(7)
                 ->get();
 
+
+            foreach ($topRatedCourses as $course) {
+                $course->sources = json_decode($course->sources, true);
+            }
+
             // Get most-subscribed courses - only essential fields
-            $mostSubscribedCourses = Course::select(['id', 'name', 'image'])
+            $mostSubscribedCourses = Course::select()
                 ->withCount('users')
                 ->orderByDesc('users_count')
                 ->limit(7)
                 ->get();
 
+
+            foreach ($mostSubscribedCourses as $course) {
+                $course->sources = json_decode($course->sources, true);
+            }
+
             // Get recent courses - only essential fields
-            $recentCourses = Course::select(['id', 'name', 'image'])
+            $recentCourses = Course::select()
                 ->orderByDesc('created_at')
                 ->limit(7)
                 ->get();
+
+
+            foreach ($recentCourses as $course) {
+                $course->sources = json_decode($course->sources, true);
+            }
 
             // Get user-subscribed courses (if user is authenticated) - only essential fields
             $userSubscribedCourses = null;
             if (Auth::check()) {
                 $userSubscribedCourses = Auth::user()->courses()
-                    ->select('courses.id', 'courses.name', 'courses.image')
                     ->limit(7)
                     ->get();
+
+
+                foreach ($userSubscribedCourses as $course) {
+                    $course->sources = json_decode($course->sources, true);
+                }
             }
 
             return response()->json([

@@ -271,8 +271,15 @@ class Course extends Model
         return $this->lectures()->get()->count();
     }
 
+    public function getIsFavoriteAttribute() {
+        if(Auth::user()) {
+            return Auth::user()->favoriteCourses()->where('course_id', $this->id)->exists();
+        }
+    }
+
     protected $appends = [
         'rating',
+        'isFavorite',
         'subscription_count',
         'rating_breakdown',
         'FeaturedRatings',
