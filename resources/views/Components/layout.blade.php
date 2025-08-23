@@ -10,7 +10,10 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        rel="stylesheet" />
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" href="{{ asset('Images/Web/favicon.ico') }}" sizes="any">
 
@@ -28,50 +31,34 @@
 
     <style>
         html {
-            font-size: 11px;
+            font-size: clamp(7px, 1vw + 4px, 11px);
+            overflow-x: hidden;
         }
 
-        /* Responsive font scaling */
-        @media (max-width: 1200px) {
-            html {
-                font-size: 10px;
-            }
-        }
+        /* Remove all breakpoints above 1200px, and interpolate between 400px and 1200px */
+        /* Remove @media (max-width: 992px), (max-width: 768px), (max-width: 480px) for html */
 
-        @media (max-width: 992px) {
-            html {
-                font-size: 9px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            html {
-                font-size: 8px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            html {
-                font-size: 7px;
-            }
-        }
-
+        /* For body, ensure min-height: 100vh and proportional padding/margin if needed */
         body {
             margin: 0;
             overflow-x: hidden;
-            height: fit-content;
+            /* min-height: 100vh; */
             background: linear-gradient(45deg, var(--bg-gradient-start) 0%, var(--bg-gradient-start) 30%, var(--bg-gradient-end) 60%, var(--bg-gradient-end) 70%, var(--bg-gradient-end) 100%);
             font-family: Arial, Helvetica, sans-serif;
             background-attachment: fixed;
+            /* background-size: cover; */
+            background-size: 200% 200%;
+            background-repeat: no-repeat;
+            background-position: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             font-family: 'Pridi';
-            background-size: 175% 175%;
-            background-repeat: no-repeat;
-            animation: gradientShift 5s infinite;
+            animation: gradientShift 5s infinite ease-in-out;
+            position: relative;
         }
+
 
         /* Style for all select elements */
         select {
@@ -138,6 +125,14 @@
         select::backdrop {
             background-color: rgba(0, 0, 0, 0.1);
             transition: opacity 0.3s ease;
+        }
+
+        select:disabled {
+            background-color: #2a2a2a;
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.7;
+            border-color: #444;
         }
 
         .error {
@@ -370,6 +365,59 @@
             border-color: var(--select-bg);
         }
 
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #f44336;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+
         /* Dark mode styles */
         :root {
             --bg-gradient-start: #555184;
@@ -404,7 +452,7 @@
             --text-color: #fff;
             --text-color-inverted: #000;
             --nav-bg: #000;
-            --nav-text: #222;
+            --nav-text: #4A387D;
             --nav-hover: #3a5a7a;
             --select-bg: #3a5a7a;
             --select-text: #fff;
@@ -422,7 +470,7 @@
             --dropdown-bg: #555184;
             --diagram-bar: black;
 
-            --text-shadow:3px;
+            --text-shadow: 3px;
         }
     </style>
 </head>
@@ -457,7 +505,7 @@
 </script>
 <script>
     document.querySelectorAll('select').forEach(select => {
-        select.addEventListener('click', function () {
+        select.addEventListener('click', function() {
             this.style.transition = 'all 0.3s ease';
         });
     });

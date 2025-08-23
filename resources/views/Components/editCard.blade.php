@@ -182,7 +182,7 @@
         gap: 10px;
         /* bottom: 100%; */
         /* top: auto; */
-        right:1rem;
+        right: 1rem;
     }
 
     .dropdown-content a {
@@ -238,56 +238,99 @@
         width: 100%;
         height: 100%;
     }
-    
-    .switch {
+
+    .edit-card {
+        background: var(--card-bg);
+        margin-top: clamp(1%, 2vw, 2%);
+        font-size: clamp(14px, 1.5vw + 8px, 20px);
+        border: var(--card-border) clamp(2px, 0.5vw, 4px) solid;
+        color: var(--text-color);
+        border-radius: clamp(2px, 0.5vw, 3px);
+        display: flex;
+        flex-direction: column;
+        transition: all 0.3s ease;
+        transform: translateY(-2px);
+        align-items: center;
+        text-decoration: none;
         position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
+        overflow: hidden;
+        width: 100%;
+        max-width: clamp(150px, 80vw, 800px);
+        margin-left: auto;
+        margin-right: auto;
+        padding: clamp(2%, 3vw, 4%);
     }
 
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
+    .edit-card-title {
+        font-size: clamp(16px, 2vw + 10px, 24px);
+        font-weight: bold;
+        margin-bottom: clamp(1%, 2vw, 2%);
+        text-align: center;
+        width: 100%;
     }
 
-    .slider {
-        position: absolute;
+    .edit-card-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1%, 2vw, 2%);
+    }
+
+    .edit-card-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1%, 2vw, 2%);
+    }
+
+    .edit-card-input {
+        width: 100%;
+        padding: clamp(0.5%, 1vw, 1%);
+        font-size: clamp(14px, 1.5vw + 8px, 20px);
+        border: var(--card-border) clamp(1px, 0.3vw, 2px) solid;
+        border-radius: clamp(2px, 0.5vw, 3px);
+        background: var(--input-bg);
+        color: var(--text-color);
+    }
+
+    .edit-card-button {
+        padding: clamp(0.5%, 1vw, 1%) clamp(1%, 2vw, 2%);
+        font-size: clamp(14px, 1.5vw + 8px, 20px);
+        border: var(--card-border) clamp(1px, 0.3vw, 2px) solid;
+        border-radius: clamp(2px, 0.5vw, 3px);
+        background: var(--button-bg);
+        color: var(--button-text);
         cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: .4s;
+        transition: all 0.3s ease;
     }
 
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        transition: .4s;
+    .edit-card-button:hover {
+        background: var(--button-hover-bg);
+        color: var(--button-hover-text);
     }
 
-    input:checked+.slider {
-        background-color: #f44336;
+    .edit-card-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
-    input:checked+.slider:before {
-        transform: translateX(26px);
-    }
+    /* Remove all media queries and replace with clamp-based scaling */
+    @media (max-width: 768px) {
+        .edit-card {
+            padding: clamp(1%, 2vw, 3%);
+        }
 
-    .slider.round {
-        border-radius: 34px;
-    }
+        .edit-card-title {
+            font-size: clamp(14px, 1.8vw + 8px, 20px);
+        }
 
-    .slider.round:before {
-        border-radius: 50%;
+        .edit-card-input {
+            padding: clamp(0.3%, 0.8vw, 0.8%);
+        }
+
+        .edit-card-button {
+            padding: clamp(0.3%, 0.8vw, 0.8%) clamp(0.8%, 1.5vw, 1.5%);
+        }
     }
 </style>
 
@@ -299,26 +342,32 @@
         @method('PUT')
         @if ($image)
             <div style="width:50%; height:10%; margin-left:auto; margin-right:auto">
-                <img src="{{ asset($objectModel->image) }}" alt="" id="image_preview" class="image">
+                @if ($object == 'Exam')
+                    <img src="{{ asset($objectModel->thumbnailUrl) }}" alt="" id="image_preview" class="image">
+                @else
+                    <img src="{{ asset($objectModel->image) }}" alt="" id="image_preview" class="image">
+                @endif
             </div>
             <div
                 style="display:flex; flex-direction:column; align-items:center; margin-top:5%;margin-bottom:5%; font-size:2rem;">
                 <label for="object_image">
-                @if ($object == 'Teacher')
-                    {{__('messages.teacherImage')}}
-                @elseif($object == 'Admin')
-                    {{__('messages.adminImage')}}
-                @elseif ($object == 'University')
-                    {{__('messages.universityImage')}}
+                    @if ($object == 'Teacher')
+                        {{ __('messages.teacherImage') }}
+                    @elseif($object == 'Admin')
+                        {{ __('messages.adminImage') }}
+                    @elseif ($object == 'Course')
+                        {{ __('messages.courseImage') }}
                     @elseif ($object == 'Lecture')
-                    {{__('messages.lectureImage')}}
-                @elseif ($object == 'Subject')
-                    {{__('messages.subjectImage')}}
-                @endif</label>
+                        {{ __('messages.lectureImage') }}
+                    @elseif ($object == 'Subject')
+                        {{ __('messages.subjectImage') }}
+                    @endif
+                </label>
                 <input type="file" name="object_image" id="object_image"
                     placeholder="Enter the image of the {{ Str::lower($object) }}" accept="image/*"
                     onchange="validateImageSize(this)">
-                <label for="object_image" style="color:#222; font-size:2rem; text-align:center">{{__('messages.imageSizeWarning')}}</label>
+                <label for="object_image"
+                    style="color:#222; font-size:2rem; text-align:center">{{ __('messages.imageSizeWarning') }}</label>
             </div>
             @error('object_image')
                 <div class="error">{{ $message }}</div>
@@ -329,69 +378,99 @@
         @if ($relations)
             <div id="subject-buttons-container" class="buttonContainer">
                 @foreach ($subjects as $subject)
-                    <button type="button" class="subject-button selected"
-                        data-subject-id="{{ $subject->id }}">{{ $subject->name }}</button>
+                    <button type="button" class="subject-button selected" data-subject-id="{{ $subject->id }}">
+                        @if ($menu == 'Subject')
+                            {{ $subject->name }} ({{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
+                        @elseif ($menu == 'Course')
+                            {{ $subject->name }} ({{ $subject->subject->name }}
+                            {{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
+                        @endif
+                    </button>
                 @endforeach
             </div>
             <br>
             <div class="dropdown-container">
-                <label for="subject-dropdown" style="font-size: 30px;">@if ($menu == 'Teacher')
-                    {{__('messages.addTeacher')}}
-                @elseif ($menu == 'Subject')
-                    {{__('messages.addSubject')}}
-                @endif
-            </label>
+                <label for="subject-dropdown" style="font-size: 30px;">
+                    @if ($menu == 'Teacher')
+                        {{ __('messages.addTeacher') }}
+                    @elseif ($menu == 'Subject')
+                        {{ __('messages.addSubject') }}
+                    @endif
+                </label>
                 <select id="subject-dropdown" class="dropdown" style="padding:0.5rem 2.5rem">
-                    <option value="">@if ($menu == 'Teacher')
-                    {{__('messages.selectTeacher')}}
-                @elseif ($menu == 'Subject')
-                    {{__('messages.selectSubject')}}
-                @endif</option>
+                    <option value="">
+                        @if ($menu == 'Teacher')
+                            {{ __('messages.selectTeacher') }}
+                        @elseif ($menu == 'Course')
+                            {{ __('messages.selectCourse') }}
+                        @elseif ($menu == 'Subject')
+                            {{ __('messages.selectSubject') }}
+                        @endif
+                    </option>
                     @foreach ($menuModel as $subject)
                         @if (!in_array($subject->id, $selectedSubjects))
-                            <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                            <option value="{{ $subject->id }}">
+                                @if ($menu == 'Subject')
+                                    {{ $subject->name }}
+                                    ({{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
+                                @elseif ($menu == 'Course')
+                                    {{ $subject->name }} ({{ $subject->subject->name }}
+                                    {{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
+                                @endif
+                            </option>
                         @endif
                     @endforeach
                 </select>
-                <input type="button" id="add-subject-btn" class="add-subject-btn" value="@if ($menu == 'Teacher'){{__('messages.addTeacher')}}@elseif ($menu == 'Subject'){{__('messages.addSubject')}}@endif">
+                <input type="button" id="add-subject-btn" class="add-subject-btn"
+                    value="@if ($menu == 'Teacher') {{ __('messages.addTeacher') }}@elseif ($menu == 'Course'){{ __('messages.addCourse') }}@elseif ($menu == 'Subject'){{ __('messages.addSubject') }} @endif">
             </div>
             <input type="hidden" name="selected_objects" id="selected_objects_input">
         @endif
         @if ($lectures != false)
             <label for="selected_lectures">
-                {{__('messages.lectures')}}<br>
-                ({{__('messages.clickToRemoveAndReAdd')}})
+                {{ __('messages.lectures') }}<br>
+                ({{ __('messages.clickToRemoveAndReAdd') }})
 
             </label>
             <br>
             <div id="subscribed-lectures-container" class="buttonContainer">
                 @foreach ($model->lectures->pluck('id')->toArray() as $lecture)
                     <button type="button" class="lecture-button selected" data-lecture-id="{{ $lecture }}"
-                        onclick="toggleLectureSelection(this)">{{ App\Models\Lecture::findOrFail($lecture)->name }}</button>
+                        onclick="toggleLectureSelection(this)">{{ App\Models\Lecture::findOrFail($lecture)->name }}
+                        <br> ({{ App\Models\Lecture::findOrFail($lecture)->course->subject->name }}
+                        {{ App\Models\Lecture::findOrFail($lecture)->course->subject->literaryOrScientific ? 'Scientific' : 'Literary' }},
+                        {{ App\Models\Lecture::findOrFail($lecture)->course->name }})</button>
                 @endforeach
             </div>
             <div class="dropdown" id="lectureD">
-                <button class="dropbtn" onclick="toggleDropdown(event)">{{__('messages.selectLecture')}}</button>
+                <button class="dropbtn" onclick="toggleDropdown(event)">{{ __('messages.selectLecture') }}</button>
                 <div class="dropdown-content" id="lectureDropdown">
-                    @foreach (App\Models\Subject::all() as $subject)
-                        @if (!in_array($subject->id, $model->subjects->pluck('id')->toArray()))
+                    @foreach (App\Models\Course::all() as $subject)
+                        @if (!in_array($subject->id, $model->courses->pluck('id')->toArray()))
                             <div class="subject-item">
-                                <a>{{ $subject->name }} >
+                                <a>{{ $subject->name }} ({{ $subject->subject->name }}) >
                                     <div class="nested-dropdown">
                                         @if ($subject->lectures->isEmpty())
-                                            <div style="padding:0.25rem 0.25rem; background-color:darkgray">{{ __('messages.noLecturesForSubject', ['subject' => $subject->name]) }}</div>
+                                            <div style="padding:0.25rem 0.25rem; background-color:darkgray">
+                                                {{ __('messages.noLecturesForSubject', ['subject' => $subject->name]) }}
+                                            </div>
                                         @else
                                             @foreach ($subject->lectures as $lecture)
                                                 @if (!in_array($lecture->id, $model->lectures->pluck('id')->toArray()))
                                                     <div data-lecture-id="{{ $lecture->id }}"
                                                         style="padding:0.25rem 0.25rem; cursor:pointer"
                                                         onclick="selectLecture(this)">
-                                                        {{ $lecture->name }}
+                                                        {{ $lecture->name }} <br>
+                                                        ({{ $lecture->course->subject->name }}
+                                                        {{ $lecture->course->subject->literaryOrScientific ? 'Scientific' : 'Literary' }},
+                                                        {{ $lecture->course->name }})
                                                     </div>
                                                 @else
                                                     <div
                                                         style="padding:0.25rem 0.25rem; cursor:pointer; color:#333333; cursor:default; background-color:darkgray">
-                                                        {{ $lecture->name }}
+                                                        {{ $lecture->name }} <br>
+                                                        ({{ $lecture->course->subject->name }},
+                                                        {{ $lecture->course->name }})
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -401,7 +480,7 @@
                             </div>
                         @else
                             <div class="subject-item" style="background-color:darkgray; line-height:2.5rem">
-                                {{ $subject->name }} <br> ({{__('messages.alreadySubscribed')}})
+                                {{ $subject->name }} <br> ({{ __('messages.alreadySubscribed') }})
                             </div>
                         @endif
                     @endforeach
@@ -411,19 +490,26 @@
         @endif
         <br>
         <button type="submit" class="submit-button">
-                @if ($object == 'Teacher')
-                    {{__('messages.updateTeacher')}}
-                @elseif($object == 'Admin')
-                    {{__('messages.updateAdmin')}}
-                @elseif ($object == 'User')
-                    {{__('messages.updateUser')}}
-                @elseif ($object == 'University')
-                    {{__('messages.updateUniversity')}}
-                    @elseif ($object == 'Lecture')
-                    {{__('messages.updateLecture')}}
-                @elseif ($object == 'Subject')
-                    {{__('messages.updateSubject')}}
-                @endif</button>
+            @if ($object == 'Teacher')
+                {{ __('messages.editTeacher') }}
+            @elseif($object == 'Admin')
+                {{ __('messages.editAdmin') }}
+            @elseif($object == 'Exam')
+                {{ __('messages.editExam') }}
+            @elseif ($object == 'User')
+                {{ __('messages.editUser') }}
+            @elseif ($object == 'Course')
+                {{ __('messages.editCourse') }}
+            @elseif ($object == 'Lecture')
+                {{ __('messages.editLecture') }}
+            @elseif ($object == 'Subject')
+                {{ __('messages.editSubject') }}
+            @elseif ($object == 'Resource')
+                {{ __('messages.editResource') }}
+            @else
+                {{ __('messages.edit') }}
+            @endif
+        </button>
     </form>
 </div>
 
@@ -466,7 +552,8 @@
         let initialValues = {};
         let submitButton = document.querySelector(".submit-button");
         // Check banned status
-        let initialBannedStatus = @json($isBanned) ? (@json($isBanned) ? true : false) : null; // Changed to isBanned to match Laravel convention
+        let initialBannedStatus = @json($isBanned) ? true :
+            false; // Changed to isBanned to match Laravel convention
         const bannedCheckbox = document.getElementById('isBanned'); // Changed to match HTML id
         if (bannedCheckbox) {
             if (bannedCheckbox.checked !== initialBannedStatus) {
@@ -474,18 +561,46 @@
             }
         }
         document.querySelectorAll(
-            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
+            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], textarea"
+        ).forEach(
             input => {
                 initialValues[input.name] = input.value;
             });
 
+        // Store initial values for checkboxes
+        document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+            initialValues[checkbox.name] = checkbox.checked;
+        });
+
+        // Store initial value for sources JSON
+        const sourcesJsonInput = document.getElementById('sources-json');
+        if (sourcesJsonInput) {
+            initialValues['sources'] = sourcesJsonInput.value;
+        }
+
         function checkForChanges() {
             let hasChanged = false;
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], textarea").forEach(
+                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], textarea"
+            ).forEach(
                 input => {
                     if (input.value !== initialValues[input.name]) hasChanged = true;
                 });
+
+            // Check checkboxes (including course_paid switch)
+            document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                const initialValue = initialValues[checkbox.name];
+                if (checkbox.checked !== (initialValue === '1' || initialValue === true)) {
+                    hasChanged = true;
+                }
+            });
+
+            // Check sources JSON
+            const sourcesJsonInput = document.getElementById('sources-json');
+            if (sourcesJsonInput && sourcesJsonInput.value !== initialValues['sources']) {
+                hasChanged = true;
+            }
+
             const bannedCheckbox = document.getElementById('isBanned'); // Changed to match HTML id
             if (bannedCheckbox) {
                 if (bannedCheckbox.checked !== initialBannedStatus) {
@@ -494,6 +609,8 @@
             }
             let initialSubjectsSet = new Set(@json($selectedSubjects).map(String));
             let selectedSubjectsSet = new Set([...selectedSubjects].map(String));
+            console.log(initialSubjectsSet);
+            console.log(selectedSubjectsSet);
             if (!setsAreEqual(initialSubjectsSet, selectedSubjectsSet)) hasChanged = true;
             @if ($lectures != false)
                 let initialLecturesSet = new Set(@json($selectedLectures).map(String));
@@ -565,9 +682,14 @@
             document.getElementById('selected_objects_input').value = JSON.stringify(Array.from(selectedSubjects));
         }
         document.querySelectorAll(
-            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+            "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], select, textarea"
         ).forEach(input => {
             input.addEventListener("input", checkForChanges);
+        });
+
+        // Add event listeners for checkboxes
+        document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+            checkbox.addEventListener("change", checkForChanges);
         });
         submitButton.disabled = true;
     </script>
@@ -579,30 +701,69 @@
             let initialValues = {};
 
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+                "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], select, textarea"
             ).forEach(
                 input => {
                     initialValues[input.name] = input.value;
                 });
 
+            // Store initial values for checkboxes
+            document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                initialValues[checkbox.name] = checkbox.checked;
+            });
+
+            // Store initial value for sources JSON - delay to ensure sources are properly initialized
+            setTimeout(() => {
+                const sourcesJsonInput = document.getElementById('sources-json');
+                if (sourcesJsonInput) {
+                    initialValues['sources'] = sourcesJsonInput.value;
+                }
+            }, 150);
+
             function checkForChanges() {
                 let hasChanged = false;
                 document.querySelectorAll(
-                    "input[type='text'], input[type='password'], input[type='file'], input[type='url'], select, textarea"
+                    "input[type='text'], input[type='password'], input[type='file'], input[type='url'], input[type='number'], select, textarea"
                 ).forEach(
                     input => {
                         if (input.value !== initialValues[input.name]) hasChanged = true;
                     });
+
+                // Check checkboxes (including course_paid switch)
+                document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                    const initialValue = initialValues[checkbox.name];
+                    if (checkbox.checked !== (initialValue === '1' || initialValue === true)) {
+                        hasChanged = true;
+                    }
+                });
+
+                // Check sources JSON
+                const sourcesJsonInput = document.getElementById('sources-json');
+                if (sourcesJsonInput && sourcesJsonInput.value !== initialValues['sources']) {
+                    // hasChanged = true;
+                }
+
                 submitButton.disabled = !hasChanged;
             }
 
             document.querySelectorAll(
-                "input[type='text'], input[type='password'], input[type='file'], select, textarea").forEach(
+                "input[type='text'], input[type='password'], input[type='file'], input[type='number'], select, textarea"
+            ).forEach(
                 input => {
                     input.addEventListener("input", checkForChanges);
                     input.addEventListener("change", checkForChanges);
                 });
+
+            // Add event listeners for checkboxes
+            document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+                checkbox.addEventListener("change", checkForChanges);
+            });
             submitButton.disabled = true;
+
+            // Global function to trigger change detection (for sources updates)
+            window.triggerEditCardChangeDetection = function() {
+                checkForChanges();
+            };
         });
     </script>
 @endif

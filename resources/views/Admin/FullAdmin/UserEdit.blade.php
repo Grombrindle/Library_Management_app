@@ -4,17 +4,15 @@
 <x-layout>
 
     @php
-        $assignedObjects = $user->subjects->pluck('id')->toArray();
+        $assignedObjects = $user->courses->pluck('id')->toArray();
     @endphp
 
-    <x-editcard :selectedSubjects="$assignedObjects" link="edituser/{{ session('user') }}" relations="true" :subjects="$user->subjects" object="User"
-        :model="$user" menu="Subject" :menuModel="App\Models\Subject::all()" :lectures=true :isBanned="$user->isBanned">
+    <x-editcard :selectedSubjects="$assignedObjects" link="edituser/{{ session('user') }}" relations="true" :subjects="$user->courses" object="User"
+        :model="$user" menu="Course" :menuModel="App\Models\Course::all()" :lectures=true :isBanned="$user->isBanned">
         <div>
-
-
             <div style="display:flex; flex-direction:column; align-items:center;">
                 <label for="user_name" style="margin-bottom:10%;">
-                    {{ __('messages.userName') }}:
+                    {{ __('messages.userName') }}
                 </label>
                 <input type="text" name="user_name" id="user_name" value="{{ $user->userName }}"
                     style="height:20%; text-align:center; font-size:40%; width:fit-content;margin-bottom:10%;">
@@ -25,7 +23,7 @@
             
             <div style="display:flex; flex-direction:column; align-items:center;">
                 <label for="user_number">
-                    {{ __('messages.userNumber') }}:
+                    {{ __('messages.userNumber') }}
                 </label>
                 <div style="position:relative; width: fit-content; height:fit-content; margin-bottom:10%; direction: ltr;">
                     <input type="text" name="user_number" id="user_number" placeholder="9XXXXXXXX"
@@ -48,7 +46,7 @@
                 style="margin-top: 20px; display: flex; align-items: center; flex-direction:column; justify-content: space-between; margin-left:auto; margin-right:auto; width:fit-content">
                 <div>
                     <label for="isBanned" style="font-weight: bold;">
-                        {{ __('messages.userStatus') }}:
+                        {{ __('messages.userStatus') }}
                     </label>
                     <span style="margin-left: 10px;">
                         {{ $user->isBanned ? __('messages.banned') : __('messages.active') }}
@@ -62,13 +60,12 @@
             <div style="background-color: black; width:100%; height:1px; margin-top:5%; margin-bottom:5%;"></div>
             <div>
                 <div style="margin-bottom:3%;">
-
                     <strong>{{ __('messages.subscriptions') }}</strong>
                 </div>
 
                 <br>
-                <label for="selected_objects">
-                    {{ __('messages.subjects') }}:<br>
+                <label for="selected_objects_input">
+                    {{ __('messages.courses') }}<br>
                     ({{ __('messages.clickToRemoveAndReAdd') }})
                 </label>
                 <br>

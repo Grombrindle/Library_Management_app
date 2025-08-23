@@ -31,7 +31,7 @@
     }
 
     .ObjectContainer {
-        width: 40rem;
+        width: 45rem;
         height: auto;
         display: flex;
         flex-direction: column;
@@ -116,11 +116,11 @@
             @elseif ($object == 'Admin')
                 <img src="{{ asset('Images/Admins/adminDefault.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
-            @elseif ($object == 'University')
-                <img src="{{ asset('Images/Universities/default.png') }}" alt="" id="image_preview" class="image"
+            @elseif ($object == 'Course')
+                <img src="{{ asset('Images/Courses/default.png') }}" alt="" id="image_preview" class="image"
                     accept="image/*" onchange="validateImageSize(this)">
             @else
-                <img src="{{ asset('Images/'.$object . 's/default.png') }}" alt="" id="image_preview"
+                <img src="{{ asset('Images/' . $object . 's/default.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
             @endif
         </div>
@@ -128,24 +128,25 @@
         <div
             style="display:flex; flex-direction:column; align-items:center; margin-top:5%;margin-bottom:5%; font-size:2rem;">
             <label for="object_image">
-                
-            @if ($object == 'Teacher')
-                    {{__('messages.teacherImage')}}
+
+                @if ($object == 'Teacher')
+                    {{ __('messages.teacherImage') }}
                 @elseif($object == 'Admin')
-                    {{__('messages.adminImage')}}
-                @elseif ($object == 'University')
-                    {{__('messages.universityImage')}}
-                    @elseif ($object == 'Lecture')
-                    {{__('messages.lectureImage')}}
+                    {{ __('messages.adminImage') }}
+                @elseif ($object == 'Course')
+                    {{ __('messages.courseImage') }}
+                @elseif ($object == 'Lecture')
+                    {{ __('messages.lectureImage') }}
                 @elseif ($object == 'Subject')
-                    {{__('messages.subjectImage')}}
+                    {{ __('messages.subjectImage') }}
                 @endif
             </label>
 
             <input type="file" name="object_image" id="object_image"
                 placeholder="Enter the image of the {{ Str::lower($object) }}" accept="image/*"
                 onchange="validateImageSize(this)">
-            <label for="object_image" style="color:#333333; font-size:2rem; text-align:center">{{__('messages.imageSizeWarning')}}</label>
+            <label for="object_image"
+                style="color:#333333; font-size:2rem; text-align:center">{{ __('messages.imageSizeWarning') }}</label>
         </div>
         @error('object_image')
             <div class="error">{{ $message }}</div>
@@ -156,20 +157,26 @@
         </div>
 
         <button type="submit" class="submit-button">
-                @if ($object == 'Teacher')
-                    {{__('messages.addTeacher')}}
-                @elseif($object == 'Admin')
-                    {{__('messages.addAdmin')}}
-                @elseif ($object == 'User')
-                    {{__('messages.addUser')}}
-                @elseif ($object == 'University')
-                    {{__('messages.addUniversity')}}
-                    @elseif ($object == 'Lecture')
-                    {{__('messages.addLecture')}}
-                @elseif ($object == 'Subject')
-                    {{__('messages.addSubject')}}
-                @endif
-            </button>
+            @if ($object == 'Teacher')
+                {{ __('messages.addTeacher') }}
+            @elseif($object == 'Admin')
+                {{ __('messages.addAdmin') }}
+            @elseif($object == 'Exam')
+                {{ __('messages.addExam') }}
+            @elseif ($object == 'User')
+                {{ __('messages.addUser') }}
+            @elseif ($object == 'Course')
+                {{ __('messages.addCourse') }}
+            @elseif ($object == 'Lecture')
+                {{ __('messages.addLecture') }}
+            @elseif ($object == 'Subject')
+                {{ __('messages.addSubject') }}
+            @elseif ($object == 'Resource')
+                {{ __('messages.addResource') }}
+            @else
+                {{ __('messages.add') }}
+            @endif
+        </button>
     </form>
     <script>
         function validateImageSize(input) {

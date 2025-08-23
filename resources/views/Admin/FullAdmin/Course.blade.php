@@ -10,7 +10,7 @@
         image="{{ asset($course->image) }}">
         <br>
         ● {{ __('messages.courseName') }}: {{ $course->name }}<br>
-        ● {{ __('messages.forSubject') }}: <a href="/subject/{{ $course->subject->id }}">{{ $course->subject->name }} ({{ $course->subject->literaryOrScientific ? "Literary" : "Scientific" }})</a>
+        ● {{ __('messages.forSubject') }}: <a href="/subject/{{ $course->subject->id }}">{{ $course->subject->name }} ({{ $course->subject->literaryOrScientific ? "Scientific" : "Literary" }})</a>
         <br>
         ● {{ __('messages.description') }}:{{ $course->description }}<br>
         ● {{ __('messages.teacher') }}: <a href="/teacher/{{ $course->teacher->id }}">{{ $course->teacher->name }}</a>
@@ -23,8 +23,8 @@
                     $sources = is_array($course->sources) ? $course->sources : json_decode($course->sources, true);
                 @endphp
                 @if ($sources)
-                    @foreach ($sources as $name => $link)
-                        <a href="{{ $link }}" target="_blank" rel="noopener noreferrer">{{ $name }}</a>
+                    @foreach ($sources as $source)
+                        <a href="{{ $source['link'] }}" target="_blank" rel="noopener noreferrer">{{ $source['name'] }}</a>
                         @if (!$loop->last)
                             ,
                         @endif

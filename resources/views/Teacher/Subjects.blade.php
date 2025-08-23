@@ -44,18 +44,16 @@
 @endphp
 
 <x-layout :objects=true object="{{ __('messages.yourSubjects') }}">
-    <x-breadcrumb :links="[__('messages.home')=> url('/welcome'), __('messages.yourSubjects') => url('/subjects')]" />
+    <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.yourSubjects') => url('/subjects')]" />
 
     <x-cardcontainer :model=$modelToPass :addLink=null :showSubjectCountFilter=false filterByTeachers=false
         :showNameSort=true>
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedSubjects as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $subject)
                         <x-card link="subject/{{ $subject->id }}" image="{{ asset($subject->image) }}" object="Subject">
                             ● {{ __('messages.subjectName') }}: {{ $subject->name }}<br>
-                            ● {{ __('messages.lectures') }}: {{ $subject->lectures->count() }}<br>
-                            ● {{ __('messages.usersSubTo') }}: {{ $subject->users->count() }}<br>
                             ● {{ __('messages.teachers') }}:
                             @if ($subject->teachers->count() == 0)
                                 <div style="color:black; margin-right:auto;">&emsp;none</div>
@@ -77,6 +75,9 @@
                                 @endforeach
                                 ]
                             @endif
+                            <br>
+                            ● {{__('messages.coursesFromYou')}}:
+                            {{ $subject->courses->where('teacher_id', auth()->user()->teacher_id)->count() }}<br>
                         </x-card>
                     @endforeach
                 </div>
@@ -85,13 +86,14 @@
     </x-cardcontainer>
 
     @if ($modelToPass->total() > 1)
-        <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
-        {{ __('messages.showingItems', [
-                'from' => $modelToPass->firstItem(),
-                'to' => $modelToPass->lastItem(),
-                'total' => $modelToPass->total(),
-                'items' => __('messages.subjects')
-            ]) }}
+        <div class="pagination-info"
+            style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
+            {{ __('messages.showingItems', [
+            'from' => $modelToPass->firstItem(),
+            'to' => $modelToPass->lastItem(),
+            'total' => $modelToPass->total(),
+            'items' => __('messages.subjects')
+        ]) }}
         </div>
     @endif
 
@@ -99,19 +101,19 @@
     @if ($modelToPass->total() > 10)
         <div class="pagination">
             {{ $modelToPass->appends([
-                    'search' => $searchQuery,
-                    'sort' => $sort,
-                ])->links() }}
+            'search' => $searchQuery,
+            'sort' => $sort,
+        ])->links() }}
         </div>
     @endif
 </x-layout>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const searchBar = document.querySelector('.search-bar');
         const dynamicContent = document.getElementById('dynamic-content');
 
-        searchBar.addEventListener('input', function() {
+        searchBar.addEventListener('input', function () {
             const query = searchBar.value;
 
             // Get current sort value

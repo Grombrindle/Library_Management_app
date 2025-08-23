@@ -9,6 +9,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+    <link rel="icon" href="{{ asset('Images/Web/favicon.ico') }}" sizes="any">
+
+    <link rel="icon" href="{{ asset('Images/Web/favicon.svg') }}" type="image/svg+xml">
+
+    <link rel="icon" href="{{ asset('Images/Web/favicon-32x32.png') }}" type="image/png" sizes="32x32">
+    <link rel="icon" href="{{ asset('Images/Web/favicon-16x16.png') }}" type="image/png" sizes="16x16">
+
+    <link rel="apple-touch-icon" href="{{ asset('Web/apple-touch-icon.png') }}" sizes="180x180">
+
     <style>
         :root {
             --primary: #b0b0cf;
@@ -97,7 +107,7 @@
                         </div>
                     </div>
                     @else
-                        <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-medium text-white bg-[#b0b0cf] rounded-md hover:bg-[#8a8aac]">Login</a>
+                        <a href="{{ route('web.login') }}" class="px-4 py-2 text-sm font-medium text-white bg-[#b0b0cf] rounded-md hover:bg-[#8a8aac]">Login</a>
                         <a href="{{ route('register') }}" class="px-4 py-2 text-sm font-medium text-[#202025] bg-gray-200 rounded-md hover:bg-gray-300">Sign Up</a>
                     @endauth
                 </div>
