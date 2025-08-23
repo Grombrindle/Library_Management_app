@@ -21,6 +21,11 @@ class Watchlist extends Model
         return $this->belongsTo(Course::class, 'course_id');
     }
 
+    public function resource()
+    {
+        return $this->belongsTo(\App\Models\Resource::class, 'resource_id');
+    }
+
     // If you want to customize the appended attributes:
     public function getLectureAttribute()
     {
@@ -32,5 +37,10 @@ class Watchlist extends Model
         return $this->course()->first();
     }
 
-    protected $appends = ['lecture', 'course'];
+    public function getResourceAttribute()
+    {
+        return $this->resource()->first();
+    }
+
+    protected $appends = ['lecture', 'course', 'resource'];
 }

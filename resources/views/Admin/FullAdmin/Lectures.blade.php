@@ -4,7 +4,7 @@
     // Get the search query and filter values from the request
     $searchQuery = request('search');
     $sort = request('sort', 'newest'); // Default to 'newest'
-    $selectedCourses = request('courses', []);
+    $selectedSubjects = request('subjects', []);
     $filterNone = request('none', false);
     $courseCounts = request('course_count', []);
 
@@ -31,9 +31,9 @@
                 });
             }
         })
-        ->when($selectedCourses, function ($query) use ($selectedCourses) {
-            $query->whereHas('course', function ($q) use ($selectedCourses) {
-                $q->whereIn('id', $selectedCourses);
+        ->when($selectedSubjects, function ($query) use ($selectedSubjects) {
+            $query->whereHas('course', function ($q) use ($selectedSubjects) {
+                $q->whereIn('subject_id', $selectedSubjects);
             });
         })
         ->when($filterNone, function ($query) {
@@ -47,25 +47,34 @@
                     } // Add other count conditions as needed
                 }
             });
+        })
+        ->when($sort, function ($query) use ($sort) {
+            if ($sort === 'name-a-z') {
+                $query->orderByRaw('LOWER(name) ASC');
+            } elseif ($sort === 'name-z-a') {
+                $query->orderByRaw('LOWER(name) DESC');
+            } elseif ($sort === 'newest') {
+                $query->orderBy('created_at', 'desc');
+            } elseif ($sort === 'oldest') {
+                $query->orderBy('created_at', 'asc');
+            } elseif ($sort === 'rating-highest') {
+                $query->withAvg('ratings', 'rating')->orderByDesc('ratings_avg_rating');
+            } elseif ($sort === 'rating-lowest') {
+                $query->withAvg('ratings', 'rating')->orderBy('ratings_avg_rating', 'asc');
+            }
         });
-
-    // Apply sorting
-    if ($sort === 'name-a-z') {
-        $query->orderByRaw('LOWER(name) ASC');
-    } elseif ($sort === 'name-z-a') {
-        $query->orderByRaw('LOWER(name) DESC');
-    } elseif ($sort === 'newest') {
-        $query->orderBy('created_at', 'desc');
-    } elseif ($sort === 'oldest') {
-        $query->orderBy('created_at', 'asc');
-    }
 
     // Get filtered count before pagination
     $filteredCount = $query->count();
     $modelToPass = $query->paginate(10);
 
-    // Prepare filter options
-    $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
+    // Prepare filter options - use subjects instead of courses
+    $subjects = App\Models\Subject::select('id', 'name', 'literaryOrScientific')->get();
+    $filterOptions = [];
+    foreach ($subjects as $subject) {
+        $type = $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific');
+        $filterOptions[$subject->id] = $subject->name . ' (' . $type . ')';
+    }
 
     // Split lectures into chunks
     $chunkSize = 2;
@@ -98,12 +107,15 @@
                     @foreach ($chunk as $lecture)
                         <x-card link="lecture/{{ $lecture->id }}" image="{{ asset($lecture->image) }}" object="Lecture">
                             ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
-                            {{-- ● Lecture Description:
-                            <div class="description">
-                                @foreach (explode("\n", $lecture->description) as $line)
-                                <div class="description-line">{{ $line }}</div>
-                                @endforeach
-                            </div> --}}
+<!--
+● Lecture Description:
+<div class="description">
+    {{-- @foreach (explode("\n", $lecture->description) as $line)
+        <div class="description-line">{{ $line }}</div>
+    @endforeach --}}
+</div>
+-->
+
                             <!-- ● {{ __('messages.forSubject') }}: {{ $lecture->course->name }} <br> -->
                             ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
                             ● {{ __('messages.fromTeacher') }}: {{ $lecture->course->teacher->name }} <br>
@@ -181,7 +193,7 @@
             {{ $modelToPass->appends([
                     'search' => $searchQuery,
                     'sort' => $sort,
-                    'courses' => $selectedCourses,
+                    'subjects' => $selectedSubjects,
                     'none' => $filterNone,
                 ])->links() }}
         </div>

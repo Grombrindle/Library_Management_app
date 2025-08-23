@@ -210,6 +210,7 @@ return [
     'listenAudio' => 'Sesi Dinle',
     'viewCurrentPdf' => 'Mevcut PDF\'yi Görüntüle',
     'listenCurrentAudio' => 'Mevcut Sesi Dinle',
+    'audioFileAlreadyUploaded' => 'Ses dosyası zaten yüklendi',
     // Course Request Workflow
     'courseRequests' => 'Kurs Talepleri',
     'courseRequestIndex' => 'Kurs Taleplerim',
@@ -385,4 +386,12 @@ return [
     'invalidFileType' => 'Geçersiz dosya türü. Lütfen bir PDF dosyası yükleyin.',
     'addExam' => 'Sınav Ekle',
     'editExam' => 'Sınavı Düzenle',
+
+    // Resource
+    'arabicRequired' => 'Türkçe PDF gereklidir',
+    'showResource' => 'Kaynak Göster',
+    'showResourceAudio' => 'Kaynak Sesini Göster',
+    'uploadPDFs' => 'PDF Yükle',
+    'pdfArabic' => 'Türkçe PDF',
+    'pdfEnglish' => 'İngilizce PDF',
 ];

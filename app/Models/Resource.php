@@ -14,6 +14,7 @@ class Resource extends Model
     protected $casts = [
         'created_at' => 'date:Y-m-d',
         'updated_at' => 'date:Y-m-d',
+        // 'pdf_files' => 'array',
     ];
 
     /** @use HasFactory<\Database\Factories\ResourceFactory> */
@@ -27,8 +28,9 @@ class Resource extends Model
         'publish date',
         'image',
         'audio_file',
-        'pdf_file',
+        'pdf_files', // new JSON field for multilingual PDFs
         'author',
+        'pages',
         'created_at',
         'updated_at'
     ];
@@ -122,9 +124,72 @@ class Resource extends Model
         });
     }
 
-    public function getPDFFileUrlAttribute() {
-        $value = $this->attributes['pdf_file'] ?? null;
-        return ($value ? url($value) : null);
+    public function getPdfFilesAttribute($value)
+    {
+        $files = $value ? json_decode($value, true) : [];
+
+        // Ensure $files is always an array
+        if (!is_array($files)) {
+            $files = [];
+        }
+
+        foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
+            if (!array_key_exists($lang, $files) || empty($files[$lang])) {
+                $files[$lang] = null;
+            }
+        }
+        return $files;
+    }
+
+    /**
+     * Get Arabic PDF file path
+     */
+    public function getPdfFileAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['ar'] ?? null;
+    }
+
+    /**
+     * Get English PDF file path
+     */
+    public function getPdfFileEnAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['en'] ?? null;
+    }
+
+    /**
+     * Get French PDF file path
+     */
+    public function getPdfFileFrAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['fr'] ?? null;
+    }
+
+    /**
+     * Get Spanish PDF file path
+     */
+    public function getPdfFileEsAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['es'] ?? null;
+    }
+
+    /**
+     * Get German PDF file path
+     */
+    public function getPdfFileDeAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['de'] ?? null;
+    }
+
+    public function getPdfFileForLanguage($lang)
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs[$lang] ?? null;
     }
 
     public function getAudioFileUrlAttribute() {
@@ -210,10 +275,15 @@ class Resource extends Model
 
     protected $appends = [
         'subjectName',
+        'pdf_file',
+        'pdf_file_en',
+        'pdf_file_fr',
+        'pdf_file_es',
+        'pdf_file_de',
         'rating',
         'rating_breakdown',
         'FeaturedRatings',
-        'pdf_file_url',
+        // 'pdf_file_url',
         'audio_file_url',
         'audio_file_duration_seconds',
         'audio_file_duration_formatted',

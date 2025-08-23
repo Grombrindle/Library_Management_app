@@ -587,8 +587,8 @@
                             {{ __('messages.publishOldest') }}</label>
                     @endif
 
-                    <!-- Rating (for resources) -->
-                    @if (isset($model) && count($model) && isset($model[0]->rating))
+                    <!-- Rating (for lectures, courses, teachers, resources) -->
+                    @if (isset($model) && count($model))
                         <label><input type="radio" name="sort" value="rating-highest"
                                 {{ request('sort') === 'rating-highest' ? 'checked' : '' }}>
                             {{ __('messages.ratingHighest') }}</label>

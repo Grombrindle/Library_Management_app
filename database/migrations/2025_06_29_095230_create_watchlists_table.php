@@ -16,10 +16,12 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('lecture_id')->nullable()->constrained()->onDelete('cascade');
             $table->foreignId('course_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('resource_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
 
             $table->unique(['user_id', 'lecture_id']);
             $table->unique(['user_id', 'course_id']);
+            $table->unique(['user_id', 'resource_id']);
         });
     }
 

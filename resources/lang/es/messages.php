@@ -87,6 +87,8 @@ return [
     'optional' => 'opcional',
     'uploadAtLeastOneVideo' => 'Por favor, sube al menos un archivo de video (360p, 720p o 1080p)',
     'selectSubject' => 'Seleccionar una asignatura',
+    'author' => 'Autor',
+    'publishDate' => 'Fecha de Publicación',
     'userStatus' => 'Estado del usuario',
     'active' => 'Activo',
     'subscriptions' => 'Suscripciones',
@@ -361,6 +363,17 @@ return [
     'pdf' => 'PDF',
     'video' => 'Video',
 
+    // Language-specific PDF translations
+    'pdfArabic' => 'PDF en Árabe',
+    'pdfEnglish' => 'PDF en Inglés',
+    'pdfSpanish' => 'PDF en Español',
+    'pdfGerman' => 'PDF en Alemán',
+    'pdfFrench' => 'PDF en Francés',
+    'uploadPDFs' => 'Subir PDFs',
+    'arabicRequired' => 'Se requiere PDF en Árabe',
+    'showResource' => 'Mostrar Recurso',
+    'showResourceAudio' => 'Mostrar Audio del Recurso',
+
     // Quiz
     'showQuiz' => 'Mostrar cuestionario',
     'showLectures' => 'Mostrar clases',
@@ -388,4 +401,5 @@ return [
     'editExam' => 'Editar examen',
     'deleteExam' => 'Eliminar examen',
     'showExam' => 'Mostrar examen',
+    'audioFileAlreadyUploaded' => 'Archivo de audio ya subido',
 ];

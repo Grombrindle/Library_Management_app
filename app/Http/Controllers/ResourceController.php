@@ -264,21 +264,30 @@ class ResourceController extends Controller
             'resource_subject_id' => 'required|integer|exists:subjects,id',
             'resource_publish_date' => 'required|date',
             'resource_author' => 'required|string|max:255',
-            'resource_pdf_file' => 'required|file|mimes:pdf',
+            'pdf_ar' => 'nullable|file|mimes:pdf',
+            'pdf_en' => 'nullable|file|mimes:pdf',
+            'pdf_es' => 'nullable|file|mimes:pdf',
+            'pdf_de' => 'nullable|file|mimes:pdf',
+            'pdf_fr' => 'nullable|file|mimes:pdf',
             'resource_audio_file' => 'nullable|file|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/x-m4a',
             'resource_image' => 'nullable|image|max:2048',
         ]);
+        // At least one of Arabic or English is required
+        if (!$request->hasFile('pdf_ar') && !$request->hasFile('pdf_en')) {
+            return back()->withErrors(['pdf_ar' => __('messages.arabicOrEnglishRequired')])->withInput();
+        }
 
-        // PDF
         $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir))
-            mkdir($pdfDir, 0755, true);
-        $pdfPath = null;
-        if ($request->hasFile('resource_pdf_file')) {
-            $pdf = $request->file('resource_pdf_file');
-            $pdfName = time() . '_' . $pdf->getClientOriginalName();
-            $pdf->move($pdfDir, $pdfName);
-            $pdfPath = 'Files/Resources/' . $pdfName;
+        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
+        $pdfFiles = [];
+        foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
+            $input = 'pdf_' . $lang;
+            if ($request->hasFile($input)) {
+                $pdf = $request->file($input);
+                $pdfName = time() . '_' . $lang . '_' . $pdf->getClientOriginalName();
+                $pdf->move($pdfDir, $pdfName);
+                $pdfFiles[$lang] = 'Files/Resources/' . $pdfName;
+            }
         }
 
         // Audio
@@ -299,8 +308,8 @@ class ResourceController extends Controller
         $resource->subject_id = $validated['resource_subject_id'];
         $resource->{'publish date'} = $validated['resource_publish_date'];
         $resource->author = $validated['resource_author'];
-        $resource->pdf_file = $pdfPath;
-        $resource->audio_file = $audioPath;
+        $resource->pdf_files = json_encode($pdfFiles);
+        $resource->audio_file = $audioPath ?? null;
         $resource->image = $imagePath;
         $resource->literaryOrScientific = $resource->subject->literaryOrScientific;
         $resource->save();
@@ -319,14 +328,37 @@ class ResourceController extends Controller
             'resource_description' => 'nullable|string',
             'resource_publish_date' => 'required|date',
             'resource_author' => 'required|string|max:255',
+            'pdf_ar' => 'nullable|file|mimes:pdf',
+            'pdf_en' => 'nullable|file|mimes:pdf',
+            'pdf_es' => 'nullable|file|mimes:pdf',
+            'pdf_de' => 'nullable|file|mimes:pdf',
+            'pdf_fr' => 'nullable|file|mimes:pdf',
             'resource_image' => 'nullable|image|max:2048',
         ]);
+
+        $pdfDir = public_path('Files/Resources');
+        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
+        $pdfFiles = $resource->pdf_files ?: [];
+        foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
+            $input = 'pdf_' . $lang;
+            if ($request->hasFile($input)) {
+                $pdf = $request->file($input);
+                $pdfName = time() . '_' . $lang . '_' . $pdf->getClientOriginalName();
+                $pdf->move($pdfDir, $pdfName);
+                $pdfFiles[$lang] = 'Files/Resources/' . $pdfName;
+            }
+        }
+
+        if (empty($pdfFiles['ar'])) {
+            return back()->withErrors(['pdf_ar' => __('messages.arabicRequired')])->withInput();
+        }
 
         $resource->name = $validated['resource_name'];
         $resource->description = $validated['resource_description'];
         $resource->literaryOrScientific = $resource->subject->literaryOrScientific;
         $resource->{'publish date'} = $validated['resource_publish_date'];
         $resource->author = $validated['resource_author'];
+        $resource->pdf_files = json_encode($pdfFiles);
 
         // Handle image upload and replacement
         $imageDir = 'Images/Resources';
@@ -346,15 +378,15 @@ class ResourceController extends Controller
         }
 
         // PDF
-        $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir))
-            mkdir($pdfDir, 0755, true);
-        if ($request->hasFile('resource_pdf_file')) {
-            $pdf = $request->file('resource_pdf_file');
-            $pdfName = time() . '_' . $pdf->getClientOriginalName();
-            $pdf->move($pdfDir, $pdfName);
-            $resource->pdf_file = 'Files/Resources/' . $pdfName;
-        }
+        // $pdfDir = public_path('Files/Resources'); // This line is now redundant as $pdfDir is defined above
+        // if (!file_exists($pdfDir)) // This line is now redundant as $pdfDir is defined above
+        //     mkdir($pdfDir, 0755, true); // This line is now redundant as $pdfDir is defined above
+        // if ($request->hasFile('resource_pdf_file')) { // This line is now redundant as $pdfFiles is handled above
+        //     $pdf = $request->file('resource_pdf_file'); // This line is now redundant as $pdfFiles is handled above
+        //     $pdfName = time() . '_' . $pdf->getClientOriginalName(); // This line is now redundant as $pdfFiles is handled above
+        //     $pdf->move($pdfDir, $pdfName); // This line is now redundant as $pdfFiles is handled above
+        //     $resource->pdf_file = 'Files/Resources/' . $pdfName; // This line is now redundant as $pdfFiles is handled above
+        // }
 
         // Audio
         $audioDir = public_path('Files/Resources/Audio');
@@ -379,17 +411,25 @@ class ResourceController extends Controller
     {
         $resource = Resource::findOrFail($id);
         $name = $resource->name;
+
         // Delete old image if it's not the default
         if ($resource->image != "Images/Resources/default.png" && file_exists(public_path($resource->image))) {
             unlink(public_path($resource->image));
         }
 
-        if ($resource->pdf_file != "Files/Resources/default.pdf" && file_exists(public_path($resource->file_pdf))) {
-            // dd(public_path($resource->pdf_file));
-            // dd($resource->file_pdf != "Files/Resources/default.pdf");
-            unlink(public_path($resource->pdf_file));
+        // Delete all PDF files according to the pdf_files attribute
+        if ($resource->pdf_files) {
+            $pdfFiles = json_decode(json_encode($resource->pdf_files), true);
+            if (is_array($pdfFiles)) {
+                foreach ($pdfFiles as $lang => $filePath) {
+                    if ($filePath && $filePath !== 'Files/Resources/default.pdf' && file_exists(public_path($filePath))) {
+                        unlink(public_path($filePath));
+                    }
+                }
+            }
         }
 
+        // Delete audio file if it's not the default
         if (file_exists(public_path($resource->audio_file)) && $resource->audio_file != null && $resource->audio_file != 'Files/Resources/Audio/default.mp3') {
             unlink(public_path($resource->audio_file));
         }

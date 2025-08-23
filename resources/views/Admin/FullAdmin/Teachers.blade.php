@@ -68,26 +68,42 @@
                     }
                 }
             });
-        })
-        ->when($sort, function ($query) use ($sort) {
-            if ($sort === 'name-a-z') {
-                $query->orderByRaw('LOWER(name) ASC'); // Sort by name A-Z (case-insensitive)
-            } elseif ($sort === 'name-z-a') {
-                $query->orderByRaw('LOWER(name) DESC'); // Sort by name Z-A (case-insensitive)
-            } elseif ($sort === 'username-a-z') {
-                $query->orderByRaw('LOWER(userName) ASC'); // Sort by username A-Z (case-insensitive)
-            } elseif ($sort === 'username-z-a') {
-                $query->orderByRaw('LOWER(userName) DESC'); // Sort by username Z-A (case-insensitive)
-            } elseif ($sort === 'newest') {
-                $query->orderBy('created_at', 'desc'); // Sort by creation date (newest)
-            } elseif ($sort === 'oldest') {
-                $query->orderBy('created_at', 'asc'); // Sort by creation date (oldest)
-            }
-        })
-        ->paginate(10);
+        });
+
+    // Apply sorting with proper withAvg for rating sorting
+    if ($sort === 'rating-highest' || $sort === 'rating-lowest') {
+        $query = $query->withAvg('ratings', 'rating');
+    }
+
+    $query = $query->when($sort, function ($query) use ($sort) {
+        if ($sort === 'name-a-z') {
+            $query->orderByRaw('LOWER(name) ASC'); // Sort by name A-Z (case-insensitive)
+        } elseif ($sort === 'name-z-a') {
+            $query->orderByRaw('LOWER(name) DESC'); // Sort by name Z-A (case-insensitive)
+        } elseif ($sort === 'username-a-z') {
+            $query->orderByRaw('LOWER(userName) ASC'); // Sort by username A-Z (case-insensitive)
+        } elseif ($sort === 'username-z-a') {
+            $query->orderByRaw('LOWER(userName) DESC'); // Sort by username Z-A (case-insensitive)
+        } elseif ($sort === 'newest') {
+            $query->orderBy('created_at', 'desc'); // Sort by creation date (newest)
+        } elseif ($sort === 'oldest') {
+            $query->orderBy('created_at', 'asc'); // Sort by creation date (oldest)
+        } elseif ($sort === 'rating-highest') {
+            $query->orderByDesc('ratings_avg_rating'); // Sort by rating (highest first)
+        } elseif ($sort === 'rating-lowest') {
+            $query->orderBy('ratings_avg_rating', 'asc'); // Sort by rating (lowest first)
+        }
+    });
+
+    $modelToPass = $query->paginate(10);
 
     // Prepare filter options
-    $filterOptions = App\Models\Subject::pluck('name', 'id')->toArray();
+    $subjects = App\Models\Subject::select('id', 'name', 'literaryOrScientific')->get();
+    $filterOptions = [];
+    foreach ($subjects as $subject) {
+        $type = $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific');
+        $filterOptions[$subject->id] = $subject->name . ' (' . $type . ')';
+    }
 
     // Split teachers into chunks
     $chunkSize = 2;

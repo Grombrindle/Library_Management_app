@@ -47,18 +47,22 @@
                     } // Add other count conditions as needed
                 }
             });
+        })
+        ->when($sort, function ($query) use ($sort) {
+            if ($sort === 'name-a-z') {
+                $query->orderByRaw('LOWER(name) ASC');
+            } elseif ($sort === 'name-z-a') {
+                $query->orderByRaw('LOWER(name) DESC');
+            } elseif ($sort === 'newest') {
+                $query->orderBy('created_at', 'desc');
+            } elseif ($sort === 'oldest') {
+                $query->orderBy('created_at', 'asc');
+            } elseif ($sort === 'rating-highest') {
+                $query->withAvg('ratings', 'rating')->orderByDesc('ratings_avg_rating');
+            } elseif ($sort === 'rating-lowest') {
+                $query->withAvg('ratings', 'rating')->orderBy('ratings_avg_rating', 'asc');
+            }
         });
-
-    // Apply sorting
-    if ($sort === 'name-a-z') {
-        $query->orderByRaw('LOWER(name) ASC');
-    } elseif ($sort === 'name-z-a') {
-        $query->orderByRaw('LOWER(name) DESC');
-    } elseif ($sort === 'newest') {
-        $query->orderBy('created_at', 'desc');
-    } elseif ($sort === 'oldest') {
-        $query->orderBy('created_at', 'asc');
-    }
 
     // Get filtered count before pagination
     $filteredCount = $query->count();

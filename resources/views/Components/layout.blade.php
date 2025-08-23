@@ -442,7 +442,7 @@
             --breadcrumb-border: #222;
             --dropdown-bg: #9997BC;
             --diagram-bar: black;
-
+            --disabled-text: #333;
             --text-shadow: 0px;
         }
 
@@ -469,7 +469,7 @@
             --breadcrumb-border: #EEE;
             --dropdown-bg: #555184;
             --diagram-bar: black;
-
+            --disabled-text: #888;
             --text-shadow: 3px;
         }
     </style>

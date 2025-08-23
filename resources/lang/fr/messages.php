@@ -85,6 +85,8 @@ return [
     'optional' => 'optionnel',
     'uploadAtLeastOneVideo' => 'Veuillez télécharger au moins un fichier vidéo (360p, 720p ou 1080p)',
     'selectSubject' => 'Sélectionner une matière',
+    'author' => 'Auteur',
+    'publishDate' => 'Date de publication',
     'userStatus' => "Statut de l'utilisateur",
     'active' => 'Actif',
     'subscriptions' => 'Abonnements',
@@ -362,6 +364,17 @@ return [
     'pdf' => 'PDF',
     'video' => 'Vidéo',
 
+    // Language-specific PDF translations
+    'pdfArabic' => 'PDF en Arabe',
+    'pdfEnglish' => 'PDF en Anglais',
+    'pdfSpanish' => 'PDF en Espagnol',
+    'pdfGerman' => 'PDF en Allemand',
+    'pdfFrench' => 'PDF en Français',
+    'uploadPDFs' => 'Télécharger des PDFs',
+    'arabicRequired' => 'PDF en Arabe requis',
+    'showResource' => 'Afficher la ressource',
+    'showResourceAudio' => 'Afficher l\'audio de la ressource',
+
     // Quiz
     'showQuiz' => 'Afficher le quiz',
     'showLectures' => 'Afficher les leçons',
@@ -387,4 +400,5 @@ return [
     'invalidFileType' => 'Type de fichier invalide. Veuillez télécharger un fichier PDF.',
     'addExam' => 'Ajouter un examen',
     'editExam' => "Modifier l'examen",
+    'audioFileAlreadyUploaded' => 'Fichier audio déjà téléchargé',
 ];

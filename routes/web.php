@@ -547,7 +547,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('lecture/show/{id}/1080', [FileController::class, 'show1080'])->name('file1080.show');
     Route::get('lecture/show/{id}/pdf', [FileController::class, 'showPDF'])->name('filepdf.show');
 
-    Route::get('resource/show/{id}/pdf', [FileController::class, 'showResourcePDF'])->name('filepdfresource.show');
+    Route::get('resource/show/{id}/pdf/{language?}', [FileController::class, 'showResourcePDF'])->name('filepdfresource.show');
     Route::get('resource/show/{id}/audio', [FileController::class, 'showResourceAudio'])->name('fileaudioresource.show');
 
 

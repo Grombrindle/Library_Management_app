@@ -150,8 +150,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/getwatchlistlectures', [WatchlistController::class, 'fetchLectures']);
     Route::get('/getwatchlistcourses', [WatchlistController::class, 'fetchCourses']);
+    Route::get('/getwatchlistresources', [WatchlistController::class, 'fetchResources']);
     Route::post('/togglewatchlistlecture/{id}', [WatchlistController::class, 'toggleLecture']);
     Route::post('/togglewatchlistcourse/{id}', [WatchlistController::class, 'toggleCourse']);
+    Route::post('/togglewatchlistresource/{id}', [WatchlistController::class, 'toggleResource']);
 
     Route::post('/togglehelpful', [HelpfulController::class, 'toggleHelpful']);
     Route::post('/toggleunhelpful', [HelpfulController::class, 'toggleUnhelpful']);

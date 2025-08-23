@@ -201,4 +201,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Lecture::class, 'watchlists', 'user_id', 'lecture_id')
                     ->withTimestamps();
     }
+
+    public function resourceWatchlist()
+    {
+        return $this->belongsToMany(\App\Models\Resource::class, 'watchlists', 'user_id', 'resource_id')->withTimestamps();
+    }
 }
