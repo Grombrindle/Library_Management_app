@@ -31,7 +31,7 @@
     }
 
     .ObjectContainer {
-        width: 45rem;
+        width: 40rem;
         height: auto;
         display: flex;
         flex-direction: column;
@@ -116,8 +116,8 @@
             @elseif ($object == 'Admin')
                 <img src="{{ asset('Images/Admins/adminDefault.png') }}" alt="" id="image_preview"
                     class="image"accept="image/*" onchange="validateImageSize(this)">
-            @elseif ($object == 'Course')
-                <img src="{{ asset('Images/Courses/default.png') }}" alt="" id="image_preview" class="image"
+            @elseif ($object == 'University')
+                <img src="{{ asset('Images/Universities/default.png') }}" alt="" id="image_preview" class="image"
                     accept="image/*" onchange="validateImageSize(this)">
             @else
                 <img src="{{ asset('Images/'.$object . 's/default.png') }}" alt="" id="image_preview"
@@ -128,13 +128,13 @@
         <div
             style="display:flex; flex-direction:column; align-items:center; margin-top:5%;margin-bottom:5%; font-size:2rem;">
             <label for="object_image">
-
+                
             @if ($object == 'Teacher')
                     {{__('messages.teacherImage')}}
                 @elseif($object == 'Admin')
                     {{__('messages.adminImage')}}
-                @elseif ($object == 'Course')
-                    {{__('messages.courseImage')}}
+                @elseif ($object == 'University')
+                    {{__('messages.universityImage')}}
                     @elseif ($object == 'Lecture')
                     {{__('messages.lectureImage')}}
                 @elseif ($object == 'Subject')
@@ -162,16 +162,12 @@
                     {{__('messages.addAdmin')}}
                 @elseif ($object == 'User')
                     {{__('messages.addUser')}}
-                @elseif ($object == 'Course')
-                    {{__('messages.addCourse')}}
-                @elseif ($object == 'Lecture')
+                @elseif ($object == 'University')
+                    {{__('messages.addUniversity')}}
+                    @elseif ($object == 'Lecture')
                     {{__('messages.addLecture')}}
                 @elseif ($object == 'Subject')
                     {{__('messages.addSubject')}}
-                @elseif ($object == 'Resource')
-                    {{__('messages.addResource')}}
-                @else
-                    {{__('messages.add')}}
                 @endif
             </button>
     </form>

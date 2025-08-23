@@ -1,15 +1,8 @@
 <head>
     <style>
         body {
-            overflow: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+            overflow:hidden;
         }
-
         @media(max-width:1600px) {
             .title {
                 font-size: 50px;
@@ -44,285 +37,102 @@
         .logo {
             width: 20rem;
             height: 25rem;
-            margin: 1rem auto 2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .logo img {
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top:1rem;
+            margin-bottom:2rem;
         }
 
         .logoContainer {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: auto;
+            width: auto;
+            dislpay: flex;
+            flex-direction: row;
         }
 
         .button {
-            width: 100%;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 10%;
             background: var(--welcome-btn);
-            height: 50px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2.5px solid var(--card-border);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: #555184 2.5px solid;
+            transition: 0.3s ease;
         }
 
-        .button:hover,
-        .button:focus {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-color: var(--welcome-btn);
+        .button:hover {
+            border-radius: 10px;
+            border: var(--welcome-btn) 2.5px solid;
+            animation: shadow 1.5s linear infinite;
         }
 
-        .button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .disable-hover .button:hover {
+            width: 30%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 3.5%;
+            background: var(--welcome-btn);
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: black 2.5px solid;
         }
 
         .text {
+            position: inherit;
             color: var(--text-color);
             text-decoration: none;
             text-align: center;
-            font-size: 1.25rem;
-            font-weight: 500;
+            font-size: 20px;
+            /* text-shadow: white 2px 2px 5px; */
             z-index: 2;
-            transition: all 0.3s ease;
         }
 
         .buttonContainer {
             width: 100%;
-            max-width: 800px;
+            height: 50%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-
-        .buttonGrid {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 1rem;
         }
 
         .title {
-            text-align: center;
-            font-size: 2.5rem;
+            margin-left: auto;
+            margin-right: auto;
             color: var(--text-color);
-            margin: 1rem auto;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            /* font-size:50px; */
         }
 
         #circle {
             position: fixed;
+            /* Use fixed to ensure it follows the mouse */
             width: 250px;
             height: 250px;
-            background-color: var(--card-bg);
+            background-color: #555184;
             border-radius: 50%;
             pointer-events: none;
+            /* Ensures the circle doesn't interfere with mouse events */
             transform: translate(-50%, -50%);
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1;
-            mix-blend-mode: overlay;
         }
 
-        /* Media Queries for Responsive Design */
-        @media (max-width: 1600px) {
-            .title {
-                font-size: 2.5rem;
+        @keyframes shadow {
+            0% {
+                box-shadow: -0.25rem 0.25rem 0.5rem 0.1rem rgba(0, 0, 0, 0.8);
             }
 
-            .logo {
-                width: 18rem;
-                height: 22rem;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .title {
-                font-size: 2.25rem;
+            50% {
+                box-shadow: 0 0 0 0 transparent;
             }
 
-            .logo {
-                width: 16rem;
-                height: 20rem;
-            }
-
-            .text {
-                font-size: 1.2rem;
-            }
-
-            .buttonGrid {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            }
-        }
-
-        @media (max-width: 992px) {
-            .title {
-                font-size: 2rem;
-            }
-
-            .logo {
-                width: 14rem;
-                height: 18rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .button {
-                height: 45px;
-            }
-
-            .buttonGrid {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            }
-        }
-
-        @media (max-width: 768px) {
-            .title {
-                font-size: 1.75rem;
-            }
-
-            .logo {
-                width: 12rem;
-                height: 16rem;
-                margin-bottom: 1rem;
-            }
-
-            .text {
-                font-size: 1.1rem;
-            }
-
-            .button {
-                height: 40px;
-            }
-
-            .buttonGrid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 0.75rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .title {
-                font-size: 1.5rem;
-            }
-
-            .logo {
-                width: 10rem;
-                height: 14rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .text {
-                font-size: 1rem;
-            }
-
-            .button {
-                height: 35px;
-            }
-
-            .buttonGrid {
-                grid-template-columns: 1fr;
-                gap: 0.5rem;
-            }
-        }
-
-        @media (max-width: 400px) {
-            html {
-                overflow-x: hidden;
-            }
-
-            .title {
-                font-size: 2.5rem;
-            }
-
-            .logo {
-                width: 20rem;
-                height: 30rem;
-                margin-bottom: 0.5rem;
-            }
-
-            .text {
-                font-size: 1.8rem;
-            }
-
-            .button {
-                height: 30px;
-                width: 90%;
-                margin-left: auto;
-                margin-right: auto;
-                margin-top: 1rem;
-            }
-        }
-
-        /* Landscape mode optimization */
-        @media (max-height: 600px) and (orientation: landscape) {
-            body {
-                padding: 0.5rem;
-            }
-
-            .logo {
-                width: 8rem;
-                height: 10rem;
-                margin: 0.5rem auto;
-            }
-
-            .title {
-                font-size: 1.5rem;
-                margin: 0.5rem auto;
-            }
-
-            .button {
-                height: 35px;
-            }
-
-            .buttonGrid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 0.5rem;
-            }
-        }
-
-        /* Touch device optimizations */
-        @media (hover: none) {
-            .button:hover {
-                transform: none;
-                box-shadow: none;
-            }
-
-            .button:active {
-                background-color: var(--card-bg);
-                transform: scale(0.98);
-            }
-
-            #circle {
-                display: none;
-            }
-        }
-
-        /* High-DPI screens */
-        @media (-webkit-min-device-pixel-ratio: 2),
-        (min-resolution: 192dpi) {
-            .button {
-                border-width: 2px;
+            100% {
+                box-shadow: -0.25rem 0.25rem 0.5rem 0.1rem rgba(0, 0, 0, 0.8);
             }
         }
     </style>
@@ -339,49 +149,40 @@
         {{ Auth::user()->userName }}!
     </div>
     <div class="buttonContainer">
-        <div class="buttonGrid">
-            <div style="display:flex; flex-direction:row; gap: 3rem;">
-                <a href="/courses" class="button" id="button" style="text-decoration: none;">
-                    <div class="text">
-                        {{ __('messages.courses') }}
-                    </div>
-                </a>
-                <a href="/subjects" class="button" id="button" style="text-decoration: none;">
-                    <div class="text">
-                        {{ __('messages.subjects') }}
-                    </div>
-                </a>
-            </div>
-            <div style="display:flex; flex-direction:row; gap: 3rem;">
-                <a href="/lectures" class="button" style="text-decoration: none;">
-                    <div class="text">
-                        {{ __('messages.lectures') }}
-                    </div>
-                </a>
-                <a href="/teachers" class="button" style="text-decoration: none;">
-                    <div class="text">
-                        {{ __('messages.teachers') }}
-                    </div>
-                </a>
-                <a href="/users" class="button" style="text-decoration: none;">
-                    <div class="text">
-                        {{ __('messages.users') }}
-                    </div>
-                </a>
-            </div>
-            <div style="display:flex; flex-direction:row; gap: 3rem;">
-                <a href="/admins" class="button" id="button" style="text-decoration: none;">
-                    <div class="text">
-                        {{ __('messages.admins') }}
-                    </div>
-                </a>
-                <a href="/resources" class="button" style="text-decoration: none;">
-                    <div class="text">
-                        {{ __('messages.resources') }}
-                    </div>
-                </a>
-            </div>
+        <div
+            style="display:grid; grid-template-columns: 1fr 1fr; width:50%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
+            <a href="/universities" class="button" id="button" style="text-decoration: none;">
+                <div class="text">
+                    {{ __('messages.universities') }}
+                </div>
+            </a>
+            <a href="/subjects" class="button" id="button" style="text-decoration: none;">
+                <div class="text">
+                    {{ __('messages.subjects') }}
+                </div>
+            </a>
+            <a href="/lectures" class="button" style="text-decoration: none;">
+                <div class="text">
+                    {{ __('messages.lectures') }}
+                </div>
+            </a>
+            <a href="/teachers" class="button" style="text-decoration: none;">
+                <div class="text">
+                    {{ __('messages.teachers') }}
+                </div>
+            </a>
+            <a href="/users" class="button" style="text-decoration: none;">
+                <div class="text">
+                    {{ __('messages.users') }}
+                </div>
+            </a>
+            <a href="/admins" class="button" id="button" style="text-decoration: none;">
+                <div class="text">
+                    {{ __('messages.admins') }}
+                </div>
+            </a>
         </div>
+
     </div>
     <div class="circle"id="circle"></div>
     <script>

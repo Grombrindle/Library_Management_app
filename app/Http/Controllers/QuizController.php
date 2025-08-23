@@ -58,26 +58,29 @@ class QuizController extends Controller
 
     public function finish(Request $request, $id)
     {
+
         $score = score::updateOrCreate(
             [
                 'user_id' => Auth::user()->id,
-                'quiz_id' => $id
+                'quiz_id' => $id,
             ],
             [
                 'correctAnswers' => json_encode($request->input('correctAnswers')),
-                // We'll set sparks and sparkies below after calculation
             ]
         );
 
-        $sparky = null;
         $sparks = 0;
+        $sparky = null;
         $total_sparkies = null;
-        // Only execute if the score was just created
+        $user = Auth::user();
+
+        // Only calculate and save sparks if this is a new attempt
         if ($score->wasRecentlyCreated) {
-            // Calculate sparks
+            // Calculate sparks for first attempt
             $correctAnswers = $request->input('correctAnswers', []);
             $quiz = Quiz::findOrFail($id);
             $questions = $quiz->questions()->orderBy('id')->get();
+
             foreach ($questions as $index => $question) {
                 if (isset($correctAnswers[$index]) && $correctAnswers[$index]) {
                     switch ($question->difficulty) {
@@ -93,8 +96,10 @@ class QuizController extends Controller
                     }
                 }
             }
-            $user = Auth::user();
+
+            // Award sparks and sparkies to user
             $user->sparks += $sparks;
+            $isSparky = $user->sparks >= 1000;
             if ($user->sparks >= 1000) {
                 $user->sparks -= 1000;
                 $user->sparkies += 1;
@@ -102,12 +107,14 @@ class QuizController extends Controller
             }
             $user->save();
             $total_sparkies = $user->sparkies;
-            // Store the user's total sparks and sparkies at quiz completion
-            $score->sparks = $user->sparks;
-            $score->sparkies = $user->sparkies;
+
+            // Save the sparks and sparkies to the score record
+            $score->sparks = $sparks;
+            $score->sparkies = $isSparky ? 1 : 0;
             $score->save();
         } else {
-            $user = Auth::user();
+            // For retakes, use the original sparks from the first attempt
+            $sparks = $score->sparks;
             $total_sparkies = $user->sparkies;
         }
 

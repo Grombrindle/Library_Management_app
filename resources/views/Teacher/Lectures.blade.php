@@ -15,7 +15,7 @@
         $query = App\Models\Lecture::whereIn('id', $lectures->pluck('id'));
     } else {
         // Fetch all lectures based on search and filters
-        $query = App\Models\Lecture::whereHas('course.teacher', function ($query) {
+        $query = App\Models\Lecture::whereHas('subject.teachers', function ($query) {
             $query->where('teachers.id', Auth::user()->teacher_id); // Filter by the current teacher
         });
     }
@@ -69,99 +69,58 @@
 
 <x-layout :objects=true
     object="{{!$lec ? __('messages.yourLectures') : __('messages.lecturesFrom') . ' ' . Str::upper(App\Models\Subject::findOrFail(session('subject'))->name) }}">
-    <x-breadcrumb :links="array_merge([__('messages.home') => url('/welcome'), !$lec ? __('messages.yourLectures') : __('messages.lecturesFrom') . ' ' . App\Models\Subject::findOrFail(session('subject'))->name => Request::url()])" />
+    <x-breadcrumb :links="array_merge([__('messages.home') => url('/welcome'), !$lec ? __('messages.yourLectures') : __('messages.lecturesFrom') . ' ' . App\Models\Subject::findOrFail(session('subject'))->name  => Request::url()])" />
 
-    <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions
-        :showSubjectCountFilter=false :showUsernameSort=false :showNameSort=false>
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
+    <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions :showSubjectCountFilter=false
+        :showUsernameSort=false :showNameSort=false>
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedLectures as $chunk)
-                    <div class="chunk">
-                        @foreach ($chunk as $lecture)
-                                    <x-card link="lecture/{{ $lecture->id }}" image="{{ asset($lecture->image) }}" object="Lecture">
-                                        ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
-                                        ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
-                                        ● {{__('messages.fromTeacher')}}: {{ $lecture->course->teacher->name }} <br>
-                                        ● {{__('messages.fromCourse')}}: {{ $lecture->course->name }} <br>
-                                        ● {{__('messages.fileType')}}: @if ($lecture->type)
-                                            {{__('messages.video')}} <br>
-                                            ● {{__('messages.duration')}}: {{ $lecture->getVideoLength() ?? 'N/A' }}
-                                        @else
-                                            {{__('messages.pdf')}} <br>
-                                            ● {{__('messages.pages')}}: {{ $lecture->getPdfPages() ?? 'N/A' }}
-                                        @endif
-                                        <br>
-                                        <br>
-                                        <div style="display:inline-block; vertical-align:middle;">
-                                            @php
-                                                $rating = $lecture->rating ?? 0;
-                                            @endphp
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                @if ($rating >= $i)
-                                                    {{-- Full star --}}
-                                                    <svg width="20" height="20" fill="gold" viewBox="0 0 20 20" style="display:inline;">
-                                                        <polygon
-                                                            points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-                                                    </svg>
-                                                @elseif ($rating >= $i - 0.5)
-                                                    {{-- Half star --}}
-                                                    <svg width="20" height="20" viewBox="0 0 20 20" style="display:inline;">
-                                                        <defs>
-                                                            <linearGradient id="half-grad-{{ $lecture->id }}-{{ $i }}">
-                                                                <stop offset="50%" stop-color="gold" />
-                                                                <stop offset="50%" stop-color="lightgray" />
-                                                            </linearGradient>
-                                                        </defs>
-                                                        <polygon
-                                                            points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36"
-                                                            fill="url(#half-grad-{{ $lecture->id }}-{{ $i }})" />
-                                                    </svg>
-                                                @else
-                                                    {{-- Empty star --}}
-                                                    <svg width="20" height="20" fill="lightgray" viewBox="0 0 20 20" style="display:inline;">
-                                                        <polygon
-                                                            points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-                                                    </svg>
-                                                @endif
-                                            @endfor
-                                            <span>({{ number_format($rating, 1) }})</span>
-                                            <span>({{ $lecture->ratings->count() }} reviews)</span>
-                                        </div>
-                                    </x-card>
-                        @endforeach
-                    </div>
+                <div class="chunk">
+                    @foreach ($chunk as $lecture)
+                        <x-card link="lecture/{{ $lecture->id }}" image="{{ asset($lecture->image) }}" object="Lecture">
+                            ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
+                            {{-- ● Lecture Description:
+                            <div class="description">
+                                @foreach (explode("\n", $lecture->description) as $line)
+                                    <div class="description-line">{{ $line }}</div>
+                                @endforeach
+                            </div> --}}
+                            ● {{ __('messages.forSubject') }}: {{ $lecture->subject->name }}
+                        </x-card>
+                    @endforeach
+                </div>
             @endforeach
         </div>
     </x-cardcontainer>
 
     @if ($modelToPass->total() > 1)
-        <div class="pagination-info"
-            style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
-            {{ __('messages.showingItems', [
-            'from' => $modelToPass->firstItem(),
-            'to' => $modelToPass->lastItem(),
-            'total' => $modelToPass->total(),
-            'items' => __('messages.lectures')
-        ]) }}
+        <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
+        {{ __('messages.showingItems', [
+                'from' => $modelToPass->firstItem(),
+                'to' => $modelToPass->lastItem(),
+                'total' => $modelToPass->total(),
+                'items' => __('messages.lectures')
+            ]) }}
         </div>
     @endif
 
     @if ($modelToPass->total() > 10)
         <div class="pagination">
             {{ $modelToPass->appends([
-            'search' => $searchQuery,
-            'sort' => $sort,
-            'subjects' => $selectedSubjects,
-        ])->links() }}
+                    'search' => $searchQuery,
+                    'sort' => $sort,
+                    'subjects' => $selectedSubjects,
+                ])->links() }}
         </div>
     @endif
 </x-layout>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const searchBar = document.querySelector('.search-bar');
         const dynamicContent = document.getElementById('dynamic-content');
 
-        searchBar.addEventListener('input', function () {
+        searchBar.addEventListener('input', function() {
             const query = searchBar.value;
 
             // Get current filter values

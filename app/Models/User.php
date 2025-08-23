@@ -82,6 +82,7 @@ class User extends Authenticatable
         'password',
         'isBanned',
         'counter',
+        'avatar',
         'last_screenshot_at',
         'remember_token',
         'created_at',
@@ -199,5 +200,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Lecture::class, 'watchlists', 'user_id', 'lecture_id')
                     ->withTimestamps();
+    }
+
+    public function resourceWatchlist()
+    {
+        return $this->belongsToMany(\App\Models\Resource::class, 'watchlists', 'user_id', 'resource_id')->withTimestamps();
     }
 }

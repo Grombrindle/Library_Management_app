@@ -289,7 +289,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'success' => true,
-                'isSubscribed' => Auth::user()->lectures ? (Auth::user()->lectures->pluck('id')->contains($id)) : false || (Auth::user()->courses ? (Auth::user()->courses->pluck('id')->contains($id)) : false),
+                'isSubscribed' => ((Auth::user()->lectures ? (Auth::user()->lectures->pluck('id')->contains($id)) : false )|| (Auth::user()->courses ? (Auth::user()->courses->pluck('id')->contains((Lecture::findOrFail($id)->course_id))) : false)),
             ]);
         }
     }
@@ -464,7 +464,7 @@ class UserController extends Controller
             'number' => [
                 'required',
                 'string',
-                Rule::unique('users', 'number')->ignore(Auth::id()),
+                Rule::unique('users', 'number'),
             ],
         ], [
             'number.unique' => "Phone number already taken",
@@ -479,6 +479,27 @@ class UserController extends Controller
         }
 
         Auth::user()->number = $request->input('number');
+        Auth::user()->save();
+
+        return response()->json([
+            'success' => "true"
+        ]);
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'avatar' => [
+                'required',
+                'integer',
+            ],
+        ]);
+
+        Auth::user()->avatar = $request->input('avatar');
+
+        if($request->input('avatar') > 9)
+            Auth::user()->avatar = 0;
+
         Auth::user()->save();
 
         return response()->json([

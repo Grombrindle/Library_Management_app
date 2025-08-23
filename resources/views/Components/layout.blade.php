@@ -7,12 +7,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pridi:wght@200;300;400;500;600;700&display=swap"
-    rel="stylesheet">
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
-
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="icon" href="{{ asset('Images/Web/favicon.ico') }}" sizes="any">
 
@@ -30,34 +28,50 @@
 
     <style>
         html {
-            font-size: clamp(7px, 1vw + 4px, 11px);
-            overflow-x: hidden;
+            font-size: 11px;
         }
 
-        /* Remove all breakpoints above 1200px, and interpolate between 400px and 1200px */
-        /* Remove @media (max-width: 992px), (max-width: 768px), (max-width: 480px) for html */
+        /* Responsive font scaling */
+        @media (max-width: 1200px) {
+            html {
+                font-size: 10px;
+            }
+        }
 
-        /* For body, ensure min-height: 100vh and proportional padding/margin if needed */
+        @media (max-width: 992px) {
+            html {
+                font-size: 9px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            html {
+                font-size: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            html {
+                font-size: 7px;
+            }
+        }
+
         body {
             margin: 0;
             overflow-x: hidden;
-            /* min-height: 100vh; */
+            height: fit-content;
             background: linear-gradient(45deg, var(--bg-gradient-start) 0%, var(--bg-gradient-start) 30%, var(--bg-gradient-end) 60%, var(--bg-gradient-end) 70%, var(--bg-gradient-end) 100%);
             font-family: Arial, Helvetica, sans-serif;
             background-attachment: fixed;
-            /* background-size: cover; */
-            background-size: 200% 200%;
-            background-repeat: no-repeat;
-            background-position: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             font-family: 'Pridi';
-            animation: gradientShift 5s infinite ease-in-out;
-            position: relative;
+            background-size: 175% 175%;
+            background-repeat: no-repeat;
+            animation: gradientShift 5s infinite;
         }
-
 
         /* Style for all select elements */
         select {
@@ -124,14 +138,6 @@
         select::backdrop {
             background-color: rgba(0, 0, 0, 0.1);
             transition: opacity 0.3s ease;
-        }
-
-        select:disabled {
-            background-color: #2a2a2a;
-            color: #666;
-            cursor: not-allowed;
-            opacity: 0.7;
-            border-color: #444;
         }
 
         .error {
@@ -232,9 +238,11 @@
             0% {
                 background-position: 0% 50%;
             }
+
             50% {
                 background-position: 100% 50%;
             }
+
             100% {
                 background-position: 0% 50%;
             }
@@ -396,7 +404,7 @@
             --text-color: #fff;
             --text-color-inverted: #000;
             --nav-bg: #000;
-            --nav-text: #4A387D;
+            --nav-text: #222;
             --nav-hover: #3a5a7a;
             --select-bg: #3a5a7a;
             --select-text: #fff;

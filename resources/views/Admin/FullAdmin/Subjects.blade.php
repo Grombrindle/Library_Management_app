@@ -127,17 +127,17 @@
 
     <x-cardcontainer :model=$modelToPass addLink="addsubject" :filterOptions=$filterOptions :showSubjectCountFilter=true
         filterByTeachers=true :showNameSort=true :showUsernameSort=false>
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedSubjects as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $subject)
                         <x-card link="subject/{{ $subject->id }}" image="{{ asset($subject->image) }}" object="Subject">
                             ● {{__('messages.subjectName')}}: {{ $subject->name }}<br>
-                            ● {{ __('messages.subjectType') }}: {{  $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific')}} <br>
-                            ● {{__('messages.coursesNum')}}: {{ $subject->courses->count() }}<br>
+                            ● {{__('messages.lectures')}}: {{ $subject->lectures->count() }}<br>
+                            ● {{__('messages.usersSub')}}: {{ $subject->users->count() }}<br>
                             ● {{__('messages.teachers')}}:
                             @if ($subject->teachers->count() == 0)
-                                <div style="color:var(--text-color-inverted);">&emsp;{{__('messages.none')}}</div>
+                                <div style="color:var(--text-color-inverted); margin-right:auto;">&emsp;none</div>
                             @elseif($subject->teachers->count() == 1)
                                 <br>&emsp;
                                 @foreach ($subject->teachers as $teacher)

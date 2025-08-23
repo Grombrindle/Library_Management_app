@@ -10,9 +10,9 @@
     // Get the search query and filter values from the request
     $searchQuery = request('search');
     $sort = request('sort', 'newest'); // Default to 'newest'
-    $selectedCourses = request('courses', []);
+    $selectedSubjects = request('subjects', []);
     $filterNone = request('none', false);
-    $courseCounts = request('course_count', []);
+    $subjectCounts = request('subject_count', []);
 
     // Normalize the search query by converting to lowercase and splitting into individual terms
     $searchTerms = $searchQuery ? array_filter(explode(' ', strtolower(trim($searchQuery)))) : [];
@@ -48,40 +48,40 @@
             }
             return $query;
         })
-        ->when($selectedCourses || $filterNone, function ($query) use ($selectedCourses, $filterNone) {
-            $query->where(function ($q) use ($selectedCourses, $filterNone) {
+        ->when($selectedSubjects || $filterNone, function ($query) use ($selectedSubjects, $filterNone) {
+            $query->where(function ($q) use ($selectedSubjects, $filterNone) {
                 if ($filterNone) {
-                    $q->doesntHave('courses');
+                    $q->doesntHave('subjects');
                 }
-                if ($selectedCourses) {
+                if ($selectedSubjects) {
                     if ($filterNone) {
-                        $q->orWhereHas('courses', function ($q) use ($selectedCourses) {
-                            $q->whereIn('courses.id', $selectedCourses);
+                        $q->orWhereHas('subjects', function ($q) use ($selectedSubjects) {
+                            $q->whereIn('subjects.id', $selectedSubjects);
                         });
                     } else {
-                        $q->whereHas('courses', function ($q) use ($selectedCourses) {
-                            $q->whereIn('courses.id', $selectedCourses);
+                        $q->whereHas('subjects', function ($q) use ($selectedSubjects) {
+                            $q->whereIn('subjects.id', $selectedSubjects);
                         });
                     }
                 }
             });
         })
-        ->when($courseCounts, function ($query) use ($courseCounts) {
-            $query->where(function ($q) use ($courseCounts) {
-                foreach ($courseCounts as $count) {
+        ->when($subjectCounts, function ($query) use ($subjectCounts) {
+            $query->where(function ($q) use ($subjectCounts) {
+                foreach ($subjectCounts as $count) {
                     if ($count === '1') {
-                        $q->orHas('courses', '=', 1);
+                        $q->orHas('subjects', '=', 1);
                     } elseif ($count === '2-3') {
-                        $q->orWhereHas('courses', function ($q) {
-                            $q->groupBy('user_id')->havingRaw('COUNT(courses.id) BETWEEN 2 AND 3');
+                        $q->orWhereHas('subjects', function ($q) {
+                            $q->groupBy('user_id')->havingRaw('COUNT(subjects.id) BETWEEN 2 AND 3');
                         });
                     } elseif ($count === '4-5') {
-                        $q->orWhereHas('courses', function ($q) {
-                            $q->groupBy('user_id')->havingRaw('COUNT(courses.id) BETWEEN 4 AND 5');
+                        $q->orWhereHas('subjects', function ($q) {
+                            $q->groupBy('user_id')->havingRaw('COUNT(subjects.id) BETWEEN 4 AND 5');
                         });
                     } elseif ($count === '6+') {
-                        $q->orWhereHas('courses', function ($q) {
-                            $q->groupBy('user_id')->havingRaw('COUNT(courses.id) >= 6');
+                        $q->orWhereHas('subjects', function ($q) {
+                            $q->groupBy('user_id')->havingRaw('COUNT(subjects.id) >= 6');
                         });
                     }
                 }
@@ -101,7 +101,7 @@
         ->paginate(10);
 
     // Prepare filter options
-    $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
+    $filterOptions = App\Models\Subject::pluck('name', 'id')->toArray();
 
     // Split users into chunks
     $chunkSize = 2;
@@ -119,23 +119,23 @@
 <x-layout :objects=true object="{{__('messages.users')}}">
     <x-breadcrumb :links="array_merge([__('messages.home') => url('/welcome')], [__('messages.users') => Request::url()])" />
 
-    <x-cardcontainer :model=$modelToPass :addLink=null :filterOptions=$filterOptions :showCourseCountFilter=true
+    <x-cardcontainer :model=$modelToPass :addLink=null :filterOptions=$filterOptions :showSubjectCountFilter=true
         :showUsernameSort=true :showNameSort=false :showBannedFilter=true>
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedUsers as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $user)
                         <x-card link="user/{{ $user->id }}">
                             ● {{ __('messages.userName') }}: {{ $user->userName }}<br>
                             ● {{ __('messages.number') }}: {{ $user->countryCode }} {{ $user->number }}<br>
-                            ● {{ __('messages.coursesSubTo') }}:
-                            @if ($user->courses->count() == 0)
+                            ● {{ __('messages.subjectsSubscribedTo') }}:
+                            @if ($user->subjects->count() == 0)
                                 <div style="color:black">none</div>
                             @else
                                 <div>
                                     [
-                                    @foreach ($user->courses as $course)
-                                        {{ $course->name }}
+                                    @foreach ($user->subjects as $subject)
+                                        {{ $subject->name }}
                                         @if (!$loop->last)
                                             -
                                         @endif
@@ -180,9 +180,9 @@
         {{ $modelToPass->appends([
                 'search' => $searchQuery,
                 'sort' => $sort,
-                'courses' => $selectedCourses,
+                'subjects' => $selectedSubjects,
                 'none' => $filterNone,
-                'course_count' => request('course_count', []),
+                'subject_count' => request('subject_count', []),
                 'ban_status' => request('ban_status', 'all'),
             ])->links() }}
     </div>
@@ -199,21 +199,21 @@
             // Get current filter values
             const selectedSort = document.querySelector('input[name="sort"]:checked')?.value ||
                 'newest';
-            const selectedCourses = Array.from(document.querySelectorAll(
-                'input[name="courses[]"]:checked')).map(el => el.value);
+            const selectedSubjects = Array.from(document.querySelectorAll(
+                'input[name="subjects[]"]:checked')).map(el => el.value);
             const filterNone = document.getElementById('filter-none')?.checked || false;
-            const courseCounts = Array.from(document.querySelectorAll(
-                'input[name="course_count[]"]:checked')).map(el => el.value);
+            const subjectCounts = Array.from(document.querySelectorAll(
+                'input[name="subject_count[]"]:checked')).map(el => el.value);
 
             // Build the query string
             const params = new URLSearchParams();
             params.set('search', query);
             params.set('sort', selectedSort);
-            selectedCourses.forEach(course => params.append('courses[]', course));
+            selectedSubjects.forEach(subject => params.append('subjects[]', subject));
             if (filterNone) {
                 params.set('none', 'true');
             }
-            courseCounts.forEach(count => params.append('course_count[]', count));
+            subjectCounts.forEach(count => params.append('subject_count[]', count));
 
             fetch(`{{ request()->url() }}?${params.toString()}`)
                 .then(response => response.text())

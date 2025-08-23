@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
-use Smalot\PdfParser\Parser;
+// use Smalot\PdfParser\Parser; // Using full namespace instead
 use Illuminate\Support\Facades\DB;
 use getID3;
 
@@ -308,7 +308,7 @@ class LectureController extends Controller
             $pdfName = time() . '_' . $pdf->getClientOriginalName();
             $pdf->move($pdfDir, $pdfName);
             $filePathPdf = 'Files/PDFs/' . $pdfName;
-            $parser = new Parser();
+            $parser = new \Smalot\PdfParser\Parser();
             $pdf = $parser->parseFile(public_path($filePathPdf));
             $pages = $pdf->getPages();
             $pageCount = count($pages);
@@ -486,9 +486,65 @@ class LectureController extends Controller
             $lecture->rating = DB::table('lecture_rating')->where('user_id', Auth::user()->id)->where('lecture_id', $lecture->id)->avg('rating');
         });
 
+
+        $topRatedLectures = $course->lectures()
+            ->withAvg('ratings', 'rating')
+            ->orderByDesc('ratings_avg_rating')
+            ->get();
+
+        // Add score and additional data to each lecture
+        $topRatedLectures->each(function ($lecture) {
+            if ($lecture->quiz) {
+                $score = \App\Models\score::where('user_id', Auth::id())
+                    ->where('quiz_id', $lecture->quiz->id)
+                    ->first();
+                $lecture->score = $score ? $score->correctAnswers : null;
+                $lecture->number_of_questions = $lecture->quiz->questions->count();
+            } else {
+                $lecture->score = null;
+                $lecture->number_of_questions = 0;
+            }
+
+            // Add video URLs
+            $lecture->url360 = $lecture->file_360 ? url($lecture->file_360) : null;
+            $lecture->url720 = $lecture->file_720 ? url($lecture->file_720) : null;
+            $lecture->url1080 = $lecture->file_1080 ? url($lecture->file_1080) : null;
+            $lecture->urlpdf = $lecture->file_pdf ? url($lecture->file_pdf) : null;
+        });
+
+
+
+        $recentLectures = $course->lectures()
+            ->withAvg('ratings', 'rating')
+            ->orderByDesc('created_at')
+            ->get();
+
+        // Add score and additional data to each lecture
+        $recentLectures->each(function ($lecture) {
+            if ($lecture->quiz) {
+                $score = \App\Models\score::where('user_id', Auth::id())
+                    ->where('quiz_id', $lecture->quiz->id)
+                    ->first();
+                $lecture->score = $score ? $score->correctAnswers : null;
+                $lecture->number_of_questions = $lecture->quiz->questions->count();
+            } else {
+                $lecture->score = null;
+                $lecture->number_of_questions = 0;
+            }
+
+            // Add video URLs
+            $lecture->url360 = $lecture->file_360 ? url($lecture->file_360) : null;
+            $lecture->url720 = $lecture->file_720 ? url($lecture->file_720) : null;
+            $lecture->url1080 = $lecture->file_1080 ? url($lecture->file_1080) : null;
+            $lecture->urlpdf = $lecture->file_pdf ? url($lecture->file_pdf) : null;
+        });
+
+
         return response()->json([
             'success' => true,
             'lectures' => $lectures,
+            'top_rated' => $topRatedLectures,
+            'recent' => $recentLectures,
             'course' => [
                 'id' => $course->id,
                 'name' => $course->name,

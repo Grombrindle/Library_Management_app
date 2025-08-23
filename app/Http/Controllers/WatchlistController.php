@@ -26,6 +26,14 @@ class WatchlistController extends Controller
         ]);
     }
 
+    public function fetchResources()
+    {
+        return response()->json([
+            'success' => true,
+            'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('resource_id')->get()
+        ]);
+    }
+
     public function toggleLecture($id)
     {
         $user = Auth::user();
@@ -69,6 +77,29 @@ class WatchlistController extends Controller
             'success' => true,
             'action' => $action,
             'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('course_id')->get()
+        ]);
+    }
+
+    public function toggleResource($id)
+    {
+        $user = Auth::user();
+        $resource = \App\Models\Resource::findOrFail($id);
+
+        // Check if resource is already in watchlist
+        if ($user->resourceWatchlist()->where('resource_id', $id)->exists()) {
+            // Remove from watchlist
+            $user->resourceWatchlist()->detach($id);
+            $action = 'removed';
+        } else {
+            // Add to watchlist
+            $user->resourceWatchlist()->attach($id);
+            $action = 'added';
+        }
+
+        return response()->json([
+            'success' => true,
+            'action' => $action,
+            'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('resource_id')->get()
         ]);
     }
 }

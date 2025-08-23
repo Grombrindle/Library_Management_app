@@ -1,15 +1,8 @@
 <head>
     <style>
         body {
-            overflow: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+            overflow:hidden;
         }
-
         @media(max-width:1600px) {
             .title {
                 font-size: 50px;
@@ -44,250 +37,90 @@
         .logo {
             width: 20rem;
             height: 25rem;
-            margin: 1rem auto 5rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s ease;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top:1rem;
+            margin-bottom:5rem;
         }
 
-        .logo img {
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
-        }
 
         .logoContainer {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: auto;
+            width: auto;
+            dislpay: flex;
+            flex-direction: row;
         }
 
         .button {
             width: 90%;
-            max-width: 400px;
-            margin: 1rem auto;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 10%;
             background: var(--welcome-btn);
-            height: 50px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2.5px solid var(--card-border);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: #555184 2.5px solid;
+            transition: 0.3s ease;
         }
 
-        .button:hover,
-        .button:focus {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-color: var(--welcome-btn);
+        .button:hover {
+            border-radius: 10px;
+            border: var(--welcome-btn) 2.5px solid;
+            animation: shadow 1.5s linear infinite;
         }
 
-        .button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .disable-hover .button:hover {
+            width: 30%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 3.5%;
+            background: var(--welcome-btn);
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: black 2.5px solid;
         }
 
         .text {
+            position: inherit;
             color: var(--text-color);
             text-decoration: none;
             text-align: center;
-            font-size: 1.25rem;
-            font-weight: 500;
+            font-size: 20px;
+            /* text-shadow: white 2px 2px 5px; */
             z-index: 2;
-            transition: all 0.3s ease;
         }
 
         .buttonContainer {
-            width: 100%;
-            max-width: 600px;
+            width: 50%;
+            height: 50%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
         }
 
         .title {
-            text-align: center;
-            font-size: 2.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 30px;
             color: var(--text-color);
-            margin: 1rem auto;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
         }
 
         #circle {
             position: fixed;
+            /* Use fixed to ensure it follows the mouse */
             width: 250px;
             height: 250px;
-            background-color: var(--card-bg);
+            background-color: #555184;
             border-radius: 50%;
             pointer-events: none;
+            /* Ensures the circle doesn't interfere with mouse events */
             transform: translate(-50%, -50%);
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1;
-            mix-blend-mode: overlay;
-        }
-
-        /* Media Queries for Responsive Design */
-        @media (max-width: 1600px) {
-            .title {
-                font-size: 2.5rem;
-            }
-
-            .logo {
-                width: 18rem;
-                height: 22rem;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            .title {
-                font-size: 2.25rem;
-            }
-
-            .logo {
-                width: 16rem;
-                height: 20rem;
-            }
-
-            .text {
-                font-size: 1.2rem;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .title {
-                font-size: 2rem;
-            }
-
-            .logo {
-                width: 14rem;
-                height: 18rem;
-                margin-bottom: 3rem;
-            }
-
-            .button {
-                height: 45px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .title {
-                font-size: 1.75rem;
-            }
-
-            .logo {
-                width: 12rem;
-                height: 16rem;
-                margin-bottom: 2rem;
-            }
-
-            .text {
-                font-size: 1.1rem;
-            }
-
-            .button {
-                height: 40px;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .title {
-                font-size: 1.5rem;
-            }
-
-            .logo {
-                width: 10rem;
-                height: 14rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .text {
-                font-size: 1rem;
-            }
-
-            .button {
-                height: 35px;
-                margin: 0.75rem auto;
-            }
-        }
-
-        @media (max-width: 400px) {
-            .title {
-                font-size: 2.25rem;
-            }
-
-            .logo {
-                width: 24rem;
-                height: 30rem;
-                margin-bottom: 5rem;
-            }
-
-            .text {
-                font-size: 1.9rem;
-            }
-
-            .button {
-                height: 30px;
-                margin: 0.5rem auto;
-            }
-        }
-
-        /* Landscape mode optimization */
-        @media (max-height: 600px) and (orientation: landscape) {
-            body {
-                padding: 0.5rem;
-            }
-
-            .logo {
-                width: 8rem;
-                height: 10rem;
-                margin: 0.5rem auto 1rem;
-            }
-
-            .title {
-                font-size: 1.5rem;
-                margin: 0.5rem auto;
-            }
-
-            .button {
-                height: 35px;
-                margin: 0.5rem auto;
-            }
-        }
-
-        /* Touch device optimizations */
-        @media (hover: none) {
-            .button:hover {
-                transform: none;
-                box-shadow: none;
-            }
-
-            .button:active {
-                background-color: var(--card-bg);
-                transform: scale(0.98);
-            }
-
-            #circle {
-                display: none;
-            }
-        }
-
-        /* High-DPI screens */
-        @media (-webkit-min-device-pixel-ratio: 2),
-        (min-resolution: 192dpi) {
-            .button {
-                border-width: 2px;
-            }
         }
     </style>
 </head>
@@ -301,18 +134,11 @@
     <div class="title">
         {{ __('messages.welcome') }} {{ Auth::user()->userName }}!
     </div>
-    <div class="buttonContainer" style="display:grid; grid-template-columns: 1fr 1fr;">
-        <div style="width:100%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
-            <a href="teacher/course-requests/show" class="button" style="text-decoration: none;">
-                <div class="text">{{ __('messages.yourRequests') }}</div>
-            </a>
+    <div class="buttonContainer">
+        <div style="width:50%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px">
+
             <a href="/subjects" class="button" style="text-decoration: none;">
                 <div class="text">{{ __('messages.yourSubjects') }}</div>
-            </a>
-        </div>
-        <div style="width:100%; margin-right:auto; margin-left:auto; margin-top:auto;margin-bottom:auto; gap:5px;">
-            <a href="/courses" class="button" style="text-decoration: none;">
-                <div class="text">{{ __('messages.yourCourses') }}</div>
             </a>
             <a href="/lectures" class="button" style="text-decoration: none;">
                 <div class="text">{{ __('messages.yourLectures') }}</div>

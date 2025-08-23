@@ -4,18 +4,24 @@
     <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.subjects') => url('/subjects'), $subject->name => url(Request::url())]" align=true />
     <x-infocard :editLink="'subject/edit/' . $subject->id" deleteLink="deletesubject/{{ $subject->id }}"
         editLecturesLink="subject/{{ $subject->id }}/lectures" editSubscriptionsLink="subject/{{ $subject->id }}/users"
-        lecturesCount="{{ $subject->lecturesCount }}" :object=$subject objectType="Subject"
-        image="{{ asset($subject->image) }}" name="{{ $subject->name }}"
+        lecturesCount="{{ $subject->lecturesCount }}"
+        subscriptionsCount="{{ App\Models\Subject::withCount('users')->find(session('subject'))->users_count }}"
+        :object=$subject objectType="Subject" image="{{ asset($subject->image) }}" name="{{ $subject->name }}"
         warning="{{ __('messages.deleteSubjectWarning') }}">
-        <br>
         ● {{ __('messages.subjectName') }}: {{ $subject->name }}<br>
-        ● {{ __('messages.subjectType') }}: {{  $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific')}} <br>
-        ● {{ __('messages.coursesNum') }}:
-        @if ($subject->courses->count())
-            <a href="/subject/{{ $subject->id }}/courses"> {{ $subject->courses->count() }}</a>
-        @else
+        ● {{ __('messages.lectures') }}: @if ($subject->lectures->count() == 0)
             0
+        @else
+            <a href="/subject/{{ $subject->id }}/lectures" style="color:blue">{{ $subject->lectures->count() }}</a>
         @endif
+        <br>
+        ● {{ __('messages.usersSubscribed') }}: @if ($subject->users->count() == 0)
+            0
+        @else
+            <a href="/subject/{{ $subject->id }}/users/"
+                style="color:blue">{{ App\Models\Subject::withCount('users')->find(session('subject'))->users_count }}</a>
+        @endif
+
         <br>
         @if (App\Models\Subject::withCount('teachers')->find(session('subject'))->teachers_count == 1)
             ● {{ __('messages.teacher') }}:

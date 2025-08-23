@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Lecture;
 use App\Models\Resource;
+use App\Models\Exam;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Crypt;
@@ -130,6 +131,32 @@ class FileController extends Controller
         $mimeType = mime_content_type($filePath);
         return response()->file($filePath, [
             'Content-Type' => $mimeType,
+        ]);
+    }
+
+
+    public function showExam($id)
+    {
+        $exam = Exam::find($id);
+
+        if (!$exam || !$exam->pdf) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'Exam not found'
+            ], 404);
+        }
+
+        $filePath = public_path($exam->pdf);
+
+        if (!file_exists($filePath)) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'File not found on server'
+            ], 404);
+        }
+
+        return response()->file($filePath, [
+            'Content-Type' => 'application/pdf',
         ]);
     }
 

@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->foreignIdFor(Subject::class);
             $table->date('publish date');
             $table->string('image')->default('Images/Resources/default.png');
-            $table->string('pdf_file')->default('Files/Resources/default.pdf');
+            $table->json('pdf_files')->nullable()->default(null); // language => file path mapping
             $table->string('audio_file')->nullable();
             $table->string('author')->default('John Doe');
             $table->timestamps();

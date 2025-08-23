@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Resource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Subject;
+use Illuminate\Support\Facades\Cache;
 
 class ResourceController extends Controller
 {
@@ -125,6 +127,82 @@ class ResourceController extends Controller
 
 
     }
+
+    public function fetchAllPage()
+    {
+
+        // Use caching to improve performance for frequently accessed data
+        $cacheKey = 'page_resources_' . (Auth::id() ?? 'guest');
+        $cacheDuration = 300; // 5 minutes
+
+        return Cache::remember($cacheKey, $cacheDuration, function () {
+            // Get recommended Resources (using the existing algorithm) - only essential fields
+            // Get user's subscribed course subjects and their types
+            $userSubjectIds = Auth::user()->courses()->pluck('subject_id')->unique();
+            $userSubjectTypes = DB::table('subjects')
+                ->whereIn('id', $userSubjectIds)
+                ->pluck('literaryOrScientific')
+                ->unique();
+
+            $recommendedResources = Resource::withCount(['ratings'])
+                ->withAvg('ratings', 'rating')
+                ->with('subject')
+                ->orderByDesc(DB::raw('
+                (
+                    (COALESCE(ratings_avg_rating, 0) * 0.4) +
+                    (ratings_count * 0.3)+
+                    (
+                        CASE
+                            WHEN subject_id IN (' . $userSubjectIds->implode(',') . ') THEN 0.3
+                            ELSE 0
+                        END
+                    ) +
+                    (
+                        CASE
+                            WHEN literaryOrScientific IN (' . $userSubjectTypes->implode(',') . ') THEN 0.2
+                            ELSE 0
+                        END
+                    )
+                ) *
+                (1 + (COALESCE(ratings_avg_rating, 0) / 5))
+            '))
+                ->get();
+
+            // Get top-rated Resources - only essential fields
+
+            $topRatedResources = Resource::withAvg('ratings', 'rating')
+                ->orderByDesc('ratings_avg_rating')
+                ->get();
+            // Get recent Resources - only essential fields
+            $recentResources = Resource::orderByDesc('created_at')->get();
+
+            return response()->json([
+                'success' => true,
+                'scientificSubjects' => Subject::where('literaryOrScientific',1)->select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
+                    return [
+                        'id' => $subject->id,
+                        'name' => $subject->name,
+                        'literaryOrScientific' => $subject->literaryOrScientific,
+                        'image' => $subject->image,
+                        'imageUrl' => url($subject->image),
+                    ];
+                }),
+                'literarySubjects' => Subject::where('literaryOrScientific', 0)->select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
+                    return [
+                        'id' => $subject->id,
+                        'name' => $subject->name,
+                        'literaryOrScientific' => $subject->literaryOrScientific,
+                        'image' => $subject->image,
+                        'imageUrl' => url($subject->image),
+                    ];
+                }),
+                'recommended' => $recommendedResources,
+                'top_rated' => $topRatedResources,
+                'recent' => $recentResources,
+            ]);
+        });
+    }
+
     public function fetchRatings($id)
     {
         $ratings = DB::table('resources_ratings')->where('resource_id', $id)->get();
@@ -186,21 +264,30 @@ class ResourceController extends Controller
             'resource_subject_id' => 'required|integer|exists:subjects,id',
             'resource_publish_date' => 'required|date',
             'resource_author' => 'required|string|max:255',
-            'resource_pdf_file' => 'required|file|mimes:pdf',
+            'pdf_ar' => 'nullable|file|mimes:pdf',
+            'pdf_en' => 'nullable|file|mimes:pdf',
+            'pdf_es' => 'nullable|file|mimes:pdf',
+            'pdf_de' => 'nullable|file|mimes:pdf',
+            'pdf_fr' => 'nullable|file|mimes:pdf',
             'resource_audio_file' => 'nullable|file|mimetypes:audio/mpeg,audio/mp3,audio/wav,audio/x-wav,audio/x-m4a',
             'resource_image' => 'nullable|image|max:2048',
         ]);
+        // At least one of Arabic or English is required
+        if (!$request->hasFile('pdf_ar') && !$request->hasFile('pdf_en')) {
+            return back()->withErrors(['pdf_ar' => __('messages.arabicOrEnglishRequired')])->withInput();
+        }
 
-        // PDF
         $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir))
-            mkdir($pdfDir, 0755, true);
-        $pdfPath = null;
-        if ($request->hasFile('resource_pdf_file')) {
-            $pdf = $request->file('resource_pdf_file');
-            $pdfName = time() . '_' . $pdf->getClientOriginalName();
-            $pdf->move($pdfDir, $pdfName);
-            $pdfPath = 'Files/Resources/' . $pdfName;
+        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
+        $pdfFiles = [];
+        foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
+            $input = 'pdf_' . $lang;
+            if ($request->hasFile($input)) {
+                $pdf = $request->file($input);
+                $pdfName = time() . '_' . $lang . '_' . $pdf->getClientOriginalName();
+                $pdf->move($pdfDir, $pdfName);
+                $pdfFiles[$lang] = 'Files/Resources/' . $pdfName;
+            }
         }
 
         // Audio
@@ -221,8 +308,8 @@ class ResourceController extends Controller
         $resource->subject_id = $validated['resource_subject_id'];
         $resource->{'publish date'} = $validated['resource_publish_date'];
         $resource->author = $validated['resource_author'];
-        $resource->pdf_file = $pdfPath;
-        $resource->audio_file = $audioPath;
+        $resource->pdf_files = json_encode($pdfFiles);
+        $resource->audio_file = $audioPath ?? null;
         $resource->image = $imagePath;
         $resource->literaryOrScientific = $resource->subject->literaryOrScientific;
         $resource->save();
@@ -241,14 +328,37 @@ class ResourceController extends Controller
             'resource_description' => 'nullable|string',
             'resource_publish_date' => 'required|date',
             'resource_author' => 'required|string|max:255',
+            'pdf_ar' => 'nullable|file|mimes:pdf',
+            'pdf_en' => 'nullable|file|mimes:pdf',
+            'pdf_es' => 'nullable|file|mimes:pdf',
+            'pdf_de' => 'nullable|file|mimes:pdf',
+            'pdf_fr' => 'nullable|file|mimes:pdf',
             'resource_image' => 'nullable|image|max:2048',
         ]);
+
+        $pdfDir = public_path('Files/Resources');
+        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
+        $pdfFiles = $resource->pdf_files ? json_decode($resource->pdf_files, true) : [];
+        foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
+            $input = 'pdf_' . $lang;
+            if ($request->hasFile($input)) {
+                $pdf = $request->file($input);
+                $pdfName = time() . '_' . $lang . '_' . $pdf->getClientOriginalName();
+                $pdf->move($pdfDir, $pdfName);
+                $pdfFiles[$lang] = 'Files/Resources/' . $pdfName;
+            }
+        }
+        // At least one of Arabic or English is required
+        if (empty($pdfFiles['ar']) && empty($pdfFiles['en'])) {
+            return back()->withErrors(['pdf_ar' => __('messages.arabicOrEnglishRequired')])->withInput();
+        }
 
         $resource->name = $validated['resource_name'];
         $resource->description = $validated['resource_description'];
         $resource->literaryOrScientific = $resource->subject->literaryOrScientific;
         $resource->{'publish date'} = $validated['resource_publish_date'];
         $resource->author = $validated['resource_author'];
+        $resource->pdf_files = json_encode($pdfFiles);
 
         // Handle image upload and replacement
         $imageDir = 'Images/Resources';
@@ -268,15 +378,15 @@ class ResourceController extends Controller
         }
 
         // PDF
-        $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir))
-            mkdir($pdfDir, 0755, true);
-        if ($request->hasFile('resource_pdf_file')) {
-            $pdf = $request->file('resource_pdf_file');
-            $pdfName = time() . '_' . $pdf->getClientOriginalName();
-            $pdf->move($pdfDir, $pdfName);
-            $resource->pdf_file = 'Files/Resources/' . $pdfName;
-        }
+        // $pdfDir = public_path('Files/Resources'); // This line is now redundant as $pdfDir is defined above
+        // if (!file_exists($pdfDir)) // This line is now redundant as $pdfDir is defined above
+        //     mkdir($pdfDir, 0755, true); // This line is now redundant as $pdfDir is defined above
+        // if ($request->hasFile('resource_pdf_file')) { // This line is now redundant as $pdfFiles is handled above
+        //     $pdf = $request->file('resource_pdf_file'); // This line is now redundant as $pdfFiles is handled above
+        //     $pdfName = time() . '_' . $pdf->getClientOriginalName(); // This line is now redundant as $pdfFiles is handled above
+        //     $pdf->move($pdfDir, $pdfName); // This line is now redundant as $pdfFiles is handled above
+        //     $resource->pdf_file = 'Files/Resources/' . $pdfName; // This line is now redundant as $pdfFiles is handled above
+        // }
 
         // Audio
         $audioDir = public_path('Files/Resources/Audio');

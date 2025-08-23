@@ -7,7 +7,6 @@
     <x-infocard :editLink="'admin/edit/' . $admin->id" deleteLink="deleteadmin/{{ $admin->id }}" :object=$admin id="{{$admin->id}}"
         objectType="Admin" privileges="{{ $admin->privileges }}" image="{{ asset($admin->image) }}"
         name="{{ $admin->name }}">
-        <br>
         ● {{ __('messages.adminName') }}: {{ $admin->name }}<br>
         ● {{ __('messages.adminUserName') }}: {{ $admin->userName }}<br>
         ● {{ __('messages.adminNumber') }}: {{$admin->countryCode}} {{ $admin->number }}<br>

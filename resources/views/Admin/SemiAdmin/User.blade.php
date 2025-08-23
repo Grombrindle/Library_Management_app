@@ -4,24 +4,23 @@
     <x-breadcrumb :links="['Home' => url('/welcome'), 'Users' => url('/users'), $user->userName => Request::url()]" :align=true />
     <x-infocard :editLink="'user/edit/' . $user->id" :deleteLink=null :object=$user objectType="User"
         name="{{ $user->userName }}">
-        <br>
         ● {{ __('messages.userName') }}: {{ $user->userName }}<br>
         ● {{ __('messages.userNumber') }}: <br> {{ $user->countryCode }} {{ $user->number }}<br>
-        ● {{ __('messages.coursesSubTo') }}:
-        @if ($user->courses->count() == 0)
+        ● {{ __('messages.subjectsSubscribedTo') }}:
+        @if ($user->subjects->count() == 0)
             <div style="color:black">none</div>
         @else
             <div>
-                @if ($user->courses->count() != 1)
+                @if ($user->subjects->count() != 1)
                     [
                 @endif
-                @foreach ($user->courses as $course)
-                    <span>{{ $course->name }}</span>
+                @foreach ($user->subjects as $subject)
+                    <span>{{ $subject->name }}</span>
                     @if (!$loop->last)
                         -
                     @endif
                 @endforeach
-                @if ($user->courses->count() != 1)
+                @if ($user->subjects->count() != 1)
                     ]
                 @endif
             </div>

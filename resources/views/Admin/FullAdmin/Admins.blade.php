@@ -59,7 +59,7 @@
     <x-cardcontainer :model=$modelToPass addLink="addadmin" :showUsernameSort=true :showNameSort=true
         :showPrivilegeFilter=true>
         <!-- Add a unique ID to the container for dynamic updates -->
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedAdmins as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $admin)

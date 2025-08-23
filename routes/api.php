@@ -13,7 +13,9 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HelpfulController;
+use App\Http\Controllers\SavedMessageController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\WatchlistController;
 
@@ -51,6 +53,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/changepassword', [UserController::class, 'updatePassword']);
     Route::put('/changenumber', [UserController::class, 'updateNumber']);
     Route::put('/changeusername', [UserController::class, 'updateUsername']);
+    Route::put('/changeavatar', [UserController::class, 'updateAvatar']);
 
     Route::get('/getteacher/{id}', [TeacherController::class, 'fetch']);
     Route::get('/getteachersubjects/{id}', [TeacherController::class, 'fetchSubjects']);
@@ -88,11 +91,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallcoursessubscribed', [CourseController::class, 'fetchAllSubscribed']);
     Route::get('/getallcoursesusersubscribed', [CourseController::class, 'fetchAllUserSubscribed']);
     Route::get('/getallcoursesrecommended', [CourseController::class, 'fetchAllRecommended']);
+    Route::get('/getallhomepage', [CourseController::class, 'fetchHomePage']);
     Route::get('/favoritecourse/{id}', [CourseController::class, 'checkFavoriteCourse']);
     Route::post('/ratecourse/{id}', [CourseController::class, 'rate']);
-    Route::post('/course/{course}/purchase', [CourseController::class, 'purchaseCourse']);
+    Route::post('/course/{id}/purchase', [CourseController::class, 'purchaseCourse']);
     Route::get('/courses/overview', [CourseController::class, 'coursesOverview']);
-    Route::post('/course/{course}/set-price', [CourseController::class, 'setCoursePrice']);
+    // Route::post('/course/{course}/set-price', [CourseController::class, 'setCoursePrice']);
 
 
     Route::get('/getlecture/{id}', [LectureController::class, 'fetch']);
@@ -107,11 +111,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/ratelecture/{id}', [LectureController::class, 'rate']);
     // Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);     Not through the API
 
+    Route::get('/getexam/{id}', [ExamController::class, 'fetch']);
+    Route::get('/getallexams', [ExamController::class, 'fetchAll']);
+    Route::get('/getallsubjectexams/{id}', [ExamController::class, 'fetchFromSubject']);
+    Route::get('/getallyearexams/{year}', [ExamController::class, 'fetchFromYear']);
+
     Route::get('/getteacherimage/{id}', [ImageController::class, 'fetchTeacher']);
     Route::get('/getlectureimage/{id}', [ImageController::class, 'fetchLecture']);
     Route::get('/getsubjectimage/{id}', [ImageController::class, 'fetchSubject']);
     Route::get('/getcourseimage/{id}', [ImageController::class, 'fetchCourse']);
     Route::get('/getresourceimage/{id}', [ImageController::class, 'fetchResource']);
+    Route::get('/getexamimage/{id}', [ImageController::class, 'fetchExam']);
 
     Route::get('/getscore/{id}', [QuizController::class, 'fetchScore']);
     Route::get('/getcoursescores/{id}', [QuizController::class, 'checkScores']);
@@ -123,6 +133,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallresourcesrecent', [ResourceController::class, 'fetchAllRecent']);
     Route::get('/getallresourcesrated', [ResourceController::class, 'fetchAllRated']);
     Route::get('/getallresourcesrecommended', [ResourceController::class, 'fetchAllRecommended']);
+    Route::get('/getallresourcespage', [ResourceController::class, 'fetchAllPage']);
     Route::post('/rateresource/{id}', [ResourceController::class, 'rate']);
 
 
@@ -141,6 +152,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getwatchlistcourses', [WatchlistController::class, 'fetchCourses']);
     Route::post('/togglewatchlistlecture/{id}', [WatchlistController::class, 'toggleLecture']);
     Route::post('/togglewatchlistcourse/{id}', [WatchlistController::class, 'toggleCourse']);
+    Route::get('/getwatchlistresources', [WatchlistController::class, 'fetchResources']);
+    Route::post('/togglewatchlistresource/{id}', [WatchlistController::class, 'toggleResource']);
 
     Route::post('/togglehelpful', [HelpfulController::class, 'toggleHelpful']);
     Route::post('/toggleunhelpful', [HelpfulController::class, 'toggleUnhelpful']);
@@ -149,6 +162,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getlectureratings/{id}', [LectureController::class, 'fetchRatings']);
     Route::get('/getresourceratings/{id}', [ResourceController::class, 'fetchRatings']);
     Route::get('/getteacherratings/{id}', [TeacherController::class, 'fetchRatings']);
+
+    Route::post('/togglesaved', [SavedMessageController::class, 'toggleSaved']);
 
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');

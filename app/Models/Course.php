@@ -23,6 +23,8 @@ class Course extends Model
         'image',
         'sources',
         'price',
+        'sparkies',
+        'sparkiesPrice',
         'created_at',
         'updated_at'
     ];
@@ -157,8 +159,15 @@ class Course extends Model
     public function getPdfLessonsCountAttribute()
     {
         return $this->lectures()
-            ->whereNotNull('pdf_file')
+            ->whereNotNull('file_pdf')
             ->count();
+    }
+
+    public function getTotalPdfPagesAttribute()
+    {
+        return $this->lectures()
+            ->whereNotNull('file_pdf')
+            ->sum('pages');
     }
 
     public function getDurationAttribute()
@@ -262,7 +271,27 @@ class Course extends Model
         return $this->lectures()->get()->count();
     }
 
-    protected $appends = ['rating', 'subscription_count', 'rating_breakdown', 'FeaturedRatings', 'lectureNum'];
+    public function getIsFavoriteAttribute() {
+        if(Auth::user()) {
+            return Auth::user()->favoriteCourses()->where('course_id', $this->id)->exists();
+        }
+    }
+
+    protected $appends = [
+        'rating',
+        'isFavorite',
+        'subscription_count',
+        'rating_breakdown',
+        'FeaturedRatings',
+        'lectureNum',
+        'video_lectures_count',
+        'pdf_lessons_count',
+        'total_pdf_pages',
+        'duration',
+        'duration_formatted',
+        'duration_formatted_long',
+        'duration_human'
+    ];
 
     // protected $with = ['ratings'];
 

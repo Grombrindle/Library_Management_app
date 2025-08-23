@@ -4,9 +4,9 @@
     // Get the search query and filter values from the request
     $searchQuery = request('search');
     $sort = request('sort', 'newest'); // Default to 'newest'
-    $selectedCourses = request('courses', []);
+    $selectedSubjects = request('subjects', []);
     $filterNone = request('none', false);
-    $courseCounts = request('course_count', []);
+    $subjectCounts = request('subject_count', []);
 
     // Normalize the search query
     $searchTerms = $searchQuery ? array_filter(explode(' ', strtolower(trim($searchQuery)))) : [];
@@ -31,19 +31,19 @@
                 });
             }
         })
-        ->when($selectedCourses, function ($query) use ($selectedCourses) {
-            $query->whereHas('course', function ($q) use ($selectedCourses) {
-                $q->whereIn('id', $selectedCourses);
+        ->when($selectedSubjects, function ($query) use ($selectedSubjects) {
+            $query->whereHas('subject', function ($q) use ($selectedSubjects) {
+                $q->whereIn('id', $selectedSubjects);
             });
         })
         ->when($filterNone, function ($query) {
-            $query->whereDoesntHave('course');
+            $query->whereDoesntHave('subject');
         })
-        ->when($courseCounts, function ($query) use ($courseCounts) {
-            $query->where(function ($q) use ($courseCounts) {
-                foreach ($courseCounts as $count) {
+        ->when($subjectCounts, function ($query) use ($subjectCounts) {
+            $query->where(function ($q) use ($subjectCounts) {
+                foreach ($subjectCounts as $count) {
                     if ($count === '1') {
-                        $q->orHas('course', '=', 1);
+                        $q->orHas('subject', '=', 1);
                     } // Add other count conditions as needed
                 }
             });
@@ -65,7 +65,7 @@
     $modelToPass = $query->paginate(10);
 
     // Prepare filter options
-    $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
+    $filterOptions = App\Models\Subject::pluck('name', 'id')->toArray();
 
     // Split lectures into chunks
     $chunkSize = 2;
@@ -77,7 +77,7 @@
     }
 @endphp
 <x-layout :objects=true
-    object="{{ $user ? Str::upper(App\Models\User::findOrFail(session('user'))->userName) . __('messages.lecturesSubTo') : (!$lec ? __('messages.lectures') : __('messages.lecturesFrom') . Str::upper(App\Models\Course::findOrFail(session('course'))->name)) }}">
+    object="{{ $user ? Str::upper(App\Models\User::findOrFail(session('user'))->userName) . __('messages.lecturesSubTo') : (!$lec ? __('messages.lectures') : __('messages.lecturesFrom') . Str::upper(App\Models\Subject::findOrFail(session('subject'))->name)) }}">
     <x-breadcrumb :links="array_merge(
         [__('messages.home') => url('/welcome')],
         [
@@ -85,78 +85,25 @@
                 ? App\Models\User::findOrFail(session('user'))->userName . ' subscribed lectures'
                 : (!$lec
                     ? __('messages.lectures')
-                    : __('messages.lecturesFrom') .
-                        App\Models\Course::findOrFail(session('course'))->name) => Request::url(),
+                    : __('messages.lecturesFrom') . App\Models\Subject::findOrFail(session('subject'))->name) => Request::url(),
         ],
     )" />
 
-    <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions :showCourseCountFilter=false
+    <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions :showSubjectCountFilter=false
         :showUsernameSort=false :showNameSort=false>
-        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
+        <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row">
             @foreach ($chunkedLectures as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $lecture)
                         <x-card link="lecture/{{ $lecture->id }}" image="{{ asset($lecture->image) }}" object="Lecture">
-                            ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
+                            ● {{__('messages.lectureName')}}: {{ $lecture->name }}<br>
                             {{-- ● Lecture Description:
                             <div class="description">
                                 @foreach (explode("\n", $lecture->description) as $line)
-                                <div class="description-line">{{ $line }}</div>
+                                    <div class="description-line">{{ $line }}</div>
                                 @endforeach
                             </div> --}}
-                            <!-- ● {{ __('messages.forSubject') }}: {{ $lecture->course->name }} <br> -->
-                            ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
-                            ● {{ __('messages.fromTeacher') }}: {{ $lecture->course->teacher->name }} <br>
-                            ● {{ __('messages.fromCourse') }}: {{ $lecture->course->name }} <br>
-                            ● {{ __('messages.fileType') }}: @if ($lecture->type)
-                                {{ __('messages.video') }} <br>
-                                ● {{ __('messages.duration') }}:
-                                {{ $lecture->getFormattedDurationLongAttribute() ?? 'N/A' }}
-                            @else
-                                {{ __('messages.pdf') }} <br>
-                                ● {{ __('messages.pages') }}: {{ $lecture->getPdfPages() ?? 'N/A' }}
-                            @endif
-                            <br>
-                            <br>
-                            <div style="display:inline-block; vertical-align:middle;">
-                                @php
-                                    $rating = $lecture->rating ?? 0;
-                                @endphp
-                                @for ($i = 1; $i <= 5; $i++)
-                                    @if ($rating >= $i)
-                                        {{-- Full star --}}
-                                        <svg width="20" height="20" fill="gold" viewBox="0 0 20 20"
-                                            style="display:inline;">
-                                            <polygon
-                                                points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-                                        </svg>
-                                    @elseif ($rating >= $i - 0.5)
-                                        {{-- Half star --}}
-                                        <svg width="20" height="20" viewBox="0 0 20 20" style="display:inline;">
-                                            <defs>
-                                                <linearGradient
-                                                    id="half-grad-{{ $lecture->id }}-{{ $i }}">
-                                                    <stop offset="50%" stop-color="gold" />
-                                                    <stop offset="50%" stop-color="lightgray" />
-                                                </linearGradient>
-                                            </defs>
-                                            <polygon
-                                                points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36"
-                                                fill="url(#half-grad-{{ $lecture->id }}-{{ $i }})" />
-                                        </svg>
-                                    @else
-                                        {{-- Empty star --}}
-                                        <svg width="20" height="20" fill="lightgray" viewBox="0 0 20 20"
-                                            style="display:inline;">
-                                            <polygon
-                                                points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-                                        </svg>
-                                    @endif
-                                @endfor
-                                <span>({{ number_format($rating, 1) }})</span>
-                                <span>({{ $lecture->ratings->count() }} reviews)</span>
-
-                            </div>
+                            ● {{__('messages.forSubject')}}: {{ $lecture->subject->name }}
                         </x-card>
                     @endforeach
                 </div>
@@ -165,13 +112,12 @@
     </x-cardcontainer>
 
     @if ($modelToPass->total() > 1)
-        <div class="pagination-info"
-            style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
-            {{ __('messages.showingItems', [
+        <div class="pagination-info" style="text-align: center; margin-bottom: 2%; font-size: 24px; color: var(--text-color);">
+        {{ __('messages.showingItems', [
                 'from' => $modelToPass->firstItem(),
                 'to' => $modelToPass->lastItem(),
                 'total' => $modelToPass->total(),
-                'items' => __('messages.lectures'),
+                'items' => __('messages.lectures')
             ]) }}
         </div>
     @endif
@@ -181,7 +127,7 @@
             {{ $modelToPass->appends([
                     'search' => $searchQuery,
                     'sort' => $sort,
-                    'courses' => $selectedCourses,
+                    'subjects' => $selectedSubjects,
                     'none' => $filterNone,
                 ])->links() }}
         </div>
@@ -194,7 +140,7 @@
         const dynamicContent = document.getElementById('dynamic-content');
         const filterForm = document.querySelector('.filter-dropdown');
         const filterCheckboxes = document.querySelectorAll(
-            'input[type="checkbox"][name^="courses"], input[name="none"], input[name^="course_count"]');
+            'input[type="checkbox"][name^="subjects"], input[name="none"], input[name^="subject_count"]');
         const paginationInfoContainer = document.querySelector('.pagination-info');
         const paginationContainer = document.querySelector('.pagination');
 
@@ -202,19 +148,19 @@
         function updateResults() {
             const query = searchBar.value;
             const selectedSort = document.querySelector('input[name="sort"]:checked')?.value || 'newest';
-            const selectedCourses = Array.from(document.querySelectorAll('input[name="courses[]"]:checked'))
+            const selectedSubjects = Array.from(document.querySelectorAll('input[name="subjects[]"]:checked'))
                 .map(el => el.value);
             const filterNone = document.getElementById('filter-none')?.checked || false;
-            const courseCounts = Array.from(document.querySelectorAll('input[name="course_count[]"]:checked'))
+            const subjectCounts = Array.from(document.querySelectorAll('input[name="subject_count[]"]:checked'))
                 .map(el => el.value);
 
             // Build query string
             const params = new URLSearchParams();
             params.set('search', query);
             params.set('sort', selectedSort);
-            selectedCourses.forEach(course => params.append('courses[]', course));
+            selectedSubjects.forEach(subject => params.append('subjects[]', subject));
             if (filterNone) params.set('none', 'true');
-            courseCounts.forEach(count => params.append('course_count[]', count));
+            subjectCounts.forEach(count => params.append('subject_count[]', count));
 
             paginationInfoContainer.innerHTML = '';
             paginationContainer.innerHTML = '';
