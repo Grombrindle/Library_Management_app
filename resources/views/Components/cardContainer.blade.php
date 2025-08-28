@@ -391,8 +391,8 @@
         font-size: 20px;
         color: black;
         text-align: center;
-        height: 13rem;
-        width: 18rem;
+        height: fit-content;
+        width: 25rem;
         font-family: 'Pridi';
         padding: 0.25rem 0.25rem;
         border-radius: 1rem;

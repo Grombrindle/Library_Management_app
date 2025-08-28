@@ -419,4 +419,12 @@ return [
     'viewCurrentThumbnail' => 'View Current Thumbnail',
     'currentFile' => 'Current File',
     'pdfSizeWarning' => 'Make sure the PDF size is less than 10MB',
+    // Admin notifications
+    'newCourseRequests' => 'There are',
+    'newCourseRequestsTail' => 'new course requests',
+    'oneNewCourseRequest' => 'There is 1 new course request',
+    'noNewCourseRequests' => 'No new course requests',
+    'checkCourseRequests' => 'Check Course Requests',
+    'dismiss' => 'Dismiss',
+    'markSeen' => 'Mark as seen',
 ];

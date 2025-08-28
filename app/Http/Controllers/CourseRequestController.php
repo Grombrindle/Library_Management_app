@@ -115,7 +115,11 @@ class CourseRequestController extends Controller
     {
         if (Auth::user()->privileges !== 2)
             abort(403);
-        $requests = CourseRequest::latest()->get();
+        $requests = CourseRequest::orderByRaw(
+                "CASE WHEN status = 'pending' THEN 0 WHEN status = 'rejected' THEN 1 ELSE 2 END"
+            )
+            ->orderByDesc('created_at')
+            ->paginate(10);
         return view('Admin.FullAdmin.CourseRequests', compact('requests'));
     }
 

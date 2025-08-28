@@ -29,7 +29,7 @@ Route::post('/login', [SessionController::class, 'loginUser']);
 
 
 //test
-// Route::post('/registerteacher', [TeacherController::class, 'add']);
+// Route::get('/test', [TeacherController::class, 'test']);
 
 // Route::get('/subject/{id}/lectures', function($id) {
 //     return response()->json(['lectureCount' => $lectureCount]);

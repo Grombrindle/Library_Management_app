@@ -16,6 +16,58 @@ use Illuminate\Support\Facades\DB;
 class TeacherController extends Controller
 {
     //
+    // public function test()
+    // {
+    //     $teacherId = request('id', 5);
+    //     $teacher = Teacher::find($teacherId);
+    //     if (!$teacher) {
+    //         return response()->json([
+    //             'ok' => false,
+    //             'message' => 'Teacher not found',
+    //             'teacher_id' => $teacherId,
+    //         ], 404);
+    //     }
+
+    //     // 1) Using hasManyThrough relation (Teacher::ratings -> CourseRating)
+    //     $avgViaRelation = $teacher->ratings()->avg('rating');
+    //     $countRatings = $teacher->ratings()->count();
+
+    //     // 2) Using courses withAvg and averaging those course averages (ignoring nulls)
+    //     $coursesWithAvg = $teacher->courses()->withAvg('ratings', 'rating')->get(['id', 'name']);
+    //     $courseAverages = $coursesWithAvg->map(function($c) {
+    //         return [
+    //             'course_id' => $c->id,
+    //             'course_name' => $c->name,
+    //             'avg_rating' => $c->ratings_avg_rating,
+    //             'ratings_count' => \DB::table('course_rating')->where('course_id', $c->id)->count(),
+    //         ];
+    //     });
+    //     $avgOfCourseAverages = $coursesWithAvg->pluck('ratings_avg_rating')->filter(function($v){ return $v !== null; })->avg();
+
+    //     // 3) Using raw DB aggregation over all teacher course ids
+    //     $courseIds = $teacher->courses()->pluck('id');
+    //     $avgViaRaw = null;
+    //     $rawCount = 0;
+    //     if ($courseIds->count() > 0) {
+    //         $avgViaRaw = DB::table('course_rating')->whereIn('course_id', $courseIds)->avg('rating');
+    //         $rawCount = DB::table('course_rating')->whereIn('course_id', $courseIds)->count();
+    //     }
+
+    //     return response()->json([
+    //         'ok' => true,
+    //         'teacher_id' => $teacher->id,
+    //         'teacher_name' => $teacher->name,
+    //         'computed' => [
+    //             'via_relation_hasManyThrough_avg' => $avgViaRelation,
+    //             'via_relation_count' => $countRatings,
+    //             'via_courses_avg_of_course_avgs' => $avgOfCourseAverages,
+    //             'via_raw_db_avg' => $avgViaRaw,
+    //             'via_raw_db_count' => $rawCount,
+    //             'model_accessor_rating' => $teacher->rating,
+    //         ],
+    //         'courses' => $courseAverages,
+    //     ]);
+    // }
     public function fetch($id)
     {
         $teacher = Teacher::find($id);

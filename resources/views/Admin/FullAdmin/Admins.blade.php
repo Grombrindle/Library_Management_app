@@ -223,7 +223,6 @@
                                         @endif
                                     @endfor
                                     <span>({{ number_format($rating, 1) }})</span>
-                                    <span>({{ $item->ratings->count() }} reviews)</span>
                                 </div>
                             </x-card>
                         @endforeach

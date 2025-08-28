@@ -196,7 +196,6 @@
                                     @endif
                                 @endfor
                                 <span>({{ number_format($rating, 1) }})</span>
-                                <span>({{ $teacher->ratings->count() }} reviews)</span>
 
                             </div>
                         </x-card>

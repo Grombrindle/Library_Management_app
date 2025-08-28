@@ -1,7 +1,11 @@
 @php
     $searchQuery = request('search');
     $sort = request('sort', 'newest');
-    $modelToPass = App\Models\CourseRequest::query()->paginate(10);
+    $modelToPass = (isset($requests) && $requests instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator)
+        ? $requests
+        : App\Models\CourseRequest::orderByRaw("CASE WHEN status = 'pending' THEN 0 WHEN status = 'rejected' THEN 1 ELSE 2 END")
+            ->orderByDesc('created_at')
+            ->paginate(10);
     $chunkSize = 2;
     $chunkedRequests = [];
     for ($i = 0; $i < $chunkSize; $i++) {

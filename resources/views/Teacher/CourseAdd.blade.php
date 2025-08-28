@@ -81,6 +81,8 @@
                 </label>
             </div>
 
+            <br>
+
             <label for="subject">
                 {{ __('messages.subject') }}: <br>
             </label>
