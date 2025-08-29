@@ -16,6 +16,9 @@ return new class extends Migration {
             $table->string('userName')->unique();
             $table->string('countryCode');
             $table->string('number')->unique();
+
+            $table->string('fcm_token')->nullable();
+
             $table->string('password');
             $table->boolean('isBanned');
             $table->integer('avatar')->default(0);

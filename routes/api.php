@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\NotificationsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Lecture;
@@ -136,6 +137,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getallresourcespage', [ResourceController::class, 'fetchAllPage']);
     Route::post('/rateresource/{id}', [ResourceController::class, 'rate']);
 
+
+    //Notifcations
+    Route::get('/customer_notifcations', [NotificationsController::class, 'getNotifications']);
+    Route::post('/send_notifications', [NotificationsController::class, 'sendPushNotification']);
+    Route::post('/notifications_all', [NotificationsController::class, 'sendPushNotificationToAllUsers']);
+    Route::post('/update_fcm_token', [NotificationsController::class, 'updateFcmToken']);
+    Route::post('/set_fcm_token', [NotificationsController::class, 'setToken']);
+    Route::post('/update_notification_preferences', [NotificationsController::class, 'updateNotificationPreferences']);
+    Route::get('/get_notification_preferences', [NotificationsController::class, 'getNotificationPreferences']);
 
     //TASKS
     Route::get('/gettasks', [TaskController::class, 'fetchAll']);

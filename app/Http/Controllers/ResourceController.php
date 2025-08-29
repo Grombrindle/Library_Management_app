@@ -178,7 +178,7 @@ class ResourceController extends Controller
 
             return response()->json([
                 'success' => true,
-                'scientificSubjects' => Subject::where('literaryOrScientific', 1)->select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
+                'scientificSubjects' => Subject::where('literaryOrScientific',1)->select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
                     return [
                         'id' => $subject->id,
                         'name' => $subject->name,
@@ -278,8 +278,7 @@ class ResourceController extends Controller
         }
 
         $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir))
-            mkdir($pdfDir, 0755, true);
+        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
         $pdfFiles = [];
         foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
             $input = 'pdf_' . $lang;
@@ -338,8 +337,7 @@ class ResourceController extends Controller
         ]);
 
         $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir))
-            mkdir($pdfDir, 0755, true);
+        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
         $pdfFiles = $resource->pdf_files ?: [];
         foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
             $input = 'pdf_' . $lang;
