@@ -178,7 +178,7 @@ class ResourceController extends Controller
 
             return response()->json([
                 'success' => true,
-                'scientificSubjects' => Subject::where('literaryOrScientific',1)->select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
+                'scientificSubjects' => Subject::where('literaryOrScientific', 1)->select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
                     return [
                         'id' => $subject->id,
                         'name' => $subject->name,
@@ -278,7 +278,8 @@ class ResourceController extends Controller
         }
 
         $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
+        if (!file_exists($pdfDir))
+            mkdir($pdfDir, 0755, true);
         $pdfFiles = [];
         foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
             $input = 'pdf_' . $lang;
@@ -337,8 +338,9 @@ class ResourceController extends Controller
         ]);
 
         $pdfDir = public_path('Files/Resources');
-        if (!file_exists($pdfDir)) mkdir($pdfDir, 0755, true);
-        $pdfFiles = $resource->pdf_files ? json_decode($resource->pdf_files, true) : [];
+        if (!file_exists($pdfDir))
+            mkdir($pdfDir, 0755, true);
+        $pdfFiles = $resource->pdf_files ?: [];
         foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
             $input = 'pdf_' . $lang;
             if ($request->hasFile($input)) {
@@ -348,9 +350,9 @@ class ResourceController extends Controller
                 $pdfFiles[$lang] = 'Files/Resources/' . $pdfName;
             }
         }
-        // At least one of Arabic or English is required
-        if (empty($pdfFiles['ar']) && empty($pdfFiles['en'])) {
-            return back()->withErrors(['pdf_ar' => __('messages.arabicOrEnglishRequired')])->withInput();
+
+        if (empty($pdfFiles['ar'])) {
+            return back()->withErrors(['pdf_ar' => __('messages.arabicRequired')])->withInput();
         }
 
         $resource->name = $validated['resource_name'];
@@ -411,17 +413,25 @@ class ResourceController extends Controller
     {
         $resource = Resource::findOrFail($id);
         $name = $resource->name;
+
         // Delete old image if it's not the default
         if ($resource->image != "Images/Resources/default.png" && file_exists(public_path($resource->image))) {
             unlink(public_path($resource->image));
         }
 
-        if ($resource->pdf_file != "Files/Resources/default.pdf" && file_exists(public_path($resource->file_pdf))) {
-            // dd(public_path($resource->pdf_file));
-            // dd($resource->file_pdf != "Files/Resources/default.pdf");
-            unlink(public_path($resource->pdf_file));
+        // Delete all PDF files according to the pdf_files attribute
+        if ($resource->pdf_files) {
+            $pdfFiles = json_decode(json_encode($resource->pdf_files), true);
+            if (is_array($pdfFiles)) {
+                foreach ($pdfFiles as $lang => $filePath) {
+                    if ($filePath && $filePath !== 'Files/Resources/default.pdf' && file_exists(public_path($filePath))) {
+                        unlink(public_path($filePath));
+                    }
+                }
+            }
         }
 
+        // Delete audio file if it's not the default
         if (file_exists(public_path($resource->audio_file)) && $resource->audio_file != null && $resource->audio_file != 'Files/Resources/Audio/default.mp3') {
             unlink(public_path($resource->audio_file));
         }

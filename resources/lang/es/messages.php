@@ -87,6 +87,8 @@ return [
     'optional' => 'opcional',
     'uploadAtLeastOneVideo' => 'Por favor, sube al menos un archivo de video (360p, 720p o 1080p)',
     'selectSubject' => 'Seleccionar una asignatura',
+    'author' => 'Autor',
+    'publishDate' => 'Fecha de Publicación',
     'userStatus' => 'Estado del usuario',
     'active' => 'Activo',
     'subscriptions' => 'Suscripciones',
@@ -361,6 +363,17 @@ return [
     'pdf' => 'PDF',
     'video' => 'Video',
 
+    // Language-specific PDF translations
+    'pdfArabic' => 'PDF en Árabe',
+    'pdfEnglish' => 'PDF en Inglés',
+    'pdfSpanish' => 'PDF en Español',
+    'pdfGerman' => 'PDF en Alemán',
+    'pdfFrench' => 'PDF en Francés',
+    'uploadPDFs' => 'Subir PDFs',
+    'arabicRequired' => 'Se requiere PDF en Árabe',
+    'showResource' => 'Mostrar Recurso',
+    'showResourceAudio' => 'Mostrar Audio del Recurso',
+
     // Quiz
     'showQuiz' => 'Mostrar cuestionario',
     'showLectures' => 'Mostrar clases',
@@ -384,8 +397,17 @@ return [
     'chooseFile' => 'Elegir archivo',
     'pdfSizeWarning' => 'Asegúrate de que el PDF tenga un tamaño menor a 10MB',
     'invalidFileType' => 'Tipo de archivo inválido. Por favor, sube un archivo PDF.',
+    // Admin notifications
+    'newCourseRequests' => 'Hay',
+    'newCourseRequestsTail' => 'nuevas solicitudes de curso',
+    'oneNewCourseRequest' => 'Hay 1 nueva solicitud de curso',
+    'noNewCourseRequests' => 'No hay nuevas solicitudes de curso',
+    'checkCourseRequests' => 'Revisar solicitudes de curso',
+    'dismiss' => 'Descartar',
+    'markSeen' => 'Marcar como visto',
     'addExam' => 'Agregar examen',
     'editExam' => 'Editar examen',
     'deleteExam' => 'Eliminar examen',
     'showExam' => 'Mostrar examen',
+    'audioFileAlreadyUploaded' => 'Archivo de audio ya subido',
 ];

@@ -29,7 +29,7 @@ Route::post('/login', [SessionController::class, 'loginUser']);
 
 
 //test
-// Route::post('/registerteacher', [TeacherController::class, 'add']);
+// Route::get('/test', [TeacherController::class, 'test']);
 
 // Route::get('/subject/{id}/lectures', function($id) {
 //     return response()->json(['lectureCount' => $lectureCount]);
@@ -150,9 +150,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/getwatchlistlectures', [WatchlistController::class, 'fetchLectures']);
     Route::get('/getwatchlistcourses', [WatchlistController::class, 'fetchCourses']);
+    Route::get('/getwatchlistresources', [WatchlistController::class, 'fetchResources']);
     Route::post('/togglewatchlistlecture/{id}', [WatchlistController::class, 'toggleLecture']);
     Route::post('/togglewatchlistcourse/{id}', [WatchlistController::class, 'toggleCourse']);
-    Route::get('/getwatchlistresources', [WatchlistController::class, 'fetchResources']);
     Route::post('/togglewatchlistresource/{id}', [WatchlistController::class, 'toggleResource']);
 
     Route::post('/togglehelpful', [HelpfulController::class, 'toggleHelpful']);

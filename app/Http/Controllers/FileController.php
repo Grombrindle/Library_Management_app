@@ -96,17 +96,50 @@ class FileController extends Controller
         ]);
     }
 
-    public function showResourcePDF($id)
+    public function showResourcePDF($id, $language = null)
     {
         $resource = Resource::findOrFail($id);
 
-        if (!$resource || !$resource->pdf_file) {
+        // If no language specified, try to find any available PDF
+        if (!$language) {
+            $pdfFiles = $resource->pdf_files;
+            $availableLanguages = array_filter($pdfFiles);
+            if (empty($availableLanguages)) {
+                return response()->json([
+                    'success' => false,
+                    'reason' => 'No PDF found for this resource'
+                ], 404);
+            }
+            // Use the first available language
+            $language = array_key_first($availableLanguages);
+        }
+
+        // Validate language parameter
+        $validLanguages = ['ar', 'en', 'es', 'de', 'fr'];
+        if (!in_array($language, $validLanguages)) {
             return response()->json([
                 'success' => false,
-                'reason' => 'PDF not found'
+                'reason' => 'Invalid language parameter'
+            ], 400);
+        }
+
+        $pdfFiles = $resource->pdf_files;
+        if (!isset($pdfFiles[$language]) || !$pdfFiles[$language]) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'PDF not found for language: ' . $language
             ], 404);
         }
-        return response()->file($resource->pdf_file, [
+
+        $filePath = public_path($pdfFiles[$language]);
+        if (!file_exists($filePath)) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'File not found on server'
+            ], 404);
+        }
+
+        return response()->file($filePath, [
             'Content-Type' => 'application/pdf',
         ]);
     }

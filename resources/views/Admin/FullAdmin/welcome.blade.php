@@ -145,6 +145,35 @@
             mix-blend-mode: overlay;
         }
 
+        /* Notification styles */
+        .notif {
+            display: none;
+            position: fixed;
+            top: 0;
+            transform: translateY(-120%);
+            background: rgba(30, 30, 30, 0.35);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            color: var(--text-color);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            z-index: 9999;
+            max-width: 720px;
+            width: 30rem;
+            opacity: 0;
+        }
+        .notif.show { display: block; animation: slideDownFade 300ms ease-out forwards; }
+        /* Keep .show during hide to prevent instant jump; combine with .hide for exit */
+        .notif.show.hide { animation: slideUpFade 350ms ease-in forwards; }
+        .notif-actions { margin-top: 10px; display: flex; gap: 10px; justify-content: flex-end; }
+        .notif-btn { padding: 8px 12px; border: 1px solid var(--card-border); background: rgba(255,255,255,0); color: var(--text-color); border-radius: 8px; cursor: pointer; }
+        .notif-btn.primary { background: rgba(0,0,0,0); color: #fff; border-color: rgba(0,0,0,0)}
+
+        @keyframes slideDownFade { from { transform: translateY(-120%); opacity: 0; } to { transform: translateY(20px); opacity: 1; } }
+        @keyframes slideUpFade { from { transform: translateY(20px); opacity: 1; } to { transform: translateY(-120%); opacity: 0; } }
+
         /* Media Queries for Responsive Design */
         @media (max-width: 1600px) {
             .title {
@@ -384,6 +413,30 @@
         </div>
     </div>
     <div class="circle"id="circle"></div>
+
+    @php
+        $pendingCourseRequests = \App\Models\CourseRequest::where('status', 'pending')->count();
+        $adminId = Auth::user() ? Auth::user()->id : null;
+    @endphp
+
+    @if(Auth::user() && Auth::user()->privileges === 2)
+    <div class="notif" id="course-requests-notif" data-pending="{{ $pendingCourseRequests }}" data-admin="{{ $adminId }}">
+        <div id="cr-message">
+            @if($pendingCourseRequests === 0)
+                {{ __('messages.noNewCourseRequests') ?? 'No new course requests' }}
+            @elseif($pendingCourseRequests === 1)
+                {{ __('messages.oneNewCourseRequest') ?? 'There is 1 new course request' }}
+            @else
+                {{ __('messages.newCourseRequests') ?? 'There are' }} <strong id="cr-count">{{ $pendingCourseRequests }}</strong> {{ __('messages.newCourseRequestsTail') ?? 'new course requests' }}
+            @endif
+        </div>
+        <div class="notif-actions">
+            <a href="{{ url('/admin/course-requests/show') }}" target="_blank" class="notif-btn primary">{{ __('messages.view') ?? 'View' }}</a>
+            <button type="button" class="notif-btn" id="cr-dismiss">{{ __('messages.dismiss') ?? 'Dismiss' }}</button>
+        </div>
+    </div>
+    @endif
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('.button'); // Select all buttons
@@ -434,6 +487,77 @@
                     }, 200);
                 })
             });
+
+            // Course Requests Notification (Full Admin)
+            const notifEl = document.getElementById('course-requests-notif');
+            const triggerBtn = document.getElementById('trigger-course-requests');
+            if (notifEl && triggerBtn) {
+                const adminId = notifEl.getAttribute('data-admin');
+                const pending = parseInt(notifEl.getAttribute('data-pending')) || 0;
+                const cookieKey = `cr_last_seen_count_${adminId}`;
+
+                const getCookie = (name) => {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                    return null;
+                };
+                const setCookie = (name, value, days = 7) => {
+                    const d = new Date();
+                    d.setTime(d.getTime() + (days*24*60*60*1000));
+                    const expires = `expires=${d.toUTCString()}`;
+                    document.cookie = `${name}=${value}; ${expires}; path=/`;
+                };
+
+                const lastSeen = parseInt(getCookie(cookieKey) || '0');
+                const crCountEl = document.getElementById('cr-count');
+                if (crCountEl) crCountEl.textContent = pending;
+
+                const showNotif = () => {
+                    notifEl.classList.remove('hide');
+                    notifEl.classList.add('show');
+                    // auto-hide after 6s
+                    clearTimeout(window.__crHideTimer);
+                    window.__crHideTimer = setTimeout(() => {
+                        hideNotif();
+                    }, 6000);
+                };
+                const hideNotif = () => {
+                    // Keep 'show' to allow exit animation; just add 'hide'
+                    notifEl.classList.add('hide');
+                };
+                // Keep element present; let CSS handle slide up fade
+                notifEl.addEventListener('animationend', (e) => {
+                    if (notifEl.classList.contains('hide')) {
+                        // After exit animation completes, reset classes so it can be shown again later
+                        notifEl.classList.remove('show');
+                        notifEl.classList.remove('hide');
+                        // Do not set display:none; let it remain off-screen due to transform
+                    }
+                });
+
+                // Show if there are new pending beyond last seen
+                if (pending > lastSeen) {
+                    showNotif();
+                    // mark current count as seen so it won't reappear until count increases
+                    setCookie(cookieKey, pending.toString(), 30);
+                }
+
+                // Trigger button shows notif regardless
+                triggerBtn.addEventListener('click', () => {
+                    showNotif();
+                });
+
+                // Dismiss without marking seen
+                const dismissBtn = document.getElementById('cr-dismiss');
+                if (dismissBtn) {
+                    dismissBtn.addEventListener('click', () => {
+                        hideNotif();
+                    });
+                }
+
+
+            }
         });
     </script>
 </x-layout>

@@ -3,7 +3,7 @@
 @php
     // Get the view mode from request (default to 'admins')
     $viewMode = request('view', 'admins');
-    
+
     // Get the search query, sort parameter, and filter values from the request
     $searchQuery = request('search');
     $sort = request('sort', 'newest'); // Default to 'newest'
@@ -17,7 +17,7 @@
 
     if ($viewMode === 'teachers') {
         // Fetch teachers based on the search query, sort parameter, and filters
-        $modelToPass = App\Models\Teacher::when($searchQuery, function ($query) use ($searchTerms) {
+        $query = App\Models\Teacher::when($searchQuery, function ($query) use ($searchTerms) {
             foreach ($searchTerms as $term) {
                 $query->where(function ($q) use ($term) {
                     $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])
@@ -65,8 +65,14 @@
                     }
                 }
             });
-        })
-        ->when($sort, function ($query) use ($sort) {
+        });
+
+        // Apply sorting with proper withAvg for rating sorting
+        if ($sort === 'rating-highest' || $sort === 'rating-lowest') {
+            $query = $query->withAvg('ratings', 'rating');
+        }
+
+        $query = $query->when($sort, function ($query) use ($sort) {
             if ($sort === 'name-a-z') {
                 $query->orderByRaw('LOWER(name) ASC');
             } elseif ($sort === 'name-z-a') {
@@ -79,12 +85,22 @@
                 $query->orderBy('created_at', 'desc');
             } elseif ($sort === 'oldest') {
                 $query->orderBy('created_at', 'asc');
+            } elseif ($sort === 'rating-highest') {
+                $query->orderByDesc('ratings_avg_rating');
+            } elseif ($sort === 'rating-lowest') {
+                $query->orderBy('ratings_avg_rating', 'asc');
             }
-        })
-        ->paginate(10);
-        
+        });
+
+        $modelToPass = $query->paginate(10);
+
         // Prepare filter options for teachers
-        $filterOptions = App\Models\Subject::pluck('name', 'id')->toArray();
+        $subjects = App\Models\Subject::select('id', 'name', 'literaryOrScientific')->get();
+        $filterOptions = [];
+        foreach ($subjects as $subject) {
+            $type = $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific');
+            $filterOptions[$subject->id] = $subject->name . ' (' . $type . ')';
+        }
     } else {
         // Fetch admins based on the search query, sort parameter, and filters
         $modelToPass = App\Models\Admin::when($searchQuery, function ($query) use ($searchTerms) {
@@ -116,7 +132,7 @@
             }
         })
         ->paginate(10);
-        
+
         $filterOptions = [];
     }
 
@@ -152,7 +168,7 @@
     </div>
 
     @if ($viewMode === 'teachers')
-        <x-cardcontainer :model=$modelToPass addLink="addadmin" :filterOptions=$filterOptions :showSubjectCountFilter=true :showUsernameSort=true :showNameSort=true>
+        <x-cardcontainer :model=$modelToPass addLink="addteacher" :filterOptions=$filterOptions :showSubjectCountFilter=true :showUsernameSort=true :showNameSort=true>
             <!-- Add a unique ID to the container for dynamic updates -->
             <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
                 @foreach ($chunkedItems as $chunk)
@@ -207,7 +223,6 @@
                                         @endif
                                     @endfor
                                     <span>({{ number_format($rating, 1) }})</span>
-                                    <span>({{ $item->ratings->count() }} reviews)</span>
                                 </div>
                             </x-card>
                         @endforeach
@@ -337,17 +352,27 @@
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchBar = document.querySelector('.search-bar');
-        const dynamicContent = document.getElementById('dynamic-content');
-        const filterForm = document.querySelector('.filter-dropdown');
-        const paginationInfoContainer = document.querySelector('.pagination-info');
-        const paginationContainer = document.querySelector('.pagination');
-        const toggleOptions = document.querySelectorAll('.toggle-option');
-        const toggleSlider = document.querySelector('.toggle-slider');
+    // Function to initialize the page functionality
+    function initializePage() {
+        // Check if we're on the right page
+        if (!document.getElementById('dynamic-content')) {
+            return; // Not on the admins page
+        }
+            const searchBar = document.querySelector('.search-bar');
+            const dynamicContent = document.getElementById('dynamic-content');
+            const filterForm = document.querySelector('.filter-dropdown');
+            const paginationInfoContainer = document.querySelector('.pagination-info');
+            const paginationContainer = document.querySelector('.pagination');
+            const toggleOptions = document.querySelectorAll('.toggle-option');
+            const toggleSlider = document.querySelector('.toggle-slider');
 
-        // Get current view mode
-        let currentView = '{{ $viewMode }}';
+            // Get current view mode
+            let currentView = '{{ $viewMode }}';
+
+            // Check if essential elements exist
+            if (!dynamicContent) {
+                console.warn('Dynamic content container not found - AJAX functionality may not work properly');
+            }
 
         // Handle toggle switch
         toggleOptions.forEach(option => {
@@ -363,7 +388,7 @@
                     url.searchParams.delete('subjects'); // Clear teacher filters
                     url.searchParams.delete('none'); // Clear teacher filters
                     url.searchParams.delete('subject_count'); // Clear teacher filters
-                    
+
                     // Navigate to new URL
                     window.location.href = url.toString();
                 }
@@ -372,9 +397,15 @@
 
         // Function to fetch and update results
         function updateResults() {
+            // Check if required elements exist before proceeding
+            if (!dynamicContent) {
+                console.error('Dynamic content container not found');
+                return;
+            }
+
             const query = searchBar ? searchBar.value : '';
             const selectedSort = document.querySelector('input[name="sort"]:checked')?.value || 'newest';
-            
+
             // Build query string based on current view
             const params = new URLSearchParams();
             params.set('view', currentView);
@@ -391,7 +422,7 @@
                 const filterNone = document.getElementById('filter-none')?.checked || false;
                 const subjectCounts = Array.from(document.querySelectorAll(
                     'input[name="subject_count[]"]:checked')).map(el => el.value);
-                
+
                 selectedSubjects.forEach(subject => params.append('subjects[]', subject));
                 if (filterNone) params.set('none', 'true');
                 subjectCounts.forEach(count => params.append('subject_count[]', count));
@@ -402,35 +433,50 @@
                 .then(data => {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(data, 'text/html');
-                    const newContent = doc.getElementById('dynamic-content').innerHTML;
-                    dynamicContent.innerHTML = newContent;
+                    const newContentElement = doc.getElementById('dynamic-content');
+
+                    if (newContentElement) {
+                        safeUpdateElement(dynamicContent, newContentElement.innerHTML);
+                    } else {
+                        console.error('Dynamic content not found in response');
+                        return;
+                    }
 
                     // Update pagination info
                     const responsePaginationInfo = doc.querySelector('.pagination-info');
-                    if (responsePaginationInfo) {
-                        paginationInfoContainer.innerHTML = responsePaginationInfo.innerHTML;
-                    } else {
-                        paginationInfoContainer.innerHTML = '';
+                    if (responsePaginationInfo && paginationInfoContainer) {
+                        safeUpdateElement(paginationInfoContainer, responsePaginationInfo.innerHTML);
+                    } else if (paginationInfoContainer) {
+                        safeUpdateElement(paginationInfoContainer, '');
                     }
 
                     // Update pagination controls
                     const responsePagination = doc.querySelector('.pagination');
-                    if (responsePagination) {
-                        paginationContainer.innerHTML = responsePagination.innerHTML;
-                    } else {
-                        paginationContainer.innerHTML = '';
+                    if (responsePagination && paginationContainer) {
+                        safeUpdateElement(paginationContainer, responsePagination.innerHTML);
+                    } else if (paginationContainer) {
+                        safeUpdateElement(paginationContainer, '');
                     }
 
-                    attachCircleEffect();
+                    // Call optional functions if they exist
+                    if (typeof attachCircleEffect === 'function') {
+                        attachCircleEffect();
+                    }
                     if (typeof refreshAnimations === 'function') {
                         refreshAnimations();
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    dynamicContent.innerHTML = '<div class="error-message">{{ __("messages.failedToLoadResults") }}</div>';
-                    paginationInfoContainer.innerHTML = '';
-                    paginationContainer.innerHTML = '';
+                    console.error('Error fetching filtered results:', error);
+                    if (dynamicContent) {
+                        safeUpdateElement(dynamicContent, '<div class="error-message">{{ __("messages.failedToLoadResults") }}</div>');
+                    }
+                    if (paginationInfoContainer) {
+                        safeUpdateElement(paginationInfoContainer, '');
+                    }
+                    if (paginationContainer) {
+                        safeUpdateElement(paginationContainer, '');
+                    }
                 });
         }
 
@@ -451,8 +497,48 @@
         // Handle individual checkbox changes for both admin and teacher filters
         document.addEventListener('change', function(e) {
             if (e.target.matches('input[type="checkbox"][name^="privileges"], input[type="checkbox"][name^="subjects"], input[name="none"], input[name^="subject_count"]')) {
-                updateResults();
+                // Add a small delay to ensure the checkbox state is updated
+                setTimeout(updateResults, 50);
             }
         });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initializePage, 100);
+        });
+    } else {
+        // DOM is already ready
+        setTimeout(initializePage, 100);
+    }
+
+    // Global error handler for DOM manipulation
+    function safeUpdateElement(element, content) {
+        if (element && element.innerHTML !== undefined) {
+            element.innerHTML = content;
+        } else {
+            console.warn('Attempted to update null or invalid element');
+        }
+    }
+
+    // Override any existing updateContent function to be safe
+    if (typeof window.updateContent === 'function') {
+        const originalUpdateContent = window.updateContent;
+        window.updateContent = function(...args) {
+            try {
+                return originalUpdateContent.apply(this, args);
+            } catch (error) {
+                console.error('Error in updateContent:', error);
+            }
+        };
+    }
+
+    // Global error handler for fetch operations
+    window.addEventListener('error', function(e) {
+        if (e.message.includes('innerHTML') || e.message.includes('Cannot set properties of null')) {
+            console.warn('DOM manipulation error caught:', e.message);
+            e.preventDefault();
+        }
     });
 </script>

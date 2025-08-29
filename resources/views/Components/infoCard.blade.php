@@ -16,6 +16,7 @@
     'addCourse' => null,
     'request' => false,
 ])
+
 <style>
     .ObjectContainer {
         padding: 2rem;
@@ -376,13 +377,37 @@
     @if ($file != null)
         <div style="height:fit-content;">
             @if ($objectType == 'Resource')
-                <a href="show/{{ $object->id }}/pdf" target="_blank" class="button"
-                    style="background-color:#9997BC">{{ __('messages.showResource') }} PDF</a>
-                @if ($object->audio_file != null)
-                    <a href="show/{{ $object->id }}/audio" target="_blank" class="button"
-                        style="background-color:#9997BC">{{ __('messages.showResourceAudio') }}</a>
+                <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                    @php
+                        $pdfFiles = $object->pdf_files;
+                        $languages = [
+                            'ar' => __('messages.pdfArabic'),
+                            'en' => __('messages.pdfEnglish'),
+                            'es' => __('messages.pdfSpanish'),
+                            'de' => __('messages.pdfGerman'),
+                            'fr' => __('messages.pdfFrench'),
+                        ];
+                    @endphp
+
+                    @foreach ($languages as $langCode => $langName)
+                        @if (isset($pdfFiles[$langCode]) && $pdfFiles[$langCode])
+                            <a href="show/{{ $object->id }}/pdf/{{ $langCode }}" target="_blank" class="button"
+                                style="background-color:#9997BC; min-width: 120px;">
+                                {{ $langName }}
+                            </a>
+                        @else
+                            <button class="button" disabled style="min-width: 120px;">
+                                {{ $langName }}
+                            </button>
+                        @endif
+                    @endforeach
+                </div>
+                @if ($object->audio_file == null)
+                    <button class="button" style="margin: 20px auto 0 auto; display: block;"
+                        disabled>{{ __('messages.showResource') }} Audio</button>
                 @else
-                    <button class="button" disabled>{{ __('messages.showResourceAudio') }}</button>
+                    <a href="show/{{ $object->id }}/audio" target="_blank" class="button"
+                        style="background-color:#9997BC; margin: 20px auto 0 auto; display: block;">{{ __('messages.showResource') }} Audio</a>
                 @endif
             @elseif($objectType == 'Exam')
                 <a href="show/{{ $object->id }}" target="_blank" class="button"
@@ -457,8 +482,8 @@
                     {{ __('messages.deleteUser') }}
                 @elseif ($objectType == 'Course')
                     {{ __('messages.deleteCourse') }}
-                    @elseif ($objectType == 'Exam')
-                        {{ __('messages.deleteExam') }}
+                @elseif ($objectType == 'Exam')
+                    {{ __('messages.deleteExam') }}
                 @elseif ($objectType == 'Lecture')
                     {{ __('messages.deleteLecture') }}
                 @elseif ($objectType == 'Subject')

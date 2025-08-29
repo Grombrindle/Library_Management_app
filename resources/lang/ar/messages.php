@@ -87,6 +87,8 @@ return [
     'optional' => 'اختياري',
     'uploadAtLeastOneVideo' => 'يرجى رفع ملف فيديو واحد على الأقل (360p، 720p، أو 1080p)',
     'selectSubject' => 'اختر المادة',
+    'author' => 'المؤلف',
+    'publishDate' => 'تاريخ النشر',
     'userStatus' => 'حالة المستخدم',
     'active' => 'نشط',
     'subscriptions' => 'الاشتراكات',
@@ -371,6 +373,17 @@ return [
     'pdf' => 'PDF',
     'video' => 'فيديو',
 
+    // Language-specific PDF translations
+    'pdfArabic' => 'PDF بالعربية',
+    'pdfEnglish' => 'PDF بالإنجليزية',
+    'pdfSpanish' => 'PDF بالإسبانية',
+    'pdfGerman' => 'PDF بالألمانية',
+    'pdfFrench' => 'PDF بالفرنسية',
+    'uploadPDFs' => 'رفع ملفات PDF',
+    'arabicRequired' => 'PDF بالعربية مطلوب',
+    'showResource' => 'عرض المورد',
+    'showResourceAudio' => 'عرض الصوت للمورد',
+
     // Quiz
     'showQuiz' => 'عرض الاختبار',
     'showLectures' => 'عرض المحاضرات',
@@ -394,6 +407,15 @@ return [
     'chooseFile' => 'اختر ملفاً',
     'pdfSizeWarning' => 'تأكد أن حجم ملف PDF أقل من 10 ميجابايت',
     'invalidFileType' => 'نوع الملف غير صالح. يرجى رفع ملف PDF.',
+    // Admin notifications
+    'newCourseRequests' => 'يوجد',
+    'newCourseRequestsTail' => 'طلبات دورة جديدة',
+    'oneNewCourseRequest' => 'يوجد طلب دورة جديد واحد',
+    'noNewCourseRequests' => 'لا توجد طلبات دورات جديدة',
+    'checkCourseRequests' => 'تحقق من طلبات الدورات',
+    'dismiss' => 'إغلاق',
+    'markSeen' => 'تحديد كمقروء',
     'addExam' => 'إضافة امتحان',
     'editExam' => 'تعديل الامتحان',
+    'audioFileAlreadyUploaded' => 'تم رفع الملف الصوتي بالفعل',
 ];

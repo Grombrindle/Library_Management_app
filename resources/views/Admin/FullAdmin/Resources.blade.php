@@ -17,7 +17,7 @@
     }
 
     // Apply filters and search
-    $modelToPass = $query
+    $query = $query
         ->when($searchQuery, function ($query) use ($searchTerms) {
             foreach ($searchTerms as $term) {
                 $query->where(function ($q) use ($term) {
@@ -31,34 +31,48 @@
         })
         ->when($filterType, function ($query) use ($filterType) {
             $query->whereIn('literaryOrScientific', $filterType);
-        })
-        ->when($sort, function ($query) use ($sort) {
-            if ($sort === 'name-a-z') {
-                $query->orderByRaw('LOWER(name) ASC');
-            } elseif ($sort === 'name-z-a') {
-                $query->orderByRaw('LOWER(name) DESC');
-            } elseif ($sort === 'author-a-z') {
-                $query->orderByRaw('LOWER(author) ASC');
-            } elseif ($sort === 'author-z-a') {
-                $query->orderByRaw('LOWER(author) DESC');
-            } elseif ($sort === 'newest') {
-                $query->orderBy('created_at', 'desc');
-            } elseif ($sort === 'oldest') {
-                $query->orderBy('created_at', 'asc');
-            } elseif ($sort === 'publish-newest') {
-                $query->orderByDesc('publish date');
-            } elseif ($sort === 'publish-oldest') {
-                $query->orderBy('publish date', 'asc');
-            } elseif ($sort === 'rating-highest') {
-                $query->orderByDesc('rating');
-            } elseif ($sort === 'rating-lowest') {
-                $query->orderBy('rating', 'asc');
-            }
-        })
-        ->paginate(10);
+        });
 
-    // Prepare filter options
-    $filterOptions = App\Models\Subject::pluck('name', 'id')->toArray();
+    // Apply sorting with proper withAvg for rating sorting
+    if ($sort === 'rating-highest' || $sort === 'rating-lowest') {
+        $query = $query->withAvg('ratings', 'rating');
+    }
+
+    $query = $query->when($sort, function ($query) use ($sort) {
+        if ($sort === 'name-a-z') {
+            $query->orderByRaw('LOWER(name) ASC');
+        } elseif ($sort === 'name-z-a') {
+            $query->orderByRaw('LOWER(name) DESC');
+        } elseif ($sort === 'author-a-z') {
+            $query->orderByRaw('LOWER(author) ASC');
+        } elseif ($sort === 'author-z-a') {
+            $query->orderByRaw('LOWER(author) DESC');
+        } elseif ($sort === 'newest') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($sort === 'oldest') {
+            $query->orderBy('created_at', 'asc');
+        } elseif ($sort === 'publish-newest') {
+            $query->orderByDesc('publish date');
+        } elseif ($sort === 'publish-oldest') {
+            $query->orderBy('publish date', 'asc');
+        } elseif ($sort === 'rating-highest') {
+            $query->orderByDesc('ratings_avg_rating');
+        } elseif ($sort === 'rating-lowest') {
+            $query->orderBy('ratings_avg_rating', 'asc');
+        }
+    });
+
+    $modelToPass = $query->paginate(10);
+
+
+
+    // Prepare filter options - use subjects with literary/scientific labels
+    $subjects = App\Models\Subject::select('id', 'name', 'literaryOrScientific')->get();
+    $filterOptions = [];
+    foreach ($subjects as $subject) {
+        $type = $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific');
+        $filterOptions[$subject->id] = $subject->name . ' (' . $type . ')';
+    }
     $typeOptions = [
         1 => __('messages.literary'),
         2 => __('messages.scientific'),
@@ -98,7 +112,7 @@
                             ● {{ __('messages.resourceAuthor') }}: {{ $resource->author }}<br>
                             ● {{ __('messages.resourceDescription') }}: {{ $resource->description }}<br>
                             ● {{ __('messages.resourceSubject') }}:
-                            {{ $resource->subject->name }} ({{ $resource->literaryOrScientific == 1 ? __('messages.literary') : __('messages.scientific') }})<br>
+                            {{ $resource->subject->name }} ({{ $resource->literaryOrScientific ? __('messages.scientific') : __('messages.literary') }})<br>
                             ● {{ __('messages.resourcePublishDate') }}: {{ $resource['publish date'] }}<br>
                             <br>
                             <div style="display:inline-block; vertical-align:middle;">
@@ -172,7 +186,17 @@
 </x-layout>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    // Global error handler for DOM manipulation
+    function safeUpdateElement(element, content) {
+        if (element && element.innerHTML !== undefined) {
+            element.innerHTML = content;
+        } else {
+            console.warn('Attempted to update null or invalid element');
+        }
+    }
+
+    // Function to initialize the page functionality
+    function initializePage() {
         const searchBar = document.querySelector('.search-bar');
         const dynamicContent = document.getElementById('dynamic-content');
         const filterForm = document.querySelector('.filter-dropdown');
@@ -180,6 +204,12 @@
             'input[type="checkbox"][name^="subjects"], input[name^="type"]');
         const paginationInfoContainer = document.querySelector('.pagination-info');
         const paginationContainer = document.querySelector('.pagination');
+
+        if (!searchBar || !dynamicContent) {
+            console.warn('Required elements not found, retrying...');
+            setTimeout(initializePage, 100);
+            return;
+        }
 
         function updateResults() {
             const query = searchBar.value;
@@ -195,21 +225,25 @@
             selectedSubjects.forEach(subject => params.append('subjects[]', subject));
             selectedTypes.forEach(type => params.append('type[]', type));
 
-            paginationInfoContainer.innerHTML = '';
-            paginationContainer.innerHTML = '';
+            // Safely clear pagination elements
+            if (paginationInfoContainer) safeUpdateElement(paginationInfoContainer, '');
+            if (paginationContainer) safeUpdateElement(paginationContainer, '');
 
             fetch(`{{ request()->url() }}?${params.toString()}`)
                 .then(response => response.text())
                 .then(data => {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(data, 'text/html');
-                    const newContent = doc.getElementById('dynamic-content').innerHTML;
-                    dynamicContent.innerHTML = newContent;
+                    const newContent = doc.getElementById('dynamic-content')?.innerHTML;
+
+                    if (newContent && dynamicContent) {
+                        safeUpdateElement(dynamicContent, newContent);
+                    }
 
                     // Update pagination info (show if at least 1 result)
                     const responsePaginationInfo = doc.querySelector('.pagination-info');
                     if (paginationInfoContainer && responsePaginationInfo) {
-                        paginationInfoContainer.innerHTML = responsePaginationInfo.innerHTML;
+                        safeUpdateElement(paginationInfoContainer, responsePaginationInfo.innerHTML);
                     } else if (paginationInfoContainer) {
                         // Check if we should show pagination info by extracting count from response
                         const countMatch = doc.body.textContent.match(/of (\d+) resources/);
@@ -219,29 +253,40 @@
                             // Reconstruct pagination info
                             const firstItem = 1;
                             const lastItem = Math.min(10, totalCount);
-                            paginationInfoContainer.innerHTML =
-                                `Showing ${firstItem} to ${lastItem} of ${totalCount} resources`;
+                            safeUpdateElement(paginationInfoContainer,
+                                `Showing ${firstItem} to ${lastItem} of ${totalCount} resources`);
                         } else {
-                            paginationInfoContainer.innerHTML = '';
+                            safeUpdateElement(paginationInfoContainer, '');
                         }
                     }
 
                     // Update pagination controls (show if >10 results)
                     const responsePagination = doc.querySelector('.pagination');
                     if (paginationContainer && responsePagination) {
-                        paginationContainer.innerHTML = responsePagination.innerHTML;
+                        safeUpdateElement(paginationContainer, responsePagination.innerHTML);
                     } else if (paginationContainer) {
-                        paginationContainer.innerHTML = '';
+                        safeUpdateElement(paginationContainer, '');
                     }
 
-                    attachCircleEffect();
-                    refreshAnimations && refreshAnimations();
+                    // Call optional functions if they exist
+                    if (typeof attachCircleEffect === 'function') {
+                        attachCircleEffect();
+                    }
+                    if (typeof refreshAnimations === 'function') {
+                        refreshAnimations();
+                    }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    if (dynamicContent) dynamicContent.innerHTML = '<div class="error-message">Failed to load results</div>';
-                    if (paginationInfoContainer) paginationInfoContainer.innerHTML = '';
-                    if (paginationContainer) paginationContainer.innerHTML = '';
+                    console.error('Error fetching filtered results:', error);
+                    if (dynamicContent) {
+                        safeUpdateElement(dynamicContent, '<div class="error-message">{{ __("messages.failedToLoadResults") }}</div>');
+                    }
+                    if (paginationInfoContainer) {
+                        safeUpdateElement(paginationInfoContainer, '');
+                    }
+                    if (paginationContainer) {
+                        safeUpdateElement(paginationContainer, '');
+                    }
                 });
         }
 
@@ -249,7 +294,7 @@
         let searchTimeout;
         searchBar.addEventListener('input', function() {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(updateResults, 0);
+            searchTimeout = setTimeout(updateResults, 300);
         });
 
         // Handle filter changes
@@ -259,7 +304,40 @@
 
         // Handle individual checkbox changes
         filterCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateResults);
+            checkbox.addEventListener('change', function() {
+                // Add a small delay to ensure the checkbox state is updated
+                setTimeout(updateResults, 50);
+            });
         });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initializePage, 100);
+        });
+    } else {
+        // DOM is already ready
+        setTimeout(initializePage, 100);
+    }
+
+    // Override any existing updateContent function to be safe
+    if (typeof window.updateContent === 'function') {
+        const originalUpdateContent = window.updateContent;
+        window.updateContent = function(...args) {
+            try {
+                return originalUpdateContent.apply(this, args);
+            } catch (error) {
+                console.error('Error in updateContent:', error);
+            }
+        };
+    }
+
+    // Global error handler for fetch operations
+    window.addEventListener('error', function(e) {
+        if (e.message.includes('innerHTML') || e.message.includes('Cannot set properties of null')) {
+            console.warn('DOM manipulation error caught:', e.message);
+            e.preventDefault();
+        }
     });
 </script>

@@ -17,30 +17,31 @@ class ResourceFactory extends Factory
      */
     public function definition(): array
     {
-
-
-        // $table->string('name');
-        // $table->text('description')->nullable();
-        // $table->integer('literaryOrScientific');
-        // $table->foreignIdFor(Subject::class);
-        // $table->date('publish date');
-        // $table->string('image')->default('/Images/Resources/default.png');
-        // $table->string('file')->default('/Files/Resources/default.pdf');
-        // $table->string('author')->default('John Doe');
-        $name = fake()->name();
-        $description = fake()->realText();
+        $name = fake()->sentence(3);
+        $description = fake()->realText(200);
         $literaryOrScientific = rand(0, 1);
-        $sub = rand(1, Subject::count());
-        $pub = fake()->date();
-        $audio_file = rand(0,1) == 0 ? null : 'Files/Resources/Audio/default.mp3';
+        $subject = Subject::inRandomOrder()->first() ?? Subject::factory()->create();
+        $publishDate = fake()->date();
+        $audio_file = rand(0, 1) == 0 ? null : 'Files/Resources/Audio/default.mp3';
+        $author = fake()->name();
 
         return [
             'name' => $name,
             'description' => $description,
             'literaryOrScientific' => $literaryOrScientific,
-            'subject_id' => $sub,
-            'publish date' => $pub,
-            'audio_file' => $audio_file
+            'subject_id' => $subject->id,
+            'publish date' => $publishDate,
+            'image' => 'Images/Resources/default.png',
+            'audio_file' => $audio_file,
+            'pdf_files' => json_encode([
+                'ar' => 'Files/Resources/default.pdf',
+                'en' => 'Files/Resources/default.pdf',
+                'fr' => 'Files/Resources/default.pdf',
+                'es' => 'Files/Resources/default.pdf',
+                'de' => 'Files/Resources/default.pdf',
+            ]),
+            'author' => $author,
+            'pages' => 95, // Will be set when actual PDF files are uploaded
         ];
     }
 }

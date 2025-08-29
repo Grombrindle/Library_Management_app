@@ -122,17 +122,36 @@ class Teacher extends Model
 
     public function ratings()
     {
-        return $this->hasMany(TeacherRating::class);
+        // Aggregate ratings from this teacher's courses
+        return $this->hasManyThrough(
+            CourseRating::class, // Final model
+            Course::class,       // Intermediate model
+            'teacher_id',        // Foreign key on Course (to Teacher)
+            'course_id',         // Foreign key on CourseRating (to Course)
+            'id',                // Local key on Teacher
+            'id'                 // Local key on Course
+        );
     }
 
     public function getRatingAttribute()
     {
-        $avgRating = $this->ratings()->avg('rating');
-        return $avgRating ? round($avgRating, 2) : null;
+        // Average of per-course averages (simple mean of means), ignoring courses with no ratings
+        $courseAverages = $this->courses()
+            ->withAvg('ratings', 'rating')
+            ->pluck('ratings_avg_rating')
+            ->filter(function ($v) { return $v !== null; });
+
+        $avg = $courseAverages->avg();
+        return $avg !== null ? round((float)$avg, 2) : null;
     }
     public function getRatingsCountAttribute()
     {
-        return $this->ratings()->count();
+        // Number of courses that have at least one rating
+        return $this->courses()
+            ->withCount('ratings')
+            ->get()
+            ->where('ratings_count', '>', 0)
+            ->count();
     }
 
 

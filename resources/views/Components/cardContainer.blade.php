@@ -391,8 +391,8 @@
         font-size: 20px;
         color: black;
         text-align: center;
-        height: 13rem;
-        width: 18rem;
+        height: fit-content;
+        width: 25rem;
         font-family: 'Pridi';
         padding: 0.25rem 0.25rem;
         border-radius: 1rem;
@@ -587,8 +587,8 @@
                             {{ __('messages.publishOldest') }}</label>
                     @endif
 
-                    <!-- Rating (for resources) -->
-                    @if (isset($model) && count($model) && isset($model[0]->rating))
+                    <!-- Rating (for lectures, courses, teachers, resources) -->
+                    @if (isset($model) && count($model))
                         <label><input type="radio" name="sort" value="rating-highest"
                                 {{ request('sort') === 'rating-highest' ? 'checked' : '' }}>
                             {{ __('messages.ratingHighest') }}</label>

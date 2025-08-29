@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->json('pdf_files')->nullable()->default(null); // language => file path mapping
             $table->string('audio_file')->nullable();
             $table->string('author')->default('John Doe');
+            $table->integer('pages')->nullable();
             $table->timestamps();
         });
     }

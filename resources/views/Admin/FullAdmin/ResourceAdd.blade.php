@@ -1,4 +1,60 @@
 <x-layout>
+    <style>
+        .custom-file-input {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .hidden-file-input {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 10px 15px;
+            background-color: #555184;
+            color: white;
+            border: 2px solid #9997BC;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            max-width: 100%;
+            overflow: hidden;
+            margin-left:auto;
+            margin-right:auto;
+        }
+
+        .file-input-label:hover {
+            background-color: #9997BC;
+            border-color: #555184;
+            color: #555184;
+        }
+
+        .file-input-text {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .file-input-label:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: #ccc;
+            border-color: #999;
+        }
+
+        .file-input-label:disabled:hover {
+            background-color: #ccc;
+            border-color: #999;
+            color: #666;
+        }
+    </style>
     <x-addcard link="addresource" object="Resource">
         <div style="display:flex; flex-direction:column; align-items:center;">
             <label for="resource_name">
@@ -7,6 +63,7 @@
             <input type="text" name="resource_name" id="resource_name" value="" autocomplete="off"
                 style="height:20%; text-align:center; font-size:40%; width:fit-content;" required>
         </div>
+        <br>
         <div style="display:flex; flex-direction:column; align-items:center;">
             <label for="resource_description">
                 {{ __('messages.resourceDescription') }} ({{ __('messages.optional') }}):
@@ -21,9 +78,10 @@
         <select name="resource_subject_id" id="resource_subject_id" required>
             <option value="" selected>{{ __('messages.selectSubject') }}</option>
             @foreach (App\Models\Subject::all() as $subject)
-                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                <option value="{{ $subject->id }}">{{ $subject->name }} ({{ $subject->literaryOrScientific ? __('messages.scientific') : __('messages.literary') }})</option>
             @endforeach
         </select>
+        <br>
         <br>
         <div style="display:flex; flex-direction:column; align-items:center;">
             <label for="resource_publish_date">
@@ -31,6 +89,7 @@
             </label>
             <input type="date" name="resource_publish_date" id="resource_publish_date" required>
         </div>
+        <br>
         <div style="display:flex; flex-direction:column; align-items:center;">
             <label for="resource_author">
                 {{ __('messages.author') }}:
@@ -39,10 +98,12 @@
                 style="height:20%; text-align:center; font-size:40%; width:fit-content;" required>
         </div>
         <br>
-        <span>{{ __('messages.uploadPDFs') }} ({{ __('messages.arabicOrEnglishRequired') }}):</span>
+        <span>{{ __('messages.uploadPDFs') }} ({{ __('messages.arabicRequired') }}):</span>
+        <br>
+        <br>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:10px;">
             <div>
-                <label for="pdf_ar">{{ __('messages.pdfArabic') }} ({{ __('messages.optional') }})</label>
+                <label for="pdf_ar">{{ __('messages.pdfArabic') }}</label>
                 <div class="custom-file-input">
                     <input type="file" id="pdf_ar" class="hidden-file-input" name="pdf_ar" accept="application/pdf">
                     <label for="pdf_ar" class="file-input-label">
@@ -91,6 +152,16 @@
             {{ __('messages.arabicOrEnglishRequired') }}
         </div>
         <br>
+
+        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
+            <label for="resource_audio_file">
+                {{ __('messages.resourceAudioFile') }} ({{ __('messages.optional') }}):
+            </label>
+            <input type="file" name="resource_audio_file" id="resource_audio_file" accept="audio/*">
+        </div>
+        @error('resource_audio_file')
+            <div class="error">{{ $message }}</div>
+        @enderror
     </x-addcard>
     <script>
         function setupFileInput(inputId, textId) {
@@ -105,9 +176,16 @@
                         textElement.textContent = 'Choose a file';
                         return;
                     }
-                    textElement.textContent = file.name;
+                    // Truncate filename if too long
+                    const maxLength = 30;
+                    const fileName = file.name.length > maxLength
+                        ? file.name.substring(0, maxLength - 3) + '...'
+                        : file.name;
+                    textElement.textContent = fileName;
+                    textElement.title = file.name; // Show full name on hover
                 } else {
                     textElement.textContent = 'Choose a file';
+                    textElement.title = '';
                 }
                 document.getElementById('pdf-error').style.display = 'none';
             });

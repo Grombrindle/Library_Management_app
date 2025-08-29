@@ -88,6 +88,8 @@ return [
     'uploadAtLeastOneVideo' => 'Please upload at least one video file (360p, 720p, or 1080p)',
     'selectSubject' => 'Select Subject',
     'selectTeacher' => 'Select Teacher',
+    'author' => 'Author',
+    'publishDate' => 'Publish Date',
     'userStatus' => 'User Status',
     'active' => 'Active',
     'subscriptions' => 'Subscriptions',
@@ -373,6 +375,17 @@ return [
     'pdf' => 'PDF',
     'video' => 'Video',
 
+    // Language-specific PDF translations
+    'pdfArabic' => 'Arabic PDF',
+    'pdfEnglish' => 'English PDF',
+    'pdfSpanish' => 'Spanish PDF',
+    'pdfGerman' => 'German PDF',
+    'pdfFrench' => 'French PDF',
+    'uploadPDFs' => 'Upload PDFs',
+    'arabicOrEnglishRequired' => 'Arabic or English PDF is required',
+    'showResource' => 'Show Resource',
+    'showResourceAudio' => 'Show Resource Audio',
+
     // Quiz
     'showQuiz' => 'Show quiz',
     'showLectures' => 'Show Lectures',
@@ -406,4 +419,12 @@ return [
     'viewCurrentThumbnail' => 'View Current Thumbnail',
     'currentFile' => 'Current File',
     'pdfSizeWarning' => 'Make sure the PDF size is less than 10MB',
+    // Admin notifications
+    'newCourseRequests' => 'There are',
+    'newCourseRequestsTail' => 'new course requests',
+    'oneNewCourseRequest' => 'There is 1 new course request',
+    'noNewCourseRequests' => 'No new course requests',
+    'checkCourseRequests' => 'Check Course Requests',
+    'dismiss' => 'Dismiss',
+    'markSeen' => 'Mark as seen',
 ];

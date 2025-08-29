@@ -210,6 +210,7 @@ return [
     'listenAudio' => 'Sesi Dinle',
     'viewCurrentPdf' => 'Mevcut PDF\'yi Görüntüle',
     'listenCurrentAudio' => 'Mevcut Sesi Dinle',
+    'audioFileAlreadyUploaded' => 'Ses dosyası zaten yüklendi',
     // Course Request Workflow
     'courseRequests' => 'Kurs Talepleri',
     'courseRequestIndex' => 'Kurs Taleplerim',
@@ -382,7 +383,23 @@ return [
     'examPdfFile' => 'Sınav PDF Dosyası',
     'chooseFile' => 'Dosya Seç',
     'pdfSizeWarning' => "PDF dosyasının boyutunun 10MB'dan küçük olduğundan emin olun",
+    // Admin notifications
+    'newCourseRequests' => 'Şu kadar',
+    'newCourseRequestsTail' => 'yeni kurs isteği var',
+    'oneNewCourseRequest' => '1 yeni kurs isteği var',
+    'noNewCourseRequests' => 'Yeni kurs isteği yok',
+    'checkCourseRequests' => 'Kurs isteklerini kontrol et',
+    'dismiss' => 'Kapat',
+    'markSeen' => 'Görüldü olarak işaretle',
     'invalidFileType' => 'Geçersiz dosya türü. Lütfen bir PDF dosyası yükleyin.',
     'addExam' => 'Sınav Ekle',
     'editExam' => 'Sınavı Düzenle',
+
+    // Resource
+    'arabicRequired' => 'Türkçe PDF gereklidir',
+    'showResource' => 'Kaynak Göster',
+    'showResourceAudio' => 'Kaynak Sesini Göster',
+    'uploadPDFs' => 'PDF Yükle',
+    'pdfArabic' => 'Türkçe PDF',
+    'pdfEnglish' => 'İngilizce PDF',
 ];

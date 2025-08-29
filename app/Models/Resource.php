@@ -14,6 +14,7 @@ class Resource extends Model
     protected $casts = [
         'created_at' => 'date:Y-m-d',
         'updated_at' => 'date:Y-m-d',
+        // 'pdf_files' => 'array',
     ];
 
     /** @use HasFactory<\Database\Factories\ResourceFactory> */
@@ -29,6 +30,7 @@ class Resource extends Model
         'audio_file',
         'pdf_files', // new JSON field for multilingual PDFs
         'author',
+        'pages',
         'created_at',
         'updated_at'
     ];
@@ -100,7 +102,7 @@ class Resource extends Model
             ->get();
 
         if ($withReview->count() >= 3) {
-            return $withReview->map(function($review) {
+            return $withReview->map(function ($review) {
                 $review->user_name = $review->user ? $review->user->userName : null;
                 return $review;
             });
@@ -116,7 +118,7 @@ class Resource extends Model
             ->get();
 
         $all = $withReview->concat($withoutReview);
-        return $all->map(function($review) {
+        return $all->map(function ($review) {
             $review->user_name = $review->user ? $review->user->userName : null;
             return $review;
         });
@@ -125,12 +127,63 @@ class Resource extends Model
     public function getPdfFilesAttribute($value)
     {
         $files = $value ? json_decode($value, true) : [];
+
+        // Ensure $files is always an array
+        if (!is_array($files)) {
+            $files = [];
+        }
+
         foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
-            if (!array_key_exists($lang, $files)) {
+            if (!array_key_exists($lang, $files) || empty($files[$lang])) {
                 $files[$lang] = null;
             }
         }
         return $files;
+    }
+
+    /**
+     * Get Arabic PDF file path
+     */
+    public function getPdfFileAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['ar'] ?? null;
+    }
+
+    /**
+     * Get English PDF file path
+     */
+    public function getPdfFileEnAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['en'] ?? null;
+    }
+
+    /**
+     * Get French PDF file path
+     */
+    public function getPdfFileFrAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['fr'] ?? null;
+    }
+
+    /**
+     * Get Spanish PDF file path
+     */
+    public function getPdfFileEsAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['es'] ?? null;
+    }
+
+    /**
+     * Get German PDF file path
+     */
+    public function getPdfFileDeAttribute()
+    {
+        $pdfs = $this->pdf_files;
+        return $pdfs['de'] ?? null;
     }
 
     public function getPdfFileForLanguage($lang)
@@ -139,16 +192,20 @@ class Resource extends Model
         return $pdfs[$lang] ?? null;
     }
 
-    public function getAudioFileUrlAttribute() {
+    public function getAudioFileUrlAttribute()
+    {
         $value = $this->attributes['audio_file'] ?? null;
         return ($value ? url($value) : null);
     }
 
-    public function getAudioFileDurationSecondsAttribute() {
+    public function getAudioFileDurationSecondsAttribute()
+    {
         $value = $this->attributes['audio_file'] ?? null;
-        if (!$value) return null;
+        if (!$value)
+            return null;
         $filePath = public_path($value);
-        if (!file_exists($filePath)) return null;
+        if (!file_exists($filePath))
+            return null;
         try {
             $getID3 = new getID3();
             $info = $getID3->analyze($filePath);
@@ -161,26 +218,32 @@ class Resource extends Model
         return null;
     }
 
-    public function getAudioFileDurationFormattedAttribute() {
+    public function getAudioFileDurationFormattedAttribute()
+    {
         $seconds = $this->audio_file_duration_seconds;
-        if ($seconds === null) return null;
+        if ($seconds === null)
+            return null;
         $minutes = floor($seconds / 60);
         $secs = round($seconds % 60);
         return sprintf('%02d:%02d', $minutes, $secs);
     }
 
-    public function getAudioFileDurationLongFormattedAttribute() {
+    public function getAudioFileDurationLongFormattedAttribute()
+    {
         $seconds = $this->audio_file_duration_seconds;
-        if ($seconds === null) return null;
+        if ($seconds === null)
+            return null;
         $hours = round($seconds / 3600);
         $minutes = floor($seconds / 60);
         $secs = round($seconds % 60);
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $secs);
     }
 
-    public function getAudioFileDurationHumanAttribute() {
+    public function getAudioFileDurationHumanAttribute()
+    {
         $seconds = $this->audio_file_duration_seconds;
-        if ($seconds === null) return null;
+        if ($seconds === null)
+            return null;
         $minutes = floor($seconds / 60);
         $secs = round($seconds % 60);
         $hours = floor($minutes / 60);
@@ -194,11 +257,14 @@ class Resource extends Model
         }
     }
 
-    public function getPdfFilePagesAttribute() {
+    public function getPdfFilePagesAttribute()
+    {
         $value = $this->attributes['pdf_file'] ?? null;
-        if (!$value) return null;
+        if (!$value)
+            return null;
         $filePath = public_path($value);
-        if (!file_exists($filePath)) return null;
+        if (!file_exists($filePath))
+            return null;
         try {
             // Use getID3 if available
             $getID3 = new getID3();
@@ -222,10 +288,15 @@ class Resource extends Model
 
     protected $appends = [
         'subjectName',
+        'pdf_file',
+        'pdf_file_en',
+        'pdf_file_fr',
+        'pdf_file_es',
+        'pdf_file_de',
         'rating',
         'rating_breakdown',
         'FeaturedRatings',
-        'pdf_file_url',
+        // 'pdf_file_url',
         'audio_file_url',
         'audio_file_duration_seconds',
         'audio_file_duration_formatted',
