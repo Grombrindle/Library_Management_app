@@ -84,6 +84,11 @@ class Course extends Model
         return $avgRating ? round($avgRating, 2) : null;
     }
 
+    public function getTeacherAttribute() {
+        $teacher = $this->teacher()->first();
+        return $teacher->name;
+    }
+
     public function getRatingBreakdownAttribute()
     {
         // Get the count of each rating (1-5) for this course
@@ -209,20 +214,7 @@ class Course extends Model
     //dis new
     public function getRatingsCountAttribute()
     {
-        // Get the count of each rating (1-5) for this course
-        $breakdown = $this->ratings()
-            ->selectRaw('rating, COUNT(*) as count')
-            ->groupBy('rating')
-            ->pluck('count', 'rating')
-            ->toArray();
-
-        // Ensure all ratings 1-5 are present, even if 0
-        $fullBreakdown = [];
-        foreach (range(1, 5) as $rating) {
-            $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
-        }
-
-        return $fullBreakdown;
+        return $this->ratings()->count();
     }
 
     public function getFirstRatingsAttribute()
@@ -279,6 +271,7 @@ class Course extends Model
 
     protected $appends = [
         'rating',
+        'teacher',
         'isFavorite',
         'subscription_count',
         'rating_breakdown',

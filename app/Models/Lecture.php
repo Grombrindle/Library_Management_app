@@ -271,6 +271,30 @@ public function getRatingsCountAttribute() {
         return $rating ? $rating->rating : null;
     }
 
+    public function likes() {
+        return $this->hasMany(Like::class);
+    }
+
+    public function getLikesAttribute()
+    {
+        return $this->likes()->where('isLiked', true)->count();
+    }
+
+    public function getDislikesAttribute()
+    {
+        return $this->likes()->where('isDisliked', true)->count();
+    }
+
+    public function getIsLikedAttribute() {
+        $like = $this->likes()->where('isLiked', true)->where('user_id', Auth::id())->first();
+        return $like ? true : false;
+    }
+
+    public function getIsDislikedAttribute() {
+        $like = $this->likes()->where('isDisliked', true)->where('user_id', Auth::id())->first();
+        return $like ? true : false;
+    }
+
     protected $appends = [
         'rating',
         'ratingsCount',
@@ -279,6 +303,10 @@ public function getRatingsCountAttribute() {
         'formatted_duration',
         'formatted_duration_long',
         'human_duration',
-        'user_rating'
+        'user_rating',
+        'likes',
+        'dislikes',
+        'isLiked',
+        'isDisliked'
     ];
 }

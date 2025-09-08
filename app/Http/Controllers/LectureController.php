@@ -227,6 +227,24 @@ class LectureController extends Controller
             'message' => 'Course not found'
         ], 404);
     }
+    public function incrementViews($id)
+    {
+        $lecture = Lecture::find($id);
+
+        if($lecture) {
+            $lecture->increment('views');
+
+            return response()->json([
+                'success' => true,
+                'views' => $lecture->views
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Lecture not found'
+        ], 404);
+    }
 
     public function add(Request $request)
     {

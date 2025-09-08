@@ -59,6 +59,6 @@ class CourseRating extends Model
         return round($value, 2);
     }
 
-    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'rating', 'ratingsCount'];
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'ratingsCount'];
 
 }
