@@ -23,3 +23,4 @@ yarn-error.log
 /.zed
 mineLMA.zip
 Library_Management_app.7z
+tests/aoitest.http
