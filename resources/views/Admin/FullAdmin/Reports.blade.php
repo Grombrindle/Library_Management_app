@@ -1,5 +1,10 @@
 @php
-    $modelToPass = App\Models\Report::query()->orderByDesc('created_at')->paginate(10);
+    $modelToPass = App\Models\Report::query()
+        ->orderByRaw(
+            "CASE status WHEN 'PENDING' THEN 1 WHEN 'WARNED' THEN 2 WHEN 'IGNORED' THEN 3 WHEN 'BANNED' THEN 4 ELSE 5 END",
+        )
+        ->orderByDesc('created_at')
+        ->paginate(10);
 
     // Split Reports into chunks (two columns)
     $chunkSize = 2;
@@ -17,28 +22,77 @@
 <x-layout :objects=true object="{{ __('messages.reports') }}">
     <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.reports') => url('/reports')]" />
 
-    <x-cardcontainer :model="$modelToPass" :addLink=null models="Reports">
+    <x-cardcontainer :model="$modelToPass" :addLink=null models="Reports" :search=false>
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedReports as $chunk)
                 <div class="chunk">
                     @forelse ($chunk as $report)
                         <x-card link="/report/{{ $report->id }}" object="Report">
+                            ● {{ __('messages.reportedUser') }}:
+                            {{ App\Models\User::find($report->user_id)->userName ?? 'Unknown' }}<br>
+                            {{-- ● {{ __('messages.type') }}: {{ ucfirst($report->type ?? 'N/A') }}<br> --}}
+                            {{-- @if ($report->message) --}}
+                            {{-- @endif --}}
+                            @if ($report->lecture_rating_id)
+                                • {{ __('messages.comment') }}:
+                                @if ($report->lecture_comment)
+                                    {{ $report->lecture_comment }}
+                                @else
+                                    {{ __('messages.noComment') }}
+                                @endif <br>
+                                {{ __('messages.onLecture') }}:{{ App\Models\LectureRating::find($report->lecture_rating_id)->lecture->name }}
+                                <br>
+                            @elseif($report->course_rating_id)
+                                • {{ __('messages.comment') }}:
+                                @if ($report->course_comment)
+                                    {{ $report->course_comment }}
+                                @else
+                                    {{ __('messages.noComment') }}
+                                @endif <br>
+                                • {{ __('messages.onCourse') }}:
+                                {{ App\Models\CourseRating::find($report->course_rating_id)->course->name }}
+                                <br>
+                            @elseif($report->resource_rating_id)
+                                • {{ __('messages.comment') }}:
+                                @if ($report->resource_comment)
+                                    {{ $report->resource_comment }}
+                                @else
+                                    {{ __('messages.noComment') }}
+                                @endif <br>
+                                • {{ __('messages.onResource') }}:
+                                {{ App\Models\ResourceRating::find($report->resource_rating_id)->resource->name }}
+                                <br>
+                            @elseif($report->teacher_rating_id)
+                                • {{ __('messages.comment') }}:
+                                @if ($report->teacher_comment)
+                                    {{ $report->teacher_comment }}
+                                @else
+                                    {{ __('messages.noComment') }}
+                                @endif <br>
+                                • {{ __('messages.onTeacher') }}:
+                                {{ App\Models\TeacherRating::find($report->teacher_rating_id)->teacher->name }}
+                                <br>
+                            @else
+                                • {{ __('messages.comment') }}: {{ __('messages.noComment') }}<br>
+                            @endif
+                            <br>
                             ● {{ __('messages.reportedBy') }}: {{ $report->user->userName ?? 'Unknown' }}<br>
-                            ● {{ __('messages.type') }}: {{ ucfirst($report->type ?? 'N/A') }}<br>
+
                             ● {{ __('messages.reasons') }}:
-                            {{ is_array($report->reasons) ? implode(', ', $report->reasons) : $report->reasons ?? __('messages.none') }}<br>
-                            @if ($report->reason)
-                                ● {{ __('messages.reason') }}: {{ $report->reason }}<br>
+                            {{ is_array($report->reasons) ? implode(', ', $report->reasons) : $report->reasons }}<br>
+
+                            ● {{ __('messages.message') }}: @if ($report->message)
+                                {{ $report->message }}
+                            @else
+                                {{ __('messages.noMessage') }}
                             @endif
-                            @if ($report->lecture_comment)
-                                ● {{ __('messages.lectureComment') }}: {{ $report->lecture_comment }}<br>
-                            @endif
-                            @if ($report->course_comment)
-                                ● {{ __('messages.courseComment') }}: {{ $report->course_comment }}<br>
-                            @endif
-                            @if ($report->resource_comment)
-                                ● {{ __('messages.resourceComment') }}: {{ $report->resource_comment }}<br>
-                            @endif
+                            <br>
+                            <br>
+                            ● {{ __('messages.timesWarned') }}:
+                            {{ App\Models\User::find($report->user_id)->counter }}<br>
+
+                            <br>
+
                             @if ($report->status == 'IGNORED')
                                 <div style="color: dodgerblue; font-weight: bold; margin-top: 1rem; font-size:60px;">
                                     {{ __('messages.ignored') }}</div>

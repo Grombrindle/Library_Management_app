@@ -153,8 +153,6 @@ class SessionController extends Controller
             ], 400);
         }
 
-        $user->counter = 0;
-
         $user->isBanned = true;
         $user->save();
 
@@ -179,8 +177,6 @@ class SessionController extends Controller
         }
 
 
-        $user->counter = 0;
-
         $user->isBanned = true;
         $user->save();
 
@@ -192,12 +188,15 @@ class SessionController extends Controller
 
         if($report) {
             $report->status = "BANNED";
+            $report->handled_by_id = Auth::id();
+
             $report->save();
         }
 
-        return response()->json([
-            'success' => true
-        ]);
+        $data = ['id' => $id, 'name' => $user->userName, 'message' => 'banned'];
+        session(['user_info' => $data]);
+        session(['link' => '/reports']);
+        return redirect()->route('user.confirmation');
     }
 
     public function logoutUser()

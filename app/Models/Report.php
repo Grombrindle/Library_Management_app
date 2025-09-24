@@ -14,12 +14,14 @@ class Report extends Model
         'reporter_id',
         'handled_by_id',
         'lecture_comment',
+        'teacher_comment',
         'course_comment',
         'resource_comment',
-        'resource_rating_id',
         'lecture_rating_id',
+        'resource_rating_id',
+        'teacher_rating_id',
         'course_rating_id',
-        'reason',
+        'message',
         'reasons',
     ];
 
@@ -29,12 +31,12 @@ class Report extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'reporter_id');
     }
 
     public function handler()
     {
-        return $this->belongsTo(User::class, 'handled_by_id');
+        return $this->belongsTo(Admin::class, 'handled_by_id');
     }
 
     /**

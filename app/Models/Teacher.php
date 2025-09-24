@@ -139,7 +139,9 @@ class Teacher extends Model
         $courseAverages = $this->courses()
             ->withAvg('ratings', 'rating')
             ->pluck('ratings_avg_rating')
-            ->filter(function ($v) { return $v !== null; });
+            ->filter(function ($v) {
+                return $v !== null;
+            });
 
         $avg = $courseAverages->avg();
         return $avg !== null ? round((float)$avg, 2) : null;
@@ -161,7 +163,7 @@ class Teacher extends Model
         $coursesNames = "";
         foreach ($courses as $course) {
             $coursesNames .= $course;
-            if($course)
+            if ($course)
                 $coursesNames .= " - ";
         }
         return rtrim($coursesNames, ' - ');
@@ -186,8 +188,11 @@ class Teacher extends Model
             ->take(3)
             ->get();
 
+
         if ($withReview->count() >= 3) {
-            return $withReview;
+            return $withReview->map(function ($review) {
+                $review->user_name = $review->user ? $review->user->userName : null;
+            });
         }
 
         $needed = 3 - $withReview->count();
@@ -202,8 +207,11 @@ class Teacher extends Model
             ->take($needed)
             ->get();
 
-        return $withReview->concat($withoutReview);
-
+        $all = $withReview->concat($withoutReview);
+        return $all->map(function ($review) {
+            $review->user_name = $review->user ? $review->user->userName : null;
+            return $review;
+        });
     }
 
     public function getRatingBreakdownAttribute()
@@ -238,15 +246,15 @@ class Teacher extends Model
     }
 
     public function getUserRatingAttribute()
-{
-    $user = Auth::user();
-    if (!$user || !($user instanceof \App\Models\User)) {
-        return null;
-    }
+    {
+        $user = Auth::user();
+        if (!$user || !($user instanceof \App\Models\User)) {
+            return null;
+        }
 
-    $rating = $user->teacherRatings()->where('teacher_id', $this->id)->first();
-    return $rating ? $rating->rating : null;
-}
+        $rating = $user->teacherRatings()->where('teacher_id', $this->id)->first();
+        return $rating ? $rating->rating : null;
+    }
 
     protected $appends = ['rating', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
 
@@ -254,5 +262,4 @@ class Teacher extends Model
     {
         return $this->hasMany(CourseRequest::class);
     }
-
 }

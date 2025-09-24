@@ -219,7 +219,9 @@ class Lecture extends Model
 
 
         if ($withReview->count() >= 3) {
-            return $withReview;
+            return $withReview->map(function ($review) {
+                $review->user_name = $review->user ? $review->user->userName : null;
+            });
         }
 
 
@@ -235,9 +237,14 @@ class Lecture extends Model
             ->get();
 
 
-        return $withReview->concat($withoutReview);
+        $all = $withReview->concat($withoutReview);
+        return $all->map(function ($review) {
+            $review->user_name = $review->user ? $review->user->userName : null;
+            return $review;
+        });
     }
-public function getRatingsCountAttribute() {
+    public function getRatingsCountAttribute()
+    {
         return $this->ratings()->count();
     }
 

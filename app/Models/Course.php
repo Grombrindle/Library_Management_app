@@ -127,8 +127,11 @@ class Course extends Model
             ->take(3)
             ->get();
 
+
         if ($withReview->count() >= 3) {
-            return $withReview;
+            return $withReview->map(function ($review) {
+                $review->user_name = $review->user ? $review->user->userName : null;
+            });
         }
 
         $needed = 3 - $withReview->count();
@@ -142,7 +145,11 @@ class Course extends Model
             ->take($needed)
             ->get();
 
-        return $withReview->concat($withoutReview);
+        $all = $withReview->concat($withoutReview);
+        return $all->map(function ($review) {
+            $review->user_name = $review->user ? $review->user->userName : null;
+            return $review;
+        });
     }
 
     public function getVideoLecturesCountAttribute()
@@ -271,8 +278,9 @@ class Course extends Model
         return $this->lectures()->get()->count();
     }
 
-    public function getIsFavoriteAttribute() {
-        if(Auth::user()) {
+    public function getIsFavoriteAttribute()
+    {
+        if (Auth::user()) {
             return Auth::user()->favoriteCourses()->where('course_id', $this->id)->exists();
         }
     }

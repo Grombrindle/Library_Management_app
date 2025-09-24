@@ -591,6 +591,9 @@ Route::group(['middleware' => ['auth']], function () {
         return view(view: 'confirmedDelete');
     })->name('delete.confirmation');
 
+    Route::get('/confirmuser', function () {
+        return view(view: 'confirmedUser');
+    })->name('user.confirmation');
 
     Route::get('/lang/{locale}', function ($locale) {
         if (in_array($locale, ['en', 'fr', 'de', 'tr', 'es'])) {
