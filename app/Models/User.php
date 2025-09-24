@@ -83,6 +83,7 @@ class User extends Authenticatable
         'isBanned',
         'counter',
         'avatar',
+        'fcm_token',
         'last_screenshot_at',
         'remember_token',
         'created_at',
@@ -153,22 +154,24 @@ class User extends Authenticatable
         return $this->favoriteTeachers()->where('teacher_id', $teacher->id)->exists();
     }
 
-    public function tasks() {
+    public function tasks()
+    {
         return $this->hasMany(Task::class);
     }
 
-    public function ratings() {
-        $courseRatings = $this->courseRatings()->with('course')->get()->map(function($rating) {
+    public function ratings()
+    {
+        $courseRatings = $this->courseRatings()->with('course')->get()->map(function ($rating) {
             $rating->type = 'course';
             return $rating;
         });
 
-        $lectureRatings = $this->lectureRatings()->with('lecture')->get()->map(function($rating) {
+        $lectureRatings = $this->lectureRatings()->with('lecture')->get()->map(function ($rating) {
             $rating->type = 'lecture';
             return $rating;
         });
 
-        $teacherRatings = $this->teacherRatings()->with('teacher')->get()->map(function($rating) {
+        $teacherRatings = $this->teacherRatings()->with('teacher')->get()->map(function ($rating) {
             $rating->type = 'teacher';
             return $rating;
         });
@@ -199,7 +202,7 @@ class User extends Authenticatable
     public function watchlist()
     {
         return $this->belongsToMany(Lecture::class, 'watchlists', 'user_id', 'lecture_id')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
 
     public function resourceWatchlist()

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\NotificationsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Lecture;
@@ -11,12 +12,12 @@ use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SubjectController;
-use App\Http\Controllers\LikeController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HelpfulController;
 use App\Http\Controllers\SavedMessageController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\WatchlistController;
 
@@ -110,7 +111,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getlecturefilepdf/{id}', [LectureController::class, 'fetchPdf']);
     Route::get('/getlecturequiz/{id}', [LectureController::class, 'fetchQuizQuestions']);
     Route::post('/ratelecture/{id}', [LectureController::class, 'rate']);
-    Route::post('/incrementviews/{id}', [LectureController::class, 'incrementViews']);
     // Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);     Not through the API
 
     Route::get('/getexam/{id}', [ExamController::class, 'fetch']);
@@ -139,6 +139,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/rateresource/{id}', [ResourceController::class, 'rate']);
 
 
+    //Notifcations
+    Route::get('/customer_notifcations', [NotificationsController::class, 'getNotifications']);
+    Route::post('/send_notifications', [NotificationsController::class, 'sendPushNotification']);
+    Route::post('/notifications_all', [NotificationsController::class, 'sendPushNotificationToAllUsers']);
+    Route::post('/update_fcm_token', [NotificationsController::class, 'updateFcmToken']);
+    Route::post('/set_fcm_token', [NotificationsController::class, 'setToken']);
+    Route::post('/update_notification_preferences', [NotificationsController::class, 'updateNotificationPreferences']);
+    Route::get('/get_notification_preferences', [NotificationsController::class, 'getNotificationPreferences']);
+
     //TASKS
     Route::get('/gettasks', [TaskController::class, 'fetchAll']);
     Route::post('/addtask', [TaskController::class, 'add']);
@@ -160,10 +169,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/togglehelpful', [HelpfulController::class, 'toggleHelpful']);
     Route::post('/toggleunhelpful', [HelpfulController::class, 'toggleUnhelpful']);
 
-    Route::get('/getlikes/{id}', [LikeController::class, 'fetchLikes']);
-    Route::post('/togglelike', [LikeController::class, 'toggleLike']);
-    Route::post('/toggledislike', [LikeController::class, 'toggleDislike']);
-
     Route::get('/getcourseratings/{id}', [CourseController::class, 'fetchRatings']);
     Route::get('/getlectureratings/{id}', [LectureController::class, 'fetchRatings']);
     Route::get('/getresourceratings/{id}', [ResourceController::class, 'fetchRatings']);
@@ -171,9 +176,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/togglesaved', [SavedMessageController::class, 'toggleSaved']);
 
+    Route::post('/report', [ReportController::class, 'add']);
+    Route::put('/change', [ReportController::class, 'test']);
+
     // Route::get('/getuser', [SessionController::class, 'test']);
     Route::post('/logout', [SessionController::class, 'logoutUser'])->name('logout.user');
-    Route::post('/ban', [SessionController::class, 'banUser'])->name('ban.user');
+    Route::post('/ban', [SessionController::class, 'ban'])->name('ban');
 
 
 

@@ -124,10 +124,10 @@ class Teacher extends Model
     {
         // Aggregate ratings from this teacher's courses
         return $this->hasManyThrough(
-            CourseRating::class, // Final model
-            Course::class,       // Intermediate model
-            'teacher_id',        // Foreign key on Course (to Teacher)
-            'course_id',         // Foreign key on CourseRating (to Course)
+            TeacherRating::class, // Final model
+            Teacher::class,       // Intermediate model
+            'id',
+            'id',
             'id',                // Local key on Teacher
             'id'                 // Local key on Course
         );

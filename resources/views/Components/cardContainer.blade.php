@@ -1,6 +1,7 @@
 @props([
     'model',
     'addLink',
+    'models' => null,
     'filterOptions' => [],
     'showCourseCountFilter' => false,
     'showUsernameSort' => false,
@@ -588,7 +589,7 @@
                     @endif
 
                     <!-- Rating (for lectures, courses, teachers, resources) -->
-                    @if (isset($model) && count($model))
+                    @if (isset($model) && count($model) && $models != "Reports")
                         <label><input type="radio" name="sort" value="rating-highest"
                                 {{ request('sort') === 'rating-highest' ? 'checked' : '' }}>
                             {{ __('messages.ratingHighest') }}</label>

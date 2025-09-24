@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Teacher;
 use App\Models\Subject;
 use App\Models\Admin;
+use App\Models\Report;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 class SessionController extends Controller
@@ -85,12 +86,12 @@ class SessionController extends Controller
 
         // // Find the user by userName
         $user = User::where('userName', $credentials['userName'])->first();
-        if ($user && $user->isBanned) {
-            return response()->json([
-                'success' => false,
-                'reason' => 'Banned',
-            ], 401);
-        }
+        // if ($user && $user->isBanned) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'reason' => 'Banned',
+        //     ], 401);
+        // }
         // Check if the user exists and the password is correct
         if ($user && Hash::check($credentials['password'], $user->password) /*&& $credentials['deviceId'] == $user->deviceId*/) {
             // Generate a token for the user
@@ -140,7 +141,7 @@ class SessionController extends Controller
         // }
     }
 
-    public function banUser()
+    public function ban()
     {
         $user = Auth::user();
 
@@ -160,6 +161,39 @@ class SessionController extends Controller
         $user->remember_token = null;
         $user->save();
         $user->currentAccessToken()->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
+    }
+    public function banUser($id)
+    {
+        $user = $id ? User::find($id) : Auth::user();
+
+        // Validate user can be banned
+        if ($user->isBanned && $user) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'Already banned'
+            ], 400);
+        }
+
+
+        $user->counter = 0;
+
+        $user->isBanned = true;
+        $user->save();
+
+        $user->remember_token = null;
+        $user->save();
+        $user->currentAccessToken() ? $user->currentAccessToken()->delete() : null;
+
+        $report = Report::find(session('report'));
+
+        if($report) {
+            $report->status = "BANNED";
+            $report->save();
+        }
 
         return response()->json([
             'success' => true

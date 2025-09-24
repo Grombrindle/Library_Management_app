@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Exam;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UserController;
@@ -64,8 +65,8 @@ Route::get('/webcourses', function (\Illuminate\Http\Request $request) {
 Route::view('/edit-profile', 'website.webEditProfile')->name('web.profile.edit');
 Route::view('/favorites', 'website.webFavorites')->name('web.favorites');
 Route::view('/my-courses', 'website.webMyCourses')->name('web.my-courses');
-Route::get('/profile', function() {
-    if(Auth::user()) {
+Route::get('/profile', function () {
+    if (Auth::user()) {
         return view('Website/webProfile');
     }
     return redirect()->route('web.login');
@@ -159,6 +160,12 @@ Route::group(['middleware' => ['auth']], function () {
         else
             return abort(404);
     });
+    Route::get('/reports', function () {
+        if (Auth::user()->privileges == 2)
+            return view('Admin/FullAdmin/Reports');
+        else
+            return abort(404);
+    });
     Route::get('/subject/{id}', function ($id) {
         if (Auth::user()->privileges == 2) {
             session(['subject' => $id]);
@@ -210,6 +217,15 @@ Route::group(['middleware' => ['auth']], function () {
         } elseif (Auth::user()->privileges == 0) {
             session(['lecture' => $id]);
             return view('Teacher/Lecture');
+        } else
+            return abort(404);
+    });
+
+
+    Route::get('/report/{id}', function ($id) {
+        if (Auth::user()->privileges == 2) {
+            session(['report' => $id]);
+            return view('Admin/FullAdmin/Report');
         } else
             return abort(404);
     });
@@ -715,4 +731,9 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/{id}/approve', [\App\Http\Controllers\CourseRequestController::class, 'approve'])->name('approve');
         Route::post('/{id}/reject', [\App\Http\Controllers\CourseRequestController::class, 'reject'])->name('reject');
     });
+
+
+    Route::post('/ignore/{id}', [ReportController::class, 'ignore']);
+    Route::post('user/warn/{id}', [ReportController::class, 'warn']);
+    Route::post('user/ban/{id}', [SessionController::class, 'banUser'])->name('ban.user');
 });

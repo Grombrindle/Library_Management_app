@@ -407,7 +407,8 @@
                         disabled>{{ __('messages.showResource') }} Audio</button>
                 @else
                     <a href="show/{{ $object->id }}/audio" target="_blank" class="button"
-                        style="background-color:#9997BC; margin: 20px auto 0 auto; display: block;">{{ __('messages.showResource') }} Audio</a>
+                        style="background-color:#9997BC; margin: 20px auto 0 auto; display: block;">{{ __('messages.showResource') }}
+                        Audio</a>
                 @endif
             @elseif($objectType == 'Exam')
                 <a href="show/{{ $object->id }}" target="_blank" class="button"
@@ -468,11 +469,11 @@
         @endif
         @endif
     </div> --}}
-    <form action="/{{ $deleteLink }}" method="POST"
-        onsubmit="return handleDelete(event, {{ Auth::id() == $object->id && $objectType == 'Admin' ? 'true' : 'false' }}, '{{ $name }}', '{{ $warning }}');">
-        @csrf
-        @method('DELETE')
-        @if ($deleteLink != null)
+    @if ($deleteLink != null)
+        <form action="/{{ $deleteLink }}" method="POST"
+            onsubmit="return handleDelete(event, {{ Auth::id() == $object->id && $objectType == 'Admin' ? 'true' : 'false' }}, '{{ $name }}', '{{ $warning }}');">
+            @csrf
+            @method('DELETE')
             <button class="deleteButton" style="">
                 @if ($objectType == 'Teacher')
                     {{ __('messages.deleteTeacher') }}
@@ -492,7 +493,7 @@
                     {{ __('messages.deleteResource') }}
                 @endif
             </button>
-        @endif
+    @endif
     </form>
 </div>
 @if ($objectType == 'Lecture')
@@ -521,7 +522,7 @@
     }
 
     function confirmDelete(name, warning) {
-        return confirm('{{ __('messages.confirmDeleteItem', ['name' => $name, 'warning' => $warning]) }}');
+        return confirm('{{ __('messages.confirmDeleteItem', ['name' => $name ?? "Unknown", 'warning' => $warning]) }}');
     }
 
     function preventDelete() {

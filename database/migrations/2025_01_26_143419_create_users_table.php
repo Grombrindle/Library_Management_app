@@ -16,14 +16,21 @@ return new class extends Migration {
             $table->string('userName')->unique();
             $table->string('countryCode');
             $table->string('number')->unique();
+
+            $table->string('fcm_token')->nullable();
+
             $table->string('password');
+
+            $table->boolean('hasWarning')->default(0);
+            $table->integer('counter')->default(0);
+            $table->text('comment')->nullable();
             $table->boolean('isBanned');
+
             $table->integer('avatar')->default(0);
 
             $table->integer('sparks')->default(0);
             $table->integer('sparkies')->default(0);
 
-            $table->integer('counter')->default(0);
             $table->timestamp('last_screenshot_at')->nullable();
 
             // $table->string('deviceId');

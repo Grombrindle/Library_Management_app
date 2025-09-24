@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
 
 class LectureRating extends Model
 {
@@ -32,25 +31,19 @@ class LectureRating extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function helpful()
-    {
-        return $this->hasMany(Helpful::class, 'lecture_rating_id')
-            ->where('isHelpful', 1);
+    public function helpful() {
+        return $this->hasMany(Helpful::class)->where('isHelpful', 1);
     }
 
-    public function unhelpful()
-    {
-        return $this->hasMany(Helpful::class, 'lecture_rating_id')
-            ->where('isHelpful', 0);
+    public function unhelpful() {
+        return $this->hasMany(Helpful::class)->where('isHelpful', 0);
     }
 
-    public function getHelpfulCountAttribute()
-    {
+    public function getHelpfulCountAttribute() {
         return $this->helpful()->count();
     }
 
-    public function getUnhelpfulCountAttribute()
-    {
+    public function getUnhelpfulCountAttribute() {
         return $this->unhelpful()->count();
     }
 
@@ -59,29 +52,9 @@ class LectureRating extends Model
         return round($value, 2);
     }
 
-    public function getIsHelpfulAttribute(): ?bool
-    {
-        if (array_key_exists('is_helpful', $this->attributes)) {
-            return (bool) $this->attributes['is_helpful'];
-        }
-        $user = Auth::user();
-        if (!$user) {
-            return null;
-        }
-        return $this->helpful()->where('user_id', $user->id)->exists();
+    public function getRatingsCountAttribute() {
+        // return $this->ratings()->count();
     }
 
-    public function getIsUnhelpfulAttribute(): ?bool
-    {
-        if (array_key_exists('is_unhelpful', $this->attributes)) {
-            return (bool) $this->attributes['is_unhelpful'];
-        }
-        $user = Auth::user();
-        if (!$user) {
-            return null;
-        }
-        return $this->unhelpful()->where('user_id', $user->id)->exists();
-    }
-
-    protected $appends = ['helpfulCount', 'unhelpfulCount', 'isHelpful', 'isUnhelpful'];
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount'];
 }

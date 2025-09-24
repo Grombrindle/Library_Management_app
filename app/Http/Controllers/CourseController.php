@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Subject;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\DB;
@@ -189,7 +190,7 @@ class CourseController extends Controller
     {
         // Use caching to improve performance for frequently accessed data
         $cacheKey = 'homepage_courses_' . (Auth::id() ?? 'guest');
-        $cacheDuration = 300; // 5 minutes
+        $cacheDuration = 180; // 3 minutes
 
         return Cache::remember($cacheKey, $cacheDuration, function () {
             // Get recommended courses (using the existing algorithm) - only essential fields
@@ -260,8 +261,20 @@ class CourseController extends Controller
                 }
             }
 
+            $user = Auth::user();
+
+            // dd($userData);
+
             return response()->json([
                 'success' => true,
+                'user' => User::select(['isBanned', 'hasWarning', 'counter', 'message'])->where('id', $user->id)->get()->map(function ($user) {
+                    return [
+                        'isBanned' => $user->isBanned,
+                        'hasWarning' => $user->hasWarning,
+                        'counter' => $user->counter,
+                        'message' => $user->message,
+                    ];
+                }),
                 'subjects' => Subject::select(['id', 'name', 'literaryOrScientific', 'image'])->get()->map(function ($subject) {
                     return [
                         'id' => $subject->id,

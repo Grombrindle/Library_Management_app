@@ -409,6 +409,11 @@
                         {{ __('messages.resources') }}
                     </div>
                 </a>
+                <a href="/reports" class="button" id="button" style="text-decoration: none;">
+                    <div class="text">
+                        {{ __('messages.reports') }}
+                    </div>
+                </a>
             </div>
         </div>
     </div>

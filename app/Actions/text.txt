@@ -1,0 +1,5 @@
+recieving from the request is handled in the controllers
+
+Actions handle one operation on one or more(preferably one) model
+
+While services handle all operations concerning one business logic component

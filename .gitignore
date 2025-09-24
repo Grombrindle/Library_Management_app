@@ -21,3 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+mineLMA.zip
+Library_Management_app.7z
+tests/aoitest.http

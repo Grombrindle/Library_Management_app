@@ -563,6 +563,7 @@ class DatabaseSeeder extends Seeder
         }
         $this->call(SubscriptionSeeder::class);
         $this->call(ResourceSeeder::class);
+        $this->call(HelpfulSeeder::class);
         $this->call(QuizSeeder::class);
         $this->call(QuestionSeeder::class);
     }
