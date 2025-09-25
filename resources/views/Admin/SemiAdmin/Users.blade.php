@@ -143,7 +143,7 @@
                                     ]
                                 </div>
                             @endif
-                            ● {{ __('messages.lecturesSubTo') }}:
+                            {{-- ● {{ __('messages.lecturesSubTo') }}:
                             @if ($user->lectures->count() == 0)
                                 <div style="color:black">none</div>
                             @else
@@ -151,7 +151,11 @@
                                     {{ $user->lectures->count() }}
 
                                 </div>
-                            @endif
+                            @endif --}}
+
+                            ● {{ __('messages.sparks') }}: {{$user->sparks}} <br>
+                            ● {{ __('messages.sparkies') }}: {{$user->sparkies}} <br>
+
 
                             @if ($user->isBanned)
                                 <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">{{ __('messages.banned') }}</div>

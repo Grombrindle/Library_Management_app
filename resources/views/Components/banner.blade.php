@@ -36,7 +36,7 @@
     }
 
     .banner-text div {
-        font-size: 2.4rem;
+        font-size: 2.15rem;
         font-weight: 600;
         white-space: nowrap;
         transition: font-size 0.3s ease;

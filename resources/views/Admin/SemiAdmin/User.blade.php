@@ -26,13 +26,16 @@
                 @endif
             </div>
         @endif
-        ● {{ __('messages.lecturesSubTo') }}:
+        {{-- ● {{ __('messages.lecturesSubTo') }}:
 
         @if ($user->lectures->count() == 0)
         0
         @else
         <span>{{ $user->lectures->count() }}</span>
-            @endif
+            @endif --}}
+        ● {{ __('messages.sparks') }}: {{$user->sparks}}
+        ● {{ __('messages.sparkies') }}: {{$user->sparkies}}
+
     </x-infocard>
 
 </x-layout>

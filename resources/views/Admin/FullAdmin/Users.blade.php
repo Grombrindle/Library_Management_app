@@ -154,7 +154,7 @@
                                     ]
                                 </div>
                             @endif
-                            ● {{ __('messages.lecturesSubTo') }}:
+                            {{-- ● {{ __('messages.lecturesSubTo') }}:
                             @if ($user->lectures->count() == 0)
                                 <div style="color:var(--text-color-inverted)">{{ __('messages.none') }}</div>
                             @else
@@ -162,7 +162,7 @@
                                     {{ $user->lectures->count() }}
 
                                 </div>
-                            @endif
+                            @endif --}}
 
                             ● {{ __('messages.sparks') }}: {{$user->sparks}}<br>
                             ● {{ __('messages.sparkies') }}: {{$user->sparkies}}<br>

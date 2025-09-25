@@ -26,7 +26,13 @@
                 @endif
             </div>
         @endif
-        ● {{ __('messages.numberOfLecturesSubscribedTo') }}:
+
+        ● {{ __('messages.sparks') }}: {{ $user->sparks }}
+        <br>
+        ● {{ __('messages.sparkies') }}: {{$user->sparkies}}
+
+
+        {{-- ● {{ __('messages.numberOfLecturesSubscribedTo') }}:
 
         @if ($user->lectures->count() == 0)
         0
@@ -36,7 +42,7 @@
 
             @if ($user->isBanned)
                 <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">{{ __('messages.banned') }}</div>
-            @endif
+            @endif --}}
     </x-infocard>
 
 </x-layout>

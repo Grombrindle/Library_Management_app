@@ -26,13 +26,13 @@ class UserController extends Controller
         $courses = "";
         $count = $user->courses ? $user->courses->count() : null;
 
-        if($count != null)
-        foreach ($user->courses as $index => $course) {
-            $courses .= $course->name;
-            if ($index < $count - 1) {
-                $courses .= " - ";
+        if ($count != null)
+            foreach ($user->courses as $index => $course) {
+                $courses .= $course->name;
+                if ($index < $count - 1) {
+                    $courses .= " - ";
+                }
             }
-        }
 
         $userArray = $user->toArray();
         $userArray['subs'] = $courses;
@@ -76,12 +76,12 @@ class UserController extends Controller
         $user = Auth::user();
         $courses = "";
         $count = $user->courses ? $user->courses->count() : null;
-        if($count != null)
-        foreach ($user->courses as $index => $course) {
-            $courses .= $course->name;
-            if ($index < $count - 1)
-                $courses .= " - ";
-        }
+        if ($count != null)
+            foreach ($user->courses as $index => $course) {
+                $courses .= $course->name;
+                if ($index < $count - 1)
+                    $courses .= " - ";
+            }
         return response()->json([
             'success' => "true",
             'courses' => $courses,
@@ -226,10 +226,10 @@ class UserController extends Controller
         }
 
         if ($user->counter >= 1 && $user->counter < 4) {
-
-            Auth::user()->remember_token = null;
-            Auth::user()->save();
-            Auth::user()->currentAccessToken()->delete();
+            // Force logout and revoke all tokens on early violations
+            $user->remember_token = null;
+            $user->save();
+            $user->tokens()->delete();
 
             $isBanned = false;
             $isLoggedOut = true;
@@ -243,7 +243,8 @@ class UserController extends Controller
 
             $user->remember_token = null;
             $user->save();
-            $user->currentAccessToken()->delete();
+            // Revoke all personal access tokens
+            $user->tokens()->delete();
 
             $isBanned = true;
             $isLoggedOut = true;
@@ -289,7 +290,7 @@ class UserController extends Controller
         } else {
             return response()->json([
                 'success' => true,
-                'isSubscribed' => ((Auth::user()->lectures ? (Auth::user()->lectures->pluck('id')->contains($id)) : false )|| (Auth::user()->courses ? (Auth::user()->courses->pluck('id')->contains((Lecture::findOrFail($id)->course_id))) : false)),
+                'isSubscribed' => ((Auth::user()->lectures ? (Auth::user()->lectures->pluck('id')->contains($id)) : false) || (Auth::user()->courses ? (Auth::user()->courses->pluck('id')->contains((Lecture::findOrFail($id)->course_id))) : false)),
             ]);
         }
     }
@@ -497,7 +498,7 @@ class UserController extends Controller
 
         Auth::user()->avatar = $request->input('avatar');
 
-        if($request->input('avatar') > 9)
+        if ($request->input('avatar') > 9)
             Auth::user()->avatar = 0;
 
         Auth::user()->save();
@@ -518,6 +519,11 @@ class UserController extends Controller
 
                     $user->courses()->detach();
                 });
+
+                $user->remember_token = null;
+                $user->save();
+                // Revoke all personal access tokens to fully block API access
+                $user->tokens()->delete();
             }
             $data = ['name' => "delete subs"];
             session(['update_info' => $data]);

@@ -20,7 +20,7 @@
             @error('user_name')
                 <div class="error">{{ $message }}</div>
             @enderror
-            
+
             <div style="display:flex; flex-direction:column; align-items:center;">
                 <label for="user_number">
                     {{ __('messages.userNumber') }}
@@ -42,6 +42,18 @@
             @error('user_number')
                 <div class="error">{{ $message }}</div>
             @enderror
+
+            <div style="display:flex; flex-direction:column; align-items:center;">
+                <label for="user_sparkies" style="margin-bottom:10%;">
+                    {{ __('messages.sparkies') }}
+                </label>
+                <input type="number" name="user_sparkies" id="user_sparkies" value="{{ $user->sparkies }}"
+                    style="height:20%; text-align:center; font-size:40%; width:fit-content;margin-bottom:10%;">
+            </div>
+            @error('user_sparkies')
+                <div class="error">{{ $message }}</div>
+            @enderror
+
             <div
                 style="margin-top: 20px; display: flex; align-items: center; flex-direction:column; justify-content: space-between; margin-left:auto; margin-right:auto; width:fit-content">
                 <div>

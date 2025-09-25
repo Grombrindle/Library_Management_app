@@ -1,13 +1,13 @@
 @props(['report' => App\Models\Report::findOrFail(session('report'))])
 
-<x-layout>
-    <x-breadcrumb :links="[
+<x-layout :nav=false>
+    {{-- <x-breadcrumb :links="[
         __('messages.home') => url('/welcome'),
         __('messages.reports') => url('/reports'),
         __('messages.report') => Request::url(),
-    ]" />
+    ]" /> --}}
 
-    <x-infocard :object="$report" objectType="Report" id="{{ $report->id }}">
+    <x-infocard :object="$report" objectType="Report" id="{{ $report->id }}" :request=true>
         • {{ __('messages.reportedUser') }}: {{ App\Models\User::find($report->user_id)->userName ?? 'Unknown' }}<br>
         {{-- • {{ __('messages.type') }}: {{ ucfirst($report->type ?? 'N/A') }}<br> --}}
         {{-- @if ($report->message) --}}

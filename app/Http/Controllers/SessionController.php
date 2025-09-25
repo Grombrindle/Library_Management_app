@@ -60,7 +60,7 @@ class SessionController extends Controller
             // 'deviceId' => $deviceId,
 
         ]);
-        $token = $user->createToken('API Token Of' . $user->name)->plainTextToken;
+        $token = $user->createToken('API Token Of ' . ($user->name ?? $user->userName ?? 'User'))->plainTextToken;
         $user->remember_token = $token;
         $user->save();
         Auth::login($user);
@@ -158,7 +158,8 @@ class SessionController extends Controller
 
         $user->remember_token = null;
         $user->save();
-        $user->currentAccessToken()->delete();
+        // Revoke all personal access tokens to fully block API access
+        $user->tokens()->delete();
 
         return response()->json([
             'success' => true
@@ -182,7 +183,8 @@ class SessionController extends Controller
 
         $user->remember_token = null;
         $user->save();
-        $user->currentAccessToken() ? $user->currentAccessToken()->delete() : null;
+        // Revoke all personal access tokens to fully block API access
+        $user->tokens()->delete();
 
         $report = Report::find(session('report'));
 
@@ -199,17 +201,22 @@ class SessionController extends Controller
         return redirect()->route('user.confirmation');
     }
 
-    public function logoutUser()
+    public function logoutUser(Request $request)
     {
-        Auth::user()->remember_token = null;
-        Auth::user()->save();
-        Auth::user()->currentAccessToken()->delete();
+        $user = Auth::user();
+        if ($user) {
+            $user->remember_token = null;
+            $user->save();
+            // Revoke all personal access tokens so any Bearer token stops working
+            $user->tokens()->delete();
+        }
 
-        // dd(Auth::user());
+        // Invalidate session/cookies for cookie-based auth flows
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return response()->json([
-            'success' => 'true',
-        ]);
+        return response()->json(['success' => true]);
     }
 
     public function test()

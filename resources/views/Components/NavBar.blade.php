@@ -658,6 +658,7 @@
                         {{ __('messages.yourLectures') }}
                         <span class="nav-count">{{ $lecCount }}</span>
                     </a>
+                </div>
     @endif
     <form action="/logout" method="POST"
         style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
@@ -705,9 +706,15 @@
                     style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingRequests }}</span>
             @endif
         </a>
+        @php $pendingReports = App\Models\Report::where('status', 'PENDING')->count(); @endphp
+        <a href="/reports" style="position:relative;" target="_blank">
+            <span class="material-symbols-outlined" style="color:white; margin-left:1rem;">report</span>
+            @if ($pendingReports > 0)
+                <span class="nav-count"
+                    style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingReports }}</span>
+            @endif
+        </a>
     @endif
-    </div>
-
 </nav>
 
 <script>

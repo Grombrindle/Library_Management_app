@@ -19,8 +19,8 @@
     }
 @endphp
 
-<x-layout :objects=true object="{{ __('messages.reports') }}">
-    <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.reports') => url('/reports')]" />
+<x-layout :objects=true object="{{ __('messages.reports') }}" :nav=false>
+    {{-- <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.reports') => url('/reports')]" /> --}}
 
     <x-cardcontainer :model="$modelToPass" :addLink=null models="Reports" :search=false>
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
