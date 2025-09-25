@@ -60,7 +60,7 @@ class LectureController extends Controller
 
     public function fetchRatings($id)
     {
-        $ratings = DB::table('lecture_rating')->where('lecture_id', $id)->get();
+        $ratings = DB::table('lecture_rating')->where('lecture_id', $id)->where('isHidden', false)->get();
         return response()->json([
             'ratings' => $ratings
         ]);
@@ -225,6 +225,26 @@ class LectureController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'Course not found'
+        ], 404);
+    }
+
+
+    public function incrementViews($id)
+    {
+        $lecture = Lecture::find($id);
+
+        if ($lecture) {
+            $lecture->increment('views');
+
+            return response()->json([
+                'success' => true,
+                'views' => $lecture->views
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Lecture not found'
         ], 404);
     }
 

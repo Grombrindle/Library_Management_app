@@ -427,4 +427,9 @@ return [
     'ignoredReport' => 'Bericht wurde erfolgreich ignoriert',
     'warnedUser' => 'Benutzer :name wurde erfolgreich verwarnt',
     'bannedUser' => 'Benutzer :name wurde erfolgreich gesperrt',
+    'commentRemoved' => 'Kommentar erfolgreich entfernt',
+    'onLecture' => 'Bei Vorlesung',
+    'onCourse' => 'Bei Kurs',
+    'onTeacher' => 'Bei Dozent',
+    'onResource' => 'Bei Ressource',
 ];

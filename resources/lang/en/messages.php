@@ -446,4 +446,9 @@ return [
     'ignoredReport' => 'Report has been ignored successfully',
     'warnedUser' => 'User :name has been warned successfully',
     'bannedUser' => 'User :name has been banned successfully',
+    'commentRemoved' => 'Comment removed successfully',
+    'onLecture' => 'On lecture',
+    'onCourse' => 'On course',
+    'onTeacher' => 'On teacher',
+    'onResource' => 'On resource',
 ];

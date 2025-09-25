@@ -10,6 +10,10 @@ use App\Models\Teacher;
 use App\Models\Subject;
 use App\Models\Admin;
 use App\Models\Report;
+use App\Models\LectureRating;
+use App\Models\CourseRating;
+use App\Models\TeacherRating;
+use App\Models\ResourceRating;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 class SessionController extends Controller
@@ -165,9 +169,22 @@ class SessionController extends Controller
             'success' => true
         ]);
     }
-    public function banUser($id)
+    public function banUser($id, $type, $ratingId)
     {
         $user = $id ? User::find($id) : Auth::user();
+
+        if($type && $ratingId) {
+
+            $rating = null;
+
+            $type == 'lecture' ? $rating = LectureRating::find($ratingId) : null ;
+            $type == 'course' ? $rating = CourseRating::find($ratingId) : null ;
+            $type == 'teacher' ? $rating = TeacherRating::find($ratingId) : null ;
+            $type == 'resource' ?$rating =  ResourceRating::find($ratingId) : null ;
+
+            $rating->isHidden = true;
+            $rating->save();
+        }
 
         // Validate user can be banned
         if ($user->isBanned && $user) {
@@ -201,21 +218,12 @@ class SessionController extends Controller
         return redirect()->route('user.confirmation');
     }
 
-    public function logoutUser(Request $request)
+    public function logoutUser(Request $request, \App\Actions\Users\LogoutUserAction $logoutUser)
     {
         $user = Auth::user();
         if ($user) {
-            $user->remember_token = null;
-            $user->save();
-            // Revoke all personal access tokens so any Bearer token stops working
-            $user->tokens()->delete();
+            $logoutUser($user, $request);
         }
-
-        // Invalidate session/cookies for cookie-based auth flows
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
         return response()->json(['success' => true]);
     }
 
@@ -229,7 +237,7 @@ class SessionController extends Controller
 
     public function loginView()
     {
-        if (auth()->check()) {
+        if (Auth::check()) {
             return redirect()->route('welcome');
         }
         return view('register');

@@ -343,7 +343,7 @@ class DatabaseSeeder extends Seeder
                         'user_id' => $user->id,
                         'course_id' => $course->id,
                         'rating' => $rating,
-                        'review' => rand(0,1) ? fake()->text(250) : null,
+                        'review' => rand(0,3) ? fake()->text(250) : null,
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
@@ -376,7 +376,7 @@ class DatabaseSeeder extends Seeder
                             'user_id' => $user->id,
                             'lecture_id' => $lecture->id,
                             'rating' => $rating,
-                            'review' => rand(0,1) ? fake()->text(150) : null,
+                            'review' => rand(0,3) ? fake()->text(150) : null,
                             'created_at' => now(),
                             'updated_at' => now()
                         ]);
@@ -488,7 +488,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'course_id' => $course->id,
                     'rating' => $rating,
-                    'review' => rand(0,1) ? fake()->text(250) : null,
+                    'review' => rand(0,3) ? fake()->text(250) : null,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -522,7 +522,7 @@ class DatabaseSeeder extends Seeder
                         'user_id' => $user->id,
                         'lecture_id' => $lecture->id,
                         'rating' => $rating,
-                        'review' => rand(0,1) ? fake()->text(250) : null,
+                        'review' => rand(0,3) ? fake()->text(250) : null,
                         'created_at' => now(),
                         'updated_at' => now()
                     ]);
@@ -556,6 +556,7 @@ class DatabaseSeeder extends Seeder
                     'user_id' => $user->id,
                     'teacher_id' => $teacher->id,
                     'rating' => $rating,
+                    'review' => fake()->text(150),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);

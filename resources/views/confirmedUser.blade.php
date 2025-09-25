@@ -236,9 +236,17 @@
                 <h1>
                     {{ __('messages.warnedUser', ['name' => $info['name']]) }}
                 </h1>
+                <br>
+                <h1>
+                    {{ __('messages.commentRemoved')}}
+                </h1>
             @elseif($info['message'] == 'banned')
                 <h1>
                     {{ __('messages.bannedUser', ['name' => $info['name']]) }}
+                </h1>
+                <br>
+                <h1>
+                    {{ __('messages.commentRemoved')}}
                 </h1>
             @endif
         @else

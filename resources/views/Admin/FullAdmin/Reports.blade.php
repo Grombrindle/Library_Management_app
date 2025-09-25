@@ -34,46 +34,46 @@
                             {{-- @if ($report->message) --}}
                             {{-- @endif --}}
                             @if ($report->lecture_rating_id)
-                                • {{ __('messages.comment') }}:
+                            ● {{ __('messages.comment') }}:
                                 @if ($report->lecture_comment)
                                     {{ $report->lecture_comment }}
                                 @else
                                     {{ __('messages.noComment') }}
                                 @endif <br>
-                                {{ __('messages.onLecture') }}:{{ App\Models\LectureRating::find($report->lecture_rating_id)->lecture->name }}
+                                ● {{ __('messages.onLecture') }}:{{ App\Models\LectureRating::find($report->lecture_rating_id)->lecture->name }}
                                 <br>
                             @elseif($report->course_rating_id)
-                                • {{ __('messages.comment') }}:
+                                ● {{ __('messages.comment') }}:
                                 @if ($report->course_comment)
                                     {{ $report->course_comment }}
                                 @else
                                     {{ __('messages.noComment') }}
                                 @endif <br>
-                                • {{ __('messages.onCourse') }}:
+                                ● {{ __('messages.onCourse') }}:
                                 {{ App\Models\CourseRating::find($report->course_rating_id)->course->name }}
                                 <br>
                             @elseif($report->resource_rating_id)
-                                • {{ __('messages.comment') }}:
+                                ● {{ __('messages.comment') }}:
                                 @if ($report->resource_comment)
                                     {{ $report->resource_comment }}
                                 @else
                                     {{ __('messages.noComment') }}
                                 @endif <br>
-                                • {{ __('messages.onResource') }}:
+                                ● {{ __('messages.onResource') }}:
                                 {{ App\Models\ResourceRating::find($report->resource_rating_id)->resource->name }}
                                 <br>
                             @elseif($report->teacher_rating_id)
-                                • {{ __('messages.comment') }}:
+                                ● {{ __('messages.comment') }}:
                                 @if ($report->teacher_comment)
                                     {{ $report->teacher_comment }}
                                 @else
                                     {{ __('messages.noComment') }}
                                 @endif <br>
-                                • {{ __('messages.onTeacher') }}:
+                                ● {{ __('messages.onTeacher') }}:
                                 {{ App\Models\TeacherRating::find($report->teacher_rating_id)->teacher->name }}
                                 <br>
                             @else
-                                • {{ __('messages.comment') }}: {{ __('messages.noComment') }}<br>
+                                ● {{ __('messages.comment') }}: {{ __('messages.noComment') }}<br>
                             @endif
                             <br>
                             ● {{ __('messages.reportedBy') }}: {{ $report->user->userName ?? 'Unknown' }}<br>

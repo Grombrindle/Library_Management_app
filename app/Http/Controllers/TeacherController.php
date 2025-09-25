@@ -379,7 +379,7 @@ class TeacherController extends Controller
 
     public function fetchRatings($id)
     {
-        $ratings = DB::table('teacher_ratings')->where('teacher_id', $id)->get();
+        $ratings = DB::table('teacher_ratings')->where('teacher_id', $id)->where('isHidden', false)->get();
         return response()->json([
             'ratings' => $ratings
         ]);

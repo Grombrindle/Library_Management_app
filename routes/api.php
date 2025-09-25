@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Lecture;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\LectureController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\TeacherController;
@@ -111,6 +112,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getlecturefilepdf/{id}', [LectureController::class, 'fetchPdf']);
     Route::get('/getlecturequiz/{id}', [LectureController::class, 'fetchQuizQuestions']);
     Route::post('/ratelecture/{id}', [LectureController::class, 'rate']);
+    Route::post('/incrementviews/{id}', [LectureController::class, 'incrementViews']);
     // Route::post('/lectures/{lecture}/pdf', [LectureController::class, 'uploadPdf']);     Not through the API
 
     Route::get('/getexam/{id}', [ExamController::class, 'fetch']);
@@ -168,6 +170,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/togglehelpful', [HelpfulController::class, 'toggleHelpful']);
     Route::post('/toggleunhelpful', [HelpfulController::class, 'toggleUnhelpful']);
+
+    Route::get('/getlikes/{id}', [LikeController::class, 'fetchLikes']);
+    Route::post('/togglelike', [LikeController::class, 'toggleLike']);
+    Route::post('/toggledislike', [LikeController::class, 'toggleDislike']);
+
 
     Route::get('/getcourseratings/{id}', [CourseController::class, 'fetchRatings']);
     Route::get('/getlectureratings/{id}', [LectureController::class, 'fetchRatings']);

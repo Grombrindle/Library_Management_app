@@ -429,4 +429,9 @@ return [
     'ignoredReport' => 'El reporte ha sido ignorado exitosamente',
     'warnedUser' => 'El usuario :name ha sido advertido exitosamente',
     'bannedUser' => 'El usuario :name ha sido baneado exitosamente',
+    'commentRemoved' => 'Comentario eliminado exitosamente',
+    'onLecture' => 'En la lección',
+    'onCourse' => 'En el curso',
+    'onTeacher' => 'En el profesor',
+    'onResource' => 'En el recurso',
 ];

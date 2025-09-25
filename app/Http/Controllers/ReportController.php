@@ -86,6 +86,9 @@ class ReportController extends Controller
         $report = Report::find($id);
         if ($report) {
             $rating = LectureRating::find($report->lecture_rating_id) ?? CourseRating::find($report->course_rating_id) ?? ResourceRating::find($report->resource_rating_id);
+            $rating->isHidden = true;
+            $rating->save();
+
             $user = User::find($rating->user_id);
             $user->increment('counter');
             $user->hasWarning = true;

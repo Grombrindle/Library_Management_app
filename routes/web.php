@@ -738,5 +738,5 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::post('/ignore/{id}', [ReportController::class, 'ignore']);
     Route::post('user/warn/{id}', [ReportController::class, 'warn']);
-    Route::post('user/ban/{id}', [SessionController::class, 'banUser'])->name('ban.user');
+    Route::post('user/ban/{id}/{type}/{ratingId}', [SessionController::class, 'banUser'])->name('ban.user');
 });

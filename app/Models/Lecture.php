@@ -208,6 +208,7 @@ class Lecture extends Model
         // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
         $withReview = $this->ratings()
             ->whereNotNull('review')
+            ->where('isHidden', false)
             ->withCount(['helpful', 'unhelpful'])
             ->orderByDesc('helpful_count')
             ->orderBy('unhelpful_count')
@@ -228,6 +229,7 @@ class Lecture extends Model
         $needed = 3 - $withReview->count();
         $withoutReview = $this->ratings()
             ->whereNull('review')
+            ->where('isHidden', false)
             ->withCount(['helpful', 'unhelpful'])
             ->orderByDesc('helpful_count')
             ->orderBy('unhelpful_count')
@@ -278,6 +280,31 @@ class Lecture extends Model
         return $rating ? $rating->rating : null;
     }
 
+    public function likes() {
+        return $this->hasMany(Like::class);
+    }
+
+    public function getLikesAttribute()
+    {
+        return $this->likes()->where('isLiked', true)->count();
+    }
+
+    public function getDislikesAttribute()
+    {
+        return $this->likes()->where('isDisliked', true)->count();
+    }
+
+    public function getIsLikedAttribute() {
+        $like = $this->likes()->where('isLiked', true)->where('user_id', Auth::id())->first();
+        return $like ? true : false;
+    }
+
+    public function getIsDislikedAttribute() {
+        $like = $this->likes()->where('isDisliked', true)->where('user_id', Auth::id())->first();
+        return $like ? true : false;
+    }
+
+
     protected $appends = [
         'rating',
         'ratingsCount',
@@ -286,6 +313,10 @@ class Lecture extends Model
         'formatted_duration',
         'formatted_duration_long',
         'human_duration',
-        'user_rating'
+        'user_rating',
+        'likes',
+        'dislikes',
+        'isLiked',
+        'isDisliked'
     ];
 }

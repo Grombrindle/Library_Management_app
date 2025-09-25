@@ -437,4 +437,9 @@ return [
     'ignoredReport' => 'تم تجاهل التقرير بنجاح',
     'warnedUser' => 'تم تحذير المستخدم :name بنجاح',
     'bannedUser' => 'تم حظر المستخدم :name بنجاح',
+    'commentRemoved' => 'تم حذف التعليق بنجاح',
+    'onLecture' => 'على المحاضرة',
+    'onCourse' => 'على المقرر',
+    'onTeacher' => 'على المدرس',
+    'onResource' => 'على المورد',
 ];

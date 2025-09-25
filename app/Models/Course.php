@@ -84,6 +84,13 @@ class Course extends Model
         return $avgRating ? round($avgRating, 2) : null;
     }
 
+
+    public function getTeacherAttribute() {
+        $teacher = $this->teacher()->first();
+        return $teacher->name;
+    }
+
+
     public function getRatingBreakdownAttribute()
     {
         // Get the count of each rating (1-5) for this course
@@ -118,6 +125,7 @@ class Course extends Model
         // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
         $withReview = $this->ratings()
             ->whereNotNull('review')
+            ->where('isHidden', false)
             ->withCount(['helpful', 'unhelpful'])
             ->orderByDesc('helpful_count')
             ->orderBy('unhelpful_count')
@@ -125,6 +133,7 @@ class Course extends Model
             ->orderByRaw('LENGTH(review) DESC')
             ->orderByDesc('created_at')
             ->take(3)
+            ->where('isHidden', false)
             ->get();
 
 
@@ -137,6 +146,7 @@ class Course extends Model
         $needed = 3 - $withReview->count();
         $withoutReview = $this->ratings()
             ->whereNull('review')
+            ->where('isHidden', false)
             ->withCount(['helpful', 'unhelpful'])
             ->orderByDesc('helpful_count')
             ->orderBy('unhelpful_count')
@@ -292,6 +302,7 @@ class Course extends Model
         'rating_breakdown',
         'FeaturedRatings',
         'lectureNum',
+        'teacher',
         'video_lectures_count',
         'pdf_lessons_count',
         'total_pdf_pages',

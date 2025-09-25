@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class CourseRating extends Model
 {
@@ -29,36 +30,71 @@ class CourseRating extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function helpful() {
+    public function helpful()
+    {
         return $this->hasMany(Helpful::class)->where('isHelpful', 1);
     }
 
-    public function unhelpful() {
+    public function unhelpful()
+    {
         return $this->hasMany(Helpful::class)->where('isHelpful', 0);
     }
 
-    public function getHelpfulCountAttribute() {
+    public function getHelpfulCountAttribute()
+    {
         return $this->helpful()->count();
     }
 
-    public function getUnhelpfulCountAttribute() {
+    public function getUnhelpfulCountAttribute()
+    {
         return $this->unhelpful()->count();
     }
 
-    public function ratings() {
+    public function ratings()
+    {
         return $this->hasMany(CourseRating::class, 'course_id');
     }
 
-    public function getRatingsCountAttribute() {
-        return $this->ratings()->count();
+    public function getRatingAttribute($value)
+    {
+        return round($value, 2);
     }
 
-    // Ensure rating is always returned with at most two decimal places
-    // public function getRatingAttribute($value)
-    // {
-    //     return round($value, 2);
-    // }
+    /**
+     * Whether the current authenticated user voted this rating as helpful.
+     * Optimized to use preloaded withExists('helpful as is_helpful') when present.
+     */
+    public function getIsHelpfulAttribute(): ?bool
+    {
+        // Use precomputed flag if query used withExists alias
+        if (array_key_exists('is_helpful', $this->attributes)) {
+            return (bool) $this->attributes['is_helpful'];
+        }
 
-    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'ratingsCount'];
+        $user = Auth::user();
+        if (!$user) {
+            return null;
+        }
+        return $this->helpful()->where('user_id', $user->id)->exists();
+    }
 
+    /**
+     * Whether the current authenticated user voted this rating as unhelpful.
+     * Optimized to use preloaded withExists('unhelpful as is_unhelpful') when present.
+     */
+    public function getIsUnhelpfulAttribute(): ?bool
+    {
+        // Use precomputed flag if query used withExists alias
+        if (array_key_exists('is_unhelpful', $this->attributes)) {
+            return (bool) $this->attributes['is_unhelpful'];
+        }
+
+        $user = Auth::user();
+        if (!$user) {
+            return null;
+        }
+        return $this->unhelpful()->where('user_id', $user->id)->exists();
+    }
+
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'ratingsCount', 'isHelpful', 'isUnhelpful'];
 }

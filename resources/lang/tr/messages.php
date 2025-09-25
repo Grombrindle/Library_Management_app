@@ -421,4 +421,9 @@ return [
     'ignoredReport' => 'Şikayet başarıyla göz ardı edildi',
     'warnedUser' => 'Kullanıcı :name başarıyla uyarıldı',
     'bannedUser' => 'Kullanıcı :name başarıyla yasaklandı',
+    'commentRemoved' => 'Yorum başarıyla kaldırıldı',
+    'onLecture' => 'Ders üzerinde',
+    'onCourse' => 'Kurs üzerinde',
+    'onTeacher' => 'Öğretmen üzerinde',
+    'onResource' => 'Kaynak üzerinde',
 ];

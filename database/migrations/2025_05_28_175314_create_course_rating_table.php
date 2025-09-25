@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->double('rating');
             $table->string('review')->nullable();
+            $table->boolean('isHidden')->default(false);
             $table->timestamps();
 
             $table->unique(['user_id', 'course_id']);

@@ -306,7 +306,7 @@ class CourseController extends Controller
 
     public function fetchRatings($id)
     {
-        $ratings = DB::table('course_rating')->where('course_id', $id)->get();
+        $ratings = DB::table('course_rating')->where('course_id', $id)->where('isHidden', false)->get();
         return response()->json([
             'ratings' => $ratings
         ]);
@@ -559,7 +559,7 @@ class CourseController extends Controller
         }
 
         if ($user->courses()->where('course_id', $id)->exists()) {
-            return response()->json(['success' => false, 'message' => 'Already purchased'], 400);
+            return response()->json(['success' => false, 'message' => 'Already subscribed'], 400);
         }
 
         // Check if course is purchasable with sparkies
@@ -569,7 +569,7 @@ class CourseController extends Controller
 
         $sparkiesPrice = (int) $course->sparkiesPrice;
         if ($user->sparkies < $sparkiesPrice) {
-            return response()->json(['success' => false, 'message' => 'Insufficient sparkies'], 400);
+            return response()->json(['success' => false, 'message' => 'Insufficient Sparkies'], 400);
         }
 
         // Deduct sparkies and subscribe

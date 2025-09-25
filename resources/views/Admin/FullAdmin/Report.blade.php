@@ -83,8 +83,14 @@
                 {{ __('messages.banned') }}</div>
         @endif
     </x-infocard>
+
+    @php
+        $ratingId =
+            $report->lecture_rating_id ??
+            ($report->course_rating_id ?? ($report->resource_rating_id ?? $report->teacher_rating_id));
+    @endphp
     <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-        <form method="POST" action="{{ url('user/ban/' . $report->user_id) }}">
+        <form method="POST" action="{{ url('user/ban/' . $report->user_id . '/' . $report->type . '/' . $ratingId) }}">
             @csrf
             <button type="submit" class="button"
                 style="background: @if ($report->status != 'PENDING') darkgray @else red @endif; color: white;"

@@ -180,6 +180,7 @@ class UserController extends Controller
 
         $user->userName = $request->user_name;
         $user->number = $request->user_number;
+        $user->sparkies = $request->user_sparkies;
 
         $user->save();
 
@@ -412,7 +413,7 @@ class UserController extends Controller
     // }
 
 
-    public function updateUsername(Request $request)
+    public function updateUsername(Request $request, \App\Actions\Users\UpdateUsernameAction $updateUsername)
     {
         $validator = Validator::make($request->all(), [
             'userName' => [
@@ -429,8 +430,7 @@ class UserController extends Controller
                 'reason' => "Username Already Taken"
             ], 409);
         else {
-            Auth::user()->userName = $request->input('userName');
-            Auth::user()->save();
+            $updateUsername(Auth::user(), $request->input('userName'));
             return response()->json([
                 'success' => "true"
             ]);
@@ -506,6 +506,25 @@ class UserController extends Controller
         return response()->json([
             'success' => "true"
         ]);
+    }
+
+    public function banUser($id, \App\Actions\Users\BanUserAction $banUser)
+    {
+        $user = $id ? User::find($id) : Auth::user();
+
+        if ($user->isBanned && $user) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'Already banned'
+            ], 400);
+        }
+
+        $banUser($user);
+
+        $data = ['id' => $id, 'name' => $user->userName, 'message' => 'banned'];
+        session(['user_info' => $data]);
+        session(['link' => '/reports']);
+        return redirect()->route('user.confirmation');
     }
 
     public function deleteSubs()

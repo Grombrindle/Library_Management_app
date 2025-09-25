@@ -205,7 +205,7 @@ class ResourceController extends Controller
 
     public function fetchRatings($id)
     {
-        $ratings = DB::table('resources_ratings')->where('resource_id', $id)->get();
+        $ratings = DB::table('resources_ratings')->where('resource_id', $id)->where('isHidden', false)->get();
         return response()->json([
             'ratings' => $ratings
         ]);
