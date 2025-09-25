@@ -250,7 +250,7 @@ class Resource extends Model
     }
 
     public function getPdfFilePagesAttribute() {
-        $value = $this->attributes['pdf_file'] ?? null;
+        $value = $this->getPdfFileAttribute() ?? null;
         if (!$value) return null;
         $filePath = public_path($value);
         if (!file_exists($filePath)) return null;
@@ -259,10 +259,12 @@ class Resource extends Model
             $getID3 = new getID3();
             $info = $getID3->analyze($filePath);
             if (isset($info['pdf']['pages'])) {
+                dd($info);
                 return (int) $info['pdf']['pages'];
             }
             // Fallback: try to count /Type /Page in the file (very basic)
             $content = @file_get_contents($filePath);
+
             if ($content) {
                 preg_match_all("/\/Type\s*\/Page[^s]/", $content, $matches);
                 if (isset($matches[0])) {

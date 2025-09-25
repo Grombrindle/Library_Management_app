@@ -96,5 +96,5 @@ class CourseRating extends Model
         return $this->unhelpful()->where('user_id', $user->id)->exists();
     }
 
-    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'ratingsCount', 'isHelpful', 'isUnhelpful'];
+    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'isHelpful', 'isUnhelpful'];
 }

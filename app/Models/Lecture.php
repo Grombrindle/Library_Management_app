@@ -77,6 +77,15 @@ class Lecture extends Model
         return $this->belongsToMany(User::class, 'user_lecture');
     }
 
+    public function getCourseNameAttribute() {
+        $course = $this->course->name;
+        return $course;
+    }
+    public function getTeacherNameAttribute() {
+        $course = $this->course;
+        return $course->teacher;
+    }
+
     public function LecturesfavoritedByUsers()
     {
         return $this->belongsToMany(User::class, 'favourite_lectures')
@@ -307,6 +316,8 @@ class Lecture extends Model
 
     protected $appends = [
         'rating',
+        'courseName',
+        'teacherName',
         'ratingsCount',
         'FeaturedRatings',
         'rating_breakdown',
