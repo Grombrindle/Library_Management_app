@@ -23,9 +23,9 @@
             } elseif ($sort === 'name-z-a') {
                 $query->orderByRaw('LOWER(name) DESC'); // Sort by name Z-A (case-insensitive)
             } elseif ($sort === 'newest') {
-                $query->orderBy('created_at', 'desc'); // Sort by creation date (newest)
+                $query->orderBy('created_at', 'desc')->orderBy('id', 'desc');
             } elseif ($sort === 'oldest') {
-                $query->orderBy('created_at', 'asc'); // Sort by creation date (oldest)
+                $query->orderBy('created_at', 'asc')->orderBy('id', 'asc');
             }
         })
         ->paginate(10);
@@ -47,7 +47,7 @@
     <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.yourSubjects') => url('/subjects')]" />
 
     <x-cardcontainer :model=$modelToPass :addLink=null :showSubjectCountFilter=false filterByTeachers=false
-        :showNameSort=true>
+        :showNameSort=true models="Subjects">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedSubjects as $chunk)
                 <div class="chunk">

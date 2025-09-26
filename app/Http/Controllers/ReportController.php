@@ -16,101 +16,92 @@ class ReportController extends Controller
     //
     public function add(Request $request)
     {
-        // Determine exactly one target rating id
-        $targets = [
-            'lecture_rating_id' => $request->lecture_rating_id,
-            'course_rating_id' => $request->course_rating_id,
-            'resource_rating_id' => $request->resource_rating_id,
-            'teacher_rating_id' => $request->teacher_rating_id,
-        ];
-        $active = array_filter($targets, fn($v) => !is_null($v));
-        if (count($active) !== 1) {
+
+        if (!(LectureRating::find($request->lecture_rating_id) || CourseRating::find($request->course_rating_id) || ResourceRating::find($request->resource_rating_id) || TeacherRating::find($request->teacher_rating_id))) {
             return response()->json([
                 'success' => false,
-                'reason' => 'Exactly one rating id must be provided'
-            ], 422);
+                'reason' => "No such review"
+            ]);
         }
 
-        $key = array_key_first($active);
-        $ratingId = $active[$key];
+        $report = Report::where('reporter_id', Auth::id())->where('user_id', LectureRating::find($request->lecture_rating_id)->user_id ?? ResourceRating::find($request->resource_rating_id)->user_id ?? CourseRating::find($request->course_rating_id)->user_id ?? TeacherRating::find($request->teacher_rating_id)->user_id)->first();
 
-        // Resolve rating model and owner user
-        $rating = null;
-        if ($key === 'lecture_rating_id') $rating = LectureRating::find($ratingId);
-        if ($key === 'course_rating_id') $rating = CourseRating::find($ratingId);
-        if ($key === 'resource_rating_id') $rating = ResourceRating::find($ratingId);
-        if ($key === 'teacher_rating_id') $rating = TeacherRating::find($ratingId);
 
-        if (!$rating) {
+
+        if ($report && (($report->lecture_rating_id == $request->lecture_rating_id) || ($report->teacher_rating_id == $request->teacher_rating_id) || ($report->course_rating_id == $request->course_rating_id) || ($report->resource_rating_id == $request->resource_rating_id))) {
             return response()->json([
                 'success' => false,
-                'reason' => 'No such review'
-            ], 404);
+                'reason' => "Can't report the same comment more than once"
+            ]);
         }
 
-        // Check existing report by same reporter for the same exact rating
-        $existing = Report::where('reporter_id', Auth::id())
-            ->where($key, $ratingId)
-            ->first();
-
-        if ($existing) {
-            $existing->reasons = $request->reasons;
-            $existing->message = $request->message;
-            if ($key === 'lecture_rating_id') $existing->lecture_comment = $rating->review;
-            if ($key === 'course_rating_id') $existing->course_comment = $rating->review;
-            if ($key === 'resource_rating_id') $existing->resource_comment = $rating->review;
-            if ($key === 'teacher_rating_id') $existing->teacher_comment = $rating->review;
-            $existing->save();
-
-            return response()->json(['success' => true, 'status' => "updated"]);
-        }
-
-        // Create new report
-        $data = [
-            'user_id' => $rating->user_id,
+        $report = Report::make([
+            'user_id' => LectureRating::find($request->lecture_rating_id)->user_id ?? ResourceRating::find($request->resource_rating_id)->user_id ?? CourseRating::find($request->course_rating_id?? TeacherRating::find($request->teacher_rating_id)->user_id)->user_id,
             'reporter_id' => Auth::id(),
+            'lecture_comment' => $request->lecture_rating_id ? LectureRating::find($request->lecture_rating_id)->review : null,
+            'lecture_rating_id' => $request->lecture_rating_id ?? null,
+            'teacher_comment' => $request->teacher_rating_id ? TeacherRating::find($request->teacher_rating_id)->review : null,
+            'teacher_rating_id' => $request->teacher_rating_id ?? null,
+            'course_comment' => $request->course_rating_id ? CourseRating::find($request->course_rating_id)->review : null,
+            'course_rating_id' => $request->course_rating_id ?? null,
+            'resource_comment' => $request->resource_rating_id ? ResourceRating::find($request->resource_rating_id)->review : null,
+            'resource_rating_id' => $request->resource_rating_id ?? null,
             'reasons' => $request->reasons,
             'message' => $request->message,
-            'lecture_comment' => null,
-            'course_comment' => null,
-            'resource_comment' => null,
-            'teacher_comment' => null,
-            'lecture_rating_id' => null,
-            'course_rating_id' => null,
-            'resource_rating_id' => null,
-            'teacher_rating_id' => null,
-        ];
-        $data[$key] = $ratingId;
-        if ($key === 'lecture_rating_id') $data['lecture_comment'] = $rating->review;
-        if ($key === 'course_rating_id') $data['course_comment'] = $rating->review;
-        if ($key === 'resource_rating_id') $data['resource_comment'] = $rating->review;
-        if ($key === 'teacher_rating_id') $data['teacher_comment'] = $rating->review;
+        ]);
 
-        Report::create($data);
+        $report->save();
 
-        return response()->json(['success' => true, 'status' => "created"]);
+        return response()->json([
+            'success' => true,
+        ]);
     }
 
-    public function ignore($id, \App\Actions\Reports\IgnoreReportAction $ignoreReport)
+    public function ignore($id)
     {
         $report = Report::find($id);
+
+        $user = null;
+
         if ($report) {
-            $ignoreReport($report);
+            $report->status = "IGNORED";
+            $report->handled_by_id = Auth::id();
+            $report->save();
+
             $user = User::find($report->user_id);
-            $data = ['id' => $id, 'name' => $user?->userName, 'message' => 'ignored'];
+
+            $data = ['id' => $id, 'name' => $user->userName, 'message' => 'ignored'];
             session(['user_info' => $data]);
             session(['link' => '/reports']);
             return redirect()->route('user.confirmation');
         }
-        return response()->json(['success' => false]);
+
+        return response()->json([
+            'success' => false
+        ]);
     }
 
-    public function warn($id, \App\Actions\Reports\WarnReportAction $warnReport)
+    public function warn($id)
     {
         $report = Report::find($id);
         if ($report) {
-            $user = $warnReport($report);
-            $data = ['id' => $id, 'name' => $user?->userName, 'message' => 'warned'];
+            $rating = LectureRating::find($report->lecture_rating_id) ?? CourseRating::find($report->course_rating_id) ?? ResourceRating::find($report->resource_rating_id);
+            $rating->isHidden = true;
+            $rating->save();
+
+            $user = User::find($rating->user_id);
+            $user->increment('counter');
+            $user->hasWarning = true;
+            $user->comment = $rating->review;
+            $user->save();
+
+            $report->status = "WARNED";
+            $report->handled_by_id = Auth::id();
+            $report->save();
+
+
+
+            $data = ['id' => $id, 'name' => $user->userName, 'message' => 'warned'];
             session(['user_info' => $data]);
             session(['link' => '/reports']);
             return redirect()->route('user.confirmation');

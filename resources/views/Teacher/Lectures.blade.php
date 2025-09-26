@@ -33,8 +33,8 @@
             return $query;
         })
         ->when($selectedSubjects, function ($query) use ($selectedSubjects) {
-            $query->whereHas('subject', function ($q) use ($selectedSubjects) {
-                $q->whereIn('id', $selectedSubjects);
+            $query->whereHas('course', function ($q) use ($selectedSubjects) {
+                $q->whereIn('subject_id', $selectedSubjects);
             });
         })
         ->when($sort, function ($query) use ($sort) {
@@ -43,15 +43,24 @@
             } elseif ($sort === 'name-z-a') {
                 $query->orderByRaw('LOWER(name) DESC'); // Sort by name Z-A (case-insensitive)
             } elseif ($sort === 'newest') {
-                $query->orderBy('created_at', 'desc'); // Sort by creation date (newest)
+                // Prefer created_at, fall back to id when timestamps are missing
+                $query->orderBy('created_at', 'desc')->orderBy('id', 'desc');
             } elseif ($sort === 'oldest') {
-                $query->orderBy('created_at', 'asc'); // Sort by creation date (oldest)
+                $query->orderBy('created_at', 'asc')->orderBy('id', 'asc');
+            } elseif ($sort === 'rating-highest') {
+                $query->withAvg('ratings', 'rating')->orderByDesc('ratings_avg_rating');
+            } elseif ($sort === 'rating-lowest') {
+                $query->withAvg('ratings', 'rating')->orderBy('ratings_avg_rating', 'asc');
             }
         })
         ->paginate(10);
 
     // Prepare filter options
-    $filterOptions = $teacher->subjects->pluck('name', 'id')->toArray();
+    $filterOptions = [];
+    foreach ($teacher->subjects as $subject) {
+        $type = $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific');
+        $filterOptions[$subject->id] = $subject->name . ' (' . $type . ')';
+    }
 
     // Split lectures into chunks
     $chunkSize = 2;
@@ -72,7 +81,7 @@
     <x-breadcrumb :links="array_merge([__('messages.home') => url('/welcome'), !$lec ? __('messages.yourLectures') : __('messages.lecturesFrom') . ' ' . App\Models\Subject::findOrFail(session('subject'))->name => Request::url()])" />
 
     <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions
-        :showSubjectCountFilter=false :showUsernameSort=false :showNameSort=false>
+        :showSubjectCountFilter=false :showUsernameSort=false :showNameSort=false models="Lectures" :showRatingFilter=true>
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedLectures as $chunk)
                     <div class="chunk">
@@ -80,7 +89,6 @@
                                     <x-card link="lecture/{{ $lecture->id }}" image="{{ asset($lecture->image) }}" object="Lecture">
                                         ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
                                         ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
-                                        ● {{__('messages.fromTeacher')}}: {{ $lecture->course->teacher->name }} <br>
                                         ● {{__('messages.fromCourse')}}: {{ $lecture->course->name }} <br>
                                         ● {{__('messages.fileType')}}: @if ($lecture->type)
                                             {{__('messages.video')}} <br>

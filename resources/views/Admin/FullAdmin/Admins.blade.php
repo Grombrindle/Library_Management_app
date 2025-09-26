@@ -168,7 +168,7 @@
     </div>
 
     @if ($viewMode === 'teachers')
-        <x-cardcontainer :model=$modelToPass addLink="addteacher" :filterOptions=$filterOptions :showSubjectCountFilter=true :showUsernameSort=true :showNameSort=true>
+        <x-cardcontainer :model=$modelToPass addLink="addteacher" :filterOptions=$filterOptions :showSubjectCountFilter=true :showUsernameSort=true :showNameSort=true models="Teachers">
             <!-- Add a unique ID to the container for dynamic updates -->
             <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
                 @foreach ($chunkedItems as $chunk)
@@ -231,7 +231,7 @@
             </div>
         </x-cardcontainer>
     @else
-        <x-cardcontainer :model=$modelToPass addLink="addadmin" :showUsernameSort=true :showNameSort=true :showPrivilegeFilter=true>
+        <x-cardcontainer :model=$modelToPass addLink="addadmin" :showUsernameSort=true :showNameSort=true :showPrivilegeFilter=true models="Admins">
             <!-- Add a unique ID to the container for dynamic updates -->
             <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
                 @foreach ($chunkedItems as $chunk)

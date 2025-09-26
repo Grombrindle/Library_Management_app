@@ -126,7 +126,7 @@
     <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.subjects') => url('/subjects')]" />
 
     <x-cardcontainer :model=$modelToPass addLink="addsubject" :filterOptions=$filterOptions :showSubjectCountFilter=true
-        filterByTeachers=true :showNameSort=true :showUsernameSort=false>
+        filterByTeachers=true :showNameSort=true :showUsernameSort=false models="Subjects">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedSubjects as $chunk)
                 <div class="chunk">

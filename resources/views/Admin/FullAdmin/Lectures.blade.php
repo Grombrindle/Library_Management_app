@@ -100,7 +100,7 @@
     )" />
 
     <x-cardcontainer :model=$modelToPass addLink="addlecture" :filterOptions=$filterOptions :showCourseCountFilter=false
-        :showUsernameSort=false :showNameSort=false>
+        :showUsernameSort=false :showNameSort=false models="Lectures">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedLectures as $chunk)
                 <div class="chunk">

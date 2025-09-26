@@ -12,6 +12,7 @@
     'deleteSubs' => false,
     'showBannedFilter' => false,
     'search' => true,
+    'showRatingFilter' => false,
 ])
 
 <head>
@@ -293,7 +294,7 @@
         color: var(--filter-text);
         max-height: 75vh;
         min-height: 200px;
-        overflow-y: hidden;
+        overflow-y: scroll;
     }
 
     .filter-dropdown.show {
@@ -589,7 +590,7 @@
                     @endif
 
                     <!-- Rating (for lectures, courses, teachers, resources) -->
-                    @if (isset($model) && count($model) && $models != "Reports")
+                    @if (isset($model) && count($model) && ($models == null || $showRatingFilter))
                         <label><input type="radio" name="sort" value="rating-highest"
                                 {{ request('sort') === 'rating-highest' ? 'checked' : '' }}>
                             {{ __('messages.ratingHighest') }}</label>
@@ -621,22 +622,42 @@
                                 {{ in_array('0', request('privileges', [])) ? 'checked' : '' }}>
                             {{ __('messages.teacher') }}</label>
                     @endif
-
+                    @if ($showBannedFilter)
+                        <label><strong>{{ __('messages.filterByBanStatus') }}</strong></label>
+                        <label><input type="radio" name="ban_status" value="all"
+                                {{ request('ban_status', 'all') === 'all' ? 'checked' : '' }}>
+                            {{ __('messages.allUsers') }}</label>
+                        <label><input type="radio" name="ban_status" value="banned"
+                                {{ request('ban_status') === 'banned' ? 'checked' : '' }}>
+                            {{ __('messages.bannedOnly') }}</label>
+                        <label><input type="radio" name="ban_status" value="active"
+                                {{ request('ban_status') === 'active' ? 'checked' : '' }}>
+                            {{ __('messages.activeOnly') }}</label>
+                    @endif
                     <!-- Filter by Subjects (for users and teachers) -->
                     @if (!empty($filterOptions) && !$filterByTeachers)
-                        <label><strong>{{ __('messages.filterBySubject') }}</strong></label>
-                        <div style="margin: 0 0; padding: 10px 0;">
-                            <button type="button" id="toggle-all"
-                                style="margin-left: 10px; padding: 5px 10px; border: 1px solid var(--filter-text); border-radius: 4px; cursor: pointer; color: var(--filter-text);">
-                                {{ __('messages.selectAll') }}
-                            </button>
-                        </div>
+                        <div style="margin-top:10px;"><label><strong>
+                                    @if ($models === 'Lectures' || $models === 'Exams' || $models === 'Teachers' || $models === 'Resources')
+                                        {{ __('messages.filterBySubject') }}
+                                    @else
+                                        {{ __('messages.filterByCourse') }}
+                                    @endif
+                                </strong></label></div>
+                        @php
+                            $subjectInputName = $models === 'Users' ? 'courses[]' : 'subjects[]';
+                            $subjectRequestKey = $models === 'Users' ? 'courses' : 'subjects';
+                        @endphp
+                        <button type="button" id="toggle-all"
+                            style="padding: 5px 10px; border: 1px solid var(--filter-text); border-radius: 4px; cursor: pointer; color: var(--filter-text); position: absolute;">
+                            {{ __('messages.selectAll') }}
+                        </button>
                         <div class="filter-columns" style="margin-top:4%;">
                             @foreach (array_chunk($filterOptions, 6, true) as $chunk)
                                 <div class="filter-column">
                                     @foreach ($chunk as $key => $value)
-                                        <label><input type="checkbox" name="subjects[]" value="{{ $key }}"
-                                                {{ in_array($key, request('subjects', [])) ? 'checked' : '' }}>
+                                        <label><input type="checkbox" name="{{ $subjectInputName }}"
+                                                value="{{ $key }}"
+                                                {{ in_array($key, request($subjectRequestKey, [])) ? 'checked' : '' }}>
                                             {{ $value }}</label>
                                     @endforeach
                                 </div>
@@ -646,9 +667,10 @@
 
                     <!-- Filter by Teachers (for subjects) -->
                     @if (!empty($filterOptions) && $filterByTeachers)
-                        <label><strong>{{ __('messages.filterByTeachers') }}</strong></label>
+                        <div style="margin-top:10px;">
+                            <label><strong>{{ __('messages.filterByTeachers') }}</strong></label></div>
                         <button type="button" id="toggle-all"
-                            style="top:25.5%;padding: 5px 10px; border: 1px solid #000000; border-radius: 4px; cursor: pointer;">{{ __('messages.selectAll') }}</button>
+                            style="padding: 5px 10px; border: 1px solid var(--filter-text); border-radius: 4px; cursor: pointer; color: var(--filter-text); position: absolute;">{{ __('messages.selectAll') }}</button>
                         <div class="filter-columns" style="margin-top:4%;">
                             @foreach (array_chunk($filterOptions, 6, true) as $chunk)
                                 <div class="filter-column">
@@ -692,18 +714,7 @@
                                 {{ in_array('6+', request('teacher_count', [])) ? 'checked' : '' }}> 6+</label>
                     @endif
 
-                    @if ($showBannedFilter)
-                        <label><strong>{{ __('messages.filterByBanStatus') }}</strong></label>
-                        <label><input type="radio" name="ban_status" value="all"
-                                {{ request('ban_status', 'all') === 'all' ? 'checked' : '' }}>
-                            {{ __('messages.allUsers') }}</label>
-                        <label><input type="radio" name="ban_status" value="banned"
-                                {{ request('ban_status') === 'banned' ? 'checked' : '' }}>
-                            {{ __('messages.bannedOnly') }}</label>
-                        <label><input type="radio" name="ban_status" value="active"
-                                {{ request('ban_status') === 'active' ? 'checked' : '' }}>
-                            {{ __('messages.activeOnly') }}</label>
-                    @endif
+
                 </div>
             </form>
         </div>
@@ -806,11 +817,29 @@
         const filterNoneCheckbox = document.getElementById('filter-none');
         const filterForm = document.querySelector('.filter-dropdown');
 
+        function updateToggleAllPosition() {
+            if (!toggleAllButton || !filterDropdown) return;
+            const radios = filterDropdown.querySelectorAll('input[type="radio"]');
+            if (radios.length === 0) {
+                toggleAllButton.style.top = '10px';
+                return;
+            }
+            const lastRadio = radios[radios.length - 1];
+            const label = lastRadio.closest('label') || lastRadio;
+            const dropdownRect = filterDropdown.getBoundingClientRect();
+            const labelRect = label.getBoundingClientRect();
+            const offset = (labelRect.top - dropdownRect.top) + labelRect.height + 36; // 8px gap
+            toggleAllButton.style.top = offset + 'px';
+        }
+
         // Toggle filter dropdown
         if (filterButton && filterDropdown) {
             filterButton.addEventListener('click', function(event) {
                 event.stopPropagation();
                 filterDropdown.classList.toggle('show');
+                if (filterDropdown.classList.contains('show')) {
+                    requestAnimationFrame(updateToggleAllPosition);
+                }
             });
         }
 
@@ -826,7 +855,7 @@
         function updateToggleButton() {
             if (toggleAllButton) {
                 const checkboxes = document.querySelectorAll(
-                    'input[name="teachers[]"], input[name="subjects[]"]');
+                    'input[name="teachers[]"], input[name="subjects[]"], input[name="courses[]"]');
                 const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                 toggleAllButton.textContent = allChecked ? '{{ __('messages.deselectAll') }}' :
                     '{{ __('messages.selectAll') }}';
@@ -837,7 +866,7 @@
         if (toggleAllButton) {
             toggleAllButton.addEventListener('click', function() {
                 const checkboxes = document.querySelectorAll(
-                    'input[name="teachers[]"], input[name="subjects[]"]');
+                    'input[name="teachers[]"], input[name="subjects[]"], input[name="courses[]"]');
                 const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                 checkboxes.forEach(checkbox => checkbox.checked = !allChecked);
                 updateToggleButton();
@@ -846,7 +875,8 @@
         }
 
         // Update toggle button when checkboxes change
-        const checkboxes = document.querySelectorAll('input[name="teachers[]"], input[name="subjects[]"]');
+        const checkboxes = document.querySelectorAll(
+            'input[name="teachers[]"], input[name="subjects[]"], input[name="courses[]"]');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', updateToggleButton);
         });
@@ -897,6 +927,7 @@
                 window.history.replaceState({}, '', `{{ request()->url() }}?${params.toString()}`);
 
                 fetchResults(params);
+                updateToggleAllPosition();
             });
         }
 
@@ -936,6 +967,9 @@
                     .catch(error => console.error('Error fetching search results:', error));
             });
         }
+
+        window.addEventListener('resize', updateToggleAllPosition);
+        updateToggleAllPosition();
 
         // Function to trigger filter change
         function triggerFilterChange() {

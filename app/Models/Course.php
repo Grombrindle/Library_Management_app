@@ -85,7 +85,7 @@ class Course extends Model
     }
 
 
-    public function getTeacherAttribute() {
+    public function getTeacherNameAttribute() {
         $teacher = $this->teacher()->first();
         return $teacher->name;
     }
@@ -302,7 +302,7 @@ class Course extends Model
         'rating_breakdown',
         'FeaturedRatings',
         'lectureNum',
-        'teacher',
+        'teacherName',
         'video_lectures_count',
         'pdf_lessons_count',
         'total_pdf_pages',

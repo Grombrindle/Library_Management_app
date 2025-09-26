@@ -23,7 +23,7 @@
             @foreach ($chunkedRequests as $chunk)
                 <div class="chunk">
                     @foreach ($chunk as $request)
-                        <x-card object="CourseRequest" image="/Images/Web/MindSpark.png"
+                        <x-card object="CourseRequest" image="{{ $request->image ? asset($request->image) : asset('Images/Courses/default.png') }}"
                             link="admin/course-requests/{{ $request->id }}">
                             ● {{ __('messages.courseRequestName') }}: {{ $request->name }}<br>
                             ● {{ __('messages.courseRequestTeacher') }}: {{ $request->teacher->name ?? 'N/A' }}<br>

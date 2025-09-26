@@ -106,7 +106,12 @@
         ->paginate(10);
 
     // Prepare filter options
-    $filterOptions = App\Models\Course::pluck('name', 'id')->toArray();
+    $filterOptions = [];
+
+    foreach (App\Models\Course::all() as $course) {
+        $type = $course->subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific');
+        $filterOptions[$course->id] = $course->name . ' (' . $course->subject->name . ' ' . $type . ')';
+    }
 
     // Split users into chunks
     $chunkSize = 2;
@@ -130,7 +135,7 @@
             : [__('messages.users') => Request::url()],
     )" />
     <x-cardcontainer :model=$modelToPass :addLink=null :filterOptions=$filterOptions :showSubjectCountFilter=true
-        :showUsernameSort=true :showNameSort=false num="{{ $num }}" :deleteSubs=true :showBannedFilter="true">
+        :showUsernameSort=true :showNameSort=false num="{{ $num }}" :deleteSubs=true :showBannedFilter="true" models="Users">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
 
             @foreach ($chunkedUsers as $chunk)
@@ -146,7 +151,7 @@
                                 <div>
                                     [
                                     @foreach ($user->courses as $course)
-                                        {{ $course->name }}
+                                        {{ $course->name }} ({{ $course->subject->name }})
                                         @if (!$loop->last)
                                             -
                                         @endif

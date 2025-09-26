@@ -401,7 +401,7 @@
             <div style="display:flex; flex-direction:row; gap: 3rem;">
                 <a href="/admins" class="button" id="button" style="text-decoration: none;">
                     <div class="text">
-                        {{ __('messages.admins') }}
+                        {{ __('messages.adminsAndTeachers') }}
                     </div>
                 </a>
                 <a href="/resources" class="button" style="text-decoration: none;">

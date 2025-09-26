@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Ratings\RatingService;
 
 /**
  *
@@ -122,38 +123,19 @@ class Teacher extends Model
 
     public function ratings()
     {
-        // Aggregate ratings from this teacher's courses
-        return $this->hasManyThrough(
-            TeacherRating::class, // Final model
-            Teacher::class,       // Intermediate model
-            'id',
-            'id',
-            'id',                // Local key on Teacher
-            'id'                 // Local key on Course
-        );
+        // Direct ratings given to the teacher
+        return $this->hasMany(TeacherRating::class, 'teacher_id');
     }
 
     public function getRatingAttribute()
     {
-        // Average of per-course averages (simple mean of means), ignoring courses with no ratings
-        $courseAverages = $this->courses()
-            ->withAvg('ratings', 'rating')
-            ->pluck('ratings_avg_rating')
-            ->filter(function ($v) {
-                return $v !== null;
-            });
-
-        $avg = $courseAverages->avg();
-        return $avg !== null ? round((float)$avg, 2) : null;
+        $svc = app(RatingService::class);
+        return $svc->computeTeacherAverage($this);
     }
     public function getRatingsCountAttribute()
     {
-        // Number of courses that have at least one rating
-        return $this->courses()
-            ->withCount('ratings')
-            ->get()
-            ->where('ratings_count', '>', 0)
-            ->count();
+        $svc = app(RatingService::class);
+        return $svc->computeTeacherRatingsCount($this);
     }
 
 

@@ -79,7 +79,7 @@
 </style>
 
 <x-layout object="{{ __('messages.courseRequests') }}" :nav=false>
-    <x-infocard :object="$courseRequest" image="/Images/Web/MindSpark.png" objectType="CourseRequest"
+    <x-infocard :object="$courseRequest" image="{{ $request->image ? asset($request->image) : asset('Images/Courses/default.png') }}" objectType="CourseRequest"
         name="{{ $courseRequest->name }}" :request=true>
         <h2 style="margin-bottom: 1rem;">{{ __('messages.courseRequestDetails') }}</h2>
         <p><strong>{{ __('messages.courseRequestName') }}:</strong> {{ $request->name }}</p>

@@ -625,7 +625,6 @@
             </a>
             <!-- End Desktop Course Requests Icon Button -->
         @elseif (Auth::user()->privileges == 1)
-            <div class="NavBarElement" style="margin-right: 5%;">
                 <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
                     {{ __('messages.users') }}
                     <span class="nav-count">{{ App\Models\User::count() }}</span>
@@ -640,25 +639,23 @@
                     // Only count course requests for this teacher
                     $teacherCourseRequestsCount = $teacher->courseRequests()->count();
                 @endphp
-                <div class="NavBarElement" style="margin-right: 5%;">
                     <a href="/teacher/course-requests/show" class="NavBarText" id="courseRequestsLink"
-                        style="width:8%;">
+                        style="width:5%;">
                         {{ __('messages.yourRequests') ?? 'Your Requests' }}
                         <span class="nav-count">{{ $teacherCourseRequestsCount }}</span>
                     </a>
-                    <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:8%;">
+                    <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:5%;">
                         {{ __('messages.yourSubjects') }}
                         <span class="nav-count">{{ $teacher->subjects->count() }}</span>
                     </a>
-                    <a href="/courses" class="NavBarText" id="Link" style="width:8%;">
+                    <a href="/courses" class="NavBarText" id="Link" style="width:5%;">
                         {{ __('messages.yourCourses') }}
                         <span class="nav-count">{{ $teacher->courses->count() }}</span>
                     </a>
-                    <a href="/lectures" class="NavBarText" id="Link" style="width:8%;">
+                    <a href="/lectures" class="NavBarText" id="Link" style="width:5%;">
                         {{ __('messages.yourLectures') }}
                         <span class="nav-count">{{ $lecCount }}</span>
                     </a>
-                </div>
     @endif
     <form action="/logout" method="POST"
         style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"

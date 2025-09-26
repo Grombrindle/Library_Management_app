@@ -46,7 +46,7 @@
                     </span>
                 </div>
                 <label class="switch">
-                    <input type="checkbox" name="course_paid" id="course_paid" value="1" {{ ($course->is_paid ?? false) ? 'checked' : '' }}>
+                    <input type="checkbox" name="course_paid" id="course_paid" value="1" {{ ($course->sparkies ?? false) ? 'checked' : '' }}>
                     <span class="slider round course-switch"></span>
                 </label>
             </div>

@@ -58,6 +58,10 @@
         $query->orderBy('created_at', 'desc');
     } elseif ($sort === 'oldest') {
         $query->orderBy('created_at', 'asc');
+    } elseif ($sort === 'rating-highest') {
+        $query->withAvg('ratings', 'rating')->orderByDesc('ratings_avg_rating');
+    } elseif ($sort === 'rating-lowest') {
+        $query->withAvg('ratings', 'rating')->orderBy('ratings_avg_rating', 'asc');
     }
 
     // Get filtered count before pagination
@@ -95,7 +99,6 @@
                                         ● {{ __('messages.courseName') }}: {{ $course->name }}<br>
                                         ● {{ __('messages.forSubject') }}: {{ $course->subject->name }}<br>
                                         ● {{ __('messages.description') }}: {{ $course->description }}<br>
-                                        ● {{ __('messages.fromTeacher') }}: {{ $course->teacher->name }}<br>
                                         ● {{ __('messages.lecturesNum') }}: {{ $course->lectures->count() }}<br>
                                         ● {{ __('messages.usersSubTo') }}: {{ $course->users->count() }}<br>
                                         ● {{ __('messages.requirements') }}:

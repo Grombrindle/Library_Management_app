@@ -48,10 +48,10 @@
             $query->where('date', '<=', $dateTo);
         });
 
-    // Apply sorting
-    if ($sort === 'title-a-z') {
+    // Apply sorting (support alternative keys `name-a-z`/`name-z-a` too)
+    if ($sort === 'title-a-z' || $sort === 'name-a-z') {
         $query->orderByRaw('LOWER(title) ASC');
-    } elseif ($sort === 'title-z-a') {
+    } elseif ($sort === 'title-z-a' || $sort === 'name-z-a') {
         $query->orderByRaw('LOWER(title) DESC');
     } elseif ($sort === 'date-newest') {
         $query->orderBy('date', 'desc');
@@ -73,7 +73,11 @@
 
     // Prepare filter options
     $filterOptions = App\Models\Subject::pluck('name', 'id')->toArray();
-
+    $filterOptions = [];
+    foreach (App\Models\Subject::all() as $subject) {
+        $type = $subject->literaryOrScientific == 0 ? __('messages.literary') : __('messages.scientific');
+        $filterOptions[$subject->id] = $subject->name . ' (' . $type . ')';
+    }
     // Split exams into chunks
     $chunkSize = 2;
     $chunkedExams = array_fill(0, $chunkSize, []);
@@ -88,7 +92,7 @@
     <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.exams') => Request::url()]" />
 
     <x-cardcontainer :model=$modelToPass addLink="addexam" :filterOptions=$filterOptions :showSubjectCountFilter=false
-        :showUsernameSort=false :showNameSort=true>
+        :showUsernameSort=false :showNameSort=true models="Exams">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedExams as $chunk)
                 <div class="chunk">

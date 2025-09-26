@@ -36,6 +36,6 @@
         ● {{ __('messages.sparks') }}: {{$user->sparks}}
         ● {{ __('messages.sparkies') }}: {{$user->sparkies}}
 
-    </x-infocard>
 
+    </x-infocard>
 </x-layout>
