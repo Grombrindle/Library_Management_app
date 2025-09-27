@@ -14,7 +14,7 @@
             style="color:blue">{{ App\Models\Course::findOrFail($lecture->course_id)->name }}</a><br>
         ● {{__('messages.fileType')}}: @if ($lecture->type)
             {{__('messages.video')}} <br>
-            ● {{__('messages.duration')}}: {{ $lecture->getVideoLength() ?? 'N/A' }}
+            ● {{__('messages.duration')}}: {{ $lecture->getFormattedDurationLongAttribute() ?? 'N/A' }}
         @else
             {{__('messages.pdf')}} <br>
             ● {{__('messages.pages')}}: {{ $lecture->getPdfPages() ?? 'N/A' }}

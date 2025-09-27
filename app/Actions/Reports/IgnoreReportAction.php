@@ -3,16 +3,22 @@
 namespace App\Actions\Reports;
 
 use App\Models\Report;
-use App\Services\Reports\ReportModerationService;
+use Illuminate\Support\Facades\Auth;
 
 class IgnoreReportAction
 {
-    public function __construct(private ReportModerationService $service) {}
-
-    public function __invoke(Report $report): void
+    public function execute(int $reportId): ?array
     {
-        $this->service->markIgnored($report);
+        $report = Report::find($reportId);
+
+        if (!$report) {
+            return null;
+        }
+
+        $report->status = "IGNORED";
+        $report->handled_by_id = Auth::id();
+        $report->save();
+
+        return ['id' => $report->id, 'status' => $report->status, 'user_id' => $report->user_id];
     }
 }
-
-

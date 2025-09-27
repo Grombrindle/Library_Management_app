@@ -15,15 +15,12 @@ class QuizSeeder extends Seeder
 
         // Create a quiz for each lecture
         foreach ($lectures as $lecture) {
-            if (rand(0, 1)) {
                 $quiz = Quiz::create([
                     'lecture_id' => $lecture->id
                 ]);
                 // Update the lecture's quiz_id
                 $lecture->quiz_id = $quiz->id;
                 $lecture->save();
-            }
-
         }
     }
 }

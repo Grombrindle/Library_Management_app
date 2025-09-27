@@ -11,7 +11,14 @@
         ● {{ __('messages.lectureName') }}: {{ $lecture->name }}<br>
         ● {{ __('messages.lectureDescription') }}: {{ $lecture->description }}<br>
         ● {{ __('messages.fromCourse') }}: <a href="/course/{{ $lecture->course_id }}"
-            style="color:blue">{{ App\Models\Course::findOrFail($lecture->course_id)->name }}</a>
+            style="color:blue">{{ App\Models\Course::findOrFail($lecture->course_id)->name }}</a><br>
+        ● {{__('messages.fileType')}}: @if ($lecture->type)
+            {{__('messages.video')}} <br>
+            ● {{__('messages.duration')}}: {{ $lecture->getFormattedDurationLongAttribute() ?? 'N/A' }}
+        @else
+            {{__('messages.pdf')}} <br>
+            ● {{__('messages.pages')}}: {{ $lecture->getPdfPages() ?? 'N/A' }}
+        @endif
 
         <br>
         <br>

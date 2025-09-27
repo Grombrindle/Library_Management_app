@@ -240,6 +240,7 @@
                 <h1>
                     {{ __('messages.commentRemoved')}}
                 </h1>
+                <br>
             @elseif($info['message'] == 'banned')
                 <h1>
                     {{ __('messages.bannedUser', ['name' => $info['name']]) }}
@@ -248,6 +249,7 @@
                 <h1>
                     {{ __('messages.commentRemoved')}}
                 </h1>
+                <br>
             @endif
         @else
             <h1>{{ __('messages.nothingToConfirm') }}</h1>

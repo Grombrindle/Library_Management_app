@@ -83,7 +83,7 @@ class Lecture extends Model
     }
     public function getTeacherNameAttribute() {
         $course = $this->course;
-        return $course->teacher;
+        return $course->teacher->name;
     }
 
     public function LecturesfavoritedByUsers()
@@ -233,23 +233,7 @@ class Lecture extends Model
                 $review->user_name = $review->user ? $review->user->userName : null;
             });
         }
-
-
-        $needed = 3 - $withReview->count();
-        $withoutReview = $this->ratings()
-            ->whereNull('review')
-            ->where('isHidden', false)
-            ->withCount(['helpful', 'unhelpful'])
-            ->orderByDesc('helpful_count')
-            ->orderBy('unhelpful_count')
-            ->orderByDesc('rating')
-            ->orderByDesc('created_at')
-            ->take($needed)
-            ->get();
-
-
-        $all = $withReview->concat($withoutReview);
-        return $all->map(function ($review) {
+        return $withReview->map(function ($review) {
             $review->user_name = $review->user ? $review->user->userName : null;
             return $review;
         });

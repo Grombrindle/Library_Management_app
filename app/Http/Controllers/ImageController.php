@@ -2,144 +2,81 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Teacher;
-use App\Models\Course;
-use App\Models\Lecture;
-use App\Models\Subject;
-use App\Models\Resource;
-use App\Models\Exam;
+use App\Actions\Images\FetchTeacherImageAction;
+use App\Actions\Images\FetchLectureImageAction;
+use App\Actions\Images\FetchSubjectImageAction;
+use App\Actions\Images\FetchCourseImageAction;
+use App\Actions\Images\FetchResourceImageAction;
+use App\Actions\Images\FetchExamImageAction;
 
 class ImageController extends Controller
 {
-    //
+    protected FetchTeacherImageAction $fetchTeacherImage;
+    protected FetchLectureImageAction $fetchLectureImage;
+    protected FetchSubjectImageAction $fetchSubjectImage;
+    protected FetchCourseImageAction $fetchCourseImage;
+    protected FetchResourceImageAction $fetchResourceImage;
+    protected FetchExamImageAction $fetchExamImage;
+
+    public function __construct(
+        FetchTeacherImageAction $fetchTeacherImage,
+        FetchLectureImageAction $fetchLectureImage,
+        FetchSubjectImageAction $fetchSubjectImage,
+        FetchCourseImageAction $fetchCourseImage,
+        FetchResourceImageAction $fetchResourceImage,
+        FetchExamImageAction $fetchExamImage
+    ) {
+        $this->fetchTeacherImage = $fetchTeacherImage;
+        $this->fetchLectureImage = $fetchLectureImage;
+        $this->fetchSubjectImage = $fetchSubjectImage;
+        $this->fetchCourseImage = $fetchCourseImage;
+        $this->fetchResourceImage = $fetchResourceImage;
+        $this->fetchExamImage = $fetchExamImage;
+    }
+
     public function fetchTeacher($id)
     {
-        $teacher = Teacher::find($id);
-        if ($teacher) {
-            $path = $teacher->image;
-            $filePath = public_path($path);
-            if (file_exists($filePath)) {
-                $mimeType = mime_content_type($filePath);
-                return response()->file($filePath, ['Content-Type' => $mimeType]);
-            }
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Image Not Found'
-            ], 404);
-        } else {
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Teacher Not Found'
-            ], 404);
-        }
+        return $this->handleImageResponse($this->fetchTeacherImage->execute($id));
     }
+
     public function fetchLecture($id)
     {
-        $lecture = Lecture::find($id);
-        if ($lecture) {
-            $path = $lecture->image;
-            $filePath = public_path($path);
-            if (file_exists($filePath)) {
-                $mimeType = mime_content_type($filePath);
-                return response()->file($filePath, ['Content-Type' => $mimeType]);
-            }
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Image Not Found'
-            ], 404);
-        } else {
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Lecture Not Found'
-            ], 404);
-        }
+        return $this->handleImageResponse($this->fetchLectureImage->execute($id));
     }
+
     public function fetchSubject($id)
     {
-        $subject = Subject::find($id);
-        if ($subject) {
-            $path = $subject->image;
-            $filePath = public_path($path);
-            if (file_exists($filePath)) {
-                $mimeType = mime_content_type($filePath);
-                return response()->file($filePath, ['Content-Type' => $mimeType]);
-            }
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Image Not Found'
-            ], 404);
-        } else {
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Subject Not Found'
-            ], 404);
-        }
+        return $this->handleImageResponse($this->fetchSubjectImage->execute($id));
     }
 
     public function fetchCourse($id)
     {
-        $course = Course::find($id);
-        if ($course) {
-            $path = $course->image;
-            $filePath = public_path($path);
-            if (file_exists(filename: $filePath)) {
-                $mimeType = mime_content_type($filePath);
-                return response()->file($filePath, ['Content-Type' => $mimeType]);
-            }
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Image Not Found'
-            ], 404);
-        } else {
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Course Not Found'
-            ], 404);
-        }
+        return $this->handleImageResponse($this->fetchCourseImage->execute($id));
     }
 
     public function fetchResource($id)
     {
-        $resource = Resource::find($id);
-        if ($resource) {
-            $path = $resource->image;
-            $filePath = public_path($path);
-            if (file_exists(filename: $filePath)) {
-                $mimeType = mime_content_type($filePath);
-                return response()->file($filePath, ['Content-Type' => $mimeType]);
-            }
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Image Not Found'
-            ], 404);
-        } else {
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Resource Not Found'
-            ], 404);
-        }
-    }
-    public function fetchExam($id)
-    {
-        $exam = Exam::find($id);
-        if ($exam) {
-            $path = $exam->thumbnailUrl;
-            $filePath = public_path($path);
-            if (file_exists($filePath)) {
-                $mimeType = mime_content_type($filePath);
-                return response()->file($filePath, ['Content-Type' => $mimeType]);
-            }
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Image Not Found'
-            ], 404);
-        } else {
-            return response()->json([
-                'success' => 'false',
-                'reason' => 'Exam Not Found'
-            ], 404);
-        }
+        return $this->handleImageResponse($this->fetchResourceImage->execute($id));
     }
 
+    public function fetchExam($id)
+    {
+        return $this->handleImageResponse($this->fetchExamImage->execute($id));
+    }
+
+    /**
+     * Handle the standardized image response from actions
+     */
+    private function handleImageResponse(array $result)
+    {
+        if (!$result['success']) {
+            return response()->json([
+                'success' => false,
+                'reason' => $result['reason'],
+            ], $result['status']);
+        }
+
+        $mimeType = mime_content_type($result['filePath']);
+        return response()->file($result['filePath'], ['Content-Type' => $mimeType]);
+    }
 }
