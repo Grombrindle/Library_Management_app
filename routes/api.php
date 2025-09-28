@@ -181,6 +181,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getresourceratings/{id}', [ResourceController::class, 'fetchRatings']);
     Route::get('/getteacherratings/{id}', [TeacherController::class, 'fetchRatings']);
 
+    Route::get('/getsavedmessages', [SavedMessageController::class, 'fetch']);
     Route::post('/togglesaved', [SavedMessageController::class, 'toggleSaved']);
 
     Route::post('/report', [ReportController::class, 'add']);

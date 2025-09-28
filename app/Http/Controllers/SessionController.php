@@ -3,257 +3,49 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use App\Models\User;
-use App\Models\Teacher;
-use App\Models\Subject;
-use App\Models\Admin;
-use App\Models\Report;
-use App\Models\LectureRating;
-use App\Models\CourseRating;
-use App\Models\TeacherRating;
-use App\Models\ResourceRating;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use App\Services\Session\SessionService;
+
 class SessionController extends Controller
 {
+    protected $service;
+
+    public function __construct(SessionService $service)
+    {
+        $this->service = $service;
+    }
 
     public function createUser(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'userName' => 'required|string|unique:users,userName',
-            'number' => 'required|string|unique:users,number',
-
-            // 'deviceId' => 'required|string|unique:users,deviceId',
-
-        ], [
-            'userName.unique' => 'Already Used',
-            'number.unique' => 'Already Used',
-
-            // 'deviceId.unique' => 'Already Used',
-
-        ]);//this will check if these are unique or already in use by other users
-        //we return each one that wasn't unique so the frontend can highlight all the fields that are already in use
-
-        if ($validator->fails()) {
-            // Return all validation errors
-            return response()->json([
-                'success' => false,
-                'reason' => $validator->errors(),
-            ], 422);
-        }
-        $userAttributes = $request->validate([
-            $userName = $request->input('userName'),
-            $number = $request->input('number'),
-            $password = Hash::make($request->input('password')),
-
-
-            // $deviceId = $request->input('devceId'),
-
-            $countryCode = "+963",
-        ]);
-
-        $user = User::create([
-            'userName' => $userName,
-            'number' => $number,
-            'password' => $password,
-            'countryCode' => $countryCode,
-            'isBanned' => 0,
-            'counter' => 0,
-            // 'deviceId' => $deviceId,
-
-        ]);
-        $token = $user->createToken('API Token Of ' . ($user->name ?? $user->userName ?? 'User'))->plainTextToken;
-        $user->remember_token = $token;
-        $user->save();
-        Auth::login($user);
-        return response()->json(['success' => 'true', 'token' => $token, 'user' => $user]);//we return a "success" field so the frontend can see if the sign up process failed or not
-
+        $result = $this->service->createUser($request);
+        return isset($result['code']) ? response()->json($result, $result['code']) : response()->json($result);
     }
+
     public function loginUser(Request $request)
     {
-        $credentials = $request->validate([
-            'userName' => 'required',
-            'password' => 'required',
-
-            // 'deviceId' => 'required',
-
-        ]);
-
-        // // Attempt to authenticate the user
-        // if (Auth::guard('api')->attempt($credentials)) {
-        // $credentials = $request->validate([
-        //     'userName' => 'required',
-        //     'password' => 'required',
-        // ]);
-
-        // // Find the user by userName
-        $user = User::where('userName', $credentials['userName'])->first();
-        // if ($user && $user->isBanned) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'reason' => 'Banned',
-        //     ], 401);
-        // }
-        // Check if the user exists and the password is correct
-        if ($user && Hash::check($credentials['password'], $user->password) /*&& $credentials['deviceId'] == $user->deviceId*/) {
-            // Generate a token for the user
-            $token = $user->createToken('API Token')->plainTextToken;
-            $user->remember_token = $token;
-            $user->save();
-            return response()->json([
-                'success' => true,
-                'token' => $token,
-                'user' => $user,
-            ]);
-        } else {
-
-
-            // if (!Hash::check($credentials['password'], $user->password))
-
-
-            return response()->json([
-                'success' => false,
-                'reason' => 'Invalid Credentials',
-            ], 401);
-
-
-            // elseif ($credentials['deviceId'] != $user->deviceId)
-            //     return response()->json([
-            //         'success' => false,
-            //         'reason' => 'Unknown Device',
-            //     ], 401);
-        }
-
-        // $loginData = $request->validate([
-        //     'userName' => 'string|required|exists:users',
-        //     'password' => 'required'
-        // ]);
-        // $credentials = request(['email', 'password']);
-
-        // if(auth()->guard('user')->attempt($request->only('userName', 'password'))) {
-        //     $user = User::query()->select('users.*')->find(auth()->guard('user')->user()['id']);
-        //     $success = $user;
-        //     $success['token'] = $user->createToken('API Token', ['user'])->accessToken;
-
-        //     return response()->json('worked');
-        // }
-        // else {
-        //     return response()->json('worked not');
-
-        // }
+        $result = $this->service->loginUser($request);
+        return isset($result['code']) ? response()->json($result, $result['code']) : response()->json($result);
     }
 
     public function ban()
     {
-        $user = Auth::user();
-
-        // Validate user can be banned
-        if ($user->isBanned) {
-            return response()->json([
-                'success' => false,
-                'reason' => 'Already banned'
-            ], 400);
-        }
-
-        $user->isBanned = true;
-        $user->save();
-
-        $user->remember_token = null;
-        $user->save();
-        // Revoke all personal access tokens to fully block API access
-        $user->tokens()->delete();
-
-        return response()->json([
-            'success' => true
-        ]);
+        $result = $this->service->banCurrentUser();
+        return isset($result['code']) ? response()->json($result, $result['code']) : response()->json($result);
     }
-    public function banUser($id, $type, $ratingId)
+
+    public function banUser($id = null, $type = null, $ratingId = null)
     {
-        $user = $id ? User::find($id) : Auth::user();
-
-        if($type && $ratingId) {
-
-            $rating = null;
-
-            $type == 'lecture' ? $rating = LectureRating::find($ratingId) : null ;
-            $type == 'course' ? $rating = CourseRating::find($ratingId) : null ;
-            $type == 'teacher' ? $rating = TeacherRating::find($ratingId) : null ;
-            $type == 'resource' ?$rating =  ResourceRating::find($ratingId) : null ;
-
-            $rating->isHidden = true;
-            $rating->save();
-        }
-
-        // Validate user can be banned
-        if ($user->isBanned && $user) {
-            return response()->json([
-                'success' => false,
-                'reason' => 'Already banned'
-            ], 400);
-        }
-
-
-        $user->isBanned = true;
-        $user->save();
-
-        $user->remember_token = null;
-        $user->save();
-        // Revoke all personal access tokens to fully block API access
-        $user->tokens()->delete();
-
-        $report = Report::find(session('report'));
-
-        if($report) {
-            $report->status = "BANNED";
-            $report->handled_by_id = Auth::id();
-
-            $report->save();
-        }
-
-        $data = ['id' => $id, 'name' => $user->userName, 'message' => 'banned'];
-        session(['user_info' => $data]);
-        session(['link' => '/reports']);
+        $result = $this->service->banUser($id, $type, $ratingId);
         return redirect()->route('user.confirmation');
     }
 
-    public function logoutUser(Request $request, \App\Actions\Users\LogoutUserAction $logoutUser)
+    public function logoutUser()
     {
-        $user = Auth::user();
-        if ($user) {
-            $logoutUser($user, $request);
-        }
-        return response()->json(['success' => true]);
+        $result = $this->service->logoutUser();
+        return response()->json($result);
     }
 
     public function test()
     {
-        $user = Auth::user();
-        return response()->json([
-            'User' => $user
-        ]);
-    }
-
-    public function loginView()
-    {
-        if (Auth::check()) {
-            return redirect()->route('welcome');
-        }
-        return view('register');
-    }
-
-    public function loginWeb(Request $request)
-    {
-        $credentials = ['userName' => $request->userName, 'password' => $request->password];
-        if (Auth::attempt($credentials)) {
-            $admin = Admin::where('userName', $credentials['userName'])->first();
-            if (Hash::check($credentials['password'], $admin->password)) {
-                Auth::login($admin);
-                return redirect('/welcome');
-            }
-        }
-        return redirect()->back()->withErrors(['password' => 'Invalid Credentials'])->withInput(['userName']);
-
+        return response()->json(['User' => auth()->user()]);
     }
 }

@@ -108,19 +108,7 @@ class Resource extends Model
                 return $review;
             });
         }
-
-        $needed = 3 - $withReview->count();
-        $withoutReview = $this->ratings()
-            ->with('user')
-            ->whereNull('review')
-            ->where('isHidden', false)
-            ->orderByDesc('rating')
-            ->orderByDesc('created_at')
-            ->take($needed)
-            ->get();
-
-        $all = $withReview->concat($withoutReview);
-        return $all->map(function($review) {
+        return $withReview->map(function($review) {
             $review->user_name = $review->user ? $review->user->userName : null;
             return $review;
         });
@@ -192,6 +180,11 @@ class Resource extends Model
     {
         $pdfs = $this->pdf_files;
         return $pdfs[$lang] ?? null;
+    }
+
+    public function getPdfFileUrlAttribute() {
+        $pdfs = $this->pdf_files;
+        return url($pdfs['ar']) ?? null;
     }
 
     public function getAudioFileUrlAttribute() {
@@ -287,7 +280,7 @@ class Resource extends Model
         'rating',
         'rating_breakdown',
         'FeaturedRatings',
-        // 'pdf_file_url',
+        'pdf_file_url',
         'audio_file_url',
         'audio_file_duration_seconds',
         'audio_file_duration_formatted',

@@ -21,7 +21,8 @@ class UserController extends Controller
 
     public function fetchAuth()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
+
 
         $courses = "";
         $count = $user->courses ? $user->courses->count() : null;

@@ -143,20 +143,7 @@ class Course extends Model
             });
         }
 
-        $needed = 3 - $withReview->count();
-        $withoutReview = $this->ratings()
-            ->whereNull('review')
-            ->where('isHidden', false)
-            ->withCount(['helpful', 'unhelpful'])
-            ->orderByDesc('helpful_count')
-            ->orderBy('unhelpful_count')
-            ->orderByDesc('rating')
-            ->orderByDesc('created_at')
-            ->take($needed)
-            ->get();
-
-        $all = $withReview->concat($withoutReview);
-        return $all->map(function ($review) {
+        return $withReview->map(function ($review) {
             $review->user_name = $review->user ? $review->user->userName : null;
             return $review;
         });

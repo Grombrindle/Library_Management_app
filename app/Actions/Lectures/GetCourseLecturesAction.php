@@ -18,7 +18,7 @@ class GetCourseLecturesAction
             ];
         }
 
-        $lectures = $course->lectures->with('quiz')->get();
+        $lectures = $course->lectures()->with('quiz')->get();
 
         $lectures->each(function ($lecture) {
             if ($lecture->quiz) {
