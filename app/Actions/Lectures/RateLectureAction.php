@@ -2,24 +2,37 @@
 
 namespace App\Actions\Lectures;
 
+use App\Models\Lecture;
 use App\Models\LectureRating;
 use Illuminate\Support\Facades\Auth;
 
 class RateLectureAction
 {
-    public function execute(int $lectureId, int $rating, ?String $review): LectureRating
+    public function execute(int $lectureId, int $rating, ?string $review = null): array
     {
-        $user = Auth::user();
+        $lecture = Lecture::find($lectureId);
 
-        return LectureRating::updateOrCreate(
+        if (!$lecture) {
+            return [
+                'success' => false,
+                'message' => 'Lecture not found'
+            ];
+        }
+
+        $lectureRating = LectureRating::updateOrCreate(
             [
-                'lecture_id' => $lectureId,
-                'user_id'    => $user->id,
+                'lecture_id' => $lecture->id,
+                'user_id' => Auth::id()
             ],
             [
                 'rating' => $rating,
                 'review' => $review
             ]
         );
+
+        return [
+            'success' => true,
+            'lecture_rating' => $lectureRating
+        ];
     }
 }

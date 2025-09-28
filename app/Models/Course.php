@@ -309,7 +309,8 @@ class Course extends Model
         'duration',
         'duration_formatted',
         'duration_formatted_long',
-        'duration_human'
+        'duration_human',
+        'user_rating'
     ];
 
     // protected $with = ['ratings'];

@@ -6,14 +6,22 @@ use App\Models\Lecture;
 
 class IncrementLectureViewsAction
 {
-    public function execute(int $lectureId): ?Lecture
+    public function execute(int $lectureId): array
     {
         $lecture = Lecture::find($lectureId);
 
-        if ($lecture) {
-            $lecture->increment('views');
+        if (!$lecture) {
+            return [
+                'success' => false,
+                'message' => 'Lecture not found'
+            ];
         }
 
-        return $lecture;
+        $lecture->increment('views');
+
+        return [
+            'success' => true,
+            'views' => $lecture->views
+        ];
     }
 }

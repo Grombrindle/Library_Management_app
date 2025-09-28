@@ -294,5 +294,6 @@ class Resource extends Model
         'audio_file_duration_long_formatted',
         'audio_file_duration_human',
         'pdf_file_pages',
+        'user_rating',
     ];
 }

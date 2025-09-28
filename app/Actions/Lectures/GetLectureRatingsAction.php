@@ -4,11 +4,11 @@ namespace App\Actions\Lectures;
 
 use App\Models\Lecture;
 
-class FetchLectureAction
+class GetLectureRatingsAction
 {
     public function execute(int $id): array
     {
-        $lecture = Lecture::find($id);
+        $lecture = Lecture::with('ratings.user')->find($id);
 
         if (!$lecture) {
             return [
@@ -19,7 +19,7 @@ class FetchLectureAction
 
         return [
             'success' => true,
-            'lecture' => $lecture
+            'ratings' => $lecture->ratings
         ];
     }
 }

@@ -6,14 +6,27 @@ use App\Models\Lecture;
 
 class FetchLectureQuizQuestionsAction
 {
-    public function execute(int $lectureId)
+    public function execute(int $id): array
     {
-        $lecture = Lecture::find($lectureId);
+        $lecture = Lecture::with('quiz.questions')->find($id);
 
         if (!$lecture) {
-            return [];
+            return [
+                'success' => false,
+                'reason' => 'Lecture not Found'
+            ];
         }
 
-        return $lecture->quiz;
+        if (!$lecture->quiz) {
+            return [
+                'success' => false,
+                'reason' => 'No Quiz For This Lesson'
+            ];
+        }
+
+        return [
+            'success' => true,
+            'quiz' => $lecture->quiz
+        ];
     }
 }
