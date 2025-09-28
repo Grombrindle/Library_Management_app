@@ -2,206 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Subject;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use App\Services\Subjects\SubjectService;
 
 class SubjectController extends Controller
 {
+    protected $subjectService;
+
+    public function __construct(SubjectService $subjectService)
+    {
+        $this->subjectService = $subjectService;
+    }
+
     public function fetch($id)
     {
-        $subject = Subject::find($id);
-        if ($subject) {
-            return response()->json([
-                'success' => "true",
-                'subject' => $subject
-            ]);
-        } else {
-            return response()->json([
-                'success' => "false",
-                'reason' => "Subject Not Found"
-            ], 404);
-        }
+        $result = $this->subjectService->fetch($id);
+        return response()->json($result, $result['status']);
     }
 
-    public function fetchLectures($id)
-    {
-        $subject = Subject::find($id);
-        if ($subject) {
-            $lectures = $subject->lectures->map(function ($lecture) {
-                return [
-                    'id' => $lecture->id,
-                    'name' => $lecture->name,
-                    'file_360' => asset($lecture->file_360),
-                    'file_720' => asset($lecture->file_720),
-                    'file_1080' => asset($lecture->file_1080),
-                    'description' => $lecture->description,
-                    'image' => $lecture->image,
-                    'subject_id' => $lecture->subject_id,
-                    'created_at' => $lecture->created_at,
-                    'updated_at' => $lecture->updated_at,
-                ];
-            });
-
-            return response()->json([
-                'success' => true,
-                'lectures' => $lectures,
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'reason' => "Subject Not Found"
-            ], 404);
-        }
-    }
+    // public function fetchLectures($id)
+    // {
+    //     $result = $this->subjectService->fetchLectures($id);
+    //     return response()->json($result, $result['status']);
+    // }
 
     public function fetchTeachers($id)
     {
-        $subject = Subject::find(id: $id);
-
-        $teachers = $subject->teachers;
-
-        $teachers->each(function ($teacher) {
-            $teacher->isFavorite = Auth::user()->favoriteTeachers()
-                ->where('teacher_id', $teacher->id)
-                ->exists();
-            // Calculate average rating across all courses
-            $teacher->rating = DB::table('course_rating')
-                ->whereIn('course_id', $teacher->courses->pluck('id'))
-                ->avg('rating') ?? null;
-        });
-
-        if ($subject) {
-            return response()->json([
-                'success' => "true",
-                'teachers' => $teachers,
-            ]);
-        } else {
-            return response()->json([
-                'success' => "false",
-                'reason' => "Subject Not Found"
-            ], 404);
-        }
+        $result = $this->subjectService->fetchTeachers($id);
+        return response()->json($result, $result['status']);
     }
 
     public function fetchAll()
     {
-        return response()->json([
-            'subjects' => Subject::all(),
-        ]);
+        $result = $this->subjectService->fetchAll();
+        return response()->json($result, $result['status']);
     }
 
     public function fetchScientific()
     {
-        return response()->json([
-            'subjects' => Subject::where('literaryOrScientific', 1)->get(),
-        ]);
+        $result = $this->subjectService->fetchScientific();
+        return response()->json($result, $result['status']);
     }
 
     public function fetchLiterary()
     {
-        return response()->json([
-            'subjects' => Subject::where('literaryOrScientific', 0)->get(),
-        ]);
+        $result = $this->subjectService->fetchLiterary();
+        return response()->json($result, $result['status']);
     }
 
     public function add(Request $request)
     {
-        if (!is_null($request->file('object_image'))) {
-            $file = $request->file('object_image');
-            $directory = 'Images/Subjects';
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+        $result = $this->subjectService->add($request);
 
-            if (!file_exists(public_path($directory))) {
-                mkdir(public_path($directory), 0755, true);
-            }
-
-            $file->move(public_path($directory), $filename);
-            $path = $directory . '/' . $filename;
-        } else {
-            $path = "Images/Subjects/default.png";
+        if (isset($result['error'])) {
+            return redirect()->back()->withErrors($result['error']);
         }
 
-        $subject = Subject::create([
-            'name' => $request->input('subject_name'),
-            'lecturesCount' => 0,
-            'subscriptions' => 0,
-            'image' => $path,
-            'literaryOrScientific' => $request->input('subject_type') == 'on' ? 1 : 0
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'subject' => $subject
-        ]);
+        $data = ['element' => 'subject', 'name' => $request->subject_name];
+        session(['add_info' => $data]);
+        session(['link' => '/subjects']);
+        return redirect()->route('add.confirmation');
     }
+
     public function edit(Request $request, $id)
     {
+        $result = $this->subjectService->edit($request, $id);
 
-        $validator = $request->validate([
-            'subject_name' => [
-                Rule::unique('subjects', 'name')->ignore($id)
-            ],
-        ]);
-        if (!$validator) {
-
-            return redirect()->back()->withErrors([
-                'subject_name' => 'Name has already been taken',
-            ]);
-        }
-        // dd($request->all());
-        $subject = Subject::findOrFail($id);
-        if (!is_null($request->file('object_image'))) {
-            // Store new image in public/Images/Subjects
-            $file = $request->file('object_image');
-            $directory = 'Images/Subjects';
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-
-            // Ensure directory exists
-            if (!file_exists(public_path($directory))) {
-                mkdir(public_path($directory), 0755, true);
-            }
-
-            // Store the new image
-            $file->move(public_path($directory), $filename);
-            $path = $directory . '/' . $filename;
-
-            // Delete old image if it's not the default
-            if ($subject->image != "Images/Subjects/default.png" && file_exists(public_path($subject->image))) {
-                unlink(public_path($subject->image));
-            }
-
-            $subject->image = $path;
+        if (isset($result['error'])) {
+            return redirect()->back()->withErrors($result['error']);
         }
 
-        $teachers = json_decode($request->selected_objects, true);
-        $subject->teachers()->sync($teachers);
-        $subject->name = $request->subject_name;
-        $subject->save();
-        $data = ['element' => 'subject', 'id' => $id, 'name' => $subject->name];
+        $data = ['element' => 'subject', 'id' => $id, 'name' => $result->name];
         session(['update_info' => $data]);
         session(['link' => '/subjects']);
         return redirect()->route('update.confirmation');
-
     }
 
     public function delete($id)
     {
-        $subject = Subject::findOrFail($id);
-        $name = $subject->name;
+        $name = $this->subjectService->delete($id);
 
-        if ($subject->image != "Images/Subjects/default.png" && file_exists(public_path($subject->image))) {
-            unlink(public_path($subject->image));
-        }
-
-        $subject->delete();
-
-        foreach (Subject::all() as $subject) {
-            $subject->subscriptions = Subject::withCount('users')->find($subject->id)->users_count;
-            $subject->save();
-        }
         $data = ['element' => 'subject', 'name' => $name];
         session(['delete_info' => $data]);
         session(['link' => '/subjects']);

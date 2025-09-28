@@ -77,11 +77,13 @@ class Lecture extends Model
         return $this->belongsToMany(User::class, 'user_lecture');
     }
 
-    public function getCourseNameAttribute() {
+    public function getCourseNameAttribute()
+    {
         $course = $this->course->name;
         return $course;
     }
-    public function getTeacherNameAttribute() {
+    public function getTeacherNameAttribute()
+    {
         $course = $this->course;
         return $course->teacher->name;
     }
@@ -231,6 +233,7 @@ class Lecture extends Model
         if ($withReview->count() >= 3) {
             return $withReview->map(function ($review) {
                 $review->user_name = $review->user ? $review->user->userName : null;
+                return $review;
             });
         }
         return $withReview->map(function ($review) {
@@ -273,7 +276,8 @@ class Lecture extends Model
         return $rating ? $rating->rating : null;
     }
 
-    public function likes() {
+    public function likes()
+    {
         return $this->hasMany(Like::class);
     }
 
@@ -287,14 +291,22 @@ class Lecture extends Model
         return $this->likes()->where('isDisliked', true)->count();
     }
 
-    public function getIsLikedAttribute() {
+    public function getIsLikedAttribute()
+    {
         $like = $this->likes()->where('isLiked', true)->where('user_id', Auth::id())->first();
         return $like ? true : false;
     }
 
-    public function getIsDislikedAttribute() {
+    public function getIsDislikedAttribute()
+    {
         $like = $this->likes()->where('isDisliked', true)->where('user_id', Auth::id())->first();
         return $like ? true : false;
+    }
+
+    public function getIsFavoriteAttribute() {
+        if(Auth::user()) {
+            return Auth::user()->favoriteLectures()->where('lecture_id', $this->id)->exists();
+        }
     }
 
 
@@ -312,6 +324,7 @@ class Lecture extends Model
         'likes',
         'dislikes',
         'isLiked',
-        'isDisliked'
+        'isDisliked',
+        'isFavorite'
     ];
 }

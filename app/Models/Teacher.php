@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Ratings\RatingService;
+use Illuminate\Support\Facades\DB;
 
 /**
  *
@@ -117,8 +118,7 @@ class Teacher extends Model
 
     public function favoritedByUsers()
     {
-        return $this->belongsToMany(User::class, 'favourites')
-            ->withTimestamps();
+        return $this->belongsToMany(User::class, 'favourites');
     }
 
     public function ratings()
@@ -159,7 +159,6 @@ class Teacher extends Model
     {
         // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
         $withReview = $this->ratings()
-
             ->whereNotNull('review')
             ->where('isHidden', false)
             ->withCount(['helpful', 'unhelpful'])
@@ -171,10 +170,10 @@ class Teacher extends Model
             ->take(3)
             ->get();
 
-
         if ($withReview->count() >= 3) {
             return $withReview->map(function ($review) {
                 $review->user_name = $review->user ? $review->user->userName : null;
+                return $review;
             });
         }
 
@@ -215,6 +214,11 @@ class Teacher extends Model
 
         return $fullBreakdown;
     }
+
+    public function getIsFavoriteAttribute() {
+        return Auth::user()->favoriteTeachers()->where('teacher_id', $this->id)->exists();
+    }
+
     public function getUserSubsAttribute()
     {
         // Get all course IDs for this teacher
@@ -240,7 +244,7 @@ class Teacher extends Model
         return $rating ? $rating->rating : null;
     }
 
-    protected $appends = ['rating', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
+    protected $appends = ['rating', 'isFavorite', 'courseNames', 'coursesNum', 'rating_breakdown', 'FeaturedRatings', 'UserSubs', 'user_rating', 'ratings_count'];
 
     public function courseRequests()
     {

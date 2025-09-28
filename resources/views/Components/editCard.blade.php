@@ -384,6 +384,8 @@
                         @elseif ($menu == 'Course')
                             {{ $subject->name }} ({{ $subject->subject->name }}
                             {{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
+                            @elseif ($menu == 'Teacher')
+                            {{ $subject->name }}
                         @endif
                     </button>
                 @endforeach
@@ -416,6 +418,9 @@
                                 @elseif ($menu == 'Course')
                                     {{ $subject->name }} ({{ $subject->subject->name }}
                                     {{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
+                                    @elseif ($menu == 'Teacher')
+                                    {{ $subject->name }}
+
                                 @endif
                             </option>
                         @endif

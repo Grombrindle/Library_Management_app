@@ -64,7 +64,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getteachercoursesrecent/{id}', [TeacherController::class, 'fetchCoursesRecent']);
     Route::get('/getteachercoursesrated/{id}', [TeacherController::class, 'fetchCoursesRated']);
     Route::get('/getteachersubjectsnames/{id}', [TeacherController::class, 'fetchSubjectsNames']);
-    Route::get('/getteachercoursessnames/{id}', [TeacherController::class, 'fetchCoursesNames']);
+    Route::get('/getteachercoursesnames/{id}', [TeacherController::class, 'fetchCoursesNames']);
     // Route::get('/getteacheruniversities/{id}', [TeacherController::class, 'fetchUnis']);
     Route::get('/getallteachers', [TeacherController::class, 'fetchAll']);
     Route::get('/favoriteteacher/{teacher}', [TeacherController::class, 'checkFavoriteTeacher']);
@@ -152,14 +152,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //TASKS
     Route::get('/gettasks', [TaskController::class, 'fetchAll']);
+    Route::get('/getavailabletasks', [TaskController::class, 'availableTasks']);
+    Route::get('/gettrashedtasks', [TaskController::class, 'trashedTasks']);
     Route::post('/addtask', [TaskController::class, 'add']);
     Route::put('/checktask/{id}', [TaskController::class, 'toggleChecked']);
     Route::put('/trashtask/{id}', [TaskController::class, 'toggleDelete']);
     Route::put('/restoretask/{id}', [TaskController::class, 'restore']);
     Route::put('/edittask/{id}', [TaskController::class, 'edit']);
     Route::delete('/deletetask/{id}', [TaskController::class, 'delete']);
-    Route::get('/gettrashedtasks', [TaskController::class, 'trashedTasks']);
-    Route::get('/getavailabletasks', [TaskController::class, 'availableTasks']);
 
     Route::get('/getwatchlistlectures', [WatchlistController::class, 'fetchLectures']);
     Route::get('/getwatchlistcourses', [WatchlistController::class, 'fetchCourses']);

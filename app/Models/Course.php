@@ -140,6 +140,7 @@ class Course extends Model
         if ($withReview->count() >= 3) {
             return $withReview->map(function ($review) {
                 $review->user_name = $review->user ? $review->user->userName : null;
+                return $review;
             });
         }
 

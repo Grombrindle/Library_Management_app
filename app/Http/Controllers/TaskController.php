@@ -3,28 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Task;
+use App\Services\Tasks\TaskService;
 
 class TaskController extends Controller
 {
-    //
+    protected $taskService;
+
+    public function __construct(TaskService $taskService)
+    {
+        $this->taskService = $taskService;
+    }
+
     public function fetchAll()
     {
         return response()->json([
             'success' => true,
-            'tasks' => Auth::user()->tasks()->get()
+            'tasks' => $this->taskService->fetchAll()
         ]);
     }
 
     public function add(Request $request)
     {
-        $task = Task::create([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'estimatedHours' => $request->input('estimatedHours'),
-            'user_id' => Auth::id(),
-        ]);
+        $task = $this->taskService->add($request->all());
         return response()->json([
             'success' => true,
             'task' => $task
@@ -33,107 +33,62 @@ class TaskController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $task = Task::findOrFail($id);
-        if ($task->user_id !== Auth::id()) {
+        $task = $this->taskService->edit($id, $request->all());
+        if (!$task) {
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
         }
-        $task->update([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'estimatedHours' => $request->input('estimatedHours')
-        ]);
-        return response()->json([
-            'success' => true,
-            'task' => Task::findOrFail($id)
-        ]);
+        return response()->json(['success' => true, 'task' => $task]);
     }
 
     public function toggleChecked($id)
     {
-        $task = Task::findOrFail($id);
-        if ($task->user_id !== Auth::id()) {
+        $task = $this->taskService->toggleChecked($id);
+        if (!$task) {
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
         }
-        $task->isChecked ^= true;
-        $task->save();
-        return response()->json([
-            'success' => true,
-            'task' => Task::findOrFail($id)
-        ]);
+        return response()->json(['success' => true, 'task' => $task]);
     }
 
     public function toggleDelete($id)
     {
-        $task = Task::withTrashed()->findOrFail($id);
-        if ($task->user_id !== Auth::id()) {
+        $task = $this->taskService->toggleDelete($id);
+        if (!$task) {
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
         }
-        if ($task->trashed()) {
-            $task->restore();
-        } else {
-            $task->delete();
-        }
-        return response()->json([
-            'success' => true,
-            'task' => Task::withTrashed()->findOrFail($id)
-        ]);
+        return response()->json(['success' => true, 'task' => $task]);
     }
 
     public function restore($id)
     {
-        $task = Task::onlyTrashed()->findOrFail($id);
-        if ($task->user_id !== Auth::id()) {
+        $task = $this->taskService->restore($id);
+        if (!$task) {
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
         }
-        $task->restore();
-        return response()->json([
-            'success' => true,
-            'task' => $task
-        ]);
+        return response()->json(['success' => true, 'task' => $task]);
     }
 
     public function delete($id)
     {
-        $task = Task::withTrashed()->findOrFail($id);
-        if ($task->user_id !== Auth::id()) {
+        $tasks = $this->taskService->delete($id);
+        if (!$tasks) {
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
         }
-        $task->delete();
+        return response()->json(['success' => true, 'tasks' => $tasks]);
+    }
+
+    public function trashedTasks()
+    {
         return response()->json([
-            'success' => true,
-            'tasks' => Auth::user()->tasks()->get()
+            'status' => 'success',
+            'tasks' => $this->taskService->trashedTasks()
         ]);
     }
 
-    /**
-     * Get all soft-deleted tasks for the authenticated user.
-     */
-    public function trashedTasks(Request $request)
+    public function availableTasks()
     {
-        $user = $request->user();
-
-        $tasks = Task::onlyTrashed()
-            ->where('user_id', $user->id)
-            ->get();
-
         return response()->json([
             'status' => 'success',
-            'tasks' => $tasks,
-        ]);
-    }
-
-    /**
-     * Get all available (non-deleted) tasks for the authenticated user.
-     */
-    public function availableTasks(Request $request)
-    {
-        $user = $request->user();
-
-        $tasks = Task::where('user_id', $user->id)->get();
-
-        return response()->json([
-            'status' => 'success',
-            'tasks' => $tasks,
+            'tasks' => $this->taskService->availableTasks()
         ]);
     }
 }

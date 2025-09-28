@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->json('requirements')->nullable()->default(json_encode(['A Brain']));
-            $table->foreignIdFor(Teacher::class);
-            $table->foreignIdFor(Subject::class);
+            $table->foreignIdFor(Teacher::class)->constrained()->onDelete('cascade');
+            $table->foreignIdFor(Subject::class)->constrained()->onDelete('cascade');
             $table->integer('lecturesCount');
             $table->integer('subscriptions');
             $table->string('image');

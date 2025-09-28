@@ -135,6 +135,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class, 'favourite_courses')
             ->withTimestamps();
     }
+    public function favoriteLectures()
+    {
+        return $this->belongsToMany(Lecture::class, 'favourite_lectures')
+            ->withTimestamps();
+    }
 
     public function toggleFavorite(Teacher $teacher): bool
     {

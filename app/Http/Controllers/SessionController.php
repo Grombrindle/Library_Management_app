@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\Session\SessionService;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Admin;
+use Illuminate\Support\Facades\Hash;
 
 class SessionController extends Controller
 {
@@ -47,5 +50,27 @@ class SessionController extends Controller
     public function test()
     {
         return response()->json(['User' => auth()->user()]);
+    }
+
+    public function loginView()
+    {
+        if (Auth::check()) {
+            return redirect()->route('welcome');
+        }
+        return view('register');
+    }
+
+    public function loginWeb(Request $request)
+    {
+        $credentials = ['userName' => $request->userName, 'password' => $request->password];
+        if (Auth::attempt($credentials)) {
+            $admin = Admin::where('userName', $credentials['userName'])->first();
+            if (Hash::check($credentials['password'], $admin->password)) {
+                Auth::login($admin);
+                return redirect('/welcome');
+            }
+        }
+        return redirect()->back()->withErrors(['password' => 'Invalid Credentials'])->withInput(['userName']);
+
     }
 }
