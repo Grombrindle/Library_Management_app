@@ -209,6 +209,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Lecture::class, 'watchlists', 'user_id', 'lecture_id')
             ->withTimestamps();
     }
+    public function courseWatchlist()
+    {
+        return $this->belongsToMany(Course::class, 'watchlists', 'user_id', 'course_id')
+            ->withTimestamps();
+    }
 
     public function resourceWatchlist()
     {

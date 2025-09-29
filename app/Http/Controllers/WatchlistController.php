@@ -3,18 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Watchlist;
+use App\Services\WatchlistService;
 
 class WatchlistController extends Controller
 {
-    //
+    protected $watchlistService;
+
+    public function __construct(WatchlistService $watchlistService)
+    {
+        $this->watchlistService = $watchlistService;
+    }
 
     public function fetchLectures()
     {
         return response()->json([
             'success' => true,
-            'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('lecture_id')->get()
+            'watchlist' => $this->watchlistService->fetchLectures()
         ]);
     }
 
@@ -22,7 +26,7 @@ class WatchlistController extends Controller
     {
         return response()->json([
             'success' => true,
-            'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('course_id')->get()
+            'watchlist' => $this->watchlistService->fetchCourses()
         ]);
     }
 
@@ -30,76 +34,40 @@ class WatchlistController extends Controller
     {
         return response()->json([
             'success' => true,
-            'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('resource_id')->get()
+            'watchlist' => $this->watchlistService->fetchResources()
         ]);
     }
 
     public function toggleLecture($id)
     {
-        $user = Auth::user();
-        $lecture = \App\Models\Lecture::findOrFail($id);
-
-        // Check if lecture is already in watchlist
-        if ($user->watchlist()->where('lecture_id', $id)->exists()) {
-            // Remove from watchlist
-            $user->watchlist()->detach($id);
-            $action = 'removed';
-        } else {
-            // Add to watchlist
-            $user->watchlist()->attach($id);
-            $action = 'added';
-        }
+        $result = $this->watchlistService->toggleLecture($id);
 
         return response()->json([
             'success' => true,
-            'action' => $action,
-            'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('lecture_id')->get()
+            'action' => $result['action'],
+            'watchlist' => $result['watchlist']
         ]);
     }
 
     public function toggleCourse($id)
     {
-        $user = Auth::user();
-        $course = \App\Models\Course::findOrFail($id);
-
-        // Check if course is already in watchlist
-        if ($user->watchlist()->where('course_id', $id)->exists()) {
-            // Remove from watchlist
-            $user->watchlist()->detach($id);
-            $action = 'removed';
-        } else {
-            // Add to watchlist
-            $user->watchlist()->attach($id);
-            $action = 'added';
-        }
+        $result = $this->watchlistService->toggleCourse($id);
 
         return response()->json([
             'success' => true,
-            'action' => $action,
-            'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('course_id')->get()
+            'action' => $result['action'],
+            'watchlist' => $result['watchlist']
         ]);
     }
 
     public function toggleResource($id)
     {
-        $user = Auth::user();
-        $resource = \App\Models\Resource::findOrFail($id);
-
-        // Check if resource is already in watchlist
-        if ($user->resourceWatchlist()->where('resource_id', $id)->exists()) {
-            // Remove from watchlist
-            $user->resourceWatchlist()->detach($id);
-            $action = 'removed';
-        } else {
-            // Add to watchlist
-            $user->resourceWatchlist()->attach($id);
-            $action = 'added';
-        }
+        $result = $this->watchlistService->toggleResource($id);
 
         return response()->json([
             'success' => true,
-            'action' => $action,
-            'watchlist' => Watchlist::where('user_id', Auth::id())->whereNotNull('resource_id')->get()
+            'action' => $result['action'],
+            'watchlist' => $result['watchlist']
         ]);
     }
 }

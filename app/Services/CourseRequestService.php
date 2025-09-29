@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\CourseRequests;
+namespace App\Services;
 
 use App\Models\CourseRequest;
 use App\Models\Course;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\SavedMessages;
+namespace App\Services;
 
 use App\Models\SavedMessage;
 use Illuminate\Support\Facades\Auth;

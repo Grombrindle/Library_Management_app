@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Files;
+namespace App\Services;
 
 use App\Models\Lecture;
 use App\Models\Resource;

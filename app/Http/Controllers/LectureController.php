@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\Lectures\LectureService;
+use App\Services\LectureService;
 
 class LectureController extends Controller
 {

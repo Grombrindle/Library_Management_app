@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Likes;
+namespace App\Services;
 
 use App\Actions\Likes\FetchLikesAction;
 use App\Actions\Likes\ToggleLikeAction;

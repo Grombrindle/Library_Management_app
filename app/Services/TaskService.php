@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Tasks;
+namespace App\Services;
 
 use App\Models\Task;
 use Illuminate\Support\Facades\Auth;

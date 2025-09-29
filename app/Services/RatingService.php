@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Ratings;
+namespace App\Services;
 
 use App\Models\Teacher;
 

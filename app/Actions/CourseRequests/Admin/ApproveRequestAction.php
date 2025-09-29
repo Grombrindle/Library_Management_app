@@ -2,7 +2,7 @@
 
 namespace App\Actions\CourseRequests\Admin;
 
-use App\Services\CourseRequests\CourseRequestService;
+use App\Services\CourseRequestService;
 use App\Models\Admin;
 
 class ApproveRequestAction

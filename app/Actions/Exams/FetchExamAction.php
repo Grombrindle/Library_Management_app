@@ -2,7 +2,7 @@
 
 namespace App\Actions\Exams;
 
-use App\Services\Exams\ExamService;
+use App\Services\ExamService;
 
 class FetchExamAction
 {

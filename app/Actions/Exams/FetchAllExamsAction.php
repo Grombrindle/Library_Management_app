@@ -3,7 +3,7 @@
 namespace App\Actions\Exams;
 
 use Illuminate\Http\Request;
-use App\Services\Exams\ExamService;
+use App\Services\ExamService;
 
 class FetchAllExamsAction
 {

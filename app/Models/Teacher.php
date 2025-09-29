@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
-use App\Services\Ratings\RatingService;
+use App\Services\RatingService;
 use Illuminate\Support\Facades\DB;
 
 /**

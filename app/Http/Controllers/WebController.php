@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\WebService;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class WebController extends Controller
 {
+    protected $webService;
+
+    public function __construct(WebService $webService)
+    {
+        $this->webService = $webService;
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -15,99 +23,50 @@ class WebController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('userName', $credentials['userName'])->first();
+        $result = $this->webService->login($credentials);
 
-        // Primitive check for username and password
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-
-            session(['user' => $user->id]);
-
-            // Simulate login success (set session or redirect as needed)
+        if ($result['success']) {
             return redirect('/home');
         }
 
-        return back()->withErrors([
-            'userName' => 'Invalid username or password.',
-        ])->withInput();
+        return back()->withErrors(['userName' => $result['message']])->withInput();
     }
+
     public function register(Request $request)
     {
+        $data = $request->validate([
+            'userName' => 'required|string|unique:users,userName',
+            'number' => 'required|string|unique:users,number',
+            'password' => 'required|string|confirmed|min:6',
+            'countryCode' => 'nullable|string|max:5',
+        ]);
 
-        // $validator = Validator::make($request->all(), [
-        //     'userName' => 'required|string|unique:users,userName',
-        //     'number' => 'required|string|unique:users,number',
+        $result = $this->webService->register($data);
 
-        //     // 'deviceId' => 'required|string|unique:users,deviceId',
-
-        // ], [
-        //     'userName.unique' => 'Already Used',
-        //     'number.unique' => 'Already Used',
-
-        //     // 'deviceId.unique' => 'Already Used',
-
-        // ]);//this will check if these are unique or already in use by other users
-        // //we return each one that wasn't unique so the frontend can highlight all the fields that are already in use
-
-        // if ($validator->fails()) {
-        //     // Return all validation errors
-        //     return response()->json([
-        //         'success' => false,
-        //         'reason' => $validator->errors(),
-        //     ], 422);
-        // }
-        // $userAttributes = $request->validate([
-        //     $userName = $request->input('userName'),
-        //     $number = $request->input('number'),
-        //     $password = Hash::make($request->input('password')),
-
-
-        //     // $deviceId = $request->input('devceId'),
-
-        //     $countryCode = "+963",
-        // ]);
-
-        // $user = User::create([
-        //     'userName' => $userName,
-        //     'number' => $number,
-        //     'password' => $password,
-        //     'countryCode' => $countryCode,
-        //     'isBanned' => 0,
-        //     'counter' => 0,
-        //     // 'deviceId' => $deviceId,
-
-        // ]);
-        // $token = $user->createToken('API Token Of' . $user->name)->plainTextToken;
-        // $user->remember_token = $token;
-        // $user->save();
-        // Auth::login($user);
-        // return response()->json(['success' => 'true', 'token' => $token, 'user' => $user]);//we return a "success" field so the frontend can see if the sign up process failed or not
-
+        return redirect('/home');
     }
 
     public function update(Request $request)
     {
-        $user = User::findOrFail(session('user'));
+        $user = Auth::user(); // Use Auth user instead of session('user')
 
-        $request->validate([
+        $data = $request->validate([
             'userName' => 'required|string|max:255|unique:users,userName,' . $user->id,
             'countryCode' => 'required|string|max:5',
             'number' => 'required|string|max:15',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->only('userName', 'countryCode', 'number');
+        // Handle avatar upload if needed
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                \Storage::delete('public/' . $user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $data['avatar'] = $path;
+        }
 
-        // if ($request->hasFile('avatar')) {
-        //     // Delete old avatar if exists
-        //     if ($user->avatar) {
-        //         Storage::delete('public/' . $user->avatar);
-        //     }
-
-        //     $path = $request->file('avatar')->store('avatars', 'public');
-        //     $data['avatar'] = $path;
-        // }
-
-        $user->update($data);
+        $this->webService->updateUser($user, $data);
 
         return redirect()->route('web.profile')->with('success', 'Profile updated successfully!');
     }

@@ -2,8 +2,7 @@
 
 <x-layout>
     <x-breadcrumb :links="['Home' => url('/welcome'), 'Users' => url('/users'), $user->userName => Request::url()]" :align=true />
-    <x-infocard :editLink="'user/edit/' . $user->id" :deleteLink=null :object=$user objectType="User"
-        name="{{ $user->userName }}">
+    <x-infocard :editLink="'user/edit/' . $user->id" :deleteLink=null :object=$user objectType="User" name="{{ $user->userName }}">
         <br>
         ● {{ __('messages.userName') }}: {{ $user->userName }}<br>
         ● {{ __('messages.userNumber') }}: <br> {{ $user->countryCode }} {{ $user->number }}<br>
@@ -33,9 +32,13 @@
         @else
         <span>{{ $user->lectures->count() }}</span>
             @endif --}}
-        ● {{ __('messages.sparks') }}: {{$user->sparks}}
-        ● {{ __('messages.sparkies') }}: {{$user->sparkies}}
+        ● {{ __('messages.sparks') }}: {{ $user->sparks }}
+        ● {{ __('messages.sparkies') }}: {{ $user->sparkies }}
 
 
+        @if ($user->isBanned)
+            <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">{{ __('messages.banned') }}
+            </div>
+        @endif
     </x-infocard>
 </x-layout>

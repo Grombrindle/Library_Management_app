@@ -6,7 +6,7 @@ use App\Models\Admin;
 use App\Actions\Admin\AdminCreateAction;
 use App\Actions\Admin\AdminUpdateAction;
 use App\Actions\Admin\AdminDeleteAction;
-use App\Services\Admin\AdminAuthService;
+use App\Services\AdminAuthService;
 use Illuminate\Validation\Rule;
 
 class AdminController extends Controller

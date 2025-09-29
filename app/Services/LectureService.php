@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Lectures;
+namespace App\Services;
 
 use App\Models\Lecture;
 use App\Models\Quiz;

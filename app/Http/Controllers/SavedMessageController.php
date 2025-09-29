@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\SavedMessages\SavedMessageService;
+use App\Services\SavedMessageService;
 
 class SavedMessageController extends Controller
 {

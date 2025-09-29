@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\Quiz\QuizService;
+use App\Services\QuizService;
 use Illuminate\Support\Facades\Session;
 
 class QuizController extends Controller

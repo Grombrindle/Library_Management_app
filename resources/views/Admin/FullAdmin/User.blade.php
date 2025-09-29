@@ -1,7 +1,11 @@
 @props(['user' => App\Models\User::findOrFail(session('user'))])
 
 <x-layout>
-    <x-breadcrumb :links="[__('messages.home') => url('/welcome'), __('messages.users') => url('/users'), $user->userName => Request::url()]" :align=true />
+    <x-breadcrumb :links="[
+        __('messages.home') => url('/welcome'),
+        __('messages.users') => url('/users'),
+        $user->userName => Request::url(),
+    ]" :align=true />
     <x-infocard :editLink="'user/edit/' . $user->id" deleteLink="deleteuser/{{ $user->id }}" :object=$user objectType="User"
         name="{{ $user->userName }}">
         <br>
@@ -29,7 +33,7 @@
 
         ● {{ __('messages.sparks') }}: {{ $user->sparks }}
         <br>
-        ● {{ __('messages.sparkies') }}: {{$user->sparkies}}
+        ● {{ __('messages.sparkies') }}: {{ $user->sparkies }}
 
 
         {{-- ● {{ __('messages.numberOfLecturesSubscribedTo') }}:
@@ -39,10 +43,11 @@
         @else
         <a href="/user/{{$user->id}}/lectures" style="color:blue">{{ $user->lectures->count() }}</a>
             @endif
-
-            @if ($user->isBanned)
-                <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">{{ __('messages.banned') }}</div>
-            @endif --}}
+ --}}
+        @if ($user->isBanned)
+            <div style="color: red; font-weight: bold; margin-top: 1rem; font-size:60px;">{{ __('messages.banned') }}
+            </div>
+        @endif
     </x-infocard>
 
 </x-layout>

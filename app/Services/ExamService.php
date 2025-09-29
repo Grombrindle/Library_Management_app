@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Exams;
+namespace App\Services;
 
 use App\Models\Exam;
 use App\Models\Subject;

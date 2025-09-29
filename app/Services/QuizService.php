@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Quiz;
+namespace App\Services;
 
 use App\Actions\Quiz\FetchScoreAction;
 use App\Actions\Quiz\CheckScoresAction;
