@@ -20,8 +20,7 @@ class CourseService
 
         $courses = $teacher->courses()
             ->with(['subject:id,name,literaryOrScientific'])
-            ->get()
-            ->map(fn($course) => tap($course, fn($c) => $c->sources = json_decode($c->sources, true)));
+            ->get();
 
         return response()->json([
             'success' => true,
@@ -37,7 +36,6 @@ class CourseService
             return response()->json(['success' => false, 'reason' => 'Course Not Found'], 404);
         }
 
-        $course->sources = json_decode($course->sources, true);
         return response()->json(['success' => true, 'course' => $course]);
     }
 
@@ -45,7 +43,6 @@ class CourseService
     {
         $courses = Course::all()->map(function ($course) {
             $course->rating = DB::table('course_rating')->where('course_id', $course->id)->avg('rating') ?? null;
-            $course->sources = is_string($course->sources) ? json_decode($course->sources, true) : ($course->sources ?? []);
             return $course;
         });
 
@@ -56,8 +53,7 @@ class CourseService
     {
         $courses = Course::withAvg('ratings', 'rating')
             ->orderByDesc('created_at')
-            ->get()
-            ->map(fn($course) => tap($course, fn($c) => $c->sources = is_string($c->sources) ? json_decode($c->sources, true) : ($c->sources ?? [])));
+            ->get();
 
         return response()->json(['courses' => $courses]);
     }
@@ -66,8 +62,7 @@ class CourseService
     {
         $courses = Course::withAvg('ratings', 'rating')
             ->orderByDesc('ratings_avg_rating')
-            ->get()
-            ->map(fn($course) => tap($course, fn($c) => $c->sources = is_string($c->sources) ? json_decode($c->sources, true) : ($c->sources ?? [])));
+            ->get();
 
         return response()->json(['courses' => $courses]);
     }
@@ -76,8 +71,7 @@ class CourseService
     {
         $courses = Course::withCount('users')
             ->orderByDesc('users_count')
-            ->get()
-            ->map(fn($course) => tap($course, fn($c) => $c->sources = is_string($c->sources) ? json_decode($c->sources, true) : ($c->sources ?? [])));
+            ->get();
 
         return response()->json(['courses' => $courses]);
     }
@@ -95,8 +89,7 @@ class CourseService
                 ) *
                 (1 + (COALESCE(ratings_avg_rating, 0) / 5))
             '))
-            ->get()
-            ->map(fn($course) => tap($course, fn($c) => $c->sources = is_string($c->sources) ? json_decode($c->sources, true) : ($c->sources ?? [])));
+            ->get();
 
         return response()->json(['courses' => $courses]);
     }
@@ -106,8 +99,7 @@ class CourseService
         $courses = $user->courses()
             ->withCount('users')
             ->withAvg('ratings', 'rating')
-            ->get()
-            ->map(fn($course) => tap($course, fn($c) => $c->sources = is_string($c->sources) ? json_decode($c->sources, true) : ($c->sources ?? [])));
+            ->get();
 
         return response()->json(['courses' => $courses]);
     }
@@ -118,7 +110,7 @@ class CourseService
         if (!$course) {
             return response()->json(['success' => false, 'reason' => 'Course Not Found'], 404);
         }
-        $course->sources = json_decode($course->sources, true);
+
         $teachers = $course->teacher ?? null;
         return response()->json(['success' => true, 'teachers' => $teachers, 'course' => $course]);
     }
@@ -141,30 +133,25 @@ class CourseService
                     (1 + (COALESCE(ratings_avg_rating, 0) / 5))
                 '))
                 ->limit(7)
-                ->get()
-                ->map(fn($c) => tap($c, fn($x) => $x->sources = json_decode($x->sources, true)));
+                ->get();
 
             $topRated = Course::withAvg('ratings', 'rating')
                 ->orderByDesc('ratings_avg_rating')
                 ->limit(7)
-                ->get()
-                ->map(fn($c) => tap($c, fn($x) => $x->sources = json_decode($x->sources, true)));
+                ->get();
 
             $mostSubscribed = Course::withCount('users')
                 ->orderByDesc('users_count')
                 ->limit(7)
-                ->get()
-                ->map(fn($c) => tap($c, fn($x) => $x->sources = json_decode($x->sources, true)));
+                ->get();
 
             $recent = Course::orderByDesc('created_at')
                 ->limit(7)
-                ->get()
-                ->map(fn($c) => tap($c, fn($x) => $x->sources = is_string($x->sources) ? json_decode($x->sources, true) : ($x->sources ?? [])));
+                ->get();
 
             $userSubscribed = null;
             if ($user) {
-                $userSubscribed = $user->courses()->limit(7)->get()
-                    ->map(fn($c) => tap($c, fn($x) => $x->sources = json_decode($x->sources, true)));
+                $userSubscribed = $user->courses()->limit(7)->get();
             }
 
             return response()->json([

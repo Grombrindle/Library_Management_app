@@ -51,7 +51,7 @@ class SessionService
 
             Auth::login($user);
 
-            return ['success' => true, 'user' => $user, 'token' => $token];
+            return ['success' => true, 'token' => $token,'user' => $user];
         }
 
         return ['success' => false, 'message' => 'Invalid Credentials'];
@@ -120,14 +120,18 @@ class SessionService
      */
     public function logoutUser()
     {
+
         $user = Auth::user();
-        if ($user) {
+        if (Auth::user() === null || (Auth::user() instanceof \App\Models\User)) {
             $user->remember_token = null;
             $user->save();
             $user->tokens()->delete();
         }
-
         Auth::guard('web')->logout();
+        session()->invalidate();
+        session()->regenerateToken();
+
+        return ['success' => true];
     }
 
     /**

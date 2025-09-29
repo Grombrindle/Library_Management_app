@@ -53,7 +53,15 @@ class TaskService
         if ($task->user_id !== Auth::id()) {
             return null;
         }
-        $task->trashed() ? $task->restore() : $task->delete();
+        if($task->trashed()) {
+            $task->restore();
+            $task->isTrashed = false;
+        }
+        else {
+            $task->delete();
+            $task->isTrashed = true;
+        }
+        $task->save();
         return Task::withTrashed()->findOrFail($id);
     }
 
@@ -73,7 +81,7 @@ class TaskService
         if ($task->user_id !== Auth::id()) {
             return null;
         }
-        $task->delete();
+        $task->forceDelete();
         return Auth::user()->tasks()->get();
     }
 

@@ -32,11 +32,14 @@ class Course extends Model
     protected $casts = [
         'created_at' => 'date:Y-m-d',
         'updated_at' => 'date:Y-m-d',
-        'sources' => 'array',
+        // 'sources' => 'array',  <-- removed in favor of explicit accessor/mutator
         'price' => 'string',
         'requirements' => 'array'
     ];
 
+    /**
+     * Ensure requirements are displayed as joined string when accessed
+     */
     public function getRequirementsAttribute($value)
     {
         // If requirements is already an array (from casting), use it directly
@@ -56,18 +59,80 @@ class Course extends Model
         return $value;
     }
 
+    /**
+     * Accessor for sources - always return as array
+     */
+    public function getSourcesAttribute($value)
+    {
+        // dd(json_decode(json_decode($this->attributes['sources'])));
+        if (is_null($value)) {
+            return [];
+        }
+
+        // If it's already an array (unlikely but safe), return it
+        if (is_array($value)) {
+            return $value;
+        }
+
+        $decoded = json_decode($value, true);
+        // dd($decoded);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return $decoded;
+        }
+
+        // If decode failed, return empty array (or you could return [$value])
+        return [];
+    }
+
+    /**
+     * Mutator for sources - accepts array or JSON/string and stores JSON
+     */
+    public function setSourcesAttribute($value)
+    {
+        if (is_null($value)) {
+            $this->attributes['sources'] = null;
+            return;
+        }
+
+        // If given array => encode to JSON
+        if (is_array($value)) {
+            $this->attributes['sources'] = json_encode($value, JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // If given string, check if it's valid JSON already
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                // store as-is (already JSON)
+                $this->attributes['sources'] = $value;
+                return;
+            }
+
+            // not valid JSON: store as JSON array containing the string
+            $this->attributes['sources'] = json_encode([$value], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // Fallback: JSON encode whatever it is
+        $this->attributes['sources'] = json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+
     public function teacher()
     {
         return $this->belongsTo(Teacher::class);
     }
+
     function users()
     {
         return $this->belongsToMany(User::class, 'subscriptions');
     }
+
     public function subject()
     {
         return $this->belongsTo(Subject::class);
     }
+
     public function lectures()
     {
         return $this->hasMany(Lecture::class, 'course_id');
@@ -84,23 +149,19 @@ class Course extends Model
         return $avgRating ? round($avgRating, 2) : null;
     }
 
-
     public function getTeacherNameAttribute() {
         $teacher = $this->teacher()->first();
         return $teacher->name;
     }
 
-
     public function getRatingBreakdownAttribute()
     {
-        // Get the count of each rating (1-5) for this course
         $breakdown = $this->ratings()
             ->selectRaw('rating, COUNT(*) as count')
             ->groupBy('rating')
             ->pluck('count', 'rating')
             ->toArray();
 
-        // Ensure all ratings 1-5 are present, even if 0
         $fullBreakdown = [];
         foreach (range(1, 5) as $rating) {
             $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
@@ -114,15 +175,8 @@ class Course extends Model
         return $this->users()->count();
     }
 
-    //dis new
-    // public function getRatingsCountAttribute()
-    // {
-    //     return $this->ratings()->count();
-    // }
-
     public function getFeaturedRatingsAttribute()
     {
-        // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
         $withReview = $this->ratings()
             ->whereNotNull('review')
             ->where('isHidden', false)
@@ -133,9 +187,7 @@ class Course extends Model
             ->orderByRaw('LENGTH(review) DESC')
             ->orderByDesc('created_at')
             ->take(3)
-            ->where('isHidden', false)
             ->get();
-
 
         if ($withReview->count() >= 3) {
             return $withReview->map(function ($review) {
@@ -210,18 +262,14 @@ class Course extends Model
         return $rating ? $rating->rating : null;
     }
 
-
-    //dis new
     public function getRatingsCountAttribute()
     {
-        // Get the count of each rating (1-5) for this course
         $breakdown = $this->ratings()
             ->selectRaw('rating, COUNT(*) as count')
             ->groupBy('rating')
             ->pluck('count', 'rating')
             ->toArray();
 
-        // Ensure all ratings 1-5 are present, even if 0
         $fullBreakdown = [];
         foreach (range(1, 5) as $rating) {
             $fullBreakdown[$rating] = isset($breakdown[$rating]) ? $breakdown[$rating] : 0;
@@ -234,42 +282,6 @@ class Course extends Model
     {
         return $this->ratings()->orderByDesc('rating')->take(3)->get();
     }
-
-    // public function getFeaturedRatingsAttribute()
-    // {
-    //     // First, get reviews with non-null review text, ordered by IMDB-like algorithm
-    //     $withReview = $this->ratings()
-    //         ->with('user')
-    //         ->whereNotNull('review')
-    //         ->orderByDesc('rating')
-    //         ->orderByRaw('LENGTH(review) DESC')
-    //         ->orderByDesc('created_at')
-    //         ->take(3)
-    //         ->get();
-
-    //     // If we have 3, return them (with user name)
-    //     if ($withReview->count() >= 3) {
-    //         return $withReview->map(function($review) {
-    //             $review->user_name = $review->user ? $review->user->userName : null;
-    //             return $review;
-    //         });
-    //     }
-
-    //     // Otherwise, get more ratings (regardless of review text) to fill up to 3
-    //     $needed = 3 - $withReview->count();
-    //     $withoutReview = $this->ratings()
-    //         ->whereNull('review')
-    //         ->orderByDesc('rating')
-    //         ->orderByDesc('created_at')
-    //         ->take($needed)
-    //         ->get();
-
-    //     $all = $withReview->concat($withoutReview);
-    //     return $all->map(function($review) {
-    //         $review->user_name = $review->user ? $review->user->userName : null;
-    //         return $review;
-    //     });
-    // }
 
     public function getLectureNumAttribute()
     {
@@ -300,8 +312,6 @@ class Course extends Model
         'duration_human',
         'user_rating'
     ];
-
-    // protected $with = ['ratings'];
 
     public function courseRequest()
     {

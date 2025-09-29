@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\LectureService;
+use App\Models\Lecture;
 
 class LectureController extends Controller
 {
@@ -37,6 +38,25 @@ class LectureController extends Controller
     public function fetchQuizQuestions($lectureId)
     {
         return response()->json($this->lectureService->fetchQuizQuestions($lectureId));
+    }
+
+
+
+    public function fetchFeaturedRatings($id)
+    {
+        $lecture = Lecture::find($id);
+
+        if ($lecture)
+            return response()->json([
+                'success' => true,
+                'FeaturedRatings' => $lecture->getFeaturedRatingsAttribute(),
+            ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Lecture not found'
+        ], 404);
+
     }
 
     public function rate(Request $request, $lectureId)

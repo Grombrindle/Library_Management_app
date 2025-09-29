@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Courses\CourseRatingService;
 use App\Actions\Courses\{
     GetTeacherCoursesAction,
     FetchCourseAction,
@@ -86,9 +88,20 @@ class CourseController extends Controller
         return app(FetchCourseRatingsAction::class)->execute($id);
     }
 
+    public function fetchFeaturedRatings($id)
+    {
+        $course = Course::find($id);
+
+        return response()->json([
+            'success' => true,
+            'FeaturedRatings' => $course->getFeaturedRatingsAttribute(),
+        ]);
+
+    }
+
     public function rate(Request $request, $id)
     {
-        return app(RateCourseAction::class)->execute(Auth::user(), $id, $request->all());
+        return app(CourseRatingService::class)->rateCourse(Auth::user(), $id, $request->all());
     }
 
     public function add(Request $request)

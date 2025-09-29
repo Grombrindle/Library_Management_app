@@ -3,30 +3,69 @@
 namespace App\Actions\Resources;
 
 use App\Models\Resource;
+use Illuminate\Http\Request;
 
 class EditResourceAction
 {
-    public function execute(int $id, array $data): array
+    public function ensureDirectoriesExist()
     {
+        $dirs = [
+            public_path('Images/Resources'),
+            public_path('Files/Resources'),
+            public_path('Files/Resources/Audio')
+        ];
+
+        foreach ($dirs as $dir) {
+            if (!is_dir($dir))
+                mkdir($dir, 0755, true);
+        }
+    }
+
+    public function execute(Request $request, int $id): array
+    {
+        $this->ensureDirectoriesExist();
+
         $resource = Resource::find($id);
 
-        if (!$resource) {
-            return [
-                'success' => false,
-                'reason' => 'Resource not found',
-            ];
+        // Handle PDFs
+        $pdfDir = public_path('Files/Resources');
+        $pdfFiles = $resource->pdf_files ? json_decode($resource->pdf_files, true) : [];
+        foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
+            $input = 'pdf_' . $lang;
+            if ($request->hasFile($input)) {
+                $pdf = $request->file($input);
+                $pdfName = time() . '_' . $lang . '_' . $pdf->getClientOriginalName();
+                $pdf->move($pdfDir, $pdfName);
+                $pdfFiles[$lang] = 'Files/Resources/' . $pdfName;
+            }
         }
 
-        $resource->update([
-            'title' => $data['title'] ?? $resource->title,
-            'description' => $data['description'] ?? $resource->description,
-            'file_path' => $data['file_path'] ?? $resource->file_path,
-            'course_id' => $data['course_id'] ?? $resource->course_id,
-        ]);
+        // Handle image
+        if ($request->hasFile('object_image')) {
+            $file = $request->file('object_image');
+            $imagePath = 'Images/Resources/' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('Images/Resources'), basename($imagePath));
+            if ($resource->image != 'Images/Resources/default.png' && file_exists(public_path($resource->image))) {
+                unlink(public_path($resource->image));
+            }
+            $resource->image = $imagePath;
+        }
 
-        return [
-            'success' => true,
-            'resource' => $resource,
-        ];
+        // Handle audio
+        if ($request->hasFile('resource_audio_file')) {
+            $audio = $request->file('resource_audio_file');
+            $audioName = time() . '_' . $audio->getClientOriginalName();
+            $audio->move(public_path('Files/Resources/Audio'), $audioName);
+            $resource->audio_file = 'Files/Resources/Audio/' . $audioName;
+        }
+        $resource->name = $request->input('resource_name');
+        $resource->description = $request->input('resource_description');
+        $resource->literaryOrScientific = $resource->subject->literaryOrScientific;
+        $resource->{'publish date'} = $request->input('resource_publish_date');
+        $resource->author = $request->input('resource_author');
+        $resource->pdf_files = json_encode($pdfFiles);
+        $resource->save();
+
+        return $resource;
     }
 }

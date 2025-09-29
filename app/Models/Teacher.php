@@ -216,6 +216,9 @@ class Teacher extends Model
     }
 
     public function getIsFavoriteAttribute() {
+        if (Auth::user() === null || !(Auth::user() instanceof \App\Models\User)) {
+            return false;
+        }
         return Auth::user()->favoriteTeachers()->where('teacher_id', $this->id)->exists();
     }
 

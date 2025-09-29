@@ -433,7 +433,7 @@
             --dropdown-bg: #f9f9f9;
             --dropdown-text: #000;
             --dropdown-hover: #ddd;
-            --filter-bg: RGBA(255, 255, 255, 0.75);
+            --filter-bg: RGBA(255, 255, 255, 0.9);
             --filter-text: #222;
             --welcome-btn: #9997BC;
             --card-bg: #555184;
@@ -460,7 +460,7 @@
             --dropdown-bg: #1a1a1a;
             --dropdown-text: #fff;
             --dropdown-hover: #2a2a2a;
-            --filter-bg: RGBA(26, 26, 26, 0.85);
+            --filter-bg: RGBA(10, 10, 10, 0.9);
             --filter-text: #DDD;
             --welcome-btn: RGBA(30, 30, 30, 0.75);
             --card-bg: RGBA(30, 30, 30, 0.75);

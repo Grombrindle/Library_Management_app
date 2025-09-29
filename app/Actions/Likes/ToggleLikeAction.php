@@ -4,6 +4,7 @@ namespace App\Actions\Likes;
 
 use App\Models\Like;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Lecture;
 
 class ToggleLikeAction
 {
@@ -37,7 +38,9 @@ class ToggleLikeAction
 
         return [
             'success' => true,
-            'action' => $action
+            'action' => $action,
+            'likes' => Lecture::find($lectureId)->likes,
+            'dislikes' => Lecture::find($lectureId)->dislikes,
         ];
     }
 }
