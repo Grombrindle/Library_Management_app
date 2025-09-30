@@ -2,21 +2,15 @@
 
 namespace App\Actions\Courses;
 
-use App\Services\Courses\CourseService;
 use Illuminate\Support\Facades\Auth;
 
 class CheckFavoriteCourseAction
 {
-    protected CourseService $service;
-
-    public function __construct(CourseService $service)
-    {
-        $this->service = $service;
-    }
-
     public function execute($courseId)
     {
         $user = Auth::user();
-        return $this->service->checkFavoriteCourse($user, $courseId);
+
+        $isFavorited = $user->favoriteCourses()->where('course_id', $courseId)->exists();
+        return response()->json(['success' => true, 'is_favorited' => $isFavorited]);
     }
 }

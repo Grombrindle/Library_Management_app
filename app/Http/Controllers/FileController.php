@@ -2,53 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Files\{
-    ShowExamPDFAction,
-    ShowLecture360Action,
-    ShowLecture720Action,
-    ShowLecture1080Action,
-    ShowLecturePDFAction,
-    ShowResourcePDFAction,
-    ShowResourceAudioAction,
+use App\Services\FileService;
 
-};
 class FileController extends Controller
 {
     // Lecture files
     public function show360($id)
     {
-        return app(ShowLecture360Action::class)->execute($id);
+        return app(FileService::class)->getLecture360($id);
     }
 
     public function show720($id)
     {
-        return app(ShowLecture720Action::class)->execute($id);
+        return app(FileService::class)->getLecture720($id);
     }
 
     public function show1080($id)
     {
-        return app(ShowLecture1080Action::class)->execute($id);
+        return app(FileService::class)->getLecture1080($id);
     }
 
     public function showPDF($id)
     {
-        return app(ShowLecturePDFAction::class)->execute($id);
+        return app(FileService::class)->getLecturePDF($id);
     }
 
     // Resource files
     public function showResourcePDF($id, $language = null)
     {
-        return app(ShowResourcePDFAction::class)->execute($id, $language);
+        return app(FileService::class)->getResourcePDF($id, $language);
     }
 
     public function showResourceAudio($id)
     {
-        return app(ShowResourceAudioAction::class)->execute($id);
+        return app(FileService::class)->getResourceAudio($id);
     }
 
     // Exam files
     public function showExam($id)
     {
-        return app(ShowExamPDFAction::class)->execute($id);
+        return app(FileService::class)->getExamPDF($id);
     }
 }

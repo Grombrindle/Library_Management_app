@@ -5,22 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
-use App\Services\CourseFetchService;
+use App\Services\Courses\CourseFetchService;
 use App\Services\Courses\CourseRatingService;
 use App\Actions\Courses\{
-    GetTeacherCoursesAction,
-    FetchCourseAction,
-    FetchAllCoursesAction,
-    FetchRecentCoursesAction,
-    FetchRatedCoursesAction,
-    FetchSubscribedCoursesAction,
-    FetchRecommendedCoursesAction,
-    FetchUserSubscribedCoursesAction,
-    FetchCourseTeachersAction,
-    FetchHomePageCoursesAction,
     CheckFavoriteCourseAction,
-    FetchCourseRatingsAction,
-    RateCourseAction,
     PurchaseCourseAction,
     AddCourseAction,
     EditCourseAction,
@@ -86,18 +74,12 @@ class CourseController extends Controller
 
     public function fetchRatings($id)
     {
-        return app(FetchCourseRatingsAction::class)->execute($id);
+        return app(CourseRatingService::class)->fetchRatings($id);
     }
 
     public function fetchFeaturedRatings($id)
     {
-        $course = Course::find($id);
-
-        return response()->json([
-            'success' => true,
-            'FeaturedRatings' => $course->getFeaturedRatingsAttribute(),
-        ]);
-
+        return app(CourseRatingService::class)->fetchFeaturedRatings($id);
     }
 
     public function rate(Request $request, $id)
@@ -125,13 +107,13 @@ class CourseController extends Controller
         return app(PurchaseCourseAction::class)->execute(Auth::user(), $id);
     }
 
-    public function coursesOverview()
-    {
-        return [
-            'recommendedCourses' => app(FetchRecommendedCoursesAction::class)->execute()->getData(true)['courses'] ?? [],
-            'topRatedCourses' => app(FetchRatedCoursesAction::class)->execute()->getData(true)['courses'] ?? [],
-            'recentCourses' => app(FetchRecentCoursesAction::class)->execute()->getData(true)['courses'] ?? [],
-            'allCourses' => app(FetchAllCoursesAction::class)->execute()->getData(true)['courses'] ?? [],
-        ];
-    }
+    // public function coursesOverview()
+    // {
+    //     return [
+    //         'recommendedCourses' => app(FetchRecommendedCoursesAction::class)->execute()->getData(true)['courses'] ?? [],
+    //         'topRatedCourses' => app(FetchRatedCoursesAction::class)->execute()->getData(true)['courses'] ?? [],
+    //         'recentCourses' => app(FetchRecentCoursesAction::class)->execute()->getData(true)['courses'] ?? [],
+    //         'allCourses' => app(FetchAllCoursesAction::class)->execute()->getData(true)['courses'] ?? [],
+    //     ];
+    // }
 }

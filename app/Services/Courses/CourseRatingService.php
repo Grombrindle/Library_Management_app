@@ -3,6 +3,7 @@
 namespace App\Services\Courses;
 
 use Illuminate\Support\Facades\DB;
+use App\Models\Course;
 
 class CourseRatingService
 {
@@ -14,6 +15,17 @@ class CourseRatingService
             ->get();
 
         return response()->json(['ratings' => $ratings]);
+    }
+
+    public function fetchFeaturedRatings($id) {
+
+        $course = Course::find($id);
+
+        return response()->json([
+            'success' => true,
+            'FeaturedRatings' => $course->getFeaturedRatingsAttribute(),
+        ]);
+
     }
 
     public function rateCourse($user, $courseId, array $data)

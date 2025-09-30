@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Services\ExamService;
+
 use App\Actions\Exams\{
     AddExamAction,
     DeleteExamAction,
     EditExamAction,
-    FetchAllExamsAction,
-    FetchExamAction,
-    FetchExamsFromSubjectAction,
-    FetchExamsFromYearAction
 };
 class ExamController extends Controller
 {
@@ -43,24 +41,24 @@ class ExamController extends Controller
     // Fetch a single exam
     public function fetch(int $id)
     {
-        return app(FetchExamAction::class)->execute($id);
+        return app(ExamService::class)->fetchExam($id);
     }
 
     // Fetch all exams
     public function fetchAll(Request $request)
     {
-        return app(FetchAllExamsAction::class)->execute($request);
+        return app(ExamService::class)->fetchAllExams($request);
     }
 
     // Fetch exams from a specific subject
     public function fetchFromSubject(Request $request, int $subjectId)
     {
-        return app(FetchExamsFromSubjectAction::class)->execute($request, $subjectId);
+        return app(ExamService::class)->fetchExamsFromSubject($request, $subjectId);
     }
 
     // Fetch exams from a specific year
     public function fetchFromYear(Request $request, int $year)
     {
-        return app(FetchExamsFromYearAction::class)->execute($request, $year);
+        return app(ExamService::class)->fetchExamsFromYear($request, $year);
     }
 }

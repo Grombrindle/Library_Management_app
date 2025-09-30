@@ -4,59 +4,47 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\LectureService;
-use App\Models\Lecture;
+
+use App\Actions\Lectures\{
+    AddLectureAction,
+    EditLectureAction,
+    DeleteLectureAction
+};
 
 class LectureController extends Controller
 {
-    public function __construct(private LectureService $lectureService)
-    {
-    }
     public function fetch($lectureId)
     {
-        return response()->json($this->lectureService->fetchLecture($lectureId));
+        return app(LectureService::class)->fetchLecture($lectureId);
     }
     public function fetchRatings($lectureId)
     {
-        return response()->json($this->lectureService->getLectureRatings($lectureId));
+        return app(LectureService::class)->getLectureRatings($lectureId);
     }
 
     public function getCourseLectures($courseId)
     {
-        return response()->json($this->lectureService->getCourseLectures($courseId));
+        return app(LectureService::class)->getCourseLectures($courseId);
     }
 
     public function getCourseLecturesRated($courseId)
     {
-        return response()->json($this->lectureService->getCourseLecturesRated($courseId));
+        return app(LectureService::class)->getCourseLecturesRated($courseId);
     }
 
     public function getCourseLecturesRecent($courseId)
     {
-        return response()->json($this->lectureService->getCourseLecturesRecent($courseId));
+        return app(LectureService::class)->getCourseLecturesRecent($courseId);
     }
 
     public function fetchQuizQuestions($lectureId)
     {
-        return response()->json($this->lectureService->fetchQuizQuestions($lectureId));
+        return app(LectureService::class)->fetchQuizQuestions($lectureId);
     }
 
-
-
-    public function fetchFeaturedRatings($id)
+    public function fetchFeaturedRatings($lectureId)
     {
-        $lecture = Lecture::find($id);
-
-        if ($lecture)
-            return response()->json([
-                'success' => true,
-                'FeaturedRatings' => $lecture->getFeaturedRatingsAttribute(),
-            ]);
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Lecture not found'
-        ], 404);
-
+        return app(LectureService::class)->getLectureFeaturedRatings($lectureId);
     }
 
     public function rate(Request $request, $lectureId)
@@ -66,18 +54,16 @@ class LectureController extends Controller
             'review' => 'nullable|string|max:1000'
         ]);
 
-        return response()->json(
-            $this->lectureService->rateLecture(
-                $lectureId,
-                $validated['rating'],
-                $validated['review'] ?? null
-            )
+        return app(LectureService::class)->rateLecture(
+            $lectureId,
+            $validated['rating'],
+            $validated['review'] ?? null
         );
     }
 
     public function incrementViews($lectureId)
     {
-        return response()->json($this->lectureService->incrementViews($lectureId));
+        return app(LectureService::class)->incrementViews($lectureId);
     }
 
     public function add(Request $request)
@@ -92,7 +78,7 @@ class LectureController extends Controller
             'lecture_file_pdf' => 'nullable',
         ]);
 
-        return app(lectureService::class)->addLecture($request);
+        return app(AddLectureAction::class)->execute($request);
     }
 
     public function edit(Request $request, $lectureId)
@@ -106,16 +92,31 @@ class LectureController extends Controller
             'lecture_file_pdf' => 'nullable',
         ]);
 
-        return app(lectureService::class)->editLecture($request, $lectureId);
+        return app(EditLectureAction::class)->execute($request, $lectureId);
     }
 
     public function delete($lectureId)
     {
-        return app(lectureService::class)->deleteLecture($lectureId);
+        return app(DeleteLectureAction::class)->execute($lectureId);
     }
 
-    public function fetchFile($lectureId, $type)
+    public function fetchFile360($lectureId)
     {
-        return response()->json($this->lectureService->fetchLectureFile($lectureId, $type));
+        return app(LectureService::class)->fetchLectureFile($lectureId, "360");
+    }
+
+    public function fetchFile720($lectureId)
+    {
+        return app(LectureService::class)->fetchLectureFile($lectureId, "720");
+    }
+
+    public function fetchFile1080($lectureId)
+    {
+        return app(LectureService::class)->fetchLectureFile($lectureId, "1080");
+    }
+
+    public function fetchPdf($lectureId)
+    {
+        return app(LectureService::class)->fetchLectureFile($lectureId, "pdf");
     }
 }
