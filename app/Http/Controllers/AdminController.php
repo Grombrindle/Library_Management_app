@@ -6,7 +6,7 @@ use App\Models\Admin;
 use App\Actions\Admin\AdminCreateAction;
 use App\Actions\Admin\AdminUpdateAction;
 use App\Actions\Admin\AdminDeleteAction;
-use App\Services\AdminAuthService;
+use App\Actions\Admin\AdminLogoutAction;
 use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
@@ -14,18 +14,18 @@ class AdminController extends Controller
     protected $adminCreateAction;
     protected $adminUpdateAction;
     protected $adminDeleteAction;
-    protected $adminAuthService;
+    protected $adminLogoutAction;
 
     public function __construct(
         AdminCreateAction $adminCreateAction,
         AdminUpdateAction $adminUpdateAction,
         AdminDeleteAction $adminDeleteAction,
-        AdminAuthService $adminAuthService
+        AdminLogoutAction $adminLogoutAction
     ) {
         $this->adminCreateAction = $adminCreateAction;
         $this->adminUpdateAction = $adminUpdateAction;
         $this->adminDeleteAction = $adminDeleteAction;
-        $this->adminAuthService = $adminAuthService;
+        $this->adminLogoutAction = $adminLogoutAction;
     }
 
     public function add(Request $request)
@@ -91,7 +91,8 @@ class AdminController extends Controller
 
     public function logout(Request $request)
     {
-        $this->adminAuthService->logout();
+        $this->adminLogoutAction->execute();
+
         return redirect('/');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
+use App\Services\CourseFetchService;
 use App\Services\Courses\CourseRatingService;
 use App\Actions\Courses\{
     GetTeacherCoursesAction,
@@ -30,52 +31,52 @@ class CourseController extends Controller
 {
     public function getTeacherCourses($teacherId)
     {
-        return app(GetTeacherCoursesAction::class)->execute($teacherId);
+        return app(CourseFetchService::class)->getTeacherCourses($teacherId);
     }
 
     public function fetch($id)
     {
-        return app(FetchCourseAction::class)->execute($id);
+        return app(CourseFetchService::class)->fetchCourse($id);
     }
 
     public function fetchall()
     {
-        return app(FetchAllCoursesAction::class)->execute();
+        return app(CourseFetchService::class)->fetchAllCourses();
     }
 
     public function fetchAllRecent()
     {
-        return app(FetchRecentCoursesAction::class)->execute();
+        return app(CourseFetchService::class)->fetchAllRecentCourses();
     }
 
     public function fetchAllRated()
     {
-        return app(FetchRatedCoursesAction::class)->execute();
+        return app(CourseFetchService::class)->fetchAllRatedCourses();
     }
 
     public function fetchAllSubscribed()
     {
-        return app(FetchSubscribedCoursesAction::class)->execute();
+        return app(CourseFetchService::class)->fetchAllSubscribedCourses();
     }
 
     public function fetchAllRecommended()
     {
-        return app(FetchRecommendedCoursesAction::class)->execute();
+        return app(CourseFetchService::class)->fetchAllRecommendedCourses();
     }
 
     public function fetchAllUserSubscribed()
     {
-        return app(FetchUserSubscribedCoursesAction::class)->execute();
+        return app(CourseFetchService::class)->fetchAllUserSubscribedCourses(Auth::user());
     }
 
     public function fetchTeacher($id)
     {
-        return app(FetchCourseTeachersAction::class)->execute($id);
+        return app(CourseFetchService::class)->fetchCourseTeachers($id);
     }
 
     public function fetchHomePage()
     {
-        return app(FetchHomePageCoursesAction::class)->execute(Auth::user());
+        return app(CourseFetchService::class)->fetchHomePageCourses(Auth::user());
     }
 
     public function checkFavoriteCourse($id)

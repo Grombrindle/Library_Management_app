@@ -89,6 +89,8 @@ class ToggleHelpfulAction
             'action' => $action,
             'helpfulCount' => $helpfulCount,
             'unhelpfulCount' => $unhelpfulCount,
+            'isHelpful' => $action == 'marked_helpful',
+            'isUnhelpful' => false,
         ];
     }
 }

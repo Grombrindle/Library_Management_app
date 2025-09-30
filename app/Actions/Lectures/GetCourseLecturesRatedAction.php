@@ -44,11 +44,7 @@ class GetCourseLecturesRatedAction
         return [
             'success' => true,
             'lectures' => $lectures,
-            'course' => [
-                'id' => $course->id,
-                'name' => $course->name,
-                'subject_id' => $course->subject_id
-            ]
+            'course' => $course,
         ];
     }
 }

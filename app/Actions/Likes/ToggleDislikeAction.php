@@ -41,6 +41,8 @@ class ToggleDislikeAction
             'action' => $action,
             'likes' => Lecture::find($lectureId)->likes,
             'dislikes' => Lecture::find($lectureId)->dislikes,
+            'isLiked' => false,
+            'isDisliked' => $action === 'marked_disliked',
         ];
     }
 }
