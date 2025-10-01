@@ -21,7 +21,7 @@
         <select name="course" id="course" required>
             <option value="" selected>{{ __('messages.selectCourse') }}</option>
             @foreach (App\Models\Course::all() as $course)
-                <option value="{{ $course->id }}">{{ $course->name }} ({{ $course->subject->name }})</option>
+            <option value="{{ $course->id }}">{{ $course->name }} ({{ $course->subject->name }} {{$course->subject->literaryOrScientific ? __('messages.scientific') : __('messages.literary')}})</option>
             @endforeach
         </select>
         <br>
@@ -292,7 +292,7 @@
         // Form validation function
         function validateLectureForm() {
             const isVideoMode = document.querySelector('.toggle-btn.active').dataset.type === 'video';
-            
+
             if (isVideoMode) {
                 const file360 = document.getElementById('actual-file-input-360').files.length;
                 const file720 = document.getElementById('actual-file-input-720').files.length;

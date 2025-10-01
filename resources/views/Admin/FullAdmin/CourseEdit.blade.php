@@ -18,17 +18,17 @@
                 </label>
                 <textarea name="course_description" id="course_description" autocomplete="off" style="height:150px; width:80%; font-size:16px; padding:10px; resize:vertical;" required="">{{ $course->description }}</textarea>
             </div>
-
+            <br>
             <!-- Price Section -->
             <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
                 <label for="course_price" style="margin-bottom:5%;">
-                    Course Price:
+                    {{__('messages.coursePrice')}}:
                 </label>
                 <div style="position:relative; width: fit-content; height:fit-content;">
                     <input type="number" name="course_price" id="course_price" value="{{ $course->price ?? 0 }}"
                         min="0" step="0.01" autocomplete="off"
                         style="height:20%; text-align:center; font-size:40%; width:fit-content; padding-left:20px;" required>
-                    <span style="position: absolute; left: 8px; top: 60%; transform: translateY(-50%); color: black; pointer-events: none;">$</span>
+                    <span style="position: absolute; left: 8px; top: 60%; transform: translateY(-50%); font-size:40%; color: black; pointer-events: none;">$</span>
                 </div>
             </div>
             @error('course_price')
@@ -39,10 +39,11 @@
             <div style="margin-top: 20px; display: flex; align-items: center; flex-direction:column; justify-content: space-between; margin-left:auto; margin-right:auto; width:fit-content">
                 <div>
                     <label for="course_paid" style="font-weight: bold;">
-                        Course Status
+                        {{__('messages.courseStatus')}}
                     </label>
+                    <br>
                     <span style="margin-left: 10px;">
-                        {{ ($course->is_paid ?? false) ? 'Purchaseable with Sparkies' : 'Unpurchaseable with Sparkies' }}
+                        {{ ($course->is_paid ?? false) }} ? {{__('messages.purchasableWithSparkies')}} : {{__('messages.unpurchasableWithSparkies')}}
                     </span>
                 </div>
                 <label class="switch">
@@ -69,9 +70,9 @@
 
         function updateStatus() {
             if (courseSwitch.checked) {
-                statusSpan.textContent = 'Purchaseable with Sparkies';
+                statusSpan.textContent = "{{__('messages.purchaseableWithSparkies')}}";
             } else {
-                statusSpan.textContent = 'Unpurchaseable with Sparkies';
+                statusSpan.textContent = "{{__('messages.unpurchaseableWithSparkies')}}";
             }
         }
 

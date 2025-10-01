@@ -431,7 +431,7 @@
             </div>
             <input type="hidden" name="selected_objects" id="selected_objects_input">
         @endif
-        @if ($lectures != false)
+        {{-- @if ($lectures != false)
             <label for="selected_lectures">
                 {{ __('messages.lectures') }}<br>
                 ({{ __('messages.clickToRemoveAndReAdd') }})
@@ -492,7 +492,7 @@
                 </div>
             </div>
             <input type="hidden" name="selected_lectures" id="selected_lectures_input">
-        @endif
+        @endif --}}
         <br>
         <button type="submit" class="submit-button">
             @if ($object == 'Teacher')

@@ -24,7 +24,6 @@ class AddExamAction
 
     public function execute(Request $request)
     {
-
         $this->ensureDirectoriesExist();
 
         $validator = Validator::make($request->all(), [

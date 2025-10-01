@@ -6,11 +6,6 @@ use App\Models\Subject;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Actions\Subjects\{
-    AddSubjectAction,
-    EditSubjectAction,
-    DeleteSubjectAction,
-};
 
 class SubjectService
 {
@@ -86,20 +81,5 @@ class SubjectService
             'subjects' => Subject::where('literaryOrScientific', 0)->get(),
             'status' => 200
         ];
-    }
-
-    public function add(Request $request)
-    {
-        return app(AddSubjectAction::class)->execute($request);
-    }
-
-    public function edit(Request $request, $id)
-    {
-        return app(EditSubjectAction::class)->execute($request, $id);
-    }
-
-    public function delete($id)
-    {
-        return app(DeleteSubjectAction::class)->execute($id);
     }
 }

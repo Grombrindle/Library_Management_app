@@ -6,12 +6,24 @@ use Illuminate\Http\Request;
 use App\Services\QuizService;
 use Illuminate\Support\Facades\Session;
 
+use App\Actions\Quiz\FinishQuizAction;
+use App\Actions\Quiz\EditQuizAction;
+
+
 class QuizController extends Controller
 {
+
+    protected FinishQuizAction $finishQuizAction;
+    protected EditQuizAction $editQuizAction;
     protected QuizService $quizService;
 
-    public function __construct(QuizService $quizService)
-    {
+    public function __construct(
+        QuizService $quizService,
+        FinishQuizAction $finishQuizAction,
+        EditQuizAction $editQuizAction
+    ) {
+        $this->finishQuizAction = $finishQuizAction;
+        $this->editQuizAction = $editQuizAction;
         $this->quizService = $quizService;
     }
 
@@ -30,14 +42,14 @@ class QuizController extends Controller
     public function finish(Request $request, $id)
     {
         $correctAnswers = $request->input('correctAnswers', []);
-        $data = $this->quizService->finish($id, $correctAnswers);
+        $data = $this->finishQuizAction->execute($id, $correctAnswers);
         return response()->json($data);
     }
 
     public function edit(Request $request, $id)
     {
         $quizData = json_decode($request->input('quiz_data'), true);
-        $this->quizService->edit($id, $quizData);
+        $this->editQuizAction->execute($id, $quizData);
 
         $quiz = \App\Models\Quiz::findOrFail($id);
         $data = ['element' => 'lecture', 'id' => $quiz->lecture->id, 'name' => $quiz->lecture->name];

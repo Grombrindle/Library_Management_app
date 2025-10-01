@@ -2,47 +2,69 @@
 
 namespace App\Services;
 
-use App\Actions\Quiz\FetchScoreAction;
-use App\Actions\Quiz\CheckScoresAction;
-use App\Actions\Quiz\FinishQuizAction;
-use App\Actions\Quiz\EditQuizAction;
+use App\Models\Score;
+use App\Models\Lecture;
+use App\Models\Course;
+use Illuminate\Support\Facades\Auth;
+
 
 class QuizService
 {
-    protected FetchScoreAction $fetchScoreAction;
-    protected CheckScoresAction $checkScoresAction;
-    protected FinishQuizAction $finishQuizAction;
-    protected EditQuizAction $editQuizAction;
 
-    public function __construct(
-        FetchScoreAction $fetchScoreAction,
-        CheckScoresAction $checkScoresAction,
-        FinishQuizAction $finishQuizAction,
-        EditQuizAction $editQuizAction
-    ) {
-        $this->fetchScoreAction = $fetchScoreAction;
-        $this->checkScoresAction = $checkScoresAction;
-        $this->finishQuizAction = $finishQuizAction;
-        $this->editQuizAction = $editQuizAction;
+    public function fetchScore(int $lectureId)
+    {
+        $lecture = Lecture::findOrFail($lectureId);
+
+        $score = Score::where('user_id', Auth::id())
+            ->where('quiz_id', $lecture->quiz_id)
+            ->first();
+
+        $correctAnswers = 0;
+
+        if ($score) {
+            foreach (json_decode($score->correctAnswers) as $answer) {
+                $answer == 1 ? $correctAnswers++ : null;
+            }
+        }
+
+        return [
+            'success' => true,
+            'score' => $score ? $correctAnswers : null,
+            'questions' => $lecture->quiz->questions->count(),
+        ];
     }
 
-    public function fetchScore(int $lectureId): array
+    public function checkScores(int $courseId)
     {
-        return $this->fetchScoreAction->execute($lectureId);
-    }
+        $course = Course::findOrFail($courseId);
+        $scores = [];
 
-    public function checkScores(int $courseId): array
-    {
-        return $this->checkScoresAction->execute($courseId);
-    }
+        foreach ($course->lectures as $lecture) {
+            if ($lecture->quiz) {
+                $score = Score::where('user_id', Auth::id())
+                    ->where('quiz_id', $lecture->quiz_id)
+                    ->first();
 
-    public function finish(int $quizId, array $correctAnswers): array
-    {
-        return $this->finishQuizAction->execute($quizId, $correctAnswers);
-    }
+                $correctAnswers = 0;
 
-    public function edit(int $quizId, array $quizData): void
-    {
-        $this->editQuizAction->execute($quizId, $quizData);
+                if ($score) {
+                    foreach (json_decode($score->correctAnswers) as $answer) {
+                        $answer == 1 ? $correctAnswers++ : null;
+                    }
+                }
+
+                $scores[] = [
+                    'lecture_id' => $lecture->id,
+                    'lecture_name' => $lecture->name,
+                    'score' => $score ? $correctAnswers : null,
+                    'questions' => $lecture->quiz->questions->count()
+                ];
+            }
+        }
+
+        return [
+            'success' => true,
+            'scores' => $scores
+        ];
     }
 }

@@ -162,7 +162,15 @@
                 <div class="toggle-option {{ $viewMode === 'teachers' ? 'active' : '' }}" data-view="teachers">
                     {{ __('messages.teachers') }}
                 </div>
-                <div class="toggle-slider {{ $viewMode === 'teachers' ? 'right' : '' }}"></div>
+                @php
+                    $direction = in_array(app()->getLocale(), ['ar']) ? 'rtl' : 'ltr';
+                @endphp
+                <div class="toggle-slider  @if (($viewMode === 'teachers' && $direction === 'ltr' )|| ($viewMode === 'admins' && $direction === 'rtl'))
+                    {{'right'}}
+                    @else
+                    ''
+                @endif
+                "></div>
             </div>
         </div>
     </div>
@@ -223,6 +231,7 @@
                                         @endif
                                     @endfor
                                     <span>({{ number_format($rating, 1) }})</span>
+                                    <span>({{ $item->ratings->count() }} {{__('messages.reviews')}})</span>
                                 </div>
                             </x-card>
                         @endforeach

@@ -84,7 +84,7 @@ class CourseController extends Controller
 
     public function rate(Request $request, $id)
     {
-        return app(CourseRatingService::class)->rateCourse(Auth::user(), $id, $request->all());
+        return app(CourseRatingService::class)->rateCourse($id, $request->all());
     }
 
     public function add(Request $request)

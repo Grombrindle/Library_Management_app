@@ -83,8 +83,7 @@
                 @endif
             @endfor
             <span>({{ number_format($rating, 1) }})</span>
-            <span>({{ $course->ratings->count() }} reviews)</span>
-            <!-- <span>({{ $course->ratings->count() }})</span> -->
+            <span>({{ $course->ratings->count() }} {{__('messages.reviews')}})</span>
 
         </div>
     </x-infocard>

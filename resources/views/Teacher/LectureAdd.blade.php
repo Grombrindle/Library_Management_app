@@ -33,9 +33,9 @@
             <option value="" selected>{{ __('messages.selectCourse') }}</option>
             @foreach (App\Models\Teacher::findOrFail(Auth::user()->teacher_id)->courses as $course)
                 @if ($courseID != null && $courseID == $course->id)
-                    <option value="{{ $course->id }}" selected>{{ $course->name }}</option>
+                <option selected value="{{ $course->id }}">{{ $course->name }} ({{ $course->subject->name }} {{$course->subject->literaryOrScientific ? __('messages.scientific') : __('messages.literary')}})</option>
                 @else
-                    <option value="{{ $course->id }}">{{ $course->name }}</option>
+                <option value="{{ $course->id }}">{{ $course->name }} ({{ $course->subject->name }} {{$course->subject->literaryOrScientific ? __('messages.scientific') : __('messages.literary')}})</option>
                 @endif
             @endforeach
         </select>

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\TeacherService;
+use App\Services\TeacherRatingService;
+
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Admin;
 use App\Models\Teacher;
@@ -17,10 +19,14 @@ use App\Actions\Teachers\{
 class TeacherController extends Controller
 {
     protected $teacherService;
+    protected $teacherRatingService;
 
-    public function __construct(TeacherService $teacherService)
-    {
+    public function __construct(
+        TeacherService $teacherService,
+        TeacherRatingService $teacherRatingService
+    ) {
         $this->teacherService = $teacherService;
+        $this->teacherRatingService = $teacherRatingService;
     }
 
     public function fetch($id)
@@ -78,9 +84,19 @@ class TeacherController extends Controller
         return $this->teacherService->checkFavoriteTeacher($id);
     }
 
+    public function fetchRatings($id)
+    {
+        return $this->teacherRatingService->fetchRatings($id);
+    }
+
+    public function fetchFeaturedRatings($id)
+    {
+        return $this->teacherRatingService->getFeaturedRatings($id);
+    }
+
     public function rate(Request $request, $id)
     {
-        return $this->teacherService->rate($id, $request->rating, $request->review);
+        return $this->teacherRatingService->rate($id, $request->rating, $request->review);
     }
 
     public function add(Request $request, $id, $file = null)

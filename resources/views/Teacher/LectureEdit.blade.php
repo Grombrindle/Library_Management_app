@@ -25,7 +25,7 @@
 
                 <span>{{ __('messages.videoFile') }}:</span>
                 <br>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:50px">
                     <div>
                         <label for="actual-file-input-360">360p</label>
                         <div class="custom-file-input">

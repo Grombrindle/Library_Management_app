@@ -18,14 +18,6 @@ class TaskController extends Controller
         $this->taskService = $taskService;
     }
 
-    public function fetchAll()
-    {
-        return response()->json([
-            'success' => true,
-            'tasks' => $this->taskService->fetchAll()
-        ]);
-    }
-
     public function add(Request $request)
     {
         $task = app(AddTaskAction::class)->execute($request);
@@ -80,6 +72,14 @@ class TaskController extends Controller
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
         }
         return response()->json(['success' => true, 'tasks' => $tasks]);
+    }
+
+    public function fetchAll()
+    {
+        return response()->json([
+            'success' => true,
+            'tasks' => $this->taskService->fetchAll()
+        ]);
     }
 
     public function trashedTasks()

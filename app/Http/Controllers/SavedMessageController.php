@@ -7,16 +7,16 @@ use App\Services\SavedMessageService;
 
 class SavedMessageController extends Controller
 {
-    protected $service;
+    protected $savedMessageService;
 
-    public function __construct(SavedMessageService $service)
+    public function __construct(SavedMessageService $savedMessageService)
     {
-        $this->service = $service;
+        $this->savedMessageService = $savedMessageService;
     }
 
     public function fetch() {
 
-        $result = $this->service->fetch();
+        $result = $this->savedMessageService->fetch();
 
         // Handle error codes if present
         if (isset($result['code'])) {
@@ -29,7 +29,7 @@ class SavedMessageController extends Controller
 
     public function toggleSaved(Request $request)
     {
-        $result = $this->service->toggleSaved($request);
+        $result = $this->savedMessageService->toggleSaved($request);
 
         // Handle error codes if present
         if (isset($result['code'])) {

@@ -241,7 +241,6 @@
     }
 
     [dir="rtl"] #search-form button[type="submit"] {
-        right: 5px;
     }
 
     #filter-button {
@@ -573,20 +572,20 @@
                     @if (isset($model) && count($model) && isset($model[0]->author))
                         <label><input type="radio" name="sort" value="author-a-z"
                                 {{ request('sort') === 'author-a-z' ? 'checked' : '' }}>
-                            {{ __('messages.authorAZ') }}</label>
+                            {{ __('messages.authorAtoZ') }}</label>
                         <label><input type="radio" name="sort" value="author-z-a"
                                 {{ request('sort') === 'author-z-a' ? 'checked' : '' }}>
-                            {{ __('messages.authorZA') }}</label>
+                            {{ __('messages.authorZtoA') }}</label>
                     @endif
 
                     <!-- Publish Date (for resources) -->
                     @if (isset($model) && count($model) && isset($model[0]['publish date']))
                         <label><input type="radio" name="sort" value="publish-newest"
                                 {{ request('sort') === 'publish-newest' ? 'checked' : '' }}>
-                            {{ __('messages.publishNewest') }}</label>
+                            {{ __('messages.publishDateNewest') }}</label>
                         <label><input type="radio" name="sort" value="publish-oldest"
                                 {{ request('sort') === 'publish-oldest' ? 'checked' : '' }}>
-                            {{ __('messages.publishOldest') }}</label>
+                            {{ __('messages.publishDateOldest') }}</label>
                     @endif
 
                     <!-- Rating (for lectures, courses, teachers, resources) -->
@@ -722,7 +721,7 @@
 
     <div class="container">
         @if ($addLink != null)
-            @if ($addLink === 'addadmin')
+            @if ($addLink === 'addadmin' || $addLink === 'addteacher')
                 <button class="addButton" onclick="showAddPopup()">{{ Str::upper(__('messages.add')) }}</button>
             @else
                 <a href="{{ $addLink }}" class="addButton">{{ Str::upper(__('messages.add')) }}</a>

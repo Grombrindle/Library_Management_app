@@ -170,14 +170,6 @@ class TeacherService
         ]);
     }
 
-    public function fetchRatings($id)
-    {
-        $ratings = DB::table('teacher_ratings')->where('teacher_id', $id)->where('isHidden', false)->get();
-        return response()->json([
-            'ratings' => $ratings
-        ]);
-    }
-
     public function checkFavoriteTeacher($id)
     {
         $isFavorited = Auth::user()->favoriteTeachers()
@@ -186,28 +178,6 @@ class TeacherService
 
         return response()->json([
             'is_favorited' => $isFavorited
-        ]);
-    }
-
-    public function rate($id, $rating, $review = null)
-    {
-        $teacher = Teacher::find($id);
-        if (!$teacher) {
-            return response()->json([
-                'success' => false,
-                'reason' => "Teacher Not Found"
-            ], 404);
-        }
-
-        $rating = $teacher->ratings()->updateOrCreate(
-            ['user_id' => Auth::id()],
-            ['rating' => $rating, 'review' => $review]
-        );
-
-        return response()->json([
-            'success' => true,
-            'rating' => $rating->rating,
-            'review' => $rating->review,
         ]);
     }
 }

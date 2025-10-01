@@ -20,23 +20,6 @@ class ExamController extends Controller
     //     $this->examService = $examService;
     // }
 
-    // Add a new exam
-    public function add(Request $request)
-    {
-        return app(AddExamAction::class)->execute($request);
-    }
-
-    // Edit an existing exam
-    public function edit(Request $request, int $id)
-    {
-        return app(EditExamAction::class)->execute($request, $id);
-    }
-
-    // Delete an exam
-    public function delete(int $id)
-    {
-        return app(DeleteExamAction::class)->execute($id);
-    }
 
     // Fetch a single exam
     public function fetch(int $id)
@@ -60,5 +43,23 @@ class ExamController extends Controller
     public function fetchFromYear(Request $request, int $year)
     {
         return app(ExamService::class)->fetchExamsFromYear($request, $year);
+    }
+
+    // Add a new exam
+    public function add(Request $request)
+    {
+        return app(AddExamAction::class)->execute($request);
+    }
+
+    // Edit an existing exam
+    public function edit(Request $request, int $id)
+    {
+        return app(EditExamAction::class)->execute($request, $id);
+    }
+
+    // Delete an exam
+    public function delete(int $id)
+    {
+        return app(DeleteExamAction::class)->execute($id);
     }
 }

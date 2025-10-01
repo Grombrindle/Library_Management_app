@@ -55,7 +55,7 @@
                 @endif
             @endfor
             <span>({{ number_format($rating, 1) }})</span>
-            <span>({{ $lecture->ratings->count() }} reviews)</span>
+            <span>({{ $lecture->ratings->count() }} {{__('messages.reviews')}})</span>
         </div>
     </x-infocard>
 

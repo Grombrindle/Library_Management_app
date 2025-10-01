@@ -289,14 +289,6 @@
             padding-left: 35px;
             background-position: left 15px center;
         }
-
-        [dir="rtl"] .file-input-label {
-            text-align: right;
-            padding-right: 15px;
-            padding-left: 35px;
-            background-position: left 15px center;
-        }
-
         /* Dark mode styles for layout */
         .banner {
             background-color: var(--nav-bg);

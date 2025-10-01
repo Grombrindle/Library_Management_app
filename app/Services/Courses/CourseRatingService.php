@@ -30,7 +30,7 @@ class CourseRatingService
 
     }
 
-    public function rateCourse($user, $courseId, array $data)
+    public function rateCourse($courseId, array $data)
     {
         $course = Course::find($courseId);
 
@@ -43,6 +43,7 @@ class CourseRatingService
             'success' => true,
             'rating' => $rating->rating,
             'review' => $rating->review,
+            'featuredRatings' => $course->featuredRatings
         ]);
     }
 }

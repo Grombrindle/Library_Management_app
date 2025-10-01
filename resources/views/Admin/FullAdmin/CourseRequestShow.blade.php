@@ -85,15 +85,15 @@
         <p><strong>{{ __('messages.courseRequestName') }}:</strong> {{ $request->name }}</p>
         <p><strong>{{ __('messages.courseRequestDescription') }}:</strong> {{ $request->description }}</p>
         <p><strong>{{ __('messages.courseRequestSubject') }}:</strong> {{ $request->subject->name ?? 'N/A' }}
-            ({{ $request->subject->literaryOrScientific ? 'Scientific' : 'Literary' }})</p>
+            ({{ $request->subject->literaryOrScientific ? __('messages.scientific') : __('messages.literary') }})</p>
         <p><strong>{{ __('messages.courseRequestTeacher') }}:</strong> {{ $request->teacher->name ?? 'N/A' }}</p>
         <p><strong>{{ __('messages.courseRequestStatus') }}:</strong>
             @if ($request->status === 'pending')
-                <span class="badge bg-warning">{{ ucfirst($request->status) }}</span>
+                <span class="badge bg-warning">{{__('messages.pending')}}</span>
             @elseif($request->status === 'approved')
-                <span class="badge bg-success">{{ ucfirst($request->status) }}</span>
+                <span class="badge bg-success">{{__('messages.approved')}}</span>
             @else
-                <span class="badge bg-danger">{{ ucfirst($request->status) }}</span>
+                <span class="badge bg-danger">{{__('messages.rejected')}}</span>
             @endif
         </p>
         @if ($request->status === 'rejected')

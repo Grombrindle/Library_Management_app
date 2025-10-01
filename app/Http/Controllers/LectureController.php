@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\LectureService;
+use App\Services\LectureRatingService;
 
 use App\Actions\Lectures\{
     AddLectureAction,
@@ -16,10 +17,6 @@ class LectureController extends Controller
     public function fetch($lectureId)
     {
         return app(LectureService::class)->fetchLecture($lectureId);
-    }
-    public function fetchRatings($lectureId)
-    {
-        return app(LectureService::class)->getLectureRatings($lectureId);
     }
 
     public function getCourseLectures($courseId)
@@ -42,9 +39,9 @@ class LectureController extends Controller
         return app(LectureService::class)->fetchQuizQuestions($lectureId);
     }
 
-    public function fetchFeaturedRatings($lectureId)
+    public function fetchRatings($lectureId)
     {
-        return app(LectureService::class)->getLectureFeaturedRatings($lectureId);
+        return app(LectureRatingService::class)->getLectureRatings($lectureId);
     }
 
     public function rate(Request $request, $lectureId)
@@ -54,11 +51,36 @@ class LectureController extends Controller
             'review' => 'nullable|string|max:1000'
         ]);
 
-        return app(LectureService::class)->rateLecture(
+        return app(LectureRatingService::class)->rateLecture(
             $lectureId,
             $validated['rating'],
             $validated['review'] ?? null
         );
+    }
+
+    public function fetchFeaturedRatings($lectureId)
+    {
+        return app(LectureRatingService::class)->getLectureFeaturedRatings($lectureId);
+    }
+
+    public function fetchFile360($lectureId)
+    {
+        return app(LectureService::class)->fetchLectureFile($lectureId, "360");
+    }
+
+    public function fetchFile720($lectureId)
+    {
+        return app(LectureService::class)->fetchLectureFile($lectureId, "720");
+    }
+
+    public function fetchFile1080($lectureId)
+    {
+        return app(LectureService::class)->fetchLectureFile($lectureId, "1080");
+    }
+
+    public function fetchPdf($lectureId)
+    {
+        return app(LectureService::class)->fetchLectureFile($lectureId, "pdf");
     }
 
     public function incrementViews($lectureId)
@@ -98,25 +120,5 @@ class LectureController extends Controller
     public function delete($lectureId)
     {
         return app(DeleteLectureAction::class)->execute($lectureId);
-    }
-
-    public function fetchFile360($lectureId)
-    {
-        return app(LectureService::class)->fetchLectureFile($lectureId, "360");
-    }
-
-    public function fetchFile720($lectureId)
-    {
-        return app(LectureService::class)->fetchLectureFile($lectureId, "720");
-    }
-
-    public function fetchFile1080($lectureId)
-    {
-        return app(LectureService::class)->fetchLectureFile($lectureId, "1080");
-    }
-
-    public function fetchPdf($lectureId)
-    {
-        return app(LectureService::class)->fetchLectureFile($lectureId, "pdf");
     }
 }

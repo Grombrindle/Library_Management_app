@@ -33,7 +33,7 @@
             <!-- Requirements Section -->
             <div id="requirements-section"
                 style="width:80%; margin-bottom: 1.5rem; display:flex; flex-direction:column; align-items:center;">
-                <label style="font-weight:600; margin-bottom:0.5rem;">Requirements:</label>
+                <label style="font-weight:600; margin-bottom:0.5rem;">{{ __('messages.requirements') }}:</label>
                 <div id="requirements-buttons"
                     style="display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center;">
                     <button type="button" class="requirement-btn" data-value="A Brain">A Brain</button>
@@ -52,13 +52,15 @@
             <!-- Price Section -->
             <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
                 <label for="course_price" style="margin-bottom:5%;">
-                    Course Price:
+                    {{ __('messages.coursePrice') }}:
                 </label>
                 <div style="position:relative; width: fit-content; height:fit-content;">
                     <input type="number" name="course_price" id="course_price" value="{{ old('course_price', 0) }}"
                         min="0" step="0.01" autocomplete="off"
-                        style="height:20%; text-align:center; font-size:40%; width:fit-content; padding-left:20px;" required>
-                    <span style="position: absolute; left: 8px; top: 60%; transform: translateY(-50%); font-size:40%; color: black; pointer-events: none;">$</span>
+                        style="height:20%; text-align:center; font-size:40%; width:fit-content; padding-left:20px;"
+                        required>
+                    <span
+                        style="position: absolute; left: 8px; top: 60%; transform: translateY(-50%); font-size:40%; color: black; pointer-events: none;">$</span>
                 </div>
             </div>
             @error('course_price')
@@ -66,17 +68,20 @@
             @enderror
 
             <!-- Price Toggle Section -->
-            <div style="margin-top: 20px; display: flex; align-items: center; flex-direction:column; justify-content: space-between; margin-left:auto; margin-right:auto; width:fit-content">
+            <div
+                style="margin-top: 20px; display: flex; align-items: center; flex-direction:column; justify-content: space-between; margin-left:auto; margin-right:auto; width:fit-content">
                 <div>
                     <label for="course_paid" style="font-weight: bold;">
-                        Course Status
+                        {{ __('messages.courseStatus') }}
                     </label>
+                    <br>
                     <span style="margin-left: 10px;">
-                        {{ old('course_paid') ? 'Paid Course' : 'Free Course' }}
+                        {{ old('course_paid') ? __('messages.purchaseableWithSparkies') : __('messages.unpurchaseableWithSparkies') }}
                     </span>
                 </div>
                 <label class="switch">
-                    <input type="checkbox" name="course_paid" id="course_paid" value="1" {{ old('course_paid') ? 'checked' : '' }}>
+                    <input type="checkbox" name="course_paid" id="course_paid" value="1"
+                        {{ old('course_paid') ? 'checked' : '' }}>
                     <span class="slider round course-switch"></span>
                 </label>
             </div>
@@ -90,8 +95,7 @@
                 <option value="" selected>{{ __('messages.selectSubject') }}</option>
                 @foreach (App\Models\Teacher::findOrFail(Auth::user()->teacher_id)->subjects as $subject)
                     <option value="{{ $subject->id }}">{{ $subject->name }}
-                        ({{ $subject->literaryOrScientific ? 'Scientific' : 'Literary' }})
-                    </option>
+                        ({{ $subject->literaryOrScientific ? __('messages.scientific') : __('messages.literary')}})</option>
                 @endforeach
             </select>
             <br>
@@ -188,7 +192,7 @@
     }
 
     /* Course switch styling */
-    input:checked + .course-switch {
+    input:checked+.course-switch {
         background-color: #555184;
     }
 </style>
@@ -291,9 +295,9 @@
 
         function updateStatus() {
             if (courseSwitch.checked) {
-                statusSpan.textContent = 'Purchaseable with Sparkies';
+                statusSpan.textContent = "{{ __('messages.purchaseableWithSparkies') }}";
             } else {
-                statusSpan.textContent = 'Unpurchaseable with Sparkies';
+                statusSpan.textContent = "{{ __('messages.unpurchaseableWithSparkies') }}";
             }
         }
 

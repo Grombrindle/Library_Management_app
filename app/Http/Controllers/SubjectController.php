@@ -5,13 +5,29 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\SubjectService;
 
+use App\Actions\Subjects\{
+    AddSubjectAction,
+    EditSubjectAction,
+    DeleteSubjectAction,
+};
+
 class SubjectController extends Controller
 {
     protected $subjectService;
+    protected $addSubjectAction;
+    protected $editSubjectAction;
+    protected $deleteSubjectAction;
 
-    public function __construct(SubjectService $subjectService)
-    {
+    public function __construct(
+        SubjectService $subjectService,
+        AddSubjectAction $addSubjectAction,
+        EditSubjectAction $editSubjectAction,
+        DeleteSubjectAction $deleteSubjectAction
+    ) {
         $this->subjectService = $subjectService;
+        $this->addSubjectAction = $addSubjectAction;
+        $this->editSubjectAction = $editSubjectAction;
+        $this->deleteSubjectAction = $deleteSubjectAction;
     }
 
     public function fetch($id)
@@ -52,7 +68,7 @@ class SubjectController extends Controller
 
     public function add(Request $request)
     {
-        $result = $this->subjectService->add($request);
+        $result = $this->addSubjectAction->execute($request);
 
         if (isset($result['error'])) {
             return redirect()->back()->withErrors($result['error']);
@@ -66,7 +82,7 @@ class SubjectController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $result = $this->subjectService->edit($request, $id);
+        $result = $this->editSubjectAction->execute($request, $id);
 
         if (isset($result['error'])) {
             return redirect()->back()->withErrors($result['error']);
@@ -80,7 +96,7 @@ class SubjectController extends Controller
 
     public function delete($id)
     {
-        $name = $this->subjectService->delete($id);
+        $name = $this->deleteSubjectAction->execute($id);
 
         $data = ['element' => 'subject', 'name' => $name];
         session(['delete_info' => $data]);

@@ -352,7 +352,6 @@
 <div class="buttonContainer">
     @if ($editLink != null)
         <div style="">
-
             <a href="/{{ $editLink }}" class="button">
                 @if ($objectType == 'Teacher')
                     {{ __('messages.editTeacher') }}
@@ -404,11 +403,11 @@
                 </div>
                 @if ($object->audio_file == null)
                     <button class="button" style="margin: 20px auto 0 auto; display: block;"
-                        disabled>{{ __('messages.showResource') }} Audio</button>
+                        disabled>{{ __('messages.showResource') }} {{__('messages.audio')}}</button>
                 @else
                     <a href="show/{{ $object->id }}/audio" target="_blank" class="button"
                         style="background-color:#9997BC; margin: 20px auto 0 auto; display: block;">{{ __('messages.showResource') }}
-                        Audio</a>
+                        {{__('messages.audio')}}</a>
                 @endif
             @elseif($objectType == 'Exam')
                 <a href="show/{{ $object->id }}" target="_blank" class="button"
@@ -442,7 +441,7 @@
             @endif
         </div>
         @if ($objectType == 'Lecture')
-            <button class="button" id="showQuizBtn" style="margin-top: 10px;">Show quiz</button>
+            <button class="button" id="showQuizBtn" style="margin-top: 10px;">{{__('messages.showQuiz')}}</button>
         @endif
     @endif
     @if ($addLecture != null)
@@ -453,6 +452,7 @@
         <a href="addcourse/{{ $object->id }}" class="button"
             style="background-color:#9997BC">{{ __('messages.addCourse') }}</a>
     @endif
+    <br>
     {{-- <div style="margin-bottom:5%;">
         @if ($lecturesCount != null)
         @if ($lecturesCount > 0)
@@ -506,7 +506,7 @@
                 </div>
                 <input type="hidden" name="quiz_data" id="quizDataInput">
                 <button type="button" class="quiz-add-btn" id="addQuestionBtn">+</button>
-                <button type="submit" class="button" id="updateQuizBtn" style="margin-top:1rem;">Update Quiz</button>
+                <button type="submit" class="button" id="updateQuizBtn" style="margin-top:1rem;">{{__('messages.updateQuiz')}}</button>
             </form>
         </div>
     </div>

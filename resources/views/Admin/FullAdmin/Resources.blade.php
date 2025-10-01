@@ -151,7 +151,7 @@
                                     @endif
                                 @endfor
                                 <span>({{ number_format($rating, 1) }})</span>
-                                <span>({{ $resource->ratings->count() }} reviews)</span>
+                                <span>({{ $resource->ratings->count() }} {{__('messages.reviews')}})</span>
 
                             </div>
                         </x-card>

@@ -60,8 +60,6 @@ class ResourceController extends Controller
         return app(ResourceRatingsService::class)->rate($id, $rating, $review);
     }
 
-
-
     public function add(Request $request)
     {
         return app(AddResourceAction::class)->execute($request);
@@ -71,7 +69,6 @@ class ResourceController extends Controller
     {
         return app(EditResourceAction::class)->execute($request, $resourceId);
     }
-
 
     public function delete($id)
     {

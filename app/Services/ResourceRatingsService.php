@@ -34,8 +34,6 @@ class ResourceRatingsService
             'success' => true,
             'FeaturedRatings' => $resource->getFeaturedRatingsAttribute(),
         ]);
-
-
     }
 
     /* Create/update rating for a resource */
