@@ -66,6 +66,10 @@ class AddResourceAction
         $resource->literaryOrScientific = $resource->subject->literaryOrScientific;
         $resource->save();
 
-        return $resource;
+
+        $data = ['element' => 'resource', 'name' => $resource->name];
+        session(['add_info' => $data]);
+        session(['link' => '/resources']);
+        return redirect()->route('add.confirmation');
     }
 }

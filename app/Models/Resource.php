@@ -82,12 +82,11 @@ class Resource extends Model
 
     public function getUserRatingAttribute()
     {
-        if (!Auth::check()) {
-            return null;
+        if (Auth::check() && (Auth::user() instanceof (User::class))) {
+            $rating = Auth::user()->resourceRatings()->where('resource_id', $this->id)->first();
+            return $rating ? $rating->rating : null;
         }
-
-        $rating = Auth::user()->resourceRatings()->where('resource_id', $this->id)->first();
-        return $rating ? $rating->rating : null;
+        return null;
     }
 
     public function getFeaturedRatingsAttribute()
@@ -103,12 +102,12 @@ class Resource extends Model
             ->get();
 
         if ($withReview->count() >= 3) {
-            return $withReview->map(function($review) {
+            return $withReview->map(function ($review) {
                 $review->user_name = $review->user ? $review->user->userName : null;
                 return $review;
             });
         }
-        return $withReview->map(function($review) {
+        return $withReview->map(function ($review) {
             $review->user_name = $review->user ? $review->user->userName : null;
             return $review;
         });
@@ -182,21 +181,26 @@ class Resource extends Model
         return $pdfs[$lang] ?? null;
     }
 
-    public function getPdfFileUrlAttribute() {
+    public function getPdfFileUrlAttribute()
+    {
         $pdfs = $this->pdf_files;
         return url($pdfs['ar']) ?? null;
     }
 
-    public function getAudioFileUrlAttribute() {
+    public function getAudioFileUrlAttribute()
+    {
         $value = $this->attributes['audio_file'] ?? null;
         return ($value ? url($value) : null);
     }
 
-    public function getAudioFileDurationSecondsAttribute() {
+    public function getAudioFileDurationSecondsAttribute()
+    {
         $value = $this->attributes['audio_file'] ?? null;
-        if (!$value) return null;
+        if (!$value)
+            return null;
         $filePath = public_path($value);
-        if (!file_exists($filePath)) return null;
+        if (!file_exists($filePath))
+            return null;
         try {
             $getID3 = new getID3();
             $info = $getID3->analyze($filePath);
@@ -209,26 +213,32 @@ class Resource extends Model
         return null;
     }
 
-    public function getAudioFileDurationFormattedAttribute() {
+    public function getAudioFileDurationFormattedAttribute()
+    {
         $seconds = $this->audio_file_duration_seconds;
-        if ($seconds === null) return null;
+        if ($seconds === null)
+            return null;
         $minutes = floor($seconds / 60);
         $secs = round($seconds % 60);
         return sprintf('%02d:%02d', $minutes, $secs);
     }
 
-    public function getAudioFileDurationLongFormattedAttribute() {
+    public function getAudioFileDurationLongFormattedAttribute()
+    {
         $seconds = $this->audio_file_duration_seconds;
-        if ($seconds === null) return null;
+        if ($seconds === null)
+            return null;
         $hours = round($seconds / 3600);
         $minutes = floor($seconds / 60);
         $secs = round($seconds % 60);
         return sprintf('%02d:%02d:%02d', $hours, $minutes, $secs);
     }
 
-    public function getAudioFileDurationHumanAttribute() {
+    public function getAudioFileDurationHumanAttribute()
+    {
         $seconds = $this->audio_file_duration_seconds;
-        if ($seconds === null) return null;
+        if ($seconds === null)
+            return null;
         $minutes = floor($seconds / 60);
         $secs = round($seconds % 60);
         $hours = floor($minutes / 60);
@@ -242,11 +252,14 @@ class Resource extends Model
         }
     }
 
-    public function getPdfFilePagesAttribute() {
+    public function getPdfFilePagesAttribute()
+    {
         $value = $this->getPdfFileAttribute() ?? null;
-        if (!$value) return null;
+        if (!$value)
+            return null;
         $filePath = public_path($value);
-        if (!file_exists($filePath)) return null;
+        if (!file_exists($filePath))
+            return null;
         try {
             // Use getID3 if available
             $getID3 = new getID3();

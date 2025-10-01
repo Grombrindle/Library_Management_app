@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ResourceRating;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Resource;
 
 
 class ResourceRatingsService
@@ -23,6 +24,20 @@ class ResourceRatingsService
             'ratings' => $ratings,
         ];
     }
+
+    public function getFeaturedRatings($id)
+    {
+
+        $resource = Resource::find($id);
+
+        return response()->json([
+            'success' => true,
+            'FeaturedRatings' => $resource->getFeaturedRatingsAttribute(),
+        ]);
+
+
+    }
+
     /* Create/update rating for a resource */
     public function rate(int $resourceId, int $rating, ?string $review = null): array
     {
@@ -40,7 +55,8 @@ class ResourceRatingsService
 
         return [
             'success' => true,
-            'rating' => $rating,
+            'rating' => $rating->rating,
+            'review' => $rating->review,
         ];
     }
 

@@ -21,7 +21,7 @@ class EditResourceAction
         }
     }
 
-    public function execute(Request $request, int $id): array
+    public function execute(Request $request, int $id)
     {
         $this->ensureDirectoriesExist();
 
@@ -29,7 +29,7 @@ class EditResourceAction
 
         // Handle PDFs
         $pdfDir = public_path('Files/Resources');
-        $pdfFiles = $resource->pdf_files ? json_decode($resource->pdf_files, true) : [];
+        $pdfFiles = $resource->pdf_files;
         foreach (['ar', 'en', 'es', 'de', 'fr'] as $lang) {
             $input = 'pdf_' . $lang;
             if ($request->hasFile($input)) {
@@ -64,8 +64,13 @@ class EditResourceAction
         $resource->{'publish date'} = $request->input('resource_publish_date');
         $resource->author = $request->input('resource_author');
         $resource->pdf_files = json_encode($pdfFiles);
+
         $resource->save();
 
-        return $resource;
+
+        $data = ['element' => 'resource', 'name' => $resource->name];
+        session(['update_info' => $data]);
+        session(['link' => '/resources']);
+        return redirect()->route('update.confirmation');
     }
 }

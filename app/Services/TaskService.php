@@ -12,30 +12,6 @@ class TaskService
         return Auth::user()->tasks()->get();
     }
 
-    public function add(array $data)
-    {
-        return Task::create([
-            'title'          => $data['title'] ?? null,
-            'description'    => $data['description'] ?? null,
-            'estimatedHours' => $data['estimatedHours'] ?? null,
-            'user_id'        => Auth::id(),
-        ]);
-    }
-
-    public function edit(int $id, array $data)
-    {
-        $task = Task::findOrFail($id);
-        if ($task->user_id !== Auth::id()) {
-            return null;
-        }
-        $task->update([
-            'title'          => $data['title'] ?? $task->title,
-            'description'    => $data['description'] ?? $task->description,
-            'estimatedHours' => $data['estimatedHours'] ?? $task->estimatedHours,
-        ]);
-        return $task->fresh();
-    }
-
     public function toggleChecked(int $id)
     {
         $task = Task::findOrFail($id);
@@ -53,11 +29,10 @@ class TaskService
         if ($task->user_id !== Auth::id()) {
             return null;
         }
-        if($task->trashed()) {
+        if ($task->trashed()) {
             $task->restore();
             $task->isTrashed = false;
-        }
-        else {
+        } else {
             $task->delete();
             $task->isTrashed = true;
         }

@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\SessionService;
 use App\Models\User;
-use App\Models\Admin;
 
 class SessionController extends Controller
 {
@@ -47,8 +46,8 @@ class SessionController extends Controller
         if ($result['success']) {
             return response()->json([
                 'success' => true,
-                'user' => $result['user'],
-                'token' => $result['token']
+                'token' => $result['token'],
+                'user' => $result['user']
             ]);
         }
 
@@ -102,6 +101,7 @@ class SessionController extends Controller
     public function test()
     {
         return response()->json([
+            'success' => true,
             'User' => $this->service->currentUser()
         ]);
     }

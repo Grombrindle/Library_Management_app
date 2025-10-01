@@ -16,7 +16,8 @@ class TeacherRating extends Model
     protected $fillable = [
         'user_id',
         'teacher_id',
-        'rating'
+        'rating',
+        'review',
     ];
 
     public function teacher()

@@ -69,8 +69,8 @@ class ResourceService
 
             'success' => true,
             'resources' => Resource::withAvg('ratings', 'rating')
-            ->orderByDesc('ratings_avg_rating')
-            ->get(),
+                ->orderByDesc('ratings_avg_rating')
+                ->get(),
         ]);
     }
 
@@ -192,44 +192,5 @@ class ResourceService
                 'recent' => $recentResources,
             ];
         });
-    }
-
-    public function ensureDirectoriesExist()
-    {
-        $dirs = [
-            public_path('Images/Resources'),
-            public_path('Files/Resources'),
-            public_path('Files/Resources/Audio')
-        ];
-
-        foreach ($dirs as $dir) {
-            if (!is_dir($dir))
-                mkdir($dir, 0755, true);
-        }
-    }
-
-    public function deleteResource($resource)
-    {
-        // Delete image
-        if ($resource->image != "Images/Resources/default.png" && file_exists(public_path($resource->image))) {
-            unlink(public_path($resource->image));
-        }
-
-        // Delete PDFs
-        if ($resource->pdf_files) {
-            $pdfFiles = json_decode($resource->pdf_files, true);
-            foreach ($pdfFiles as $file) {
-                if ($file && $file !== 'Files/Resources/default.pdf' && file_exists(public_path($file))) {
-                    unlink(public_path($file));
-                }
-            }
-        }
-
-        // Delete audio
-        if ($resource->audio_file && $resource->audio_file != 'Files/Resources/Audio/default.mp3' && file_exists(public_path($resource->audio_file))) {
-            unlink(public_path($resource->audio_file));
-        }
-
-        $resource->delete();
     }
 }

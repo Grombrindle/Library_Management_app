@@ -228,7 +228,8 @@ class LectureService
 
         return [
             'success' => true,
-            'lecture_rating' => $lectureRating
+            'rating' => $lectureRating->rating,
+            'review' => $lectureRating->review,
         ];
     }
 

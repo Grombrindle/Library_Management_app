@@ -3,11 +3,8 @@
 namespace App\Services;
 
 use App\Models\Teacher;
-use App\Models\Subject;
-use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class TeacherService
 {
@@ -202,78 +199,15 @@ class TeacherService
             ], 404);
         }
 
-        $teacher->ratings()->updateOrCreate(
+        $rating = $teacher->ratings()->updateOrCreate(
             ['user_id' => Auth::id()],
             ['rating' => $rating, 'review' => $review]
         );
 
         return response()->json([
             'success' => true,
-            'teacher' => $teacher->fresh()
+            'rating' => $rating->rating,
+            'review' => $rating->review,
         ]);
-    }
-    public function add($data, $file = null)
-    {
-        if ($file) {
-            $directory = 'Images/Teachers';
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            if (!file_exists(public_path($directory))) {
-                mkdir(public_path($directory), 0755, true);
-            }
-            $file->move(public_path($directory), $filename);
-            $path = $directory . '/' . $filename;
-        } else {
-            $path = "Images/Teachers/default.png";
-        }
-
-        $teacher = Teacher::create([
-            'name' => $data['name'],
-            'image' => $path,
-            'subscriptions' => 0
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'teacher' => $teacher
-        ]);
-    }
-
-    public function edit($id, $data, $file = null)
-    {
-        $teacher = Teacher::findOrFail($id);
-
-        if ($file) {
-            $directory = 'Images/Teachers';
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            if (!file_exists(public_path($directory))) {
-                mkdir(public_path($directory), 0755, true);
-            }
-            $file->move(public_path($directory), $filename);
-            $path = $directory . '/' . $filename;
-
-            if ($teacher->image != "Images/Teachers/default.png" && file_exists(public_path($teacher->image))) {
-                unlink(public_path($teacher->image));
-            }
-
-            $teacher->image = $path;
-        }
-
-        $teacher->name = $data['name'];
-        $teacher->save();
-
-        return redirect()->route('update.confirmation');
-    }
-
-    public function delete($id)
-    {
-        $teacher = Teacher::findOrFail($id);
-
-        if ($teacher->image != "Images/Teachers/default.png" && file_exists(public_path($teacher->image))) {
-            unlink(public_path($teacher->image));
-        }
-
-        $teacher->delete();
-
-        return redirect()->route('delete.confirmation');
     }
 }

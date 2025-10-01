@@ -18,7 +18,8 @@ class CourseRating extends Model
     protected $fillable = [
         'user_id',
         'course_id',
-        'rating'
+        'rating',
+        'review'
     ];
 
     public function course()

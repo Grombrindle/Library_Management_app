@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Resource;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Subject;
-use Illuminate\Support\Facades\Cache;
 use App\Services\ResourceRatingsService;
 use App\Services\ResourceService;
 use App\Actions\Resources\{
@@ -51,6 +47,11 @@ class ResourceController extends Controller
         return app(ResourceRatingsService::class)->getRatings($id);
     }
 
+    public function fetchFeaturedRatings($id)
+    {
+        return app(ResourceRatingsService::class)->getFeaturedRatings($id);
+    }
+
     public function rate($id, Request $request)
     {
         $rating = $request->rating;
@@ -60,24 +61,13 @@ class ResourceController extends Controller
     }
 
 
-    public function fetchFeaturedRatings($id)
-    {
-        $resource = Resource::find($id);
 
-        return response()->json([
-            'success' => true,
-            'FeaturedRatings' => $resource->getFeaturedRatingsAttribute(),
-        ]);
-
-    }
-
-
-    public function addResource(Request $request)
+    public function add(Request $request)
     {
         return app(AddResourceAction::class)->execute($request);
     }
 
-    public function editResource(Request $request, int $resourceId)
+    public function edit(Request $request, int $resourceId)
     {
         return app(EditResourceAction::class)->execute($request, $resourceId);
     }

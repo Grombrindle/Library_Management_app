@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\TaskService;
+use App\Actions\Tasks\{
+    AddTaskAction,
+    EditTaskAction,
+};
 
 class TaskController extends Controller
 {
@@ -24,16 +28,18 @@ class TaskController extends Controller
 
     public function add(Request $request)
     {
-        $task = $this->taskService->add($request->all());
-        return response()->json([
-            'success' => true,
-            'task' => $task
-        ]);
+        $task = app(AddTaskAction::class)->execute($request);
+
+        if ($task)
+            return response()->json([
+                'success' => true,
+                'task' => $task
+            ]);
     }
 
     public function edit(Request $request, $id)
     {
-        $task = $this->taskService->edit($id, $request->all());
+        $task = app(EditTaskAction::class)->execute($request, $id);
         if (!$task) {
             return response()->json(['success' => false, 'message' => 'Forbidden'], 403);
         }
@@ -79,7 +85,7 @@ class TaskController extends Controller
     public function trashedTasks()
     {
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'tasks' => $this->taskService->trashedTasks()
         ]);
     }
@@ -87,7 +93,7 @@ class TaskController extends Controller
     public function availableTasks()
     {
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'tasks' => $this->taskService->availableTasks()
         ]);
     }

@@ -30,6 +30,12 @@ Route::get('/getuser/{id}', [UserController::class, 'fetch']);
 Route::post('/register', [SessionController::class, 'createUser']);
 Route::post('/login', [SessionController::class, 'loginUser']);
 
+Route::get('/test', function () {
+    Auth::logout();
+    session()->invalidate();
+    session()->regenerateToken();
+});
+
 
 //test
 // Route::get('/test', [TeacherController::class, 'test']);

@@ -4,6 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\TeacherService;
+use Illuminate\Validation\Rule;
+use App\Models\Admin;
+use App\Models\Teacher;
+
+use App\Actions\Teachers\{
+    AddTeacherAction,
+    EditTeacherAction,
+    DeleteTeacherAction,
+};
 
 class TeacherController extends Controller
 {
@@ -74,18 +83,72 @@ class TeacherController extends Controller
         return $this->teacherService->rate($id, $request->rating, $request->review);
     }
 
-    public function add(Request $request)
+    public function add(Request $request, $id, $file = null)
     {
-        return $this->teacherService->add($request->all(), $request->file('object_image'));
-    }
 
-    public function edit(Request $request, $id)
+        $validator = $request->validate([
+            'teacher_name' => [
+                Rule::unique('admins', 'name')
+            ],
+            'teacher_user_name' => [
+                Rule::unique('admins', 'userName'),
+                Rule::unique('users', 'userName')
+            ],
+            'teacher_number' => [
+                Rule::unique('admins', 'number'),
+                Rule::unique('users', 'number')
+            ],
+
+            // 'facebook_link' => 'nullable|url',
+            // 'instagram_link' => 'nullable|url',
+            // 'telegram_link' => 'nullable|url',
+            // 'youtube_link' => 'nullable|url',
+        ]);
+        if (!$validator) {
+            return redirect()->back()->withErrors([
+                'teacher_name' => 'Name has already been taken',
+                'teacher_user_name' => 'User name has already been taken',
+                'teacher_number' => 'Number has already been taken',
+                'facebook_link' => 'Invalid URL',
+                'instagram_link' => 'Invalid URL',
+                'telegram_link' => 'Invalid URL',
+                'youtube_link' => 'Invalid URL',
+            ]);
+        }
+
+        return app(AddTeacherAction::class)->execute($request, $file);
+    }
+    public function edit(Request $request, $id, $file = null)
     {
-        return $this->teacherService->edit($id, $request->all(), $request->file('object_image'));
+        $validator = $request->validate([
+            'teacher_name' => [
+                Rule::unique('teachers', 'name')->ignore($id)
+            ],
+            'teacher_user_name' => [
+                Rule::unique('teachers', 'userName')->ignore($id),
+                Rule::unique('users', 'userName')
+            ],
+            'teacher_number' => [
+                Rule::unique('admins', 'number')->ignore(Admin::where('teacher_id', Teacher::findOrFail($id)->id)->first()->id),
+                Rule::unique('users', 'number')
+            ],
+        ]);
+        if (!$validator) {
+            return redirect()->back()->withErrors([
+                'teacher_name' => 'Name has already been taken',
+                'teacher_user_name' => 'User name has already been taken',
+                'teacher_number' => 'Number has already been taken',
+                'facebook_link' => 'Invalid URL',
+                'instagram_link' => 'Invalid URL',
+                'telegram_link' => 'Invalid URL',
+                'youtube_link' => 'Invalid URL',
+            ]);
+        }
+        return app(EditTeacherAction::class)->execute($request, $id, $file);
     }
 
     public function delete($id)
     {
-        return $this->teacherService->delete($id);
+        return app(DeleteTeacherAction::class)->execute($id);
     }
 }

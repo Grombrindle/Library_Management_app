@@ -6,7 +6,7 @@ use App\Models\Resource;
 
 class DeleteResourceAction
 {
-    public function execute(int $id): array
+    public function execute(int $id)
     {
         $resource = Resource::findOrFail($id);
         $name = $resource->name;

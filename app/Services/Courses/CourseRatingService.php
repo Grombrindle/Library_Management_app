@@ -4,6 +4,7 @@ namespace App\Services\Courses;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Course;
+use Illuminate\Support\Facades\Auth;
 
 class CourseRatingService
 {
@@ -17,7 +18,8 @@ class CourseRatingService
         return response()->json(['ratings' => $ratings]);
     }
 
-    public function fetchFeaturedRatings($id) {
+    public function fetchFeaturedRatings($id)
+    {
 
         $course = Course::find($id);
 
@@ -30,18 +32,17 @@ class CourseRatingService
 
     public function rateCourse($user, $courseId, array $data)
     {
-        $exists = DB::table('course_rating')->updateOrInsert(
-            [
-                'user_id' => $user->id,
-                'course_id' => $courseId
-            ],
-            [
-                'rating' => $data['rating'] ?? null,
-                'review' => $data['review'] ?? null,
-                'updated_at' => now()
-            ]
+        $course = Course::find($courseId);
+
+        $rating = $course->ratings()->updateOrCreate(
+            ['user_id' => Auth::id()],
+            ['rating' => $data['rating'], 'review' => $data['review']]
         );
 
-        return response()->json(['success' => true, 'message' => 'Rating saved successfully']);
+        return response()->json([
+            'success' => true,
+            'rating' => $rating->rating,
+            'review' => $rating->review,
+        ]);
     }
 }

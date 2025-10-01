@@ -43,9 +43,20 @@
         @error('teacher_number')
             <div class="error">{{ $message }}</div>
         @enderror
+
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <label for="teacher_password">
+                {{ __('messages.teacherPassword') }}:
+            </label>
+            <input type="password" name="teacher_password" id="teacher_password" value=""
+                style="height:20%; text-align:center; font-size:40%; width:fit-content;" minlength="8" required>
+        </div>
+        <br>
+
+
         <div style="display:flex; flex-direction:column; align-items:center; height:100%;">
             <label for="teacher_description">
-                {{ __('messages.courseDescription') }} :
+                {{ __('messages.teacherDescription') }} :
             </label>
             <div style="position: relative; width: 80%;">
                 <textarea name="teacher_description" id="teacher_description" autocomplete="off"
