@@ -14,15 +14,19 @@ class ResourceRatingsService
     public function getRatings(int $resourceId): array
     {
 
-        $ratings = ResourceRating::with('user')
-            ->where('resource_id', $resourceId)
-            ->latest()
+        $ratings = Resource::find($resourceId)->ratings()
+            ->where('isHidden', false)
             ->get();
 
-        return [
+
+        if (!$ratings) {
+            return [];
+        }
+
+        return response()->json([
             'success' => true,
-            'ratings' => $ratings,
-        ];
+            'featuredRatings' => $ratings
+        ]);
     }
 
     public function getFeaturedRatings($id)

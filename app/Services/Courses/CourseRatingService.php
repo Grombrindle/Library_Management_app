@@ -10,12 +10,18 @@ class CourseRatingService
 {
     public function fetchRatings($courseId)
     {
-        $ratings = DB::table('course_rating')
-            ->where('course_id', $courseId)
+        $ratings = Course::find($courseId)->ratings()
             ->where('isHidden', false)
             ->get();
 
-        return response()->json(['ratings' => $ratings]);
+            if (!$ratings) {
+                return [];
+            }
+
+            return response()->json([
+                'success' => true,
+                'featuredRatings' => $ratings
+            ]);
     }
 
     public function fetchFeaturedRatings($id)

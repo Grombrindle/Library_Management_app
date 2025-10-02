@@ -11,15 +11,18 @@ class LectureRatingService
 
     public function getLectureRatings(int $lectureId)
     {
-        $lecture = Lecture::with('ratings')->find($lectureId);
+        $ratings = Lecture::find($lectureId)->ratings()
+            ->where('isHidden', false)
+            ->get();
 
-        if (!$lecture) {
+
+        if (!$ratings) {
             return [];
         }
 
         return response()->json([
             'success' => true,
-            'ratings' => $lecture->ratings
+            'featuredRatings' => $ratings
         ]);
     }
 

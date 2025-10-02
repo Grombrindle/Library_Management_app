@@ -96,6 +96,10 @@ class CourseRating extends Model
         }
         return $this->unhelpful()->where('user_id', $user->id)->exists();
     }
+    public function getUsernameAttribute()
+    {
+        return $this->user->userName;
+    }
 
-    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'isHelpful', 'isUnhelpful'];
+    protected $appends = ['helpfulCount', 'unhelpfulCount', 'isHelpful', 'isUnhelpful', 'user_name'];
 }

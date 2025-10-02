@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class TeacherRating extends Model
 {
@@ -46,5 +47,37 @@ class TeacherRating extends Model
         return $this->unhelpful()->count();
     }
 
-    protected $appends = ['HelpfulCount', 'UnhelpfulCount'];
+    public function getRatingAttribute($value)
+    {
+        return round($value, 2);
+    }
+
+    public function getIsHelpfulAttribute(): ?bool
+    {
+        if (array_key_exists('is_helpful', $this->attributes)) {
+            return (bool) $this->attributes['is_helpful'];
+        }
+        $user = Auth::user();
+        if (!$user) {
+            return null;
+        }
+        return $this->helpful()->where('user_id', $user->id)->exists();
+    }
+
+    public function getIsUnhelpfulAttribute(): ?bool
+    {
+        if (array_key_exists('is_unhelpful', $this->attributes)) {
+            return (bool) $this->attributes['is_unhelpful'];
+        }
+        $user = Auth::user();
+        if (!$user) {
+            return null;
+        }
+        return $this->unhelpful()->where('user_id', $user->id)->exists();
+    }
+
+    public function getUsernameAttribute() {
+        return $this->user->userName;
+    }
+    protected $appends = ['helpfulCount', 'unhelpfulCount', 'isHelpful', 'isUnhelpful', 'user_name'];
 }

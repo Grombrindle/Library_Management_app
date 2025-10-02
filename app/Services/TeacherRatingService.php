@@ -2,34 +2,43 @@
 
 namespace App\Services;
 
-use App\Models\Course;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-class TeacherRatingService {
+class TeacherRatingService
+{
 
-    public function fetchRatings($id)
+    public function fetchRatings($teacherId)
     {
-        $ratings = DB::table('teacher_ratings')->where('teacher_id', $id)->where('isHidden', false)->get();
+        $ratings = Teacher::find($teacherId)->ratings()
+            ->where('isHidden', false)
+            ->get();
+
+
+        if (!$ratings) {
+            return [];
+        }
+
         return response()->json([
-            'ratings' => $ratings
+            'success' => true,
+            'featuredRatings' => $ratings
         ]);
     }
 
-    public function getFeaturedRatings(int $courseId)
+    public function getFeaturedRatings(int $teacherId)
     {
-        $course = Course::find($courseId);
+        $teacher = Teacher::find($teacherId);
 
-        if ($course)
+        if ($teacher)
             return response()->json([
                 'success' => true,
-                'FeaturedRatings' => $course->getFeaturedRatingsAttribute(),
+                'FeaturedRatings' => $teacher->getFeaturedRatingsAttribute(),
             ]);
 
         return response()->json([
             'success' => false,
-            'message' => 'Course not found'
+            'message' => 'Teacher not found'
         ], 404);
 
     }

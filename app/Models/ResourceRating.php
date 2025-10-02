@@ -83,5 +83,10 @@ class ResourceRating extends Model
         return $this->unhelpful()->where('user_id', $user->id)->exists();
     }
 
-    protected $appends = ['HelpfulCount', 'UnhelpfulCount', 'isHelpful', 'isUnhelpful'];
+    public function getUsernameAttribute()
+    {
+        return $this->user->userName;
+    }
+
+    protected $appends = ['helpfulCount', 'unhelpfulCount', 'isHelpful', 'isUnhelpful', 'user_name'];
 }
