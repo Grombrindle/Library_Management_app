@@ -13,6 +13,7 @@ class TeacherRatingService
     {
         $ratings = Teacher::find($teacherId)->ratings()
             ->where('isHidden', false)
+            ->whereNotNull('review')
             ->get();
 
 

@@ -12,6 +12,7 @@ class CourseRatingService
     {
         $ratings = Course::find($courseId)->ratings()
             ->where('isHidden', false)
+            ->whereNotNull('review')
             ->get();
 
             if (!$ratings) {

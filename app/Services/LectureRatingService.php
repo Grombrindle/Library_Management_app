@@ -13,6 +13,7 @@ class LectureRatingService
     {
         $ratings = Lecture::find($lectureId)->ratings()
             ->where('isHidden', false)
+            ->whereNotNull('review')
             ->get();
 
 

@@ -16,6 +16,7 @@ class ResourceRatingsService
 
         $ratings = Resource::find($resourceId)->ratings()
             ->where('isHidden', false)
+            ->whereNotNull('review')
             ->get();
 
 
