@@ -34,7 +34,7 @@ class LectureRatingService
         if ($lecture)
             return response()->json([
                 'success' => true,
-                'FeaturedRatings' => $lecture->getFeaturedRatingsAttribute(),
+                'featuredRatings' => $lecture->getFeaturedRatingsAttribute(),
             ]);
 
         return response()->json([
@@ -70,7 +70,7 @@ class LectureRatingService
             'success' => true,
             'rating' => $lectureRating->rating,
             'review' => $lectureRating->review,
-            'featuredRaings' => $lecture->featured_ratings,
+            'featuredRatings' => $lecture->featured_ratings,
             'rating_breakdown' => $lecture->rating_breakdown,
             'lectureRating' => $lecture->rating
         ];

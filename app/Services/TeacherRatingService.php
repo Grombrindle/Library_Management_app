@@ -34,7 +34,7 @@ class TeacherRatingService
         if ($teacher)
             return response()->json([
                 'success' => true,
-                'FeaturedRatings' => $teacher->getFeaturedRatingsAttribute(),
+                'featuredRatings' => $teacher->getFeaturedRatingsAttribute(),
             ]);
 
         return response()->json([

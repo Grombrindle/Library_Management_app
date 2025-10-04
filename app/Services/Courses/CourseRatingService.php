@@ -32,7 +32,7 @@ class CourseRatingService
 
         return response()->json([
             'success' => true,
-            'FeaturedRatings' => $course->getFeaturedRatingsAttribute(),
+            'featuredRatings' => $course->getFeaturedRatingsAttribute(),
         ]);
 
     }

@@ -11,7 +11,7 @@ class ResourceRatingsService
 {
 
     /* Fetch ratings for a resource */
-    public function getRatings(int $resourceId): array
+    public function getRatings(int $resourceId)
     {
 
         $ratings = Resource::find($resourceId)->ratings()
@@ -37,12 +37,12 @@ class ResourceRatingsService
 
         return response()->json([
             'success' => true,
-            'FeaturedRatings' => $resource->getFeaturedRatingsAttribute(),
+            'featuredRatings' => $resource->getFeaturedRatingsAttribute(),
         ]);
     }
 
     /* Create/update rating for a resource */
-    public function rate(int $resourceId, int $rating, ?string $review = null): array
+    public function rate(int $resourceId, int $rating, ?string $review = null)
     {
 
         $resource = Resource::find($resourceId);
