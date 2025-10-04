@@ -50,7 +50,9 @@ class CourseRatingService
             'success' => true,
             'rating' => $rating->rating,
             'review' => $rating->review,
-            'featuredRatings' => $course->featuredRatings
+            'featuredRatings' => $course->featuredRatings,
+            'rating_breakdown' => $course->rating_breakdown,
+            'courseRating' => $course->rating
         ]);
     }
 }

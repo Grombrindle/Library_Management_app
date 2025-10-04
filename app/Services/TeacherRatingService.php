@@ -63,6 +63,9 @@ class TeacherRatingService
             'success' => true,
             'rating' => $rating->rating,
             'review' => $rating->review,
+            'featuredRatings' => $teacher->featured_ratings,
+            'rating_breakdown' => $teacher->rating_breakdown,
+            'teacherRating' => $teacher->rating
         ]);
     }
 }

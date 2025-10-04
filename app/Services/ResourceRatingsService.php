@@ -45,6 +45,8 @@ class ResourceRatingsService
     public function rate(int $resourceId, int $rating, ?string $review = null): array
     {
 
+        $resource = Resource::find($resourceId);
+
         $rating = ResourceRating::updateOrCreate(
             [
                 'user_id' => Auth::id(),
@@ -60,6 +62,9 @@ class ResourceRatingsService
             'success' => true,
             'rating' => $rating->rating,
             'review' => $rating->review,
+            'featuredRatings' => $resource->featured_ratings,
+            'rating_breakdown' => $resource->rating_breakdown,
+            'resourceRating' => $resource->rating
         ];
     }
 

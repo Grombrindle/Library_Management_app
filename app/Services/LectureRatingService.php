@@ -70,6 +70,9 @@ class LectureRatingService
             'success' => true,
             'rating' => $lectureRating->rating,
             'review' => $lectureRating->review,
+            'featuredRaings' => $lecture->featured_ratings,
+            'rating_breakdown' => $lecture->rating_breakdown,
+            'lectureRating' => $lecture->rating
         ];
     }
 }
