@@ -60,6 +60,16 @@
         }
     }
 
+    [dir="ltr"] .breadcrumb {
+            font-size: 12.5px;
+            margin-left: 12.5rem;
+        }
+
+        [dir="rtl"] .breadcrumb {
+            font-size: 12.5px;
+            margin-right: 12.5rem;
+        }
+
     .breadcrumb-item {
         display: flex;
     }

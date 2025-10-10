@@ -21,19 +21,28 @@ class ResourceSeeder extends Seeder
 
         // Create ratings for each resource
         foreach (Resource::all() as $resource) {
-            $numRatings = rand(2, 4);
-            $users = User::inRandomOrder()->take($numRatings)->get();
+            if(rand(0,1)) {
+                $resource->name = $resource->name." With Rev";
+                $resource->save();
 
-            foreach ($users as $user) {
-                $rating = rand(1, 5);
+                $numRatings = rand(2, 4);
+                $users = User::inRandomOrder()->take($numRatings)->get();
 
-                // Use the ResourceRating model instead of raw DB queries
-                ResourceRating::create([
-                    'user_id' => $user->id,
-                    'resource_id' => $resource->id,
-                    'rating' => $rating,
-                    'review' => fake()->optional(0.7)->sentence(),
-                ]);
+                foreach ($users as $user) {
+                    $rating = rand(1, 5);
+
+                    // Use the ResourceRating model instead of raw DB queries
+                    ResourceRating::create([
+                        'user_id' => $user->id,
+                        'resource_id' => $resource->id,
+                        'rating' => $rating,
+                        'review' => fake()->optional(0.7)->sentence(),
+                    ]);
+                }
+            }
+            else {
+                $resource->name = $resource->name." No Rev";
+                $resource->save();
             }
         }
     }

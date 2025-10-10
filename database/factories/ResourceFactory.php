@@ -17,7 +17,7 @@ class ResourceFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->sentence(3);
+        $name = fake()->lastName();
         $description = fake()->realText(200);
         $literaryOrScientific = rand(0, 1);
         $subject = Subject::inRandomOrder()->first() ?? Subject::factory()->create();
