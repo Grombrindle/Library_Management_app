@@ -336,6 +336,26 @@
             padding: 1rem 0.5rem;
         }
     }
+
+    /* General style for the difficulty buttons */
+    .difficulty-btn {
+        background-color: green;
+        /* Default is Easy */
+        color: black;
+        border: none;
+        padding: 0.5rem 1rem;
+        width: 50%;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        /* Smooth transition for color change */
+    }
+
+    /* Additional styles when button is hovered */
+    .difficulty-btn:hover {
+        opacity: 0.8;
+    }
 </style>
 
 
@@ -403,11 +423,11 @@
                 </div>
                 @if ($object->audio_file == null)
                     <button class="button" style="margin: 20px auto 0 auto; display: block;"
-                        disabled>{{ __('messages.showResource') }} {{__('messages.audio')}}</button>
+                        disabled>{{ __('messages.showResource') }} {{ __('messages.audio') }}</button>
                 @else
                     <a href="show/{{ $object->id }}/audio" target="_blank" class="button"
                         style="background-color:#9997BC; margin: 20px auto 0 auto; display: block;">{{ __('messages.showResource') }}
-                        {{__('messages.audio')}}</a>
+                        {{ __('messages.audio') }}</a>
                 @endif
             @elseif($objectType == 'Exam')
                 <a href="show/{{ $object->id }}" target="_blank" class="button"
@@ -441,7 +461,7 @@
             @endif
         </div>
         @if ($objectType == 'Lecture')
-            <button class="button" id="showQuizBtn" style="margin-top: 10px;">{{__('messages.showQuiz')}}</button>
+            <button class="button" id="showQuizBtn" style="margin-top: 10px;">{{ __('messages.showQuiz') }}</button>
         @endif
     @endif
     @if ($addLecture != null)
@@ -506,29 +526,46 @@
                 </div>
                 <input type="hidden" name="quiz_data" id="quizDataInput">
                 <button type="button" class="quiz-add-btn" id="addQuestionBtn">+</button>
-                <button type="submit" class="button" id="updateQuizBtn" style="margin-top:1rem;">{{__('messages.updateQuiz')}}</button>
+                <button type="submit" class="button" id="updateQuizBtn"
+                    style="margin-top:1rem;">{{ __('messages.updateQuiz') }}</button>
             </form>
         </div>
     </div>
 @endif
+@if ($objectType == 'Lecture')
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal-box">
+            <form id="quizEditForm" method="POST" action="/updatequiz/{{ $object->quiz->id }}">
+                @csrf
+                @method('PUT')
+                <div class="quizContainer" id="quizContainer">
+                </div>
+                <input type="hidden" name="quiz_data" id="quizDataInput">
+                <button type="button" class="quiz-add-btn" id="addQuestionBtn">+</button>
+                <button type="submit" class="button" id="updateQuizBtn"
+                    style="margin-top:1rem;">{{ __('messages.updateQuiz') }}</button>
+            </form>
+        </div>
+    </div>
+@endif
+@if ($objectType == 'Lecture')
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal-box">
+            <form id="quizEditForm" method="POST" action="/updatequiz/{{ $object->quiz->id }}">
+                @csrf
+                @method('PUT')
+                <div class="quizContainer" id="quizContainer">
+                </div>
+                <input type="hidden" name="quiz_data" id="quizDataInput">
+                <button type="button" class="quiz-add-btn" id="addQuestionBtn">+</button>
+                <button type="submit" class="button" id="updateQuizBtn"
+                    style="margin-top:1rem;">{{ __('messages.updateQuiz') }}</button>
+            </form>
+        </div>
+    </div>
+@endif
+
 <script>
-    function handleDelete(event, isCurrentAdmin, name, warning) {
-        if (isCurrentAdmin) {
-            preventDelete();
-            return false; // Prevent form submission
-        } else {
-            return confirmDelete(name, warning);
-        }
-    }
-
-    function confirmDelete(name, warning) {
-        return confirm('{{ __('messages.confirmDeleteItem', ['name' => $name ?? "Unknown", 'warning' => $warning]) }}');
-    }
-
-    function preventDelete() {
-        alert('{{ __('messages.cannotDeleteAccount') }}');
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         const showQuizBtn = document.getElementById('showQuizBtn');
         const quizModal = document.getElementById('quizModal');
@@ -546,6 +583,7 @@
                         'questionText' => $q->questionText,
                         'options' => is_array($q->options) ? $q->options : json_decode($q->options, true),
                         'correctAnswerIndex' => $q->correctAnswerIndex,
+                        'difficulty' => $q->difficulty ?? 'EASY', // Assuming difficulty data is available in your object
                     ];
                 }
             }
@@ -560,32 +598,69 @@
             quizData.forEach((q, idx) => {
                 const row = document.createElement('div');
                 row.className = 'quiz-question-row';
-                row.innerHTML = `
-                    <input type="text" class="quiz-question-input" value="${q.questionText.replace(/"/g, '&quot;')}" placeholder="Question text" style="flex:1;max-width:60%">
-                    <button type="button" class="quiz-remove-btn" title="Remove question">-</button>
+
+                // Create a flex container for the question and difficulty toggle
+                const questionContainer = document.createElement('div');
+                questionContainer.style.display = 'flex';
+                questionContainer.style.flexDirection = 'column';
+                questionContainer.style.marginBottom = '1rem';
+
+                // Question text input
+                const questionInput = document.createElement('input');
+                questionInput.type = 'text';
+                questionInput.className = 'quiz-question-input';
+                questionInput.value = q.questionText.replace(/"/g, '&quot;');
+                questionInput.placeholder = "Question text";
+                questionInput.style.flex = '1';
+                questionInput.style.maxWidth = '60%';
+                questionInput.oninput = (e) => {
+                    quizData[idx].questionText = e.target.value;
+                };
+
+                // Difficulty toggle button
+                const difficultyToggleDiv = document.createElement('div');
+                difficultyToggleDiv.className = 'difficulty-toggle';
+                difficultyToggleDiv.style.display = 'flex';
+                difficultyToggleDiv.style.flexDirection = 'column';
+                difficultyToggleDiv.style.marginTop =
+                '0.5rem'; // Small margin between question and difficulty button
+                difficultyToggleDiv.innerHTML = `
+                    <button type="button" class="difficulty-btn" style="background-color: ${getDifficultyColor(q.difficulty)};">
+                        ${q.difficulty}
+                    </button>
                 `;
+                const difficultyBtn = difficultyToggleDiv.querySelector('.difficulty-btn');
+                difficultyBtn.onclick = () => {
+                    // Cycle through the difficulty levels
+                    const nextDifficulty = getNextDifficulty(q.difficulty);
+                    q.difficulty = nextDifficulty;
+                    difficultyBtn.textContent = nextDifficulty;
+                    difficultyBtn.style.backgroundColor = getDifficultyColor(nextDifficulty);
+                };
+
+                // Append both inputs to the flex container
+                questionContainer.appendChild(questionInput);
+                questionContainer.appendChild(difficultyToggleDiv);
+
                 // Remove button
-                row.querySelector('.quiz-remove-btn').onclick = () => {
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'quiz-remove-btn';
+                removeBtn.title = 'Remove question';
+                removeBtn.textContent = '-';
+                removeBtn.onclick = () => {
                     quizData.splice(idx, 1);
                     renderQuiz();
                 };
-                // Question text input
-                row.querySelector('.quiz-question-input').oninput = (e) => {
-                    quizData[idx].questionText = e.target.value;
-                };
+
                 // Options and correct answer radio
                 const optionsDiv = document.createElement('div');
                 optionsDiv.className = 'quiz-options-inputs';
                 if (!q.options || q.options.length === 0 || (q.options[0] === '' && q.options[1] ===
-                        '')) {
+                    '')) {
                     q.options = ['True', 'False'];
                 }
-                // Only set correctAnswerIndex to 0 if it is undefined/null and there are at least 2 non-empty options
-                const nonEmptyOptions = (q.options || []).filter(opt => opt && opt.trim() !== '');
-                if (typeof q.correctAnswerIndex !== 'number' || q.correctAnswerIndex < 0 || q
-                    .correctAnswerIndex >= nonEmptyOptions.length) {
-                    q.correctAnswerIndex = nonEmptyOptions.length >= 2 ? 0 : null;
-                }
+
                 let nonEmptyCount = 0;
                 for (let o = 0; o < 4; o++) {
                     const optInput = document.createElement('input');
@@ -593,11 +668,10 @@
                     optInput.className = 'quiz-option-input';
                     optInput.value = q.options[o] || '';
                     optInput.placeholder = `Option ${o+1}`;
-                    // Save the current cursor position
+
                     optInput.oninput = (e) => {
                         const cursorPos = e.target.selectionStart;
                         quizData[idx].options[o] = e.target.value;
-                        // Use a timeout to restore focus and cursor after re-render
                         setTimeout(() => {
                             renderQuiz();
                             const newInput = document.querySelectorAll(
@@ -609,7 +683,7 @@
                             }
                         }, 0);
                     };
-                    // Only show radio for non-empty options
+
                     const radioLabel = document.createElement('label');
                     radioLabel.style.display = 'flex';
                     radioLabel.style.alignItems = 'center';
@@ -626,7 +700,6 @@
                             quizData[idx].correctAnswerIndex = o;
                             renderQuiz();
                         };
-                        // Highlight the label if selected
                         if (q.correctAnswerIndex === o) {
                             radioLabel.style.background = '#d1e7dd';
                             radioLabel.style.borderRadius = '5px';
@@ -636,6 +709,8 @@
                     radioLabel.appendChild(optInput);
                     optionsDiv.appendChild(radioLabel);
                 }
+
+                row.appendChild(questionContainer);
                 row.appendChild(optionsDiv);
                 quizContainer.appendChild(row);
             });
@@ -655,10 +730,38 @@
             addBtn.onclick = function() {
                 quizData.push({
                     questionText: '',
-                    options: ['True', 'False']
+                    options: ['True', 'False'],
+                    correctAnswerIndex: 0, // Select first option by default
+                    difficulty: 'EASY' // Set default difficulty to EASY
                 });
                 renderQuiz();
             };
+        }
+
+        // Difficulty color mapping
+        function getDifficultyColor(difficulty) {
+            switch (difficulty) {
+                case 'MEDIUM':
+                    return 'yellow';
+                case 'HARD':
+                    return 'red';
+                case 'EASY':
+                default:
+                    return 'green';
+            }
+        }
+
+        // Cycle through the difficulty levels
+        function getNextDifficulty(current) {
+            switch (current) {
+                case 'EASY':
+                    return 'MEDIUM';
+                case 'MEDIUM':
+                    return 'HARD';
+                case 'HARD':
+                default:
+                    return 'EASY';
+            }
         }
 
         // On form submit, serialize quizData to hidden input

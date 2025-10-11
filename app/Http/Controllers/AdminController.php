@@ -8,6 +8,7 @@ use App\Actions\Admin\AdminUpdateAction;
 use App\Actions\Admin\AdminDeleteAction;
 use App\Actions\Admin\AdminLogoutAction;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -31,21 +32,30 @@ class AdminController extends Controller
     public function add(Request $request)
     {
 
-        // Validate the request
-        $validatedData = $request->validate([
+        $validator = Validator::make($request->all(), [
             'admin_name' => 'required|string|max:255|unique:admins,name',
-            'admin_user_name' => 'required|string|max:255|unique:admins,userName',
+            'admin_user_name' => [
+                Rule::unique('admins', 'userName'),
+                Rule::unique('users', 'userName')
+            ],
             'admin_number' => [
                 Rule::unique('admins', 'number'),
                 Rule::unique('users', 'number')
             ],
-            'admin_password' => 'required|string|min:8',
             'admin_privileges' => 'required',
             'object_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'admin_name' => __('messages.name_taken'),
+            'admin_user_name' => __('messages.username_taken'),
+            'admin_number' => __('messages.number_taken'),
         ]);
 
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
+        }
+
         // Call the AdminCreateAction to handle the logic
-        $result = $this->adminCreateAction->execute($validatedData);
+        $result = $this->adminCreateAction->execute($request->all());
 
         // Redirect or respond based on the result
         session(['add_info' => $result['sessionData']]);
@@ -56,7 +66,8 @@ class AdminController extends Controller
     public function edit(Request $request, $id)
     {
         $admin = Admin::findOrFail($id);
-        $validatedData = $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'admin_name' => 'required|string|max:255|unique:admins,name,' . $id,
             'admin_user_name' => [
                 Rule::unique('admins', 'userName')->ignore($id),
@@ -68,10 +79,18 @@ class AdminController extends Controller
             ],
             'admin_privileges' => 'required',
             'object_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'admin_name' => __('messages.name_taken'),
+            'admin_user_name' => __('messages.username_taken'),
+            'admin_number' => __('messages.number_taken'),
         ]);
 
+        if($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
+        }
 
-        $updatedAdmin = $this->adminUpdateAction->execute($admin, $validatedData);
+
+        $updatedAdmin = $this->adminUpdateAction->execute($admin, $request->all());
 
         session(['update_info' => ['element' => 'admin', 'id' => $updatedAdmin->id, 'name' => $updatedAdmin->name]]);
         session(['link' => '/admins']);

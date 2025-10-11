@@ -12,6 +12,8 @@
             <div class="error">{{ $message }}</div>
         @enderror
 
+        <br>
+
         <div style="display:flex; flex-direction:column; align-items:center;">
             <label for="admin_user_name">
                 {{ __('messages.userName') }}:
@@ -23,6 +25,7 @@
             <div class="error">{{ $message }}</div>
         @enderror
 
+        <br>
 
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
             <label for="admin_number">
@@ -30,8 +33,8 @@
             </label>
             <div style="position: relative; width: fit-content; height: fit-content; line-height: 0; direction: ltr;">
                 <input type="text" name="admin_number" id="admin_number" placeholder="9XXXXXXXX" autocomplete="off"
-                    inputmode="numeric"
-                    style="height: 20%; text-align: left; font-size: 40%; text-indent:30%; width: 100%; box-sizing: border-box; @error('teacher_number') border:2px solid red @enderror; vertical-align: top; margin: 0; padding: 0; direction: ltr;"
+                    inputmode="numeric" value="{{old('admin_number')}}"
+                    style="height: 20%; text-align: left; font-size: 40%; text-indent:30%; width: 100%; box-sizing: border-box; @error('admin_number') border:2px solid red @enderror; vertical-align: top; margin: 0; padding: 0; direction: ltr;"
                     oninput="if (this.value.length > 9) this.value = this.value.slice(0, 9); this.value = this.value.replace(/(?!^)\+/g,'').replace(/[^0-9+]/g, '')"
                     pattern="[0-9]{9}" required>
                 <span
@@ -44,6 +47,9 @@
         @error('admin_number')
             <div class="error">{{ $message }}</div>
         @enderror
+
+        <br>
+
         <div style="display:flex; flex-direction:column; align-items:center;">
             <label for="admin_password">
                 {{ __('messages.adminPassword') }}:

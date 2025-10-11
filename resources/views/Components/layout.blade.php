@@ -143,8 +143,9 @@
             text-align: center;
             font-family: Arial, Helvetica, sans-serif;
             padding: 5px;
-            border-radius: 4px;
+            border-radius: 2rem;
             background-color: rgba(255, 0, 0, 0.1);
+            border:#202020 solid 0.1rem;
         }
 
         /* Hide the actual file input */

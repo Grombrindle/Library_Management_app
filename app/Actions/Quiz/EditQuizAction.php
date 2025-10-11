@@ -9,8 +9,8 @@ class EditQuizAction
 {
     public function execute(int $quizId, array $quizData): void
     {
-        $quiz = Quiz::findOrFail($quizId);
 
+        $quiz = Quiz::findOrFail($quizId);
         // Remove old questions
         $quiz->questions()->delete();
 
@@ -26,6 +26,7 @@ class EditQuizAction
 
             Question::create([
                 'questionText' => $question['questionText'],
+                'difficulty' => $question['difficulty'],
                 'options' => json_encode($options),
                 'correctAnswerIndex' => $newCorrectIndex,
                 'quiz_id' => $quiz->id,

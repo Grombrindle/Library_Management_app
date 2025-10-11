@@ -46,7 +46,11 @@ class TaskService
         if ($task->user_id !== Auth::id()) {
             return null;
         }
+
         $task->restore();
+        $task->isTrashed = 0;
+        $task->save();
+
         return $task;
     }
 

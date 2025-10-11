@@ -15,6 +15,7 @@ class question extends Model
         'options',
         'correctAnswerIndex',
         'quiz_id',
+        'difficulty',
         'created_at',
         'updated_at'
     ];

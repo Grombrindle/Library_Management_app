@@ -2,6 +2,17 @@
     <x-addcard : link="addteacher" object="Teacher">
 
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
+            <label for="teacher_name">
+                {{ __('messages.teacherName') }}:
+            </label>
+            <input type="text" name="teacher_name" id="teacher_name" value="{{ old('teacher_name') }}" autocomplete="off"
+                style="height:20%; text-align:center; font-size:40%; width:fit-content;" required>
+        </div>
+        @error('teacher_name')
+            <div class="error">{{ $message }}</div>
+        @enderror
+
+        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
             <label for="teacher_user_name">
                 {{ __('messages.teacherUserName') }}:
             </label>
@@ -12,16 +23,6 @@
             <div class="error">{{ $message }}</div>
         @enderror
 
-        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
-            <label for="teacher_name">
-                {{ __('messages.teacherName') }}:
-            </label>
-            <input type="text" name="teacher_name" id="teacher_name" value="{{ old('teacher_name') }}"
-                autocomplete="off" style="height:20%; text-align:center; font-size:40%; width:fit-content;" required>
-        </div>
-        @error('teacher_name')
-            <div class="error">{{ $message }}</div>
-        @enderror
 
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
             <label for="teacher_number">
@@ -29,7 +30,7 @@
             </label>
             <div style="position: relative; width: fit-content; height: fit-content; line-height: 0; direction: ltr;">
                 <input type="text" name="teacher_number" id="teacher_number" placeholder="9XXXXXXXX"
-                    autocomplete="off" inputmode="numeric"
+                    autocomplete="off" inputmode="numeric" value="{{ old('teacher_number') }}"
                     style="height: 20%; text-align: left; font-size: 40%; text-indent:30%; width: 100%; box-sizing: border-box; @error('teacher_number') border:2px solid red @enderror; vertical-align: top; margin: 0; padding: 0; direction: ltr;"
                     oninput="if (this.value.length > 9) this.value = this.value.slice(0, 9); this.value = this.value.replace(/(?!^)\+/g,'').replace(/[^0-9+]/g, '')"
                     pattern="[0-9]{9}" required>
@@ -60,9 +61,8 @@
             </label>
             <div style="position: relative; width: 80%;">
                 <textarea name="teacher_description" id="teacher_description" autocomplete="off"
-                    value="{{ old('teacher_description') }}"
                     style="height:150px; width:100%; font-size:16px; padding:10px; padding-bottom:30px; resize:vertical;max-height:500px;"
-                    maxlength="200" oninput="updateCharCount(this, 200)"></textarea>
+                    maxlength="200" oninput="updateCharCount(this, 200)">{{ old('teacher_description') }}</textarea>
                 <div id="charCount"
                     style="position: absolute; bottom: 5px; right: 10px; font-size: 12px; color: #666; padding: 2px 6px; border-radius: 3px;">
                     0/200
@@ -87,7 +87,7 @@
                         </g>
                     </svg>
 
-                    <input type="url" value=""
+                    <input type="url" value="{{ old('facebook_link') }}"
                         style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="facebook_link"
                         placeholder="{{ __('messages.enterFacebookLink') }}">
                     @error('facebook_link')
@@ -112,7 +112,8 @@
                         </g>
                     </svg>
                     <input type="url" style="height:20%; text-align:center; font-size:40%; width:fit-content;"
-                        name="instagram_link" placeholder="Enter the Instagram link">
+                        name="instagram_link" placeholder="Enter the Instagram link"
+                        value="{{ old('instagram_link') }}">
                     @error('instagram_link')
                         <div class="error">{{ $message }}</div>
                     @enderror
@@ -129,7 +130,7 @@
                         </g>
                     </svg>
 
-                    <input type="url" value=""
+                    <input type="url" value="{{ old('telegram_link') }}"
                         style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="telegram_link"
                         placeholder="{{ __('messages.enterTelegramLink') }}">
                     @error('telegram_link')
@@ -149,7 +150,7 @@
                                 fill="#0F0F0F"></path>
                         </g>
                     </svg>
-                    <input type="url" value=""
+                    <input type="url" value="{{ old('youtube_link') }}"
                         style="height:20%; text-align:center; font-size:40%; width:fit-content;" name="youtube_link"
                         placeholder="{{ __('messages.enterYoutubeLink') }}">
                     @error('youtube_link')
@@ -166,7 +167,6 @@
 </x-layout>
 
 <script>
-
     function updateCharCount(textarea, maxLength) {
         const currentLength = textarea.value.length;
         const charCountElement = document.getElementById('charCount');
@@ -188,7 +188,7 @@
 
     // Initialize counter on page load
     document.addEventListener('DOMContentLoaded', function() {
-                const textarea = document.getElementById('teacher_description');
-                updateCharCount(textarea, 200);
+        const textarea = document.getElementById('teacher_description');
+        updateCharCount(textarea, 200);
     })
 </script>

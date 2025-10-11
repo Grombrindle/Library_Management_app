@@ -111,13 +111,13 @@ class TeacherController extends Controller
             $request->all(),
             [
                 'teacher_name' => [
-                    Rule::unique('admins', 'name')->ignore(Admin::where('teacher_id', $teacher->id)->first()),
-                    Rule::unique('teachers', 'name')->ignore($id)
+                    Rule::unique('admins', 'name'),
+                    Rule::unique('teachers', 'name')
                 ],
                 'teacher_user_name' => 'required|unique:admins,userName',
 
                 'teacher_number' => [
-                    Rule::unique('admins', 'number')->ignore(Admin::where('teacher_id', $teacher->id)->first()),
+                    Rule::unique('admins', 'number'),
                     Rule::unique('users', 'number')
                 ],
             ],
@@ -128,8 +128,9 @@ class TeacherController extends Controller
             ]
         );
 
+
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->only(['teacher_name', 'teacher_user_name', 'teacher_number']));
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
 
         return app(AddTeacherAction::class)->execute($request, $file);
@@ -142,12 +143,17 @@ class TeacherController extends Controller
             $request->all(),
             [
                 'teacher_name' => [
+                    'required',
                     Rule::unique('admins', 'name')->ignore(Admin::where('teacher_id', $teacher->id)->first()),
                     Rule::unique('teachers', 'name')->ignore($id)
                 ],
-                'teacher_user_name' => 'required|unique:admins,userName',
+                'teacher_user_name' => [
+                    'required',
+                    Rule::unique('admins', 'userName')->ignore(Admin::where('teacher_id', $teacher->id)->first()),
+                ],
 
                 'teacher_number' => [
+                    'required',
                     Rule::unique('admins', 'number')->ignore(Admin::where('teacher_id', $teacher->id)->first()),
                     Rule::unique('users', 'number')
                 ],
@@ -160,7 +166,7 @@ class TeacherController extends Controller
         );
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator->errors())->withInput($request->only(['teacher_name', 'teacher_user_name', 'teacher_number']));
+            return redirect()->back()->withErrors($validator->errors())->withInput($request->all());
         }
         return app(EditTeacherAction::class)->execute($request, $id, $file);
     }

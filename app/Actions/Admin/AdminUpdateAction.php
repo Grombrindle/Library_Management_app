@@ -25,9 +25,9 @@ class AdminUpdateAction
             $data['image'] = $directory . '/' . $filename;
         }
 
-        if ($data['admin_privileges'] == "Semi-Admin")
+        if ($data['admin_privileges'] == "Semi-Administrator")
             $admin->privileges = 1;
-        if ($data['admin_privileges'] == "Admin")
+        if ($data['admin_privileges'] == "Administrator")
             $admin->privileges = 2;
 
         $admin->name = $data['admin_name'];
