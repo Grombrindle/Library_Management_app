@@ -454,5 +454,10 @@ return [
     'unpurchaseableWithSparkies' => 'Nicht kaufbar mit Sparkies',
     'updateQuiz' => 'Quiz aktualisieren',
     'filterByCourseCount' => 'Nach Kursanzahl filtern',
+    'name_taken' => 'Name ist bereits vergeben',
+    'username_taken' => 'Benutzername ist bereits vergeben',
+    'number_taken' => 'Nummer ist bereits vergeben',
+    'invalid_url' => 'Ungültige URL',
+    'invalid_credentials' => 'Ungültige Anmeldedaten',
 
 ];

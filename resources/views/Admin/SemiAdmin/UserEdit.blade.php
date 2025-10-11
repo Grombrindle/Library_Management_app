@@ -30,7 +30,7 @@
                         value="{{ $user->number }}" autocomplete="off" inputmode="numeric"
                         style="height: 20%; text-align: left; font-size: 40%;text-indent:30%; width: 100%; box-sizing: border-box; @error('user_number') border:2px solid red @enderror; direction: ltr;"
                         oninput="if (this.value.length > 9) this.value = this.value.slice(0, 9); this.value = this.value.replace(/(?!^)\+/g,'').replace(/[^0-9+]/g, '')"
-                        pattern="[0-9]{9}" required>
+                        pattern="[0-9]{9}" readonly>
                     <span
                         style="position: absolute; left: 3px; top: 60%; transform: translateY(-50%); font-size: 50%; color: black; pointer-events: none; direction: ltr;">+963</span>
                     <div

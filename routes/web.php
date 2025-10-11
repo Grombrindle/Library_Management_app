@@ -596,12 +596,19 @@ Route::group(['middleware' => ['auth']], function () {
     })->name('user.confirmation');
 
     Route::get('/lang/{locale}', function ($locale) {
-        if (in_array($locale, ['en', 'fr', 'de', 'tr', 'es'])) {
-            session()->put('locale', $locale);
+        $supportedLocales = ['en', 'fr', 'de', 'tr', 'es', 'ar'];
+
+        if (in_array($locale, $supportedLocales)) {
+            // Set session
+            session(['locale' => $locale]);
+
+            // Create response and attach cookie
+            return redirect()->back()
+                ->withCookie(cookie()->forever('locale', $locale));
         }
+
         return redirect()->back();
     })->name('lang.switch');
-
 
     Route::get('/confirmlogout', function () {
         return view(view: 'confirmedLogout');

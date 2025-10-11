@@ -474,5 +474,9 @@ return [
     'unpurchaseableWithSparkies' => 'Unpurchaseable with Sparkies',
     'updateQuiz' => 'Update Quiz',
     'filterByCourseCount' => 'Filter by Course Count',
-
+    'name_taken' => 'Name has already been taken',
+    'username_taken' => 'Username has already been taken',
+    'number_taken' => 'Number has already been taken',
+    'invalid_url' => 'Invalid URL',
+    'invalid_credentials' => 'Invalid Credentials',
 ];

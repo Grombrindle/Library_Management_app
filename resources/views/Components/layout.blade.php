@@ -135,12 +135,16 @@
             border-color: #444;
         }
 
+
         .error {
-            color: red;
-            font-size: 1rem;
+            color: var(--error-color);
+            font-size: 1.375rem;
             margin-top: 5px;
             text-align: center;
             font-family: Arial, Helvetica, sans-serif;
+            padding: 5px;
+            border-radius: 4px;
+            background-color: rgba(255, 0, 0, 0.1);
         }
 
         /* Hide the actual file input */
@@ -289,6 +293,7 @@
             padding-left: 35px;
             background-position: left 15px center;
         }
+
         /* Dark mode styles for layout */
         .banner {
             background-color: var(--nav-bg);

@@ -105,7 +105,7 @@
             <div>
                 <label for="pdf_ar">{{ __('messages.pdfArabic') }}</label>
                 <div class="custom-file-input">
-                    <input type="file" id="pdf_ar" class="hidden-file-input" name="pdf_ar" accept="application/pdf">
+                    <input type="file" id="pdf_ar" class="hidden-file-input" name="pdf_ar" accept="application/pdf" required>
                     <label for="pdf_ar" class="file-input-label">
                         <span class="file-input-text" id="file-input-text-ar">{{ __('messages.chooseFile') }}</span>
                     </label>

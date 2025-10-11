@@ -65,6 +65,7 @@
                 <input type="text" name="resource_name" id="resource_name" value="{{ $resource->name }}"
                     style="height:20%; text-align:center; font-size:40%; width:fit-content;" />
             </div>
+            <br>
             <div style="display:flex; flex-direction:column; align-items:center;">
                 <label for="resource_description">
                     {{ __('messages.resourceDescription') }} ({{ __('messages.optional') }}):
@@ -100,7 +101,7 @@
                     required>
             </div>
             <br>
-            <span>{{ __('messages.uploadPDFs') }} ({{ __('messages.arabicOrEnglishRequired') }}):</span>
+            <span>{{ __('messages.uploadPDFs') }}:</span>
             <br>
             <br>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:10px;">
@@ -132,33 +133,36 @@
                     @endphp
                     <div>
                         <label for="pdf_{{ $langCode }}">{{ $langName }}
-                            ({{ __('messages.optional') }})</label>
-                        <div class="custom-file-input">
-                            <input type="file" id="pdf_{{ $langCode }}" class="hidden-file-input"
-                                name="pdf_{{ $langCode }}" accept="application/pdf"
-                                {{ $hasFile ? 'disabled' : '' }}>
-                            <label for="pdf_{{ $langCode }}" class="file-input-label"
-                                {{ $hasFile ? 'style="opacity: 0.6; cursor: not-allowed;"' : '' }}>
-                                <span class="file-input-text" id="file-input-text-{{ $langCode }}"
-                                    title="{{ $fullFileName }}">
-                                    {{ $displayFileName }}
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-                @endforeach
+                            @if ($langName !== 'Arabic PDF')
+                                ({{ __('messages.optional') }})
+                        </label>
+                @endif
+                <div class="custom-file-input">
+                    <input type="file" id="pdf_{{ $langCode }}" class="hidden-file-input"
+                        name="pdf_{{ $langCode }}" accept="application/pdf" {{ $hasFile ? 'disabled' : '' }}>
+                    <label for="pdf_{{ $langCode }}" class="file-input-label"
+                        {{ $hasFile ? 'style="opacity: 0.6; cursor: not-allowed;"' : '' }}>
+                        <span class="file-input-text" id="file-input-text-{{ $langCode }}"
+                            title="{{ $fullFileName }}">
+                            {{ $displayFileName }}
+                        </span>
+                    </label>
+                </div>
             </div>
-            <div id="pdf-error" style="color: red; display: none; text-align: center;">
-                {{ __('messages.arabicOrEnglishRequired') }}
-            </div>
-            <br>
+            @endforeach
+        </div>
+        <div id="pdf-error" style="color: red; display: none; text-align: center;">
+            {{ __('messages.arabicOrEnglishRequired') }}
+        </div>
+        <br>
         </div>
         <br>
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
             <label for="resource_audio_file">
                 {{ __('messages.resourceAudioFile') }} ({{ __('messages.optional') }}):
             </label>
-            <input type="file" name="resource_audio_file" id="resource_audio_file" accept="audio/*" style="@if($resource->audio_file_url) cursor: not-allowed; @endif"
+            <input type="file" name="resource_audio_file" id="resource_audio_file" accept="audio/*"
+                style="@if ($resource->audio_file_url) cursor: not-allowed; @endif"
                 @if ($resource->audio_file) disabled @endif>
             @if ($resource->audio_file)
                 <span style="color: var(--disabled-text);">{{ __('messages.audioFileAlreadyUploaded') }}</span>

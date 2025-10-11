@@ -48,6 +48,7 @@ class CourseRatingService
 
         return response()->json([
             'success' => true,
+            'created' => $rating->wasRecentlyCreated,
             'rating' => $rating->rating,
             'review' => $rating->review,
             'featuredRatings' => $course->featuredRatings,

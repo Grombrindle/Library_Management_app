@@ -12,7 +12,7 @@ class SetRTL
     public function handle(Request $request, Closure $next): Response
     {
         $rtlLocales = ['ar']; // Add more RTL locales if needed
-        
+
         if (in_array(App::getLocale(), $rtlLocales)) {
             view()->share('isRTL', true);
         } else {
@@ -21,4 +21,4 @@ class SetRTL
 
         return $next($request);
     }
-} 
+}

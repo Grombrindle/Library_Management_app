@@ -117,17 +117,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        .error {
-            color: var(--error-color);
-            font-size: 0.875rem;
-            margin-top: 5px;
-            text-align: center;
-            font-family: Arial, Helvetica, sans-serif;
-            padding: 5px;
-            border-radius: 4px;
-            background-color: rgba(255, 0, 0, 0.1);
-        }
-
         @keyframes rotateBorder {
             0% {
                 border-image-source: linear-gradient(90deg, transparent, transparent, transparent, var(--border-color));

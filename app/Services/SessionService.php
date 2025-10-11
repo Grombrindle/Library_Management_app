@@ -51,7 +51,7 @@ class SessionService
 
             Auth::login($user);
 
-            return ['success' => true, 'token' => $token,'user' => $user];
+            return ['success' => true, 'token' => $token, 'user' => $user];
         }
 
         return ['success' => false, 'message' => 'Invalid Credentials'];
@@ -62,10 +62,10 @@ class SessionService
      */
     public function loginWeb(array $credentials)
     {
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('web')->attempt($credentials)) {
             $admin = Admin::where('userName', $credentials['userName'])->first();
             if ($admin && Hash::check($credentials['password'], $admin->password)) {
-                Auth::login($admin);
+                Auth::guard('web')->login($admin);
             }
             return true;
         }

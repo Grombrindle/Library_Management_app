@@ -15,7 +15,7 @@
                     {{ __('messages.userName') }}
                 </label>
                 <input type="text" name="user_name" id="user_name" value="{{ $user->userName }}"
-                    style="height:20%; text-align:center; font-size:40%; width:fit-content;margin-bottom:10%;">
+                    style="height:20%; text-align:center; font-size:40%; width:fit-content;margin-bottom:10%; @error('user_name') border:2px solid red @enderror;">
             </div>
             @error('user_name')
                 <div class="error">{{ $message }}</div>

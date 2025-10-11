@@ -68,6 +68,7 @@ class LectureRatingService
 
         return [
             'success' => true,
+            'created' => $lectureRating->wasRecentlyCreated,
             'rating' => $lectureRating->rating,
             'review' => $lectureRating->review,
             'featuredRatings' => $lecture->featured_ratings,

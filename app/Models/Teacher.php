@@ -156,41 +156,37 @@ class Teacher extends Model
     }
 
     public function getFeaturedRatingsAttribute()
-    {
-        // Get ratings with review, order by helpful count desc, unhelpful count asc, then rating desc, then review length desc, then created_at desc
-        $withReview = $this->ratings()
+    {// First, get the user's review if it exists
+        $userReview = $this->ratings()
             ->whereNotNull('review')
             ->where('isHidden', false)
+            ->where('user_id', auth()->id()) // Get current user's review
+            ->withCount(['helpful', 'unhelpful'])
+            ->first();
+
+        // Get other reviews (excluding user's review) with original sorting
+        $otherReviews = $this->ratings()
+            ->whereNotNull('review')
+            ->where('isHidden', false)
+            ->when($userReview, function ($query) {
+                $query->where('user_id', '!=', auth()->id()); // Exclude user's review
+            })
             ->withCount(['helpful', 'unhelpful'])
             ->orderByDesc('helpful_count')
             ->orderBy('unhelpful_count')
             ->orderByDesc('rating')
             ->orderByRaw('LENGTH(review) DESC')
             ->orderByDesc('created_at')
-            ->take(3)
+            ->take($userReview ? 2 : 3) // Take 2 if user review exists, otherwise 3
             ->get();
 
-        if ($withReview->count() >= 3) {
-            return $withReview->map(function ($review) {
-                $review->user_name = $review->user ? $review->user->userName : null;
-                return $review;
-            });
+        // Combine collections
+        $withReview = collect();
+        if ($userReview) {
+            $withReview->push($userReview);
         }
+        $withReview = $withReview->merge($otherReviews);
 
-        $needed = 3 - $withReview->count();
-        // $withoutReview = $this->ratings()
-
-        //     ->whereNull('review')
-        //     ->where('isHidden', false)
-        //     ->withCount(['helpful', 'unhelpful'])
-        //     ->orderByDesc('helpful_count')
-        //     ->orderBy('unhelpful_count')
-        //     ->orderByDesc('rating')
-        //     ->orderByDesc('created_at')
-        //     ->take($needed)
-        //     ->get();
-
-        // $all = $withReview->concat($withoutReview);
         return $withReview->map(function ($review) {
             $review->user_name = $review->user ? $review->user->userName : null;
             return $review;
@@ -215,7 +211,8 @@ class Teacher extends Model
         return $fullBreakdown;
     }
 
-    public function getIsFavoriteAttribute() {
+    public function getIsFavoriteAttribute()
+    {
         if (Auth::user() === null || !(Auth::user() instanceof \App\Models\User)) {
             return false;
         }

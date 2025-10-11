@@ -790,8 +790,7 @@
             return;
         }
 
-        document.cookie = `locale=${lang};path=/;max-age=31536000`; // Cookie expires in 1 year
-        window.location.reload();
+        window.location.href = `/lang/${lang}`;
     }
 </script>
 

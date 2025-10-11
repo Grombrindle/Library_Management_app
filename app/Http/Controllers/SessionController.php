@@ -65,7 +65,7 @@ class SessionController extends Controller
             return redirect('/welcome');
         }
 
-        return redirect()->back()->withErrors(['password' => 'Invalid Credentials'])->withInput(['userName']);
+        return redirect()->back()->withErrors(['password' => __('messages.invalid_credentials')])->withInput(['userName']);
     }
 
     public function logoutUser(Request $request)

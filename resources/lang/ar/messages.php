@@ -462,5 +462,10 @@ return [
     'courseStatus' => 'حالة الدورة',
     'purchaseableWithSparkies' => 'قابل للشراء بـ Sparkies',
     'unpurchaseableWithSparkies' => 'غير قابل للشراء بـ Sparkies',
+    'name_taken' => 'هذا الاسم مأخوذ بالفعل',
+    'username_taken' => 'اسم المستخدم مأخوذ بالفعل',
+    'number_taken' => 'هذا الرقم مأخوذ بالفعل',
+    'invalid_url' => 'رابط غير صالح',
+    'invalid_credentials' => 'بيانات الاعتماد غير صالحة',
 
 ];

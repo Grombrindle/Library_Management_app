@@ -448,7 +448,10 @@ return [
     'unpurchaseableWithSparkies' => 'Sparkies ile Satın Alınamaz',
     'updateQuiz' => 'Testi Güncelle',
     'filterByCourseCount' => 'Kurs Sayısına Göre Filtrele',
-    'updateQuiz' => 'تحديث الاختبار',
-    'filterByCourseCount' => 'تصفية بعدد الدورات',
+    'name_taken' => 'Bu isim zaten alınmış',
+    'username_taken' => 'Bu kullanıcı adı zaten alınmış',
+    'number_taken' => 'Bu numara zaten alınmış',
+    'invalid_url' => 'Geçersiz URL',
+    'invalid_credentials' => 'Geçersiz Kimlik Bilgileri',
 
 ];

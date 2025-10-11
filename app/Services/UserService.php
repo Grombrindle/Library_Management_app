@@ -20,6 +20,7 @@ class UserService
     {
         $user = User::find(Auth::id());
 
+
         $courses = "";
         $count = $user->courses ? $user->courses->count() : null;
 
@@ -32,13 +33,13 @@ class UserService
             }
         }
 
-        $userArray = $user->toArray();
-        $userArray['subs'] = $courses;
-        $userArray['lecturesNum'] = $user->lectures ? $user->lectures->count() : "";
+
+        $user->subs = $courses;
+        $user->lecturesNum = $user->lectures ? $user->lectures->count() : "";
 
         return response()->json([
             'success' => true,
-            'user' => $userArray
+            'user' => $user
         ]);
     }
 
@@ -113,15 +114,22 @@ class UserService
 
     public function edit($id, $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'user_name' => [
-                Rule::unique('users', 'userName')->ignore($id)
+                Rule::unique('users', 'userName')->ignore($id),
             ],
             'user_number' => [
                 Rule::unique('users', 'number')->ignore($id),
                 Rule::unique('admins', 'number')
             ],
+        ], [
+            'user_name.unique' => __('messages.username_taken'),
+            'user_number.unique' => __('messages.number_taken'),
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors(['user_name', 'user_number'])->withInput(['user_name', 'user_number']);
+        }
 
         $user = User::findOrFail($id);
         $courses = json_decode($request->selected_objects, true);

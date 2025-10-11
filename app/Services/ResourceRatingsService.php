@@ -60,6 +60,7 @@ class ResourceRatingsService
 
         return [
             'success' => true,
+            'created' => $rating->wasRecentlyCreated,
             'rating' => $rating->rating,
             'review' => $rating->review,
             'featuredRatings' => $resource->featured_ratings,

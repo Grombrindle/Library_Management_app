@@ -34,6 +34,8 @@ Route::get('/test', function () {
     Auth::logout();
     session()->invalidate();
     session()->regenerateToken();
+    session()->remove(session()->token());
+    dd(session()->token());
 });
 
 
