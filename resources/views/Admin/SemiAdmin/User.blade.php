@@ -32,7 +32,7 @@
         @else
         <span>{{ $user->lectures->count() }}</span>
             @endif --}}
-        ● {{ __('messages.sparks') }}: {{ $user->sparks }}
+        ● {{ __('messages.sparks') }}: {{ $user->sparks }} <br>
         ● {{ __('messages.sparkies') }}: {{ $user->sparkies }}
 
 

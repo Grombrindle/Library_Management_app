@@ -467,5 +467,18 @@ return [
     'number_taken' => 'هذا الرقم مأخوذ بالفعل',
     'invalid_url' => 'رابط غير صالح',
     'invalid_credentials' => 'بيانات الاعتماد غير صالحة',
-
+    'dynamic_content_not_found' => 'لم يتم العثور على حاوية المحتوى الديناميكي - قد لا تعمل وظيفة AJAX بشكل صحيح',
+    'attempted_update_invalid_element' => 'تم محاولة تحديث عنصر فارغ أو غير صالح',
+    'dom_manipulation_error' => 'تم التقاط خطأ في التلاعب بـ DOM:',
+    'cannot_set_properties_of_null' => 'لا يمكن تعيين خصائص للـ null',
+    'required_elements_not_found' => 'لم يتم العثور على العناصر المطلوبة، جاري المحاولة مرة أخرى...',
+    'error_fetching_filtered_results' => 'حدث خطأ أثناء جلب النتائج المصفاة:',
+    'error_in_update_content' => 'حدث خطأ أثناء تحديث المحتوى:',
+    'error_fetching_search_results' => 'حدث خطأ أثناء جلب نتائج البحث:',
+    'error' => 'خطأ:',
+    'invalid_locale_code' => 'رمز المنطقة غير صالح:',
+    'easy' => 'سهل',
+    'medium' => 'متوسط',
+    'hard' => 'صعب',
+    'loremIpsum' => "أبجد هوز"
 ];

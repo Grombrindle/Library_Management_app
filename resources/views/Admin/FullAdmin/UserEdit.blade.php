@@ -48,7 +48,8 @@
                     {{ __('messages.sparkies') }}
                 </label>
                 <input type="number" name="user_sparkies" id="user_sparkies" value="{{ $user->sparkies }}"
-                    style="height:20%; text-align:center; font-size:40%; width:fit-content;margin-bottom:10%;">
+                    style="height:20%; text-align:center; font-size:40%; width:fit-content;margin-bottom:10%;"
+                    oninput="if(value>15) value=15">
             </div>
             @error('user_sparkies')
                 <div class="error">{{ $message }}</div>

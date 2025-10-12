@@ -963,7 +963,7 @@
                     .then(data => {
                         updateContent(data);
                     })
-                    .catch(error => console.error('Error fetching search results:', error));
+                    .catch(error => console.error(__('messages.error_fetching_search_results'), error));
             });
         }
 
@@ -987,7 +987,7 @@
                 .then(data => {
                     updateContent(data);
                 })
-                .catch(error => console.error('Error fetching filtered results:', error));
+                .catch(error => console.error(__('messages.error_fetching_filtered_results'), error));
         }
 
         // Function to update content

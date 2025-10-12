@@ -460,5 +460,18 @@ return [
     'number_taken' => 'Ce numéro est déjà utilisé',
     'invalid_url' => 'URL invalide',
     'invalid_credentials' => 'Identifiants invalides',
-
+    'dynamic_content_not_found' => 'Conteneur de contenu dynamique introuvable - la fonctionnalité AJAX pourrait ne pas fonctionner correctement',
+    'attempted_update_invalid_element' => 'Tentative de mise à jour d\'un élément nul ou invalide',
+    'dom_manipulation_error' => 'Erreur de manipulation du DOM capturée :',
+    'cannot_set_properties_of_null' => 'Impossible de définir les propriétés de null',
+    'required_elements_not_found' => 'Éléments requis non trouvés, nouvelle tentative en cours...',
+    'error_fetching_filtered_results' => 'Erreur lors de la récupération des résultats filtrés :',
+    'error_in_update_content' => 'Erreur lors de la mise à jour du contenu :',
+    'error_fetching_search_results' => 'Erreur lors de la récupération des résultats de recherche :',
+    'error' => 'Erreur :',
+    'invalid_locale_code' => 'Code de locale invalide :',
+    'easy' => 'FACILE',
+    'medium' => 'MOYEN',
+    'hard' => 'DIFFICILE',
+    'loremIpsum' => "Lorem Ipsum"
 ];

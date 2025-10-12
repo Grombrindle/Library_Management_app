@@ -339,8 +339,7 @@
 
     /* General style for the difficulty buttons */
     .difficulty-btn {
-        background-color: green;
-        /* Default is Easy */
+        background-color: yellow;
         color: black;
         border: none;
         padding: 0.5rem 1rem;
@@ -566,6 +565,12 @@
 @endif
 
 <script>
+    const messages = {
+        EASY: @json(__('messages.easy')),
+        MEDIUM: @json(__('messages.medium')),
+        HARD: @json(__('messages.hard'))
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
         const showQuizBtn = document.getElementById('showQuizBtn');
         const quizModal = document.getElementById('quizModal');
@@ -623,18 +628,19 @@
                 difficultyToggleDiv.style.display = 'flex';
                 difficultyToggleDiv.style.flexDirection = 'column';
                 difficultyToggleDiv.style.marginTop =
-                '0.5rem'; // Small margin between question and difficulty button
+                    '0.5rem'; // Small margin between question and difficulty button
                 difficultyToggleDiv.innerHTML = `
-                    <button type="button" class="difficulty-btn" style="background-color: ${getDifficultyColor(q.difficulty)};">
-                        ${q.difficulty}
-                    </button>
-                `;
+            <button type="button" class="difficulty-btn" style="background-color: ${getDifficultyColor(q.difficulty)};">
+                ${messages[q.difficulty]} <!-- Display dynamic message -->
+            </button>
+        `;
                 const difficultyBtn = difficultyToggleDiv.querySelector('.difficulty-btn');
                 difficultyBtn.onclick = () => {
                     // Cycle through the difficulty levels
                     const nextDifficulty = getNextDifficulty(q.difficulty);
                     q.difficulty = nextDifficulty;
-                    difficultyBtn.textContent = nextDifficulty;
+                    difficultyBtn.textContent = messages[
+                        nextDifficulty]; // Update button text to translated version
                     difficultyBtn.style.backgroundColor = getDifficultyColor(nextDifficulty);
                 };
 
@@ -657,7 +663,7 @@
                 const optionsDiv = document.createElement('div');
                 optionsDiv.className = 'quiz-options-inputs';
                 if (!q.options || q.options.length === 0 || (q.options[0] === '' && q.options[1] ===
-                    '')) {
+                        '')) {
                     q.options = ['True', 'False'];
                 }
 
@@ -667,7 +673,7 @@
                     optInput.type = 'text';
                     optInput.className = 'quiz-option-input';
                     optInput.value = q.options[o] || '';
-                    optInput.placeholder = `Option ${o+1}`;
+                    optInput.placeholder = `Option ${o + 1}`;
 
                     optInput.oninput = (e) => {
                         const cursorPos = e.target.selectionStart;
@@ -716,6 +722,7 @@
             });
         }
 
+
         // Add question button logic
         function setupAddButton() {
             let addBtn = document.getElementById('addQuestionBtn');
@@ -729,10 +736,10 @@
             }
             addBtn.onclick = function() {
                 quizData.push({
-                    questionText: '',
+                    questionText: @json(__('messages.loremIpsum')),
                     options: ['True', 'False'],
                     correctAnswerIndex: 0, // Select first option by default
-                    difficulty: 'EASY' // Set default difficulty to EASY
+                    difficulty: 'MEDIUM' // Set default difficulty to EASY
                 });
                 renderQuiz();
             };

@@ -380,7 +380,7 @@
 
             // Check if essential elements exist
             if (!dynamicContent) {
-                console.warn('Dynamic content container not found - AJAX functionality may not work properly');
+                console.warn(__('messages.dynamic_content_not_found'));
             }
 
         // Handle toggle switch
@@ -476,7 +476,7 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching filtered results:', error);
+                    console.error(__('messages.error_fetching_filtered_results'), error);
                     if (dynamicContent) {
                         safeUpdateElement(dynamicContent, '<div class="error-message">{{ __("messages.failedToLoadResults") }}</div>');
                     }
@@ -527,7 +527,7 @@
         if (element && element.innerHTML !== undefined) {
             element.innerHTML = content;
         } else {
-            console.warn('Attempted to update null or invalid element');
+            console.warn(__('messages.attempted_update_invalid_element'));
         }
     }
 
@@ -538,15 +538,15 @@
             try {
                 return originalUpdateContent.apply(this, args);
             } catch (error) {
-                console.error('Error in updateContent:', error);
+                console.error(__('messages.error_in_update_content'), error);
             }
         };
     }
 
     // Global error handler for fetch operations
     window.addEventListener('error', function(e) {
-        if (e.message.includes('innerHTML') || e.message.includes('Cannot set properties of null')) {
-            console.warn('DOM manipulation error caught:', e.message);
+        if (e.message.includes('innerHTML') || e.message.includes(__('messages.cannot_set_properties_of_null'))) {
+            console.warn(__('messages.dom_manipulation_error'), e.message);
             e.preventDefault();
         }
     });

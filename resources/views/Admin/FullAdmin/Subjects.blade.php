@@ -274,7 +274,7 @@
                     refreshAnimations();
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error(__('messages.error'), error);
                     dynamicContent.innerHTML = '<div class="error-message">Failed to load subjects</div>';
                     paginationInfoContainer.innerHTML = '';
                     paginationContainer.innerHTML = '';

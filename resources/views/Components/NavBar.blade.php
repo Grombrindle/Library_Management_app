@@ -786,7 +786,7 @@
         // Validate the locale code
         const validLocales = ['en', 'fr', 'de', 'tr', 'es', 'ar'];
         if (!validLocales.includes(lang)) {
-            console.error('Invalid locale code:', lang);
+            console.error(__('messages.invalid_locale_code'), lang);
             return;
         }
 

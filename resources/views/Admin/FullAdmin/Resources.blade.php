@@ -21,7 +21,9 @@
         ->when($searchQuery, function ($query) use ($searchTerms) {
             foreach ($searchTerms as $term) {
                 $query->where(function ($q) use ($term) {
-                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])->orWhereRaw('LOWER(author) LIKE ?', ["%{$term}%"]);
+                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$term}%"])->orWhereRaw('LOWER(author) LIKE ?', [
+                        "%{$term}%",
+                    ]);
                 });
             }
             return $query;
@@ -64,8 +66,6 @@
 
     $modelToPass = $query->paginate(10);
 
-
-
     // Prepare filter options - use subjects with literary/scientific labels
     $subjects = App\Models\Subject::select('id', 'name', 'literaryOrScientific')->get();
     $filterOptions = [];
@@ -100,8 +100,8 @@
         ],
     )" />
 
-    <x-cardcontainer :model=$modelToPass addLink="addresource" :filterOptions=$filterOptions
-        :showUsernameSort=false :showNameSort=true models="Resources">
+    <x-cardcontainer :model=$modelToPass addLink="addresource" :filterOptions=$filterOptions :showUsernameSort=false
+        :showNameSort=true models="Resources">
         <div id="dynamic-content" style="width:100%; display:flex; flex-direction:row;gap:10px;">
             @foreach ($chunkedLectures as $chunk)
                 <div class="chunk">
@@ -112,7 +112,8 @@
                             ● {{ __('messages.resourceAuthor') }}: {{ $resource->author }}<br>
                             ● {{ __('messages.resourceDescription') }}: {{ $resource->description }}<br>
                             ● {{ __('messages.resourceSubject') }}:
-                            {{ $resource->subject->name }} ({{ $resource->literaryOrScientific ? __('messages.scientific') : __('messages.literary') }})<br>
+                            {{ $resource->subject->name }}
+                            ({{ $resource->literaryOrScientific ? __('messages.scientific') : __('messages.literary') }})<br>
                             ● {{ __('messages.resourcePublishDate') }}: {{ $resource['publish date'] }}<br>
                             <br>
                             <div style="display:inline-block; vertical-align:middle;">
@@ -151,7 +152,7 @@
                                     @endif
                                 @endfor
                                 <span>({{ number_format($rating, 1) }})</span>
-                                <span>({{ $resource->ratings->count() }} {{__('messages.reviews')}})</span>
+                                <span>({{ $resource->ratings->count() }} {{ __('messages.reviews') }})</span>
 
                             </div>
                         </x-card>
@@ -191,7 +192,7 @@
         if (element && element.innerHTML !== undefined) {
             element.innerHTML = content;
         } else {
-            console.warn('Attempted to update null or invalid element');
+            console.warn(__('messages.attempted_update_invalid_element'));
         }
     }
 
@@ -206,7 +207,7 @@
         const paginationContainer = document.querySelector('.pagination');
 
         if (!searchBar || !dynamicContent) {
-            console.warn('Required elements not found, retrying...');
+            console.warn(__('messages.required_elements_not_found'));
             setTimeout(initializePage, 100);
             return;
         }
@@ -277,9 +278,10 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching filtered results:', error);
+                    console.error(__('messages.error_fetching_filtered_results'), error);
                     if (dynamicContent) {
-                        safeUpdateElement(dynamicContent, '<div class="error-message">{{ __("messages.failedToLoadResults") }}</div>');
+                        safeUpdateElement(dynamicContent,
+                            '<div class="error-message">{{ __('messages.failedToLoadResults') }}</div>');
                     }
                     if (paginationInfoContainer) {
                         safeUpdateElement(paginationInfoContainer, '');
@@ -328,15 +330,16 @@
             try {
                 return originalUpdateContent.apply(this, args);
             } catch (error) {
-                console.error('Error in updateContent:', error);
+                console.error(__('messages.error_in_update_content'), error);
             }
         };
     }
 
     // Global error handler for fetch operations
     window.addEventListener('error', function(e) {
-        if (e.message.includes('innerHTML') || e.message.includes('Cannot set properties of null')) {
-            console.warn('DOM manipulation error caught:', e.message);
+        if (e.message.includes('innerHTML') || e.message.includes(__(
+            'messages.cannot_set_properties_of_null'))) {
+            console.warn(__('messages.dom_manipulation_error'), e.message);
             e.preventDefault();
         }
     });

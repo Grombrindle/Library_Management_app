@@ -136,6 +136,8 @@ class UserService
         $lectures = json_decode($request->selected_lectures, true);
         $user->isBanned = $request->isBanned == "on" ? 1 : 0;
 
+        $user->sparkies = $request->user_sparkies;
+
         if ($request->selected_lectures == null) {
             $lectures = $user->lectures->pluck('id')->toArray();
         }

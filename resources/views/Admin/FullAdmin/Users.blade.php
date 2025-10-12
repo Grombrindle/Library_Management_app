@@ -271,7 +271,7 @@
                         }
                     }
                 })
-                .catch(error => console.error('Error fetching search results:', error));
+                .catch(error => console.error(__('messages.error_fetching_search_results'), error));
         });
     });
 </script>

@@ -479,4 +479,18 @@ return [
     'number_taken' => 'Number has already been taken',
     'invalid_url' => 'Invalid URL',
     'invalid_credentials' => 'Invalid Credentials',
+    'dynamic_content_not_found' => 'Dynamic content container not found - AJAX functionality may not work properly',
+    'attempted_update_invalid_element' => 'Attempted to update null or invalid element',
+    'dom_manipulation_error' => 'DOM manipulation error caught:',
+    'cannot_set_properties_of_null' => 'Cannot set properties of null',
+    'required_elements_not_found' => 'Required elements not found, retrying...',
+    'error_fetching_filtered_results' => 'Error fetching filtered results:',
+    'error_in_update_content' => 'Error in updateContent:',
+    'error_fetching_search_results' => 'Error fetching search results:',
+    'error' => 'Error:',
+    'invalid_locale_code' => 'Invalid locale code:',
+    'easy' => 'EASY',
+    'medium' => 'MEDIUM',
+    'hard' => 'HARD',
+    'loremIpsum' => "Lorem Ipsum"
 ];

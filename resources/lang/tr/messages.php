@@ -453,5 +453,18 @@ return [
     'number_taken' => 'Bu numara zaten alınmış',
     'invalid_url' => 'Geçersiz URL',
     'invalid_credentials' => 'Geçersiz Kimlik Bilgileri',
-
+    'dynamic_content_not_found' => 'Dinamik içerik konteyneri bulunamadı - AJAX işlevselliği düzgün çalışmayabilir',
+    'attempted_update_invalid_element' => 'Null veya geçersiz öğe güncellenmeye çalışıldı',
+    'dom_manipulation_error' => 'DOM manipülasyonu hatası yakalandı:',
+    'cannot_set_properties_of_null' => 'Null nesnesinin özellikleri ayarlanamaz',
+    'required_elements_not_found' => 'Gerekli öğeler bulunamadı, tekrar deneniyor...',
+    'error_fetching_filtered_results' => 'Filtrelenmiş sonuçlar alınırken hata oluştu:',
+    'error_in_update_content' => 'İçeriği güncellerken hata:',
+    'error_fetching_search_results' => 'Arama sonuçları alınırken hata oluştu:',
+    'error' => 'Hata:',
+    'invalid_locale_code' => 'Geçersiz yerel kod:',
+    'easy' => 'KOLAY',
+    'medium' => 'ORTA',
+    'hard' => 'ZOR',
+    'loremIpsum' => "Lorem Ipsum"
 ];
