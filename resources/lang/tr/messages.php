@@ -466,5 +466,7 @@ return [
     'easy' => 'KOLAY',
     'medium' => 'ORTA',
     'hard' => 'ZOR',
-    'loremIpsum' => "Lorem Ipsum"
+    'loremIpsum' => "Lorem Ipsum",
+    'dynamic_content_not_found' => 'Yanıtta dinamik içerik bulunamadı',
+    'dynamic_content_container_not_found' => 'Dinamik içerik konteyneri bulunamadı',
 ];

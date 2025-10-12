@@ -614,8 +614,6 @@
             }
             let initialSubjectsSet = new Set(@json($selectedSubjects).map(String));
             let selectedSubjectsSet = new Set([...selectedSubjects].map(String));
-            console.log(initialSubjectsSet);
-            console.log(selectedSubjectsSet);
             if (!setsAreEqual(initialSubjectsSet, selectedSubjectsSet)) hasChanged = true;
             @if ($lectures != false)
                 let initialLecturesSet = new Set(@json($selectedLectures).map(String));

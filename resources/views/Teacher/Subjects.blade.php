@@ -141,7 +141,6 @@
                     refreshAnimations();
 
                     if (@json($modelToPass->count()) > 10) {
-                        console.log("reached")
                         const paginationInfo = doc.querySelector('.pagination-info');
                         const paginationInfoContainer = document.querySelector('.pagination-info');
                         if (paginationInfo) {

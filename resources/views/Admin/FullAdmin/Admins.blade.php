@@ -408,7 +408,7 @@
         function updateResults() {
             // Check if required elements exist before proceeding
             if (!dynamicContent) {
-                console.error('Dynamic content container not found');
+                console.error(__('messages.dynamic_content_container_not_found'));
                 return;
             }
 
@@ -447,7 +447,7 @@
                     if (newContentElement) {
                         safeUpdateElement(dynamicContent, newContentElement.innerHTML);
                     } else {
-                        console.error('Dynamic content not found in response');
+                        console.error(__('messages.dynamic_content_not_found'));
                         return;
                     }
 

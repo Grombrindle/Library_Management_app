@@ -480,5 +480,7 @@ return [
     'easy' => 'سهل',
     'medium' => 'متوسط',
     'hard' => 'صعب',
-    'loremIpsum' => "أبجد هوز"
+    'loremIpsum' => "أبجد هوز",
+    'dynamic_content_not_found' => 'لم يتم العثور على المحتوى الديناميكي في الاستجابة',
+    'dynamic_content_container_not_found' => 'لم يتم العثور على حاوية المحتوى الديناميكي',
 ];

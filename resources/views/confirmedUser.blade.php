@@ -211,7 +211,6 @@
     </style>
     <script>
         const link = @json(session('link', '/welcome'));
-        console.log(link);
         // Redirect after 3 seconds
         setTimeout(() => {
             window.location.href = link;

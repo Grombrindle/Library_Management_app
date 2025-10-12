@@ -473,5 +473,7 @@ return [
     'easy' => 'FACILE',
     'medium' => 'MOYEN',
     'hard' => 'DIFFICILE',
-    'loremIpsum' => "Lorem Ipsum"
+    'loremIpsum' => "Lorem Ipsum",
+    'dynamic_content_not_found' => 'Contenu dynamique non trouvé dans la réponse',
+    'dynamic_content_container_not_found' => 'Conteneur de contenu dynamique non trouvé',
 ];
