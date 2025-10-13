@@ -31,7 +31,7 @@ class ResourceFactory extends Factory
             'literaryOrScientific' => $literaryOrScientific,
             'subject_id' => $subject->id,
             'publish date' => $publishDate,
-            'image' => 'Images/Resources/default.png',
+            'image' => 'Images/Resources/' . rand(1, 4) . ".png",
             'audio_file' => $audio_file,
             'pdf_files' => json_encode([
                 'ar' => 'Files/Resources/default.pdf',

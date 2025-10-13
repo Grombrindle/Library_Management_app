@@ -169,7 +169,7 @@
                 'from' => $modelToPass->firstItem(),
                 'to' => $modelToPass->lastItem(),
                 'total' => $modelToPass->total(),
-                'items' => __('messages.lectures'),
+                'items' => __('messages.resources'),
             ]) }}
         </div>
     @endif

@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
         foreach ($names as $i => $name) {
             $subject = Subject::factory()->create([
                 'name' => $name,
-                'image' => 'Images/Subjects/default.png',
+                'image' => 'Images/Subjects/' . rand(1, 4) . ".png",
                 'literaryOrScientific' => $i > 7 ? 0 : 1,
             ]);
         }
@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
                 'countryCode' => '+963',
                 'number' => mt_rand(900000000, 999999999),
                 'description' => fake()->text(),
-                'image' => 'Images/Admins/' . rand(1, 5) . ".png",
+                'image' => 'Images/Admins/' . rand(1, 4) . ".png",
                 'links' => json_encode([
                     'Facebook' => 'https://facebook.com',
                     'Instagram' => 'https://instagram.com',
@@ -78,7 +78,8 @@ class DatabaseSeeder extends Seeder
                 'description' => fake()->text(120),
                 'date' => fake()->date(),
                 'subject_id' => rand(1, Subject::count()),
-                'pages' => 87
+                'pages' => 87,
+                'thumbnailUrl' => 'Images/Exams/' . rand(1, 4) . ".png",
             ]);
         }
 
@@ -101,7 +102,7 @@ class DatabaseSeeder extends Seeder
                         'teacher_id' => $teacher->id,
                         'subject_id' => $subject->id,
                         'description' => fake()->text(),
-                        'image' => 'Images/Courses/default.png',
+                        'image' => 'Images/Courses/' . rand(1, 4) . ".png",
                         'lecturesCount' => 0,
                         'subscriptions' => 0,
                         'price' => $price,
@@ -190,7 +191,7 @@ class DatabaseSeeder extends Seeder
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
                 'description' => fake()->text(),
-                'image' => 'Images/Courses/default.png',
+                'image' => 'Images/Courses/' . rand(1, 4) . ".png",
                 'lecturesCount' => 0,
                 'subscriptions' => 0,
                 'price' => $price,
@@ -235,7 +236,7 @@ class DatabaseSeeder extends Seeder
                         'name' => fake()->word(),
                         'type' => $type,
                         'description' => fake()->text(),
-                        'image' => 'Images/Lectures/default.png',
+                        'image' => 'Images/Lectures/' . rand(1, 4) . ".png",
                         'course_id' => $course->id,
                         'duration' => $type ? rand(60, 3600) : null,
                         'pages' => $type ? null : rand(1, 150),
