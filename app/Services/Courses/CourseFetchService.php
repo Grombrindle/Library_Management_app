@@ -156,12 +156,12 @@ class CourseFetchService
 
             return response()->json([
                 'success' => true,
-                'user' => User::select(['isBanned', 'hasWarning', 'counter', 'message'])
+                'user' => User::select(['isBanned', 'hasWarning', 'counter', 'comment'])
                     ->where('id', $user->id)->get()->map(fn($u) => [
                         'isBanned' => $u->isBanned,
                         'hasWarning' => $u->hasWarning,
                         'counter' => $u->counter,
-                        'message' => $u->message
+                        'comment' => $u->comment
                     ]),
                 'recommended' => $recommended,
                 'top_rated' => $topRated,

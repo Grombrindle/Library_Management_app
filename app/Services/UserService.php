@@ -368,7 +368,18 @@ class UserService
 
         $user->save();
 
-        return response()->json(['success' => true, 'user' => $user]);
+        return response()->json([
+            'success' => true,
+            'user' => User::select(['id', 'userName', 'isBanned', 'hasWarning', 'counter', 'comment'])
+                ->where('id', $user->id)->get()->map(fn($u) => [
+                    'id' => $u->id,
+                    'userName' => $u->userName,
+                    'isBanned' => $u->isBanned,
+                    'hasWarning' => $u->hasWarning,
+                    'counter' => $u->counter,
+                    'comment' => $u->comment
+                ])
+        ]);
     }
 
     public function deleteSubs()
