@@ -119,6 +119,7 @@ class CourseFetchService
         $cacheKey = 'homepage_courses_' . ($user->id ?? 'guest');
         $cacheDuration = 180; // 3 minutes
 
+
         return Cache::remember($cacheKey, $cacheDuration, function () use ($user) {
             $recommended = Course::withCount(['users', 'ratings', 'lectures'])
                 ->withAvg('ratings', 'rating')

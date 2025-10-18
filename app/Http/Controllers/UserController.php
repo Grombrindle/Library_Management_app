@@ -88,6 +88,10 @@ class UserController extends Controller
     {
         return $this->service->updateAvatar($request);
     }
+    public function seeWarning()
+    {
+        return $this->service->seeWarning();
+    }
     public function deleteSubs()
     {
         return $this->service->deleteSubs();

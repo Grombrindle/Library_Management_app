@@ -65,6 +65,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/changenumber', [UserController::class, 'updateNumber']);
     Route::put('/changeusername', [UserController::class, 'updateUsername']);
     Route::put('/changeavatar', [UserController::class, 'updateAvatar']);
+    Route::put('/seewarning', [UserController::class, 'seeWarning']);
 
     Route::get('/getteacher/{id}', [TeacherController::class, 'fetch']);
     Route::get('/getteachersubjects/{id}', [TeacherController::class, 'fetchSubjects']);

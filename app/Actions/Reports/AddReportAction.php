@@ -56,14 +56,14 @@ class AddReportAction
             ->first();
 
         if ($existing) {
-            $existing->message = $data['message'];
+            $existing->message = $data['message'] ?? null;
+            $existing->reasons = $data['reasons'] ?? null;
 
             $existing->save();
 
 
             return ['success' => true, 'report' => $existing];
         }
-
         // Create the report
         $report = Report::create([
             'user_id' => $userId,

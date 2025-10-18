@@ -356,7 +356,19 @@ class UserService
 
         Auth::user()->save();
 
-        return response()->json(['success' => "true"]);
+        return response()->json(['success' => true]);
+    }
+
+    public function seeWarning()
+    {
+        $user = Auth::user();
+
+        $user->hasWarning = 0;
+        $user->comment = null;
+
+        $user->save();
+
+        return response()->json(['success' => true, 'user' => $user]);
     }
 
     public function deleteSubs()
