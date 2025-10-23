@@ -307,6 +307,13 @@ class Course extends Model
         }
     }
 
+    public function getIsWatchlistedAttribute()
+    {
+        if (Auth::user()) {
+            return Auth::user()->courseWatchlist()->where('course_id', $this->id)->exists();
+        }
+    }
+
     protected $appends = [
         'rating',
         'isFavorite',
@@ -322,7 +329,8 @@ class Course extends Model
         'duration_formatted',
         'duration_formatted_long',
         'duration_human',
-        'user_rating'
+        'user_rating',
+        'isWatchlisted'
     ];
 
     public function courseRequest()

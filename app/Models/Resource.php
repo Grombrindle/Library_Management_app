@@ -297,6 +297,14 @@ class Resource extends Model
         return null;
     }
 
+
+    public function getIsWatchlistedAttribute()
+    {
+        if (Auth::user()) {
+            return Auth::user()->resourceWatchlist()->where('resource_id', $this->id)->exists();
+        }
+    }
+
     protected $appends = [
         'subjectName',
         'pdf_file',
@@ -315,5 +323,6 @@ class Resource extends Model
         'audio_file_duration_human',
         'pdf_file_pages',
         'user_rating',
+        'isWatchlisted'
     ];
 }
