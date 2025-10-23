@@ -147,7 +147,6 @@
         text-align: center;
     }
 
-    .mobile-menu a:hover,
     .mobile-menu .mobile-logout:hover {
         background-color: #9997BC;
         color: black;
@@ -534,7 +533,7 @@
         @endif
 
         <!-- Mobile Logout Button -->
-        <form action="/logout" method="POST" class="mobile-logout-form">
+        <form action="/logout" method="POST" class="mobile-logout-form" style="margin-bottom:1rem;">
             @csrf
             <button type="submit" class="mobile-logout" onclick="return confirmLogout()">
                 {{ __('messages.logout') }}
@@ -542,17 +541,22 @@
         </form>
 
         <div class="button-container">
-            <a href="/admin/course-requests/show" style="position:relative;">
-                <span class="material-symbols-outlined">inbox</span>
-            </a>
             <!-- Course Requests Icon Button -->
             @php $pendingRequests = App\Models\CourseRequest::where('status', 'pending')->count(); @endphp
             @if (Auth::user()->privileges == 2)
-                <a href="/admin/course-requests/show" style="position:relative;">
+                <a href="/admin/course-requests/show" style="position:relative;width:1rem;" target="_blank">
                     <span class="material-symbols-outlined">inbox</span>
                     @if ($pendingRequests > 0)
                         <span class="nav-count"
-                            style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingRequests }}</span>
+                            style="position:absolute;top:0;right:0;transform:translate(40%,0%);background:#e74c3c;width:2rem;height:1.6rem;">{{ $pendingRequests }}</span>
+                    @endif
+                </a>
+                @php $pendingReports = App\Models\Report::where('status', 'PENDING')->count(); @endphp
+                <a href="/reports" style="position:relative;width:1rem;" target="_blank">
+                    <span class="material-symbols-outlined" style="color:white;">report</span>
+                    @if ($pendingReports > 0)
+                        <span class="nav-count"
+                            style="position:absolute;top:0;right:0;transform:translate(40%,0%);background:#e74c3c;width:2rem;height:1.6rem;">{{ $pendingReports }}</span>
                     @endif
                 </a>
             @endif
@@ -589,8 +593,8 @@
     </div>
 
     <!-- Original Desktop Navigation -->
-    @if (Auth::user()->privileges == 2)
-        <div class="NavBarElement" style="margin-right: 5%;">
+    <div class="NavBarElement" style="margin-right: 5%;">
+        @if (Auth::user()->privileges == 2)
             <a href="/courses" class="NavBarText" id="coursesLink">
                 {{ __('messages.courses') }}
                 <span class="nav-count">{{ App\Models\Course::count() }}</span>
@@ -625,93 +629,92 @@
             </a>
             <!-- End Desktop Course Requests Icon Button -->
         @elseif (Auth::user()->privileges == 1)
-                <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
-                    {{ __('messages.users') }}
-                    <span class="nav-count">{{ App\Models\User::count() }}</span>
+            <a href="/users" class="NavBarText" id="usersLink" style="width:7%;">
+                {{ __('messages.users') }}
+                <span class="nav-count">{{ App\Models\User::count() }}</span>
+            </a>
+        @elseif (Auth::user()->privileges == 0)
+            @php
+                $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
+                $lecCount = 0;
+                foreach ($teacher->courses as $course) {
+                    $lecCount += $course->lectures->count();
+                }
+                // Only count course requests for this teacher
+                $teacherCourseRequestsCount = $teacher->courseRequests()->count();
+            @endphp
+            <a href="/teacher/course-requests/show" class="NavBarText" id="courseRequestsLink">
+                {{ __('messages.yourRequests') ?? 'Your Requests' }}
+                <span class="nav-count">{{ $teacherCourseRequestsCount }}</span>
+            </a>
+            <a href="/subjects" class="NavBarText" id="subjectsLink">
+                {{ __('messages.yourSubjects') }}
+                <span class="nav-count">{{ $teacher->subjects->count() }}</span>
+            </a>
+            <a href="/courses" class="NavBarText" id="Link">
+                {{ __('messages.yourCourses') }}
+                <span class="nav-count">{{ $teacher->courses->count() }}</span>
+            </a>
+            <a href="/lectures" class="NavBarText" id="Link">
+                {{ __('messages.yourLectures') }}
+                <span class="nav-count">{{ $lecCount }}</span>
+            </a>
+        @endif
+        <form action="/logout" method="POST"
+            style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
+            onsubmit="return confirmLogout()">
+            @csrf
+            <button type="submit" id="adminsLink" class="NavBarLogout" style="">
+                <div style="text-align:center">{{ __('messages.logout') }}</div>
+            </button>
+        </form>
+        <div class="language-dropdown">
+            <button class="language-toggle" onclick="toggleLanguageDropdown(event, 'desktopLanguageDropdown')">
+                <span class="material-symbols-outlined">language</span>
+            </button>
+            <div class="dropdown-content" id="desktopLanguageDropdown">
+                <a href="#" onclick="changeLanguage('en')">
+                    <span class="flag-icon flag-icon-us"></span> English
                 </a>
-            @elseif (Auth::user()->privileges == 0)
-                @php
-                    $teacher = App\Models\Teacher::findOrFail(Auth::user()->teacher_id);
-                    $lecCount = 0;
-                    foreach ($teacher->courses as $course) {
-                        $lecCount += $course->lectures->count();
-                    }
-                    // Only count course requests for this teacher
-                    $teacherCourseRequestsCount = $teacher->courseRequests()->count();
-                @endphp
-                    <a href="/teacher/course-requests/show" class="NavBarText" id="courseRequestsLink"
-                        style="width:5%;">
-                        {{ __('messages.yourRequests') ?? 'Your Requests' }}
-                        <span class="nav-count">{{ $teacherCourseRequestsCount }}</span>
-                    </a>
-                    <a href="/subjects" class="NavBarText" id="subjectsLink" style="width:5%;">
-                        {{ __('messages.yourSubjects') }}
-                        <span class="nav-count">{{ $teacher->subjects->count() }}</span>
-                    </a>
-                    <a href="/courses" class="NavBarText" id="Link" style="width:5%;">
-                        {{ __('messages.yourCourses') }}
-                        <span class="nav-count">{{ $teacher->courses->count() }}</span>
-                    </a>
-                    <a href="/lectures" class="NavBarText" id="Link" style="width:5%;">
-                        {{ __('messages.yourLectures') }}
-                        <span class="nav-count">{{ $lecCount }}</span>
-                    </a>
-    @endif
-    <form action="/logout" method="POST"
-        style="cursor: pointer; padding: 0 0; height: 100%; margin-left: 10%; margin-right:5%;"
-        onsubmit="return confirmLogout()">
-        @csrf
-        <button type="submit" id="adminsLink" class="NavBarLogout" style="">
-            <div style="text-align:center">{{ __('messages.logout') }}</div>
-        </button>
-    </form>
-    <div class="language-dropdown">
-        <button class="language-toggle" onclick="toggleLanguageDropdown(event, 'desktopLanguageDropdown')">
-            <span class="material-symbols-outlined">language</span>
-        </button>
-        <div class="dropdown-content" id="desktopLanguageDropdown">
-            <a href="#" onclick="changeLanguage('en')">
-                <span class="flag-icon flag-icon-us"></span> English
-            </a>
-            <a href="#" onclick="changeLanguage('fr')">
-                <span class="flag-icon flag-icon-fr"></span> Français
-            </a>
-            <a href="#" onclick="changeLanguage('de')">
-                <span class="flag-icon flag-icon-de"></span> Deutsch
-            </a>
-            <a href="#" onclick="changeLanguage('tr')">
-                <span class="flag-icon flag-icon-tr"></span> Türkçe
-            </a>
-            <a href="#" onclick="changeLanguage('es')">
-                <span class="flag-icon flag-icon-es"></span> Español
-            </a>
-            <a href="#" onclick="changeLanguage('ar')">
-                <span class="flag-icon flag-icon-sa"></span> عربي
-            </a>
+                <a href="#" onclick="changeLanguage('fr')">
+                    <span class="flag-icon flag-icon-fr"></span> Français
+                </a>
+                <a href="#" onclick="changeLanguage('de')">
+                    <span class="flag-icon flag-icon-de"></span> Deutsch
+                </a>
+                <a href="#" onclick="changeLanguage('tr')">
+                    <span class="flag-icon flag-icon-tr"></span> Türkçe
+                </a>
+                <a href="#" onclick="changeLanguage('es')">
+                    <span class="flag-icon flag-icon-es"></span> Español
+                </a>
+                <a href="#" onclick="changeLanguage('ar')">
+                    <span class="flag-icon flag-icon-sa"></span> عربي
+                </a>
+            </div>
         </div>
-    </div>
-    <button class="theme-toggle" onclick="toggleTheme()">
-        <span class="material-symbols-outlined">light_mode</span>
-    </button>
-    <!-- Desktop Course Requests Icon Button -->
-    @if (Auth::user()->privileges == 2)
-        @php $pendingRequests = App\Models\CourseRequest::where('status', 'pending')->count(); @endphp
-        <a href="/admin/course-requests/show" target="blank" class="desktop-only" style="position:relative;">
-            <span class="material-symbols-outlined" style="color:white">inbox</span>
-            @if ($pendingRequests > 0)
-                <span class="nav-count"
-                    style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingRequests }}</span>
-            @endif
-        </a>
-        @php $pendingReports = App\Models\Report::where('status', 'PENDING')->count(); @endphp
-        <a href="/reports" style="position:relative;" target="_blank">
-            <span class="material-symbols-outlined" style="color:white; margin-left:1rem;">report</span>
-            @if ($pendingReports > 0)
-                <span class="nav-count"
-                    style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingReports }}</span>
-            @endif
-        </a>
-    @endif
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span class="material-symbols-outlined">light_mode</span>
+        </button>
+        <!-- Desktop Course Requests Icon Button -->
+        @if (Auth::user()->privileges == 2)
+            @php $pendingRequests = App\Models\CourseRequest::where('status', 'pending')->count(); @endphp
+            <a href="/admin/course-requests/show" target="blank" class="desktop-only" style="position:relative;">
+                <span class="material-symbols-outlined" style="color:white">inbox</span>
+                @if ($pendingRequests > 0)
+                    <span class="nav-count"
+                        style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingRequests }}</span>
+                @endif
+            </a>
+            @php $pendingReports = App\Models\Report::where('status', 'PENDING')->count(); @endphp
+            <a href="/reports" style="position:relative;" target="_blank">
+                <span class="material-symbols-outlined" style="color:white; margin-left:1rem;">report</span>
+                @if ($pendingReports > 0)
+                    <span class="nav-count"
+                        style="position:absolute;top:0;right:0;transform:translate(40%,-40%);background:#e74c3c;">{{ $pendingReports }}</span>
+                @endif
+            </a>
+        @endif
 </nav>
 
 <script>
