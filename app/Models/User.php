@@ -126,19 +126,16 @@ class User extends Authenticatable
 
     public function favoriteTeachers()
     {
-        return $this->belongsToMany(Teacher::class, 'favourites')
-            ->withTimestamps();
+        return $this->belongsToMany(Teacher::class, 'favourites');
     }
 
     public function favoriteCourses()
     {
-        return $this->belongsToMany(Course::class, 'favourite_courses')
-            ->withTimestamps();
+        return $this->belongsToMany(Course::class, 'favourite_courses');
     }
     public function favoriteLectures()
     {
-        return $this->belongsToMany(Lecture::class, 'favourite_lectures')
-            ->withTimestamps();
+        return $this->belongsToMany(Lecture::class, 'favourite_lectures');
     }
 
     public function toggleFavorite(Teacher $teacher): bool
@@ -206,17 +203,15 @@ class User extends Authenticatable
 
     public function watchlist()
     {
-        return $this->belongsToMany(Lecture::class, 'watchlists', 'user_id', 'lecture_id')
-            ->withTimestamps();
+        return Watchlist::where('user_id', $this->id)->get();
     }
     public function courseWatchlist()
     {
-        return $this->belongsToMany(Course::class, 'watchlists', 'user_id', 'course_id')
-            ->withTimestamps();
+        return $this->belongsToMany(Course::class, 'watchlists', 'user_id', 'course_id');
     }
 
     public function resourceWatchlist()
     {
-        return $this->belongsToMany(\App\Models\Resource::class, 'watchlists', 'user_id', 'resource_id')->withTimestamps();
+        return $this->belongsToMany(Resource::class, 'watchlists', 'user_id', 'resource_id');
     }
 }

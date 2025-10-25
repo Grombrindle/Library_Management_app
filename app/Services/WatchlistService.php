@@ -62,10 +62,10 @@ class WatchlistService
             $user->courseWatchlist()->attach($id);
             $action = 'added';
         }
-
         return [
             'action' => $action,
-            'watchlist' => $this->fetchCourses()
+            'courseWatchlist' =>  Watchlist::where('user_id', $user->id)->whereNull('resource_id')->get(),
+            'watchlist' =>$user->watchlist()
         ];
     }
 
@@ -84,7 +84,8 @@ class WatchlistService
 
         return [
             'action' => $action,
-            'watchlist' => $this->fetchResources()
+            'resourceWatchlist' =>  Watchlist::where('user_id', $user->id)->whereNull('course_id')->get(),
+            'watchlist' =>$user->watchlist()
         ];
     }
 }

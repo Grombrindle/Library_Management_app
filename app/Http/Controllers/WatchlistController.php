@@ -55,6 +55,7 @@ class WatchlistController extends Controller
         return response()->json([
             'success' => true,
             'action' => $result['action'],
+            'courseWatchlist' => $result['courseWatchlist'],
             'watchlist' => $result['watchlist']
         ]);
     }
@@ -66,6 +67,7 @@ class WatchlistController extends Controller
         return response()->json([
             'success' => true,
             'action' => $result['action'],
+            'resourceWatchlist' => $result['resourceWatchlist'],
             'watchlist' => $result['watchlist']
         ]);
     }

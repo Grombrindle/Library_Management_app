@@ -96,6 +96,9 @@ class UserController extends Controller
     {
         return $this->service->deleteSubs();
     }
+    public function deleteWatchlist() {
+        return $this->service->deleteWatchlist();
+    }
     public function delete($id)
     {
         return $this->service->delete($id);

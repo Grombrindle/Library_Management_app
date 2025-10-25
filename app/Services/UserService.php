@@ -404,6 +404,17 @@ class UserService
         return redirect()->route('update.confirmation');
     }
 
+    public function deleteWatchlist() {
+        $user = Auth::user();
+
+        DB::table('watchlists')->where('user_id', $user->id)->delete();
+
+        return response()->json([
+            'success' => true,
+            'watchlist' => $user->watchlist(),
+        ]);
+    }
+
     public function delete($id)
     {
         $user = User::findOrFail($id);
