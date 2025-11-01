@@ -80,9 +80,11 @@ class ResourceService
         $user = Auth::user();
 
         if (!$user) {
-            return Resource::withCount(['users', 'ratings'])
-                ->withAvg('ratings', 'rating')
-                ->orderByDesc(DB::raw('
+            return response()->json([
+                'success' => true,
+                'resources' => Resource::withCount(['users', 'ratings'])
+                    ->withAvg('ratings', 'rating')
+                    ->orderByDesc(DB::raw('
                     (
                         (COALESCE(ratings_avg_rating, 0) * 0.6) +
                         (ratings_count * 0.3) +
@@ -90,7 +92,8 @@ class ResourceService
                     ) *
                     (1 + (COALESCE(ratings_avg_rating, 0) / 5))
                 '))
-                ->get();
+                    ->get(),
+            ]);
         }
 
         $userSubjectIds = $user->courses()->pluck('subject_id')->unique();
@@ -99,10 +102,13 @@ class ResourceService
             ->pluck('literaryOrScientific')
             ->unique();
 
-        return Resource::withCount(['ratings'])
-            ->withAvg('ratings', 'rating')
-            ->with('subject')
-            ->orderByDesc(DB::raw('
+        return response()->json([
+
+            'success' => true,
+            'resources' => Resource::withCount(['ratings'])
+                ->withAvg('ratings', 'rating')
+                ->with('subject')
+                ->orderByDesc(DB::raw('
                 (
                     (COALESCE(ratings_avg_rating, 0) * 0.4) +
                     (ratings_count * 0.3)+
@@ -121,7 +127,8 @@ class ResourceService
                 ) *
                 (1 + (COALESCE(ratings_avg_rating, 0) / 5))
             '))
-            ->get();
+                ->get(),
+        ]);
     }
 
     /* Fetch page payload (cached) */

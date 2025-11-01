@@ -37,6 +37,11 @@ class ResourceController extends Controller
         return app(ResourceService::class)->getAllRated();
     }
 
+    function fetchAllRecommended()
+    {
+        return app(ResourceService::class)->getAllRecommended();
+    }
+
     public function fetchAllPage()
     {
         return app(ResourceService::class)->getAllPage();
