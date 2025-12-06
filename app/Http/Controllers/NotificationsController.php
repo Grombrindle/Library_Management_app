@@ -102,7 +102,7 @@ class NotificationsController extends Controller
                 'success' => true,
                 'result' => null,
                 'statusCode' => 200,
-                'message' => 'notifcation send successfully',
+                'message' => 'notifcation sent successfully',
                 'error' => null,
             ]);
         } catch (Exception $e) {
@@ -251,7 +251,6 @@ class NotificationsController extends Controller
         ]);
 
         try {
-            // $user = Auth::user()->fcm_token;
             $user = Auth::user();
 
             $user->fcm_token = $request->fcm_token;

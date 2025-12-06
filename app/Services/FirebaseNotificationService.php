@@ -6,6 +6,8 @@ use App\Enums\NotificationType;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use App\Models\User;
+use App\Models\Notification as DBNotif;
 use Log; // Use the Log facade
 
 class FirebaseNotificationService
@@ -65,6 +67,32 @@ class FirebaseNotificationService
             Log::error('Firebase notification error: ' . $e->getMessage());
             return false;
         }
+    }
+
+    public static function sendToUser(User $user, $title, $body)
+    {
+        $notif = Notification::create($title, $body);
+
+        if ($user) {
+            DBNotif::create(
+                [
+                    'title' => 'title',
+                    'body' => 'bodylol',
+                    'payload' => json_encode([]),
+                    'notifiable_type' => 'something',
+                    'type' => 'something',
+                    'user_id' => $user->id
+
+                ]
+            );
+        }
+
+        if (!$user->fcm_token)
+            return;
+
+        $messaging = app('firebase.messaging');
+        $message = CloudMessage::withTarget('token', $user->fcm_token)
+            ->withNotification(Notification::create($title, $body));
     }
 
     public function subscribeToTopic($token, $topic)

@@ -97,7 +97,7 @@ class DatabaseSeeder extends Seeder
                 $price = rand(1, 20);
 
                 foreach ($teacher->subjects as $subject) {
-                    $course = Course::create([
+                    $course = Course::createQuietly([
                         'name' => fake()->safeColorName(),
                         'teacher_id' => $teacher->id,
                         'subject_id' => $subject->id,
@@ -168,6 +168,7 @@ class DatabaseSeeder extends Seeder
             'sparkies' => 5,
         ]);
 
+
         $randomDigits = mt_rand(900000000, 999999999);
         $teacher = Teacher::factory()->create([
             'name' => 'teacher',
@@ -186,7 +187,7 @@ class DatabaseSeeder extends Seeder
             $pur = rand(0, 1);
             $price = rand(1, 20);
             // Create course for teacher and subject
-            $course = Course::create([
+            $course = Course::createQuietly([
                 'name' => fake()->safeColorName(),
                 'teacher_id' => $teacher->id,
                 'subject_id' => $subject->id,
@@ -222,7 +223,7 @@ class DatabaseSeeder extends Seeder
 
         foreach (Course::all() as $course) {
             if (rand(0, 1)) {
-                $course->name = "Full Course ".$numFull;
+                $course->name = "Full Course " . $numFull;
                 $course->save();
 
                 $numFull++;
@@ -232,7 +233,7 @@ class DatabaseSeeder extends Seeder
                 for ($i = 0; $i < $lectureCount; $i++) {
                     $type = rand(0, 1); // 0 = PDF, 1 = Video
 
-                    $lecture = Lecture::create([
+                    $lecture = Lecture::createQuietly([
                         'name' => fake()->word(),
                         'type' => $type,
                         'description' => fake()->text(),
@@ -252,9 +253,8 @@ class DatabaseSeeder extends Seeder
                 $course->lecturesCount = $course->lectures()->count();
                 $course->save();
 
-            }
-            else {
-                $course->name ="Empty Course ".$numEmpty;
+            } else {
+                $course->name = "Empty Course " . $numEmpty;
                 $course->save();
 
                 $numEmpty++;
