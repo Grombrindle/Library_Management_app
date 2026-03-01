@@ -30,22 +30,6 @@ Route::get('/getuser/{id}', [UserController::class, 'fetch']);
 Route::post('/register', [SessionController::class, 'createUser']);
 Route::post('/login', [SessionController::class, 'loginUser']);
 
-Route::get('/test', function () {
-    Auth::logout();
-    session()->invalidate();
-    session()->regenerateToken();
-    session()->remove(session()->token());
-    dd(session()->token());
-});
-
-
-//test
-// Route::get('/test', [TeacherController::class, 'test']);
-
-// Route::get('/subject/{id}/lectures', function($id) {
-//     return response()->json(['lectureCount' => $lectureCount]);
-// });
-
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/getuser', [UserController::class, 'fetchAuth']);

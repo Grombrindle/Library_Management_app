@@ -18,14 +18,23 @@ class SessionController extends Controller
 
     public function createUser(Request $request)
     {
-        $data = $request->validate([
+
+        $validator = \Validator::make($request->all(), [
             'userName' => 'required|string|unique:users,userName',
-            'number' => 'required|string|unique:users,number',
-            'password' => 'required|string|min:6|confirmed',
+            'number' => 'required|string|unique:users,number|size:9',
+            'password' => 'required|string|min:6',
             'countryCode' => 'nullable|string|max:5',
         ]);
 
-        $result = $this->service->createUser($data);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+
+        $result = $this->service->createUser($request->all());
 
         return response()->json([
             'success' => true,
