@@ -73,9 +73,6 @@ Route::get('/profile', function () {
 })->name('web.profile');
 Route::view('/webteachers', 'website.webTeachers')->name('web.teachers');
 
-
-
-
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/testdiagram', function () {
         return view('DiagramTest');
@@ -89,7 +86,6 @@ Route::group(['middleware' => ['auth']], function () {
             'admin_subjects' => View::exists('Admin/FullAdmin/Subjects'),
             'teacher_subjects' => View::exists('Teacher/Subjects'),
             'admin_lectures' => View::exists('Admin/FullAdmin/Lectures'),
-            'admin_universities' => View::exists('Admin/FullAdmin/Universities'),
         ];
     });
     Route::get('/subjects', function () {

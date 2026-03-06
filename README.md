@@ -3,7 +3,7 @@
 
 ## About The Project
 
-Mind Spark is a project made by two college students, one specialized in the frontend portion(Flutter) and the other specialized in the backend portion(Laravel), in about 1.5 months. It's purpose is to show information(like lectures, teachers, universities, subjects ...etc) in the app, which can be edited in the website.
+Mind Spark is a project made by two college students, one specialized in the frontend portion(Flutter) and the other specialized in the backend portion(Laravel), in about 1.5 months. It's purpose is to show information(like lectures, teachers, subjects ...etc) in the app, which can be edited in the website.
 
 <!-- - [Simple, fast routing engine](https://laravel.com/docs/routing).
 - [Powerful dependency injection container](https://laravel.com/docs/container).

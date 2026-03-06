@@ -58,7 +58,6 @@
                             'name' => $featuredTeacher->name,
                             'image' => $featuredTeacher->image ? asset($featuredTeacher->image) : 'https://via.placeholder.com/300',
                             'subjects' => $featuredTeacher->subjects->pluck('name')->join(', '),
-                            'universities' => $featuredTeacher->universities->pluck('name')->join(', '),
                             'courses_count' => $featuredTeacher->courses_count,
                             'favorites_count' => $featuredTeacher->favorited_by_users_count,
                             'description' => "A distinguished professor at " . ($featuredTeacher->universities->first()->name ?? 'MindSpark University') . " with expertise in multiple fields, contributing significantly to our academic community."

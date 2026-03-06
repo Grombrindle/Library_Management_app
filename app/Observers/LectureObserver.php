@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Lecture;
+use App\Models\Course;
 use App\Services\FirebaseNotificationService;
 
 class LectureObserver
@@ -14,9 +15,14 @@ class LectureObserver
     {
         //
 
-        $course = $lecture->course();
 
-        $users = $course->users();
+        $course = $lecture->course()->get()->first();
+
+        $users = $course->users()->get();
+
+        if($users->isEmpty()) {
+            return;
+        }
 
         foreach($users as $user) {
             FirebaseNotificationService::sendToUser(

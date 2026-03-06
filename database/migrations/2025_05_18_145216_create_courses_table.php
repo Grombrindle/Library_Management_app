@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->json('requirements')->nullable()->default(json_encode(['A Brain']));
+            $table->json('requirements')->nullable();
             $table->foreignIdFor(Teacher::class)->constrained()->onDelete('cascade');
             $table->foreignIdFor(Subject::class)->constrained()->onDelete('cascade');
             $table->integer('lecturesCount');

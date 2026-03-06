@@ -107,10 +107,6 @@ class Teacher extends Model
         return $this->belongsToMany(Subject::class, 'teacher_subject');
     }
 
-    public function universities()
-    {
-        return $this->belongsToMany(university::class, 'teacher_university');
-    }
     public function quizzes()
     {
         return $this->hasMany(Quiz::class);

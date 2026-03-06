@@ -19,7 +19,7 @@
                     {{ __('messages.courseDescription') }}:
                 </label>
                 <textarea name="course_description" id="course_description" autocomplete="off" value="{{ old('course_description') }}"
-                    style="height:150px; width:80%; font-size:16px; padding:10px; resize:vertical;max-height:500px;"></textarea>
+                    style="height:150px; width:80%; font-size:16px; padding:10px; resize:vertical;max-height:500px;" required></textarea>
             </div>
             <br>
             <!-- Sources Section -->
@@ -36,7 +36,6 @@
                 <label style="font-weight:600; margin-bottom:0.5rem;">{{ __('messages.requirements') }}:</label>
                 <div id="requirements-buttons"
                     style="display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center;">
-                    <button type="button" class="requirement-btn" data-value="A Brain">A Brain</button>
                     <button type="button" class="requirement-btn" data-value="Calculator">Calculator</button>
                     <button type="button" class="requirement-btn" data-value="Pen and Paper">Pen and Paper</button>
                     <button type="button" class="requirement-btn" data-value="Laptop">Laptop</button>

@@ -21,8 +21,8 @@ class CourseObserver
         $course->saveQuietly();
 
 
-        $teacher = $course->teacher;
-        $users = $teacher->favoritedByUsers;
+        $teacher = $course->teacher()->get()->first();
+        $users = $teacher->favoritedByUsers()->get();
 
         if($users->isEmpty()) {
             return;

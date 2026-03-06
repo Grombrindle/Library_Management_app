@@ -59,26 +59,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getteachercoursesrated/{id}', [TeacherController::class, 'fetchCoursesRated']);
     Route::get('/getteachersubjectsnames/{id}', [TeacherController::class, 'fetchSubjectsNames']);
     Route::get('/getteachercoursesnames/{id}', [TeacherController::class, 'fetchCoursesNames']);
-    // Route::get('/getteacheruniversities/{id}', [TeacherController::class, 'fetchUnis']);
     Route::get('/getallteachers', [TeacherController::class, 'fetchAll']);
     Route::get('/favoriteteacher/{teacher}', [TeacherController::class, 'checkFavoriteTeacher']);
     Route::post('/rateteacher/{id}', [TeacherController::class, 'rate']);
-    // Route::get('/teachers/{teacher}/courses', [CourseController::class, 'getTeacherCourses']);
-
-    // Route::get('/getuniversity/{id}', [UniversityController::class, 'fetch']);
-    // Route::get('/getuniversityteachers/{id}', [UniversityController::class, 'fetchTeachers']);
-    // Route::get('/getalluniversities', [UniversityController::class, 'fetchall']);
 
     Route::prefix('subjects')->group(function () {
         Route::get('/', [SubjectController::class, 'fetchAll']);
         Route::get('/literary', [SubjectController::class, 'fetchLiterary']);
         Route::get('/scientific', [SubjectController::class, 'fetchScientific']);
         Route::get('/{id}', [SubjectController::class, 'fetch']);
-        // Route::get('/{id}/lectures', [SubjectController::class, 'fetchLectures']);
         Route::get('/{id}/teachers', [SubjectController::class, 'fetchTeachers']);
-        // Route::post('/', [SubjectController::class, 'add']);             We're not gonna add subjects through the API
-        // Route::put('/{id}', [SubjectController::class, 'edit']);         Same here
-        // Route::delete('/{id}', [SubjectController::class, 'delete']);    and here
     });
 
     Route::get('/getcourse/{id}', [CourseController::class, 'fetch']);
