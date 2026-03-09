@@ -8,7 +8,7 @@ use App\Models\Subject;
 use App\Models\User;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $user_id
@@ -36,12 +36,16 @@ class Subscription extends Model
         'updated_at' => 'date:Y-m-d',
     ];
 
+    protected $guarded = [
+
+    ];
+
     /** @use HasFactory<\Database\Factories\SubscriptionFactory> */
     use HasFactory;
 
 
-    public function subject() {
-        return $this->belongsTo(Subject::class);
+    public function course() {
+        return $this->belongsTo(Course::class);
     }
 
     public function user() {

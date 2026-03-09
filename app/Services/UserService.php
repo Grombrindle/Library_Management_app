@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Subject;
 use App\Models\Course;
 use App\Models\Lecture;
+use App\Models\Subscription;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -142,8 +143,27 @@ class UserService
             $lectures = $user->lectures->pluck('id')->toArray();
         }
 
-        $user->courses()->sync($courses);
+        // Sync lectures as before
         $user->lectures()->sync($lectures);
+
+
+        // Get the current subscribed courses
+        $currentCourseIds = $user->courses->pluck('id')->toArray();
+
+        // Find the new courses to subscribe to
+        $newCourseIds = array_diff($courses, $currentCourseIds);
+
+        // Detach courses that are no longer selected
+        $removedCourseIds = array_diff($currentCourseIds, $courses);
+        $user->courses()->detach($removedCourseIds);
+
+        // Create subscriptions only for the new courses
+        foreach ($newCourseIds as $courseId) {
+            Subscription::create([
+                'user_id' => $user->id,
+                'course_id' => $courseId,
+            ]);
+        }
 
         $user->userName = $request->user_name;
         $user->number = $request->user_number;
@@ -153,6 +173,7 @@ class UserService
             $course->subscriptions = Course::withCount('users')->find($course->id)->users_count;
             $course->save();
         }
+
         $data = ['element' => 'user', 'id' => $id, 'name' => $user->userName];
         session(['update_info' => $data]);
         session(['link' => '/users']);
@@ -404,7 +425,8 @@ class UserService
         return redirect()->route('update.confirmation');
     }
 
-    public function deleteWatchlist() {
+    public function deleteWatchlist()
+    {
         $user = Auth::user();
 
         DB::table('watchlists')->where('user_id', $user->id)->delete();
