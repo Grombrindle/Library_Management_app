@@ -76,11 +76,11 @@ class FirebaseNotificationService
         if ($user) {
             DBNotif::create(
                 [
-                    'title' => 'title',
-                    'body' => 'bodylol',
+                    'title' => $title,
+                    'body' => $body,
                     'payload' => json_encode([]),
-                    'notifiable_type' => 'something',
-                    'type' => 'something',
+                    'notifiable_type' => User::class,
+                    'type' => 'push',
                     'user_id' => $user->id
 
                 ]
@@ -90,9 +90,16 @@ class FirebaseNotificationService
         if (!$user->fcm_token)
             return;
 
-        $messaging = app('firebase.messaging');
-        $message = CloudMessage::withTarget('token', $user->fcm_token)
-            ->withNotification(Notification::create($title, $body));
+        try {
+            $messaging = app('firebase.messaging');
+            $message = CloudMessage::withTarget('token', $user->fcm_token)
+                ->withNotification(Notification::create($title, $body));
+
+            $messaging->send($message);
+
+        } catch (\Exception $e) {
+            Log::error('Firebase notification error: ' . $e->getMessage());
+        }
     }
 
     public function subscribeToTopic($token, $topic)
