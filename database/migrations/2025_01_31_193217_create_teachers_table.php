@@ -20,9 +20,8 @@ return new class extends Migration
             $table->string('number')->unique();
             $table->string('password');
             $table->string('image');
-            $table->string('major')->default('Major in teaching lol');
+            $table->string('major')->nullable();
             $table->json('links')->nullable();
-            // $table->string('Subject');   //I'll figure what i need to do with this
             $table->timestamps();
         });
     }

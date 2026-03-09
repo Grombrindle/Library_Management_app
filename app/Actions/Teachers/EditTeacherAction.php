@@ -28,6 +28,7 @@ class EditTeacherAction
         $teacher->userName = $request->teacher_user_name;
         $teacher->countryCode = '+963';
         $teacher->number = $request->teacher_number;
+        $teacher->major = $request->teacher_major;
         $teacher->links = $linksJson;
         if (!is_null($request->file('object_image'))) {
             // Store new image in public/Images/Teachers

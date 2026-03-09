@@ -71,6 +71,17 @@
         </div>
         <br>
 
+        <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
+            <label for="teacher_major">
+                {{ __('messages.major') }}:
+            </label>
+            <input type="text" name="teacher_major" id="teacher_major" value="{{ old('teacher_major') }}"
+                autocomplete="off" style="height:20%; text-align:center; font-size:40%; width:fit-content;">
+        </div>
+        @error('teacher_major')
+            <div class="error">{{ $message }}</div>
+        @enderror
+
         <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;" name="teacher_links">
             <label for="teacher_links" style="margin-bottom:10%;">
                 {{ __('messages.teacherSocialLinks') }} ({{ __('messages.optional') }}):

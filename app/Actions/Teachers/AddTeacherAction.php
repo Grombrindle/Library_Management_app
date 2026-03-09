@@ -35,6 +35,7 @@ class AddTeacherAction {
             $name = $request->input('teacher_name');
             $number = $request->input('teacher_number');
             $password = $request->input('teacher_password');
+            $major = $request->input('teacher_major');
 
 
         $teacher = Teacher::create([
@@ -44,6 +45,7 @@ class AddTeacherAction {
             'number' => $number,
             'countryCode' => '+963',
             'image' => $path,
+            'major' => $major,
             'password' => Hash::make($password)
         ]);
         $links = [

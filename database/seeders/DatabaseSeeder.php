@@ -59,6 +59,7 @@ class DatabaseSeeder extends Seeder
                 'number' => mt_rand(900000000, 999999999),
                 'description' => fake()->text(),
                 'image' => 'Images/Admins/' . rand(1, 4) . ".png",
+                'major' => fake()->word(),
                 'links' => json_encode([
                     'Facebook' => 'https://facebook.com',
                     'Instagram' => 'https://instagram.com',
@@ -173,6 +174,7 @@ class DatabaseSeeder extends Seeder
         $teacher = Teacher::factory()->create([
             'name' => 'teacher',
             'userName' => 'teacher',
+            'major' => "major in teaching lol",
             'countryCode' => '+963',
             'description' => fake()->text(),
             'number' => $randomDigits,

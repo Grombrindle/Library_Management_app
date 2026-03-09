@@ -289,7 +289,6 @@ return [
     'rating' => 'Bewertung',
     'students' => 'Studenten',
     'lectures' => 'Vorlesungen',
-    'description' => 'Beschreibung',
     'by' => 'Von',
 
     // Website Teachers Page
@@ -475,4 +474,9 @@ return [
     'loremIpsum' => "Lorem Ipsum",
     'dynamic_content_not_found' => 'Dynamischer Inhalt in der Antwort nicht gefunden',
     'dynamic_content_container_not_found' => 'Dynamischer Inhaltscontainer nicht gefunden',
+    'teacherDescription' => 'Lehrerbeschreibung',
+    'major' => 'Hauptfach',
+    'notSpecified' => 'Nicht angegeben',
+
+
 ];

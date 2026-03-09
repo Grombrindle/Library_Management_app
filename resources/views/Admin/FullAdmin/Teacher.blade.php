@@ -13,6 +13,13 @@
         ● {{ __('messages.teacherUserName') }}: {{ $teacher->userName }}<br>
         ● {{ __('messages.teacherNumber') }}: {{ $teacher->countryCode }} {{ $teacher->number }}<br>
         ● {{ __('messages.teacherDescription') }}: {{ $teacher->description }}<br>
+        ● {{ __('messages.major') }}:
+        @if ($teacher->major == null)
+            <div style="color:black;">&emsp;{{ __('messages.notSpecified') }}</div>
+        @else
+            {{ $teacher->major }}
+        @endif
+        <br>
         @if ($teacher->subjects->count() == 0)
             ● {{ __('messages.subjects') }}: none
             <br>
@@ -134,7 +141,7 @@
                 @endif
             @endfor
             <span>({{ number_format($rating, 1) }})</span>
-            <span>({{ $teacher->ratings->count() }} {{__('messages.reviews')}})</span>
+            <span>({{ $teacher->ratings->count() }} {{ __('messages.reviews') }})</span>
 
         </div>
     </x-infocard>

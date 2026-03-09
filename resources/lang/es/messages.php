@@ -477,4 +477,9 @@ return [
     'loremIpsum' => "Lorem Ipsum",
     'dynamic_content_not_found' => 'Contenido dinámico no encontrado en la respuesta',
     'dynamic_content_container_not_found' => 'Contenedor de contenido dinámico no encontrado',
+    'teacherDescription' => 'Descripción del profesor',
+    'major' => 'Especialidad',
+    'notSpecified' => 'No especificado',
+
+
 ];

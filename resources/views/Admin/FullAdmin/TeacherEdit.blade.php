@@ -11,7 +11,8 @@
                 <label for="teacher_name" style="margin-bottom:10%;">
                     {{ __('messages.teacherName') }}:
                 </label>
-                <input type="text" name="teacher_name" id="teacher_name" value="{{ old('teacher_name') ?? $teacher->name }}"
+                <input type="text" name="teacher_name" id="teacher_name"
+                    value="{{ old('teacher_name') ?? $teacher->name }}"
                     style="height:20%; text-align:center; font-size:40%; width:fit-content; margin-bottom:10%;">
             </div>
             @error('teacher_name')
@@ -21,7 +22,8 @@
                 <label for="teacher_user_name" style="margin-bottom:10%;">
                     {{ __('messages.teacherUserName') }}:
                 </label>
-                <input type="text" name="teacher_user_name" id="teacher_user_name" value="{{ old('teacher_user_name') ?? $teacher->userName }}"
+                <input type="text" name="teacher_user_name" id="teacher_user_name"
+                    value="{{ old('teacher_user_name') ?? $teacher->userName }}"
                     style="height:20%; text-align:center; font-size:40%; width:fit-content;">
             </div>
             @error('teacher_user_name')
@@ -67,6 +69,20 @@
             @php
                 $links = json_decode($teacher->links, true);
             @endphp
+
+
+            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;">
+                <label for="teacher_major" style="margin-bottom:10%;">
+                    {{ __('messages.major') }}:
+                </label>
+                <input type="text" name="teacher_major" id="teacher_major"
+                    value="{{ old('teacher_major') ?? $teacher->major }}"
+                    style="height:20%; text-align:center; font-size:40%; width:fit-content;">
+            </div>
+            @error('teacher_major')
+                <div class="error">{{ $message }}</div>
+            @enderror
+
             <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10%;"
                 name="teacher_links">
                 <label for="teacher_name" style="margin-bottom:10%;">
@@ -169,7 +185,6 @@
 </body>
 
 <script>
-
     function updateCharCount(textarea, maxLength) {
         const currentLength = textarea.value.length;
         const charCountElement = document.getElementById('charCount');
@@ -191,7 +206,7 @@
 
     // Initialize counter on page load
     document.addEventListener('DOMContentLoaded', function() {
-                const textarea = document.getElementById('teacher_description');
-                updateCharCount(textarea, 200);
+        const textarea = document.getElementById('teacher_description');
+        updateCharCount(textarea, 200);
     })
 </script>
