@@ -38,6 +38,7 @@ class FirebaseNotificationService
                 'timestamp' => now()->toDateTimeString(),
             ]);
 
+
         try {
             $this->messaging->send($message);
             return true;

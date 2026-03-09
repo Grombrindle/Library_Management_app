@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->foreignIdFor(User::class);
             $table->decimal('estimatedHours', 10, 1);
             $table->softDeletes();
+            $table->date('dueDate');
             $table->timestamp('trashed_at')->nullable();
             $table->timestamps();
         });

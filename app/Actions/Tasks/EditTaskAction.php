@@ -17,6 +17,7 @@ class EditTaskAction {
             'title'          => $request['title'] ?? $task->title,
             'description'    => $request['description'] ?? $task->description,
             'estimatedHours' => $request['estimatedHours'] ?? $task->estimatedHours,
+            'dueDate'       => $request['due_date'] ?? $task->due_date
         ]);
         return $task->fresh();
     }

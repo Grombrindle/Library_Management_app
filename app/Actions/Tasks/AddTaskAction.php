@@ -14,6 +14,8 @@ class AddTaskAction {
             'description'    => $request['description'] ?? null,
             'estimatedHours' => $request['estimatedHours'] ?? null,
             'user_id'        => Auth::id(),
+            'dueDate'        => $request['dueDate'] ?? null,
+            'created_at'     => now()
         ]);
     }
 }
