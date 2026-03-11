@@ -31,6 +31,8 @@ class AddLectureAction
 
         $this->ensureDirectoriesExist();
 
+        set_time_limit(3600);
+
         $name = $request->input('lecture_name');
         $description = $request->input('lecture_description');
         $course_id = $request->input('course');
@@ -54,28 +56,90 @@ class AddLectureAction
         // Handle videos
         $filePath360 = $filePath720 = $filePath1080 = null;
 
+        function generateVideo($input, $output, $height)
+        {
+            exec('ffmpeg -y -i "' . $input . '" -vf scale=-2:' . $height . ' "' . $output . '"');
+        }
+
+        $timestamp = time();
+
+        $getID3 = new getID3();
+
         if ($request->hasFile('lecture_file_360')) {
-            $file360 = $request->file('lecture_file_360');
-            $fileName360 = time() . '_360_' . $file360->getClientOriginalName();
-            $file360->move(public_path('Files/360'), $fileName360);
-            $filePath360 = 'Files/360/' . $fileName360;
-            $getID3 = new getID3();
-            $fileInfo = $getID3->analyze($filePath360);
+
+            $file = $request->file('lecture_file_360');
+            $ext = $file->getClientOriginalExtension();
+
+            $fileName = $timestamp . '_360_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $ext;
+            $file->move(public_path('Files/360'), $fileName);
+
+            $filePath360 = 'Files/360/' . $fileName;
+
+            $fileInfo = $getID3->analyze(public_path($filePath360));
             $duration = $fileInfo['playtime_seconds'];
         }
 
         if ($request->hasFile('lecture_file_720')) {
-            $file720 = $request->file('lecture_file_720');
-            $fileName720 = time() . '_720_' . $file720->getClientOriginalName();
-            $file720->move(public_path('Files/720'), $fileName720);
-            $filePath720 = 'Files/720/' . $fileName720;
+
+            $file = $request->file('lecture_file_720');
+            $ext = $file->getClientOriginalExtension();
+
+            $fileName = $timestamp . '_720_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $ext;
+            $file->move(public_path('Files/720'), $fileName);
+
+            $filePath720 = 'Files/720/' . $fileName;
+
+            $fileInfo = $getID3->analyze(public_path($filePath720));
+            $duration = $fileInfo['playtime_seconds'];
+
+            if (!$filePath360) {
+                $fileName360 = $timestamp . '_360_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $ext;
+                $filePath360 = 'Files/360/' . $fileName360;
+
+                generateVideo(
+                    public_path($filePath720),
+                    public_path($filePath360),
+                    360
+                );
+            }
         }
 
         if ($request->hasFile('lecture_file_1080')) {
-            $file1080 = $request->file('lecture_file_1080');
-            $fileName1080 = time() . '_1080_' . $file1080->getClientOriginalName();
-            $file1080->move(public_path('Files/1080'), $fileName1080);
-            $filePath1080 = 'Files/1080/' . $fileName1080;
+
+            $file = $request->file('lecture_file_1080');
+            $ext = $file->getClientOriginalExtension();
+
+            $fileName = $timestamp . '_1080_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $ext;
+            $file->move(public_path('Files/1080'), $fileName);
+
+            $filePath1080 = 'Files/1080/' . $fileName;
+
+            $fileInfo = $getID3->analyze(public_path($filePath1080));
+            $duration = $fileInfo['playtime_seconds'];
+
+            if (!$filePath720) {
+
+                $fileName720 = $timestamp . '_720_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $ext;
+                $filePath720 = 'Files/720/' . $fileName720;
+
+                generateVideo(
+                    public_path($filePath1080),
+                    public_path($filePath720),
+                    720
+                );
+            }
+
+            if (!$filePath360) {
+
+                $fileName360 = $timestamp . '_360_' . pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $ext;
+                $filePath360 = 'Files/360/' . $fileName360;
+
+                generateVideo(
+                    public_path($filePath720 ?: $filePath1080),
+                    public_path($filePath360),
+                    360
+                );
+            }
         }
 
         // Handle PDF
@@ -85,7 +149,7 @@ class AddLectureAction
             if (!file_exists($pdfDir))
                 mkdir($pdfDir, 0777, true);
             $pdf = $request->file('lecture_file_pdf');
-            $pdfName = time() . '_' . $pdf->getClientOriginalName();
+            $pdfName = $timestamp . '_' . $pdf->getClientOriginalName();
             $pdf->move($pdfDir, $pdfName);
             $filePathPdf = 'Files/PDFs/' . $pdfName;
 

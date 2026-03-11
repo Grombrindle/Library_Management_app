@@ -81,7 +81,7 @@ return [
     'chooseFile' => 'Datei auswählen',
     'fileAlreadyUploaded' => 'Datei bereits hochgeladen',
     'invalidFileType' => 'Ungültiger Dateityp. Bitte laden Sie eine Videodatei hoch.',
-    'uploadAtLeastOne' => 'Laden Sie mindestens eine hoch',
+    'uploadAtLeastOne' => 'Laden Sie mindestens ein Video hoch, niedrigere Qualitäten werden automatisch generiert',
     'mandatory' => 'Pflicht',
     'optional' => 'Optional',
     'uploadAtLeastOneVideo' => 'Bitte laden Sie mindestens eine Videodatei hoch (360p, 720p oder 1080p)',

@@ -80,7 +80,7 @@ return [
     'chooseFile' => 'Choisir un fichier',
     'fileAlreadyUploaded' => 'FICHIER DÉJÀ TÉLÉCHARGÉ',
     'invalidFileType' => 'Type de fichier invalide. Veuillez télécharger un fichier vidéo.',
-    'uploadAtLeastOne' => 'téléchargez au moins un',
+    'uploadAtLeastOne' => 'Téléchargez au moins une vidéo, des qualités inférieures seront générées automatiquement',
     'mandatory' => 'obligatoire',
     'optional' => 'optionnel',
     'uploadAtLeastOneVideo' => 'Veuillez télécharger au moins un fichier vidéo (360p, 720p ou 1080p)',

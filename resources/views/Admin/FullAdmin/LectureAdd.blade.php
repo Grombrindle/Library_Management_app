@@ -21,15 +21,17 @@
         <select name="course" id="course" required>
             <option value="" selected>{{ __('messages.selectCourse') }}</option>
             @foreach (App\Models\Course::all() as $course)
-            <option value="{{ $course->id }}">{{ $course->name }} ({{ $course->subject->name }} {{$course->subject->literaryOrScientific ? __('messages.scientific') : __('messages.literary')}})</option>
+                <option value="{{ $course->id }}">{{ $course->name }} ({{ $course->subject->name }}
+                    {{ $course->subject->literaryOrScientific ? __('messages.scientific') : __('messages.literary') }})
+                </option>
             @endforeach
         </select>
         <br>
         <br>
         <div style="display:flex; justify-content:center; margin-bottom:20px;">
             <div class="upload-type-toggle">
-                <button type="button" class="toggle-btn active" data-type="pdf">PDF</button>
-                <button type="button" class="toggle-btn" data-type="video">Video</button>
+                <button type="button" class="toggle-btn active" data-type="pdf">{{ __('messages.pdf') }}</button>
+                <button type="button" class="toggle-btn" data-type="video">{{ __('messages.video') }}</button>
                 <div class="toggle-slider"></div>
             </div>
         </div>
@@ -39,36 +41,43 @@
         <div class="video-inputs" style="display: none; width: 100%; box-sizing: border-box;">
             <span>{{ __('messages.videoFile') }} ({{ __('messages.uploadAtLeastOne') }}):</span>
             <br>
+            <br>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; width: 100%; box-sizing: border-box;">
                 <div>
-                    <label for="actual-file-input-360">360p<br>({{ __('messages.mandatory') }})</label>
+                    <label for="actual-file-input-360">360p<br></label>
                     <div class="custom-file-input">
-                        <input type="file" id="actual-file-input-360" class="hidden-file-input" name="lecture_file_360"
-                            accept="video/*">
+                        <input type="file" id="actual-file-input-360" class="hidden-file-input"
+                            name="lecture_file_360" accept="video/*">
                         <label for="actual-file-input-360" class="file-input-label">
-                            <span class="file-input-text" id="file-input-text-360">{{ __('messages.chooseFile') }}</span>
+                            <span class="file-input-text"
+                                id="file-input-text-360">{{ __('messages.chooseFile') }}</span>
+                            <span class="remove-file" id="remove-file-360" style="display:none;">✕</span>
                         </label>
                     </div>
                 </div>
                 <div>
-                    <label for="actual-file-input-720">720p<br>({{ __('messages.optional') }})</label>
+                    <label for="actual-file-input-720">720p<br></label>
                     <div class="custom-file-input">
-                        <input type="file" id="actual-file-input-720" class="hidden-file-input" name="lecture_file_720"
-                            accept="video/*">
+                        <input type="file" id="actual-file-input-720" class="hidden-file-input"
+                            name="lecture_file_720" accept="video/*">
                         <label for="actual-file-input-720" class="file-input-label">
-                            <span class="file-input-text" id="file-input-text-720">{{ __('messages.chooseFile') }}</span>
+                            <span class="file-input-text"
+                                id="file-input-text-720">{{ __('messages.chooseFile') }}</span>
+                            <span class="remove-file" id="remove-file-720" style="display:none;">✕</span>
                         </label>
                     </div>
                 </div>
             </div>
             <div style="display: flex; flex-direction:row; width: 100%; box-sizing: border-box; margin-top: 20px;">
                 <div style="margin-left:auto;margin-right:auto;">
-                    <label for="actual-file-input-1080">1080p ({{ __('messages.optional') }})</label>
+                    <label for="actual-file-input-1080">1080p</label>
                     <div class="custom-file-input">
-                        <input type="file" id="actual-file-input-1080" class="hidden-file-input" name="lecture_file_1080"
-                            accept="video/*">
+                        <input type="file" id="actual-file-input-1080" class="hidden-file-input"
+                            name="lecture_file_1080" accept="video/*">
                         <label for="actual-file-input-1080" class="file-input-label">
-                            <span class="file-input-text" id="file-input-text-1080">{{ __('messages.chooseFile') }}</span>
+                            <span class="file-input-text"
+                                id="file-input-text-1080">{{ __('messages.chooseFile') }}</span>
+                            <span class="remove-file" id="remove-file-1080" style="display:none;">✕</span>
                         </label>
                     </div>
                 </div>
@@ -143,7 +152,7 @@
             width: calc(40% - 4px);
         }
 
-        .toggle-btn.active + .toggle-slider {
+        .toggle-btn.active+.toggle-slider {
             transform: translateX(calc(100% + 2px));
         }
 
@@ -184,6 +193,20 @@
             font-size: 0.9rem;
         }
 
+        .remove-file {
+            margin-left: 10px;
+            color: red;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
         @media (max-width: 768px) {
             .custom-file-input {
                 max-width: 100%;
@@ -218,7 +241,7 @@
                     videoFileInputs.forEach(input => input.required = false);
                 } else {
                     pdfFileInput.required = false;
-                    videoFileInputs[0].required = true; // Only 360p is required for video
+                    videoFileInputs[0].required = false; // Only 360p is required for video
                     videoFileInputs.slice(1).forEach(input => input.required = false);
                 }
             }
@@ -265,16 +288,16 @@
                         const isAllowed = allowedTypes.some(type => file.type.startsWith(type));
 
                         if (!isAllowed) {
-                            alert('{{ __("messages.invalidFileType") }}');
+                            alert('{{ __('messages.invalidFileType') }}');
                             event.target.value = '';
-                            textElement.textContent = '{{ __("messages.chooseFile") }}';
+                            textElement.textContent = '{{ __('messages.chooseFile') }}';
                             return;
                         }
 
                         // Update the display text
                         textElement.textContent = file.name;
                     } else {
-                        textElement.textContent = '{{ __("messages.chooseFile") }}';
+                        textElement.textContent = '{{ __('messages.chooseFile') }}';
                     }
 
                     // Hide error message when a file is selected
@@ -282,11 +305,59 @@
                 });
             }
 
+            function setupVideoInput(inputId, textId, removeId) {
+
+                const input = document.getElementById(inputId);
+                const text = document.getElementById(textId);
+                const removeBtn = document.getElementById(removeId);
+
+                const videoInputs = [
+                    document.getElementById('actual-file-input-360'),
+                    document.getElementById('actual-file-input-720'),
+                    document.getElementById('actual-file-input-1080')
+                ];
+
+                input.addEventListener('change', function(e) {
+
+                    const file = e.target.files[0];
+
+                    if (!file) return;
+
+                    text.textContent = file.name;
+                    removeBtn.style.display = "inline";
+
+                    // Disable other inputs
+                    videoInputs.forEach(i => {
+                        if (i.id !== inputId) {
+                            i.disabled = true;
+                            i.parentElement.style.opacity = "0.5";
+                        }
+                    });
+
+                });
+
+                removeBtn.addEventListener('click', function(e) {
+
+                    e.preventDefault();
+
+                    input.value = "";
+                    text.textContent = "{{ __('messages.chooseFile') }}";
+                    removeBtn.style.display = "none";
+
+                    // Enable all again
+                    videoInputs.forEach(i => {
+                        i.disabled = false;
+                        i.parentElement.style.opacity = "1";
+                    });
+
+                });
+            }
+
             // Set up all file inputs
             setupFileInput('actual-file-input-pdf', 'file-input-text-pdf', ['application/pdf']);
-            setupFileInput('actual-file-input-360', 'file-input-text-360', ['video']);
-            setupFileInput('actual-file-input-720', 'file-input-text-720', ['video']);
-            setupFileInput('actual-file-input-1080', 'file-input-text-1080', ['video']);
+            setupVideoInput('actual-file-input-360', 'file-input-text-360', 'remove-file-360');
+            setupVideoInput('actual-file-input-720', 'file-input-text-720', 'remove-file-720');
+            setupVideoInput('actual-file-input-1080', 'file-input-text-1080', 'remove-file-1080');
         });
 
         // Form validation function

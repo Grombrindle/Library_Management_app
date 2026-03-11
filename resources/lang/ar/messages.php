@@ -82,7 +82,7 @@ return [
     'chooseFile' => 'اختر ملفاً',
     'fileAlreadyUploaded' => 'تم رفع الملف مسبقاً',
     'invalidFileType' => 'نوع ملف غير صالح. يرجى رفع ملف فيديو.',
-    'uploadAtLeastOne' => 'يرجى رفع ملف واحد على الأقل',
+    'uploadAtLeastOne' => 'يرجى تحميل فيديو واحد على الأقل، سيتم إنشاء الجودات الأقل تلقائيًا',
     'mandatory' => 'إلزامي',
     'optional' => 'اختياري',
     'uploadAtLeastOneVideo' => 'يرجى رفع ملف فيديو واحد على الأقل (360p، 720p، أو 1080p)',

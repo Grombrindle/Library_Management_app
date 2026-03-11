@@ -86,7 +86,7 @@ return [
     'chooseFile' => 'Dosya Seç',
     'fileAlreadyUploaded' => 'Dosya Zaten Yüklendi',
     'invalidFileType' => 'Geçersiz dosya türü. Lütfen bir video dosyası yükleyin.',
-    'uploadAtLeastOne' => 'En az bir tane yükleyin',
+    'uploadAtLeastOne' => 'En az bir video yükleyin, daha düşük kaliteler otomatik olarak oluşturulacaktır',
     'uploadAtLeastOneVideo' => 'Lütfen en az bir video dosyası yükleyin (360p, 720p veya 1080p)',
     'mandatory' => 'Zorunlu',
     'optional' => 'İsteğe Bağlı',

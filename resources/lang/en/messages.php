@@ -82,7 +82,7 @@ return [
     'chooseFile' => 'Choose a file',
     'fileAlreadyUploaded' => 'FILE ALREADY UPLOADED',
     'invalidFileType' => 'Invalid file type. Please upload a video file.',
-    'uploadAtLeastOne' => 'upload at least one',
+    'uploadAtLeastOne' => 'Upload at least one video, lower qualities will be generated automatically',
     'mandatory' => 'mandatory',
     'optional' => 'optional',
     'uploadAtLeastOneVideo' => 'Please upload at least one video file (360p, 720p, or 1080p)',
